@@ -31,14 +31,13 @@ h <- 0.5 # arbitrary
 n <- length(x_data)
 ```
 
-
-If a histogram with bin width $h$ is constructed from a sample $X_1, \dots, X_n$, then a density estimate for a point $x$ within the range of the data is 
+If a histogram with bin width $h$ is constructed from a sample $X_1, \dots, X_n$, then a density estimate for a point $x$ within the range of the data is
 
 $$
 \hat{f}(x) = \frac{1}{2hn} \times k
 $$
 
-where $k$ is the number of sample points in the interval $\left( x-h, x+h\right)$. This estimator can be written as 
+where $k$ is the number of sample points in the interval $\left( x-h, x+h\right)$. This estimator can be written as
 
 $$
 \hat{f}(x) = \frac{1}{n} \sum^n_{i=1} \frac{1}{h}w \left( \frac{x - X_i}{h} \right) (\#eq:nde)
@@ -63,8 +62,6 @@ weights <- sapply(t, naive_kernel)
 f_hat <- (1 / (n * h)) * sum(weights)
 print(f_hat)
 ```
-
-
 
 ```{r}
 
@@ -115,9 +112,8 @@ legend("topright", legend = c("Naive KDE (manual)", "R: density() with rectangul
 
 ```
 
-
-<div style="border-left: 4px solid #007ACC; padding: 1em; background: #f9f9f9;">
-**Aside:**  
+::: {style="border-left: 4px solid #007ACC; padding: 1em; background: #f9f9f9;"}
+**Aside:**\
 This function is 1 when $t$ is between $-1$ and $1$, and $0$ outside that range.
 
 \begin{align*}
@@ -150,15 +146,124 @@ abline(v = -1, col = "red", lty = 2)
 abline(v = 1, col = "red", lty = 2)
 
 ```
+:::
 
-</div>
+Kernel density estimation replaces the weight function $w(t)$ in the naive estimator with a function $K(\cdot)$ called a kernel function such that.
+
+$$
+\int^{\infty}_{-\infty} K(t) dt = 1
+$$
+
+In probability density estimation, $K(\cdot)$ is usually a symmetric probability density function. The weight function $w(t)=\frac{1}{2} I(|t| < 1)$ is called the rectangular kernel. The rectangular kernel is a symmetric probability density centered at the origin, and
+
+$$
+\frac{1}{nh} w \left(\frac{x-X_i}{h} \right)
+$$ corresponds to a rectangle of area $\frac{1}{n}$ centered at $X_i$. The density estimate at $x$ is the sum of rectangles located within $h$ units from $x$.
+
+Restricting our attention to symmetric positive kernel density estimators, suppose that $K(\cdot)$ is another symmetric probability density centered at the origin, and define
+
+$$
+\hat{f}_K(x) = \frac{1}{n} \sum^n_{i=1} \frac{1}{h} K \left( \frac{x-X_i}{h} \right) (\#eq:spd)
+$$
+
+The, $\hat{f}$ is a probability density function. For example, $K(x)$ may be the triangular density on $[−1, 1]$ (the triangular kernel) or the standard normal density (the Gaussian kernel). The triangular kernel estimator corresponds to the sum of areas of triangles instead of rectangles. The Gaussian kernel estimator centers a normal density at each data point. The histogram density estimator corresponds to the rectangular kernel density estimator.
+
+The bin width $h$ is a smoothing parameter; small values of $h$ reveal local features of the density, while large values of $h$ produce a smoother density estimate. In kernel density estimation $h$ is called the bandwidth, smoothing parameter or window width.
+
+```{r echo=FALSE}
+library(shiny)
+
+# Generate sample data
+set.seed(123)
+x_data <- c(-0.77, -0.60, -0.25, 0.14, 0.45, 0.64, 0.65, 1.19, 1.71, 1.74)
+sliderInput("h", "Bandwidth (h):", min = 0.1, max = 2, value = 0.4, step = 0.05)
+selectInput("kernel", "Kernel:", choices = c("gaussian","epanechnikov", "rectangular", "triangular", "biweight", "cosine"), selected = "gaussian")
 
 
+renderPlot({
+  h <- input$h
+  kernel_type <- input$kernel
+  n <- length(x_data)
+  x_grid <- seq(min(x_data) - 1, max(x_data) + 1, length.out = 300)
+  
+  kernel_variance <- switch(kernel_type,
+  "gaussian" = 1,
+  "epanechnikov" = 1/5,
+  "rectangular"  = 1/3,
+  "triangular" = 1/6,
+  "biweight" = 1/7,
+  "cosine" = 1-8/pi^2
+)
+
+  variance_scaling <- sqrt(kernel_variance)
+  adjusted_h <- h / variance_scaling 
 
 
+  
 
+  # Normalize a kernel function to integrate to 1 over its support
+  normalize_kernel <- function(f, lower = -1, upper = 1) {
+    norm_const <- integrate(f, lower, upper)$value
+    function(t) f(t) / norm_const
+  }
 
+  # Raw kernel functions (unnormalized)
+  raw_kernel_function <- switch(kernel_type,
+    "gaussian" = function(t) (1 / sqrt(2 * pi)) * exp(-0.5 * t^2),
+    "epanechnikov" = function(t) ifelse(abs(t) <= 1, (1 - t^2), 0),
+    "rectangular"  = function(t) ifelse(abs(t) <= 1, 1, 0),
+    "triangular" = function(t) ifelse(abs(t) <= 1, 1 - abs(t), 0),
+    "biweight" = function(t) ifelse(abs(t) <= 1, (1 - t^2)^2, 0),
+    "cosine" = function(t) (pi/4)*cos((pi/2) * t)
+  )
 
+  # Integration limits (Gaussian is over whole line)
+  integration_limits <- if (kernel_type == "gaussian") c(-Inf, Inf) else c(-1, 1)
+
+  # Normalize the kernel function
+  kernel_function <- normalize_kernel(
+    raw_kernel_function,
+    lower = integration_limits[1],
+    upper = integration_limits[2]
+  )
+
+  # Manual KDE
+  kde_vals <- sapply(x_grid, function(x) {
+    sum(sapply(x_data, function(Xi) {
+      t <- (x - Xi) / adjusted_h
+      kernel_function(t) / adjusted_h
+    })) / n
+  })
+
+  # Plot setup
+  plot(x_grid, kde_vals, type = "n", xlab = "x", ylab = "Density",
+       main = paste("Kernel:", kernel_type, " | Bandwidth:", round(h, 2)),
+       ylim = c(0, max(kde_vals)*1.2))
+
+  # Individual kernel bumps
+  for (Xi in x_data) {
+    bump_x <- seq(Xi - 3*h, Xi + 3*h, length.out = 100)
+    bump_y <- sapply(bump_x, function(x) {
+      t <- (x - Xi) / h
+      kernel_function(t) / (h * n)
+    })
+    lines(bump_x, bump_y, col = rgb(0.2, 0.2, 0.8, 0.3))
+  }
+
+  # KDE curve
+  lines(x_grid, kde_vals, col = "blue", lwd = 2)
+
+  # R's density function for comparison
+  r_dens <- density(
+    x_data, bw = h, kernel = kernel_type,
+    n = length(x_grid), from = min(x_grid), to = max(x_grid)
+  )
+  lines(r_dens$x, r_dens$y, col = "red", lwd = 2, lty = 2)
+
+  rug(x_data, col = "gray40")
+})
+
+```
 
 
 # References
