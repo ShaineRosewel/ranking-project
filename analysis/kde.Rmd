@@ -240,6 +240,9 @@ renderPlot({
        main = paste("Kernel:", kernel_type, " | Bandwidth:", round(h, 2)),
        ylim = c(0, max(kde_vals)*1.2))
 
+  hist(x_data, probability = TRUE, col = rgb(0.8, 0.8, 0.8, 0.4),
+     border = "white", add = TRUE, breaks = "FD")  # or use breaks = 10
+  
   # Individual kernel bumps
   for (Xi in x_data) {
     bump_x <- seq(Xi - 3*h, Xi + 3*h, length.out = 100)
