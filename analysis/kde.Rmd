@@ -8,6 +8,7 @@ output:
     toc: true
     fig_caption: true
 bibliography: references.bib
+runtime: shiny
 ---
 
 ```{r setup, include=FALSE}
@@ -243,6 +244,10 @@ renderPlot({
   hist(x_data, probability = TRUE, col = rgb(0.8, 0.8, 0.8, 0.4),
      border = "white", add = TRUE, breaks = "FD")  # or use breaks = 10
   
+  # add the true density to compare
+  y <- seq(.001, 6, .01)
+  lines(y, dexp(y, 1), lty = 2)
+  
   # Individual kernel bumps
   for (Xi in x_data) {
     bump_x <- seq(Xi - 3*h, Xi + 3*h, length.out = 100)
@@ -264,6 +269,29 @@ renderPlot({
   lines(r_dens$x, r_dens$y, col = "red", lwd = 2, lty = 2)
 
   rug(x_data, col = "gray40")
+})
+
+```
+
+
+```{r echo = FALSE}
+library(MASS)
+radioButtons(
+  "hs",
+  "Bandwidth (h):",
+  choices = c('3.998', '2','5','7'),
+  selected = '3.998', inline = TRUE
+)
+
+
+waiting <- geyser$waiting
+n <- length(waiting)
+h1 <- 1.06 * sd(waiting) * n^(-1/5)
+h2 <- .9 * min(c(IQR(waiting)/1.34, sd(waiting))) * n^(-1/5)
+
+renderPlot({
+  h_val <- as.numeric(input$hs)
+  plot(density(waiting, bw=h_val), main = paste("Geyser Waiting Data: Bandwidth(",h_val, ")"))
 })
 
 ```
