@@ -389,7 +389,7 @@ head(mat1_sorted)
 3. For each $b$, compute the difference $r^*_{bi} = \hat{\theta}^*_{b(i)} - \hat{\theta}^*_{(i)}, i = 1, 2, \dots, K$
 
 ```{r}
-r <- mat1_sorted - matrix(t(dataset['theta_k']),B, K, byrow=TRUE)
+r <- mat1_sorted - matrix(sort(t(dataset['theta_k'])),B, K, byrow=TRUE)
 head(r)
 ```
 
@@ -449,8 +449,8 @@ F.inv <- lapply(estimated_CDF, function(F){inverse(F, lower = -100, upper = 100)
 dataset['F.inv_u'] <- sapply(1:K, function(i){F.inv[[i]](uhat)})
 dataset['F.inv_1-u'] <- sapply(1:K, function(i){F.inv[[i]](1-uhat)})
 
-dataset['lower'] <- dataset['theta_k'] - dataset['F.inv_u'] 
-dataset['upper'] <- dataset['theta_k'] - dataset['F.inv_1-u'] 
+dataset['lower_joint'] <- dataset['theta_k'] - dataset['F.inv_u'] 
+dataset['upper_joint'] <- dataset['theta_k'] - dataset['F.inv_1-u'] 
 
 dataset
 ```
