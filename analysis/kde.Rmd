@@ -6,13 +6,14 @@ output:
   bookdown::html_document2:
     number_sections: true
     toc: true
+    toc_float:
+      toc_collapsed: false
     fig_caption: true
 bibliography: references.bib
-runtime: shiny
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE,fig.align = "center", fig.width = 5, fig.height = 3)
+knitr::opts_chunk$set(echo = TRUE,fig.align = "center", fig.width = 5, fig.height = 3, comment="")
 ```
 
 # Kernel Density Estimation
@@ -172,7 +173,7 @@ The, $\hat{f}$ is a probability density function. For example, $K(x)$ may be the
 
 The bin width $h$ is a smoothing parameter; small values of $h$ reveal local features of the density, while large values of $h$ produce a smoother density estimate. In kernel density estimation $h$ is called the bandwidth, smoothing parameter or window width.
 
-```{r echo=FALSE}
+```{r echo=FALSE, eval = FALSE}
 library(shiny)
 
 # Generate sample data
@@ -276,7 +277,7 @@ renderPlot({
 ```
 
 
-```{r echo = FALSE}
+```{r echo = FALSE, eval = FALSE}
 library(MASS)
 radioButtons(
   "hs",
@@ -309,10 +310,8 @@ Let $F_i$ be the CDF of $\hat{\theta}_{(i)} - \theta_{(i)}, i = 1, 2, \dots, K$.
 
 $$
 P \left( 1-u < F_i \left ( \hat{\theta}_{(i)}-\theta_{(i)} \right) < u, \forall i\right) = 1 - \alpha
-
 \\
 \Longleftrightarrow
-
 P \left( 
 \underset{1 \leq i \leq p} {\max}  
 \left\{ \max
@@ -367,13 +366,6 @@ Suppose the data consist of $\hat{\theta}_1, \hat{\theta}_1, \dots, \hat{\theta}
 
 
 ```{r}
-set.seed(3)
-for (i in 1:K) {
-  print(rnorm(1, dataset[i,'theta_k'], sqrt(dataset[i,'variance'])))
-}
-```
-
-```{r}
 B=1000
 library(foreach)
 set.seed(4)
@@ -382,6 +374,8 @@ mat1 <- foreach(i = 1:K, .combine = cbind) %do% {
     rnorm(1, mean = dataset[i, 'theta_k'], sd = sqrt(dataset[i, 'variance']))
   }
 }
+
+head(mat1)
 ```
 
 2. For each $b$, order the set $\left\{ \hat{\theta}^*_{b1}, \hat{\theta}^*_{b2}, \dots, \hat{\theta}^*_{bK} \right\}$ to obtain $\left\{ \hat{\theta}^*_{b(1)}, \hat{\theta}^*_{b(2)}, \dots, \hat{\theta}^*_{b(K)} \right\}$
@@ -389,19 +383,21 @@ mat1 <- foreach(i = 1:K, .combine = cbind) %do% {
 
 ```{r}
 mat1_sorted <- t(apply(mat1, 1, sort))
+head(mat1_sorted)
 ```
 
-3. 
+3. For each $b$, compute the difference $r^*_{bi} = \hat{\theta}^*_{b(i)} - \hat{\theta}^*_{(i)}, i = 1, 2, \dots, K$
 
 ```{r}
 r <- mat1_sorted - matrix(t(dataset['theta_k']),B, K, byrow=TRUE)
+head(r)
 ```
 
-4. 
+4. Let $F_i$ be the density of $\hat{\theta}_{(i)} - \theta_{(i)}, i = 1, 2, \dots, K$. Estimate each $F_i$ bu computing $\hat{F}_i$ using KDE based on $r^*_{1i}, r^*_{2i}, \dots, r^*_{Bi}$, that is
 
-Kernel density for each i (for each k)
-
-
+$$
+\hat{F}_i(x) = \frac{1}{B}\sum^B_{\alpha=1} \Phi \left( \frac{x-r^*_{\alpha i}}{h_i} \right), \ \ \ h_i=0.9\min\{S_i, IQR_i/1.34\}\ B^{-1/5}
+$$
 ```{r}
 
 kde_cdf_function <- function(datapoints, bandwidth) {
@@ -409,16 +405,16 @@ kde_cdf_function <- function(datapoints, bandwidth) {
 }
 
 estimate_CDF <- function(i){
-  S = sd(r[,i])
+  S = sqrt(dataset[i,'variance'])#sd(r[,i])
   IQR = quantile(r[,i], .75) - quantile(r[,i], .25)
-  h_i <- 0.9*min(S, IQR*B^(1/5))
+  h_i <- 0.9*min(S, IQR/1.34)*(B^(1/5))
   return(kde_cdf_function(r[,i], h_i))
 }
 
 estimated_CDF <- lapply(1:K, estimate_CDF)
 ```
 
-5. 
+5. Compute $Y^*_{bi}= \hat{F}_i(r^*_{bi})$ for each $b = 1, 2, \dots, B$ and $i = 1, 2, \dots, K$
 
 ```{r}
 get_inner_max <- function(value) return(max(value, 1-value))
@@ -427,22 +423,24 @@ Y <- foreach(i = 1:K, .combine = cbind) %do% {
   sapply(r[,i], estimated_CDF[[i]])
 }
 
-
+head(Y)
 ```
 
-6. 
+6. Compute $U^*_b = \underset{1 \leq i \leq p} {\max} \{\max\{Y^*_{bi}, 1-Y^*_{bi}\}\}$ for $b = 1, 2, \dots, B$
 
 ```{r}
 U <- apply(apply(Y, MARGIN = c(1, 2), FUN = get_inner_max), 1, max)
+head(U)
 ```
 
-7. 
+7. Compute $\hat{u}$ as the $(1-\alpha)$-sample quantile of $U^*_1, U^*_2, \dots, U^*_B$
 
 ```{r}
 uhat <- quantile(U, probs = 1 - alpha)
+uhat
 ```
 
-8.
+8. The join confidence region is calculated
 
 ```{r}
 library("GoFKernel")
