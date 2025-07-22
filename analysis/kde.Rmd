@@ -55,6 +55,7 @@ naive_kernel <- function(t) {
 
 # use the weight function to compute weight for each data point
 # you check if t, not your raw point, is within the -1 to 1 window
+# x_data is Xi in the formula
 t <- (x_point - x_data) / h
 weights <- sapply(t, naive_kernel)
 
@@ -62,14 +63,18 @@ weights <- sapply(t, naive_kernel)
 # naive density estimate for a point x
 f_hat <- (1 / (n * h)) * sum(weights)
 print(f_hat)
+
+
 ```
 
 ```{r}
+weights
+```
 
-# Points inside the window
+
+```{r}
+# pts inside the window
 in_window <- x_data[abs((x_point - x_data) / h) < 1]
-
-# Plot
 hist(x_data, breaks = 20, col = "gray90", border = "gray40",
      freq = FALSE, main = "Naive KDE Estimate at x = 3", xlab = "x")
 abline(v = x_point, col = "blue", lty = 2, lwd = 2)              # Point of estimate
@@ -93,7 +98,7 @@ naive_kde <- function(x, x_data, h) {
 x_grid <- seq(min(x_data) - 1, max(x_data) + 1, length.out = 200)
 kde_vals <- sapply(x_grid, naive_kde, x_data = x_data, h = h)
 
-# Plot histogram and overlay KDE curves
+
 hist(x_data, breaks = 20, col = "gray90", border = "gray40",
      freq = FALSE, main = "Naive KDE vs R::density()",
      xlab = "x", xlim = range(x_grid), ylim = c(0, max(kde_vals)*1.5))
@@ -103,11 +108,7 @@ lines(x_grid, kde_vals, col = "blue", lwd = 2)
 
 # Overlay R's built-in KDE with rectangular kernel
 lines(density(x_data, bw = h, kernel = "rectangular"), col = "red", lwd = 2, lty = 2)
-
-# Rug for data
 rug(x_data, col = "gray40")
-
-# Smaller legend
 legend("topright", legend = c("Naive KDE (manual)", "R: density() with rectangular kernel"),
        col = c("blue", "red"), lty = c(1, 2), lwd = 2, cex = 0.5)
 
@@ -230,7 +231,9 @@ renderPlot({
   # Manual KDE
   kde_vals <- sapply(x_grid, function(x) {
     sum(sapply(x_data, function(Xi) {
+      
       t <- (x - Xi) / adjusted_h
+      
       kernel_function(t) / adjusted_h
     })) / n
   })
@@ -295,5 +298,163 @@ renderPlot({
 
 ```
 
+
+
+# Uncertainty for ranks
+
+Let $\theta_1, \theta_2, \dots, \theta_K$ be the true values of the parameters and let $\theta_{(1)}, \theta_{(2)}, \dots, \theta_{(K)}$ be the corresponding ordered parameter values.
+
+
+Let $F_i$ be the CDF of $\hat{\theta}_{(i)} - \theta_{(i)}, i = 1, 2, \dots, K$. Note that $F_i \left( \hat{\theta}_{(i)} - \theta_{(i)}\right) \sim U(0,1)$. We want the quantity $u$ that satisfies :
+
+$$
+P \left( 1-u < F_i \left ( \hat{\theta}_{(i)}-\theta_{(i)} \right) < u, \forall i\right) = 1 - \alpha
+
+\\
+\Longleftrightarrow
+
+P \left( 
+\underset{1 \leq i \leq p} {\max}  
+\left\{ \max
+\left\{
+F_i
+\left( \hat{\theta}_{(i)} - \theta_{(i)}
+\right),
+1-F_i
+\left( \hat{\theta}_{(i)} - \theta_{(i)}
+\right)
+\right\}
+\right\} < u
+\right) = 1 - \alpha
+$$
+
+
+Taking the inverse,
+
+$$
+F_i^{-1} (1-u) <  \hat{\theta}_{(i)}-\theta_{(i)}  < F_i^{-1} (u), i = 1, 2, \dots, K
+$$
+
+Isolating the true value,
+
+$$
+F_i^{-1} (1-u) - \hat{\theta}_{(i)} <  -\theta_{(i)}  < F_i^{-1} (u)-\hat{\theta}_{(i)}
+\\
+\hat{\theta}_{(i)} - F_i^{-1} (u) < \theta_{(i)} < \hat{\theta}_{(i)} - F_i^{-1} (1-u) 
+$$
+
+Problem 1: We do not know $F_i^{-1}$
+Problem 2: We do not know $u$
+
+
+```{r}
+alpha <- 0.10
+K <- 10
+df <- readRDS("../data/mean_travel_time_ranking_2011.rds")
+calculate_variance <- function(moe) (moe/1.645)^2
+dataset <- df[order(df$k),][1:K,]
+dataset['variance'] <- lapply(dataset['moe_k'], calculate_variance)
+rownames(dataset) <- dataset[,2]
+dataset
+```
+
+
+## Algorithm 1
+
+Suppose the data consist of $\hat{\theta}_1, \hat{\theta}_1, \dots, \hat{\theta}_K$ and known values $\sigma_1^2, \sigma_2^2, \dots, \sigma_K^2$
+
+1. Generate $\hat{\theta}^*_{bi} \sim \mathcal{N}(\hat{\theta}_i, \sigma_i^2)$
+
+
+```{r}
+set.seed(3)
+for (i in 1:K) {
+  print(rnorm(1, dataset[i,'theta_k'], sqrt(dataset[i,'variance'])))
+}
+```
+
+```{r}
+B=1000
+library(foreach)
+set.seed(4)
+mat1 <- foreach(i = 1:K, .combine = cbind) %do% {
+  foreach(b = 1:B, .combine = c) %do% {
+    rnorm(1, mean = dataset[i, 'theta_k'], sd = sqrt(dataset[i, 'variance']))
+  }
+}
+```
+
+2. For each $b$, order the set $\left\{ \hat{\theta}^*_{b1}, \hat{\theta}^*_{b2}, \dots, \hat{\theta}^*_{bK} \right\}$ to obtain $\left\{ \hat{\theta}^*_{b(1)}, \hat{\theta}^*_{b(2)}, \dots, \hat{\theta}^*_{b(K)} \right\}$
+
+
+```{r}
+mat1_sorted <- t(apply(mat1, 1, sort))
+```
+
+3. 
+
+```{r}
+r <- mat1_sorted - matrix(t(dataset['theta_k']),B, K, byrow=TRUE)
+```
+
+4. 
+
+Kernel density for each i (for each k)
+
+
+```{r}
+
+kde_cdf_function <- function(datapoints, bandwidth) {
+  return(function(x) mean(pnorm((x - datapoints) / bandwidth)))
+}
+
+estimate_CDF <- function(i){
+  S = sd(r[,i])
+  IQR = quantile(r[,i], .75) - quantile(r[,i], .25)
+  h_i <- 0.9*min(S, IQR*B^(1/5))
+  return(kde_cdf_function(r[,i], h_i))
+}
+
+estimated_CDF <- lapply(1:K, estimate_CDF)
+```
+
+5. 
+
+```{r}
+get_inner_max <- function(value) return(max(value, 1-value))
+
+Y <- foreach(i = 1:K, .combine = cbind) %do% {
+  sapply(r[,i], estimated_CDF[[i]])
+}
+
+
+```
+
+6. 
+
+```{r}
+U <- apply(apply(Y, MARGIN = c(1, 2), FUN = get_inner_max), 1, max)
+```
+
+7. 
+
+```{r}
+uhat <- quantile(U, probs = 1 - alpha)
+```
+
+8.
+
+```{r}
+library("GoFKernel")
+
+F.inv <- lapply(estimated_CDF, function(F){inverse(F, lower = -100, upper = 100)})
+dataset['F.inv_u'] <- sapply(1:K, function(i){F.inv[[i]](uhat)})
+dataset['F.inv_1-u'] <- sapply(1:K, function(i){F.inv[[i]](1-uhat)})
+
+dataset['lower'] <- dataset['theta_k'] - dataset['F.inv_u'] 
+dataset['upper'] <- dataset['theta_k'] - dataset['F.inv_1-u'] 
+
+dataset
+```
 
 # References
