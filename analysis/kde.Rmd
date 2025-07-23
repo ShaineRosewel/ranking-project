@@ -509,8 +509,6 @@ run_algorithm1 <- function(B, dataset) {
   dataset['upper_joint'] <- dataset['theta_k'] - dataset['F.inv_1-u']
   return(dataset[, c('rhat_k', 'k', 'theta_k', 'lower_joint', 'upper_joint')])
 }
-
-run_algorithm1(B, dataset)
 ```
 
 
@@ -542,7 +540,7 @@ for (K in c(10, 20, 30, 40, 51)) {
   filename <- paste0("../data/joint_intervals_", K, ".rds")
   output[[K]] <- readRDS(filename)
   print(paste("**** Output shown for K=", K, "****"))
-  print(kable(output[[K]]))
+  print(kable(output[[K]], row.names = FALSE) %>% kable_styling(bootstrap_options = "responsive"))
   cat("\n\n---\n\n")
 }
 ```
