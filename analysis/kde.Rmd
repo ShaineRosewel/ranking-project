@@ -459,9 +459,6 @@ dataset
 Full algorithm function:
 
 
-```{r}
-dim(dataset)[1]
-```
 
 
 ```{r}
@@ -535,14 +532,52 @@ for (K in c(10, 20, 30, 40, 51)) {
 ```{r results='asis'}
 library(knitr)
 library(kableExtra)
+
+get_ranks <- function(k, tuple_list){
+  Lambda_lk <- which(tuple_list[,2]<=tuple_list[k,1])
+  Lambda_lk <- Lambda_lk[Lambda_lk != k]
+  Lambda_Ok <- which(tuple_list[,2]>tuple_list[k,1] & tuple_list[k,2] > tuple_list[,1])
+  Lambda_Ok <- Lambda_Ok[Lambda_Ok != k]
+
+  return(paste(seq(length(unique(Lambda_lk))+1, 
+      length(unique(Lambda_lk)) + length(unique(Lambda_Ok)) + 1, 
+      1), collapse = ", "))
+}
+
 output <- list()
+
 for (K in c(10, 20, 30, 40, 51)) {
   filename <- paste0("../data/joint_intervals_", K, ".rds")
   output[[K]] <- readRDS(filename)
+  tuple_list <- t(apply(output[[K]][,c('lower_joint', 'upper_joint')], 1, function(row) as.numeric(row)))
+  
+  output[[K]]['rank_range'] <- sapply(1:K, function(x) get_ranks(x, tuple_list))
   print(paste("**** Output shown for K=", K, "****"))
-  print(kable(output[[K]], row.names = FALSE) %>% kable_styling(bootstrap_options = "responsive"))
+  
+  output[[K]]['sample_rank'] <- rank(output[[K]]$theta_k, ties.method = "min")
+  print(kable(output[[K]][order(output[[K]]$theta_k), ], row.names = FALSE) %>% kable_styling(bootstrap_options = "responsive"))
   cat("\n\n---\n\n")
+  
+  
+  
 }
+```
+
+... checking `get_ranks` fcn is aligned to handout example
+
+```{r}
+df<-data.frame(lower = c(2, 4, 8, 9), upper = c(6, 7, 11, 10))
+
+tuple_list <-  t(apply(df[,c('lower', 'upper')], 1, function(row) as.numeric(row)))
+tuple_list
+```
+
+```{r}
+get_ranks(1, tuple_list)
+get_ranks(2, tuple_list)
+get_ranks(3, tuple_list)
+get_ranks(4, tuple_list)
+
 ```
 
 
