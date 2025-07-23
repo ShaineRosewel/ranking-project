@@ -382,6 +382,7 @@ head(mat1)
 
 
 ```{r}
+source('../R/algo1_helper.R')
 mat1_sorted <- t(apply(mat1, 1, sort))
 head(mat1_sorted)
 ```
@@ -399,7 +400,7 @@ $$
 \hat{F}_i(x) = \frac{1}{B}\sum^B_{\alpha=1} \Phi \left( \frac{x-r^*_{\alpha i}}{h_i} \right), \ \ \ h_i=0.9\min\{S_i, IQR_i/1.34\}\ B^{-1/5}
 $$
 ```{r}
-source("R/algo1_helper.R")
+#source('../R/algo1_helper.R')
 # kde_cdf_function <- function(datapoints, bandwidth) {
 #   return(function(x) mean(pnorm((x - datapoints) / bandwidth)))
 # }
@@ -411,7 +412,7 @@ source("R/algo1_helper.R")
 #   return(kde_cdf_function(r[,i], h_i))
 # }
 
-estimated_CDF <- lapply(1:K, function(x)(estimate_CDF(dataset, x)))
+estimated_CDF <- lapply(1:K, function(x)(estimate_CDF(dataset, x, r)))
 ```
 
 5. Compute $Y^*_{bi}= \hat{F}_i(r^*_{bi})$ for each $b = 1, 2, \dots, B$ and $i = 1, 2, \dots, K$
@@ -456,6 +457,96 @@ dataset
 ```
 
 Full algorithm function:
+
+
+```{r}
+dim(dataset)[1]
+```
+
+
+```{r}
+source('../R/algo1_helper.R')
+library(foreach)
+library("GoFKernel")
+
+alpha <- 0.10
+K <- 30
+df <- readRDS("../data/mean_travel_time_ranking_2011.rds")
+dataset <- df[order(df$k),][1:K,]
+B=1000
+
+
+
+run_algorithm1 <- function(B, dataset) {
+  dataset['variance'] <- lapply(dataset['moe_k'], calculate_variance)
+  K <- dim(dataset)[1]
+  set.seed(4)
+  mat1 <- foreach(i = 1:K, .combine = cbind) %do% {
+    foreach(b = 1:B, .combine = c) %do% {
+      rnorm(1, mean = dataset[i, 'theta_k'], sd = sqrt(dataset[i, 'variance']))
+    }
+  }
+  # 2
+  mat1_sorted <- t(apply(mat1, 1, sort))
+  # 3
+  r <- mat1_sorted - matrix(sort(t(dataset['theta_k'])),B, K, byrow=TRUE)
+  # 4
+  estimated_CDF <- lapply(1:K, function(x)(estimate_CDF(dataset, x, r)))
+  # 5
+  Y <- foreach(i = 1:K, .combine = cbind) %do% {
+    sapply(r[,i], estimated_CDF[[i]])
+  }
+  # 6
+  U <- apply(apply(Y, MARGIN = c(1, 2), FUN = get_inner_max), 1, max)
+  # 7
+  uhat <- quantile(U, probs = 1 - alpha)
+  # 8
+  
+  F.inv <- lapply(estimated_CDF, function(F){inverse(F, lower = -100, upper = 100)})
+  dataset['F.inv_u'] <- sapply(1:K, function(i){F.inv[[i]](uhat)})
+  dataset['F.inv_1-u'] <- sapply(1:K, function(i){F.inv[[i]](1-uhat)})
+  dataset['lower_joint'] <- dataset['theta_k'] - dataset['F.inv_u'] 
+  dataset['upper_joint'] <- dataset['theta_k'] - dataset['F.inv_1-u']
+  return(dataset[, c('rhat_k', 'k', 'theta_k', 'lower_joint', 'upper_joint')])
+}
+
+run_algorithm1(B, dataset)
+```
+
+
+```{r eval = FALSE}
+
+alpha <- 0.10
+K <- 30
+df <- readRDS("../data/mean_travel_time_ranking_2011.rds")
+
+B=1000
+
+for (K in c(10, 20, 30, 40, 51)) {
+  dataset <- df[order(df$k),][1:K,]
+  result <- run_algorithm1(B, dataset)
+
+  filename <- paste0("../data/joint_intervals_", K, ".rds")
+  saveRDS(result, file = filename)
+}
+
+
+```
+
+
+```{r results='asis'}
+library(knitr)
+library(kableExtra)
+output <- list()
+for (K in c(10, 20, 30, 40, 51)) {
+  filename <- paste0("../data/joint_intervals_", K, ".rds")
+  output[[K]] <- readRDS(filename)
+  print(paste("**** Output shown for K=", K, "****"))
+  print(kable(output[[K]]))
+  cat("\n\n---\n\n")
+}
+```
+
 
 
 

@@ -1695,7 +1695,8 @@ head(mat1)</code></pre>
 <ol start="2" style="list-style-type: decimal">
 <li>For each <span class="math inline">\(b\)</span>, order the set <span class="math inline">\(\left\{ \hat{\theta}^*_{b1}, \hat{\theta}^*_{b2}, \dots, \hat{\theta}^*_{bK} \right\}\)</span> to obtain <span class="math inline">\(\left\{ \hat{\theta}^*_{b(1)}, \hat{\theta}^*_{b(2)}, \dots, \hat{\theta}^*_{b(K)} \right\}\)</span></li>
 </ol>
-<pre class="r"><code>mat1_sorted &lt;- t(apply(mat1, 1, sort))
+<pre class="r"><code>source(&#39;../R/algo1_helper.R&#39;)
+mat1_sorted &lt;- t(apply(mat1, 1, sort))
 head(mat1_sorted)</code></pre>
 <pre><code>         [,1]     [,2]     [,3]     [,4]     [,5]     [,6]     [,7]     [,8]
 [1,] 18.45368 21.50828 23.92635 24.63047 24.71377 25.03636 25.09256 25.80018
@@ -1736,22 +1737,23 @@ head(r)</code></pre>
 <p><span class="math display">\[
 \hat{F}_i(x) = \frac{1}{B}\sum^B_{\alpha=1} \Phi \left( \frac{x-r^*_{\alpha i}}{h_i} \right), \ \ \ h_i=0.9\min\{S_i, IQR_i/1.34\}\ B^{-1/5}
 \]</span></p>
-<pre class="r"><code>kde_cdf_function &lt;- function(datapoints, bandwidth) {
-  return(function(x) mean(pnorm((x - datapoints) / bandwidth)))
-}
+<pre class="r"><code>#source(&#39;../R/algo1_helper.R&#39;)
+# kde_cdf_function &lt;- function(datapoints, bandwidth) {
+#   return(function(x) mean(pnorm((x - datapoints) / bandwidth)))
+# }
+# 
+# estimate_CDF &lt;- function(dataset, i){
+#   S = sqrt(dataset[i,&#39;variance&#39;])#sd(r[,i])
+#   IQR = quantile(r[,i], .75) - quantile(r[,i], .25)
+#   h_i &lt;- 0.9*min(S, IQR/1.34)*(B^(1/5))
+#   return(kde_cdf_function(r[,i], h_i))
+# }
 
-estimate_CDF &lt;- function(i){
-  S = sqrt(dataset[i,&#39;variance&#39;])#sd(r[,i])
-  IQR = quantile(r[,i], .75) - quantile(r[,i], .25)
-  h_i &lt;- 0.9*min(S, IQR/1.34)*(B^(1/5))
-  return(kde_cdf_function(r[,i], h_i))
-}
-
-estimated_CDF &lt;- lapply(1:K, estimate_CDF)</code></pre>
+estimated_CDF &lt;- lapply(1:K, function(x)(estimate_CDF(dataset, x, r)))</code></pre>
 <ol start="5" style="list-style-type: decimal">
 <li>Compute <span class="math inline">\(Y^*_{bi}= \hat{F}_i(r^*_{bi})\)</span> for each <span class="math inline">\(b = 1, 2, \dots, B\)</span> and <span class="math inline">\(i = 1, 2, \dots, K\)</span></li>
 </ol>
-<pre class="r"><code>get_inner_max &lt;- function(value) return(max(value, 1-value))
+<pre class="r"><code># get_inner_max &lt;- function(value) return(max(value, 1-value))
 
 Y &lt;- foreach(i = 1:K, .combine = cbind) %do% {
   sapply(r[,i], estimated_CDF[[i]])
@@ -1822,6 +1824,1397 @@ Connecticut          0.8330934 -0.7766186    24.16691    25.77662
 Delaware             0.5588602 -0.5368251    24.74114    25.83683
 District of Columbia 0.2674270 -0.2689055    29.83257    30.36891
 Florida              0.6070105 -0.5964790    25.19299    26.39648</code></pre>
+<p>Full algorithm function:</p>
+<pre class="r"><code>dim(dataset)[1]</code></pre>
+<pre><code>[1] 10</code></pre>
+<pre class="r"><code>source(&#39;../R/algo1_helper.R&#39;)
+library(foreach)
+library(&quot;GoFKernel&quot;)
+
+alpha &lt;- 0.10
+K &lt;- 30
+df &lt;- readRDS(&quot;../data/mean_travel_time_ranking_2011.rds&quot;)
+dataset &lt;- df[order(df$k),][1:K,]
+B=1000
+
+
+
+run_algorithm1 &lt;- function(B, dataset) {
+  dataset[&#39;variance&#39;] &lt;- lapply(dataset[&#39;moe_k&#39;], calculate_variance)
+  K &lt;- dim(dataset)[1]
+  set.seed(4)
+  mat1 &lt;- foreach(i = 1:K, .combine = cbind) %do% {
+    foreach(b = 1:B, .combine = c) %do% {
+      rnorm(1, mean = dataset[i, &#39;theta_k&#39;], sd = sqrt(dataset[i, &#39;variance&#39;]))
+    }
+  }
+  # 2
+  mat1_sorted &lt;- t(apply(mat1, 1, sort))
+  # 3
+  r &lt;- mat1_sorted - matrix(sort(t(dataset[&#39;theta_k&#39;])),B, K, byrow=TRUE)
+  # 4
+  estimated_CDF &lt;- lapply(1:K, function(x)(estimate_CDF(dataset, x, r)))
+  # 5
+  Y &lt;- foreach(i = 1:K, .combine = cbind) %do% {
+    sapply(r[,i], estimated_CDF[[i]])
+  }
+  # 6
+  U &lt;- apply(apply(Y, MARGIN = c(1, 2), FUN = get_inner_max), 1, max)
+  # 7
+  uhat &lt;- quantile(U, probs = 1 - alpha)
+  # 8
+  
+  F.inv &lt;- lapply(estimated_CDF, function(F){inverse(F, lower = -100, upper = 100)})
+  dataset[&#39;F.inv_u&#39;] &lt;- sapply(1:K, function(i){F.inv[[i]](uhat)})
+  dataset[&#39;F.inv_1-u&#39;] &lt;- sapply(1:K, function(i){F.inv[[i]](1-uhat)})
+  dataset[&#39;lower_joint&#39;] &lt;- dataset[&#39;theta_k&#39;] - dataset[&#39;F.inv_u&#39;] 
+  dataset[&#39;upper_joint&#39;] &lt;- dataset[&#39;theta_k&#39;] - dataset[&#39;F.inv_1-u&#39;]
+  return(dataset[, c(&#39;rhat_k&#39;, &#39;k&#39;, &#39;theta_k&#39;, &#39;lower_joint&#39;, &#39;upper_joint&#39;)])
+}
+
+run_algorithm1(B, dataset)</code></pre>
+<pre><code>   rhat_k                    k theta_k lower_joint upper_joint
+25     27              Alabama    23.9    23.47922    24.52840
+46      6               Alaska    18.4    17.66398    19.08090
+18     34              Arizona    24.8    24.18949    25.24528
+41     11             Arkansas    21.3    20.87730    21.78266
+8      44           California    27.1    26.74769    27.33012
+20     32             Colorado    24.5    23.73444    25.27471
+17     35          Connecticut    25.0    24.23201    25.76862
+16     36             Delaware    25.3    24.91945    25.75992
+4      48 District of Columbia    30.1    29.76641    30.45365
+12     40              Florida    25.8    25.38485    26.18461
+9      44              Georgia    27.1    26.47400    27.81674
+13     39               Hawaii    25.7    25.14732    26.15088
+43      9                Idaho    19.7    19.27198    20.34828
+5      47             Illinois    28.2    27.73509    28.60334
+28     24              Indiana    23.5    23.08678    23.99381
+45      7                 Iowa    18.8    18.19269    19.19695
+44      8               Kansas    18.9    18.53132    19.41644
+35     17             Kentucky    22.9    22.33594    23.31862
+21     32            Louisiana    24.5    24.07771    24.96513
+29     23                Maine    23.4    22.82137    24.03487
+1      51             Maryland    32.2    31.64861    32.75632
+6      46        Massachusetts    28.0    27.51428    28.54079
+23     29             Michigan    24.1    23.52136    24.53131
+34     18            Minnesota    23.0    22.53327    23.61285
+26     27          Mississippi    23.9    23.57644    24.29008
+32     20             Missouri    23.1    22.48444    23.49052
+47      5              Montana    18.2    17.72446    18.69847
+48      4             Nebraska    18.1    17.65338    18.51580
+24     29               Nevada    24.1    23.07522    25.11320
+10     42        New Hampshire    26.9    26.39343    27.40109</code></pre>
+<pre class="r"><code>alpha &lt;- 0.10
+K &lt;- 30
+df &lt;- readRDS(&quot;../data/mean_travel_time_ranking_2011.rds&quot;)
+
+B=1000
+
+for (K in c(10, 20, 30, 40, 51)) {
+  dataset &lt;- df[order(df$k),][1:K,]
+  result &lt;- run_algorithm1(B, dataset)
+
+  filename &lt;- paste0(&quot;../data/joint_intervals_&quot;, K, &quot;.rds&quot;)
+  saveRDS(result, file = filename)
+}</code></pre>
+<pre class="r"><code>library(knitr)
+library(kableExtra)
+output &lt;- list()
+for (K in c(10, 20, 30, 40, 51)) {
+  filename &lt;- paste0(&quot;../data/joint_intervals_&quot;, K, &quot;.rds&quot;)
+  output[[K]] &lt;- readRDS(filename)
+  print(paste(&quot;**** Output shown for K=&quot;, K, &quot;****&quot;))
+  print(kable(output[[K]]))
+  cat(&quot;\n\n---\n\n&quot;)
+}</code></pre>
+<p>[1] “**** Output shown for K= 10 ****”</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left"></th>
+<th align="right">rhat_k</th>
+<th align="left">k</th>
+<th align="right">theta_k</th>
+<th align="right">lower_joint</th>
+<th align="right">upper_joint</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">25</td>
+<td align="right">27</td>
+<td align="left">Alabama</td>
+<td align="right">23.9</td>
+<td align="right">23.28884</td>
+<td align="right">24.49537</td>
+</tr>
+<tr class="even">
+<td align="left">46</td>
+<td align="right">6</td>
+<td align="left">Alaska</td>
+<td align="right">18.4</td>
+<td align="right">17.39863</td>
+<td align="right">19.40197</td>
+</tr>
+<tr class="odd">
+<td align="left">18</td>
+<td align="right">34</td>
+<td align="left">Arizona</td>
+<td align="right">24.8</td>
+<td align="right">24.30728</td>
+<td align="right">25.30151</td>
+</tr>
+<tr class="even">
+<td align="left">41</td>
+<td align="right">11</td>
+<td align="left">Arkansas</td>
+<td align="right">21.3</td>
+<td align="right">20.59700</td>
+<td align="right">22.04009</td>
+</tr>
+<tr class="odd">
+<td align="left">8</td>
+<td align="right">44</td>
+<td align="left">California</td>
+<td align="right">27.1</td>
+<td align="right">26.84586</td>
+<td align="right">27.40356</td>
+</tr>
+<tr class="even">
+<td align="left">20</td>
+<td align="right">32</td>
+<td align="left">Colorado</td>
+<td align="right">24.5</td>
+<td align="right">23.90354</td>
+<td align="right">25.15228</td>
+</tr>
+<tr class="odd">
+<td align="left">17</td>
+<td align="right">35</td>
+<td align="left">Connecticut</td>
+<td align="right">25.0</td>
+<td align="right">24.16691</td>
+<td align="right">25.77662</td>
+</tr>
+<tr class="even">
+<td align="left">16</td>
+<td align="right">36</td>
+<td align="left">Delaware</td>
+<td align="right">25.3</td>
+<td align="right">24.74114</td>
+<td align="right">25.83683</td>
+</tr>
+<tr class="odd">
+<td align="left">4</td>
+<td align="right">48</td>
+<td align="left">District of Columbia</td>
+<td align="right">30.1</td>
+<td align="right">29.83257</td>
+<td align="right">30.36891</td>
+</tr>
+<tr class="even">
+<td align="left">12</td>
+<td align="right">40</td>
+<td align="left">Florida</td>
+<td align="right">25.8</td>
+<td align="right">25.19299</td>
+<td align="right">26.39648</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<p>[1] “**** Output shown for K= 20 ****”</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left"></th>
+<th align="right">rhat_k</th>
+<th align="left">k</th>
+<th align="right">theta_k</th>
+<th align="right">lower_joint</th>
+<th align="right">upper_joint</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">25</td>
+<td align="right">27</td>
+<td align="left">Alabama</td>
+<td align="right">23.9</td>
+<td align="right">23.27271</td>
+<td align="right">24.57228</td>
+</tr>
+<tr class="even">
+<td align="left">46</td>
+<td align="right">6</td>
+<td align="left">Alaska</td>
+<td align="right">18.4</td>
+<td align="right">17.90892</td>
+<td align="right">18.95771</td>
+</tr>
+<tr class="odd">
+<td align="left">18</td>
+<td align="right">34</td>
+<td align="left">Arizona</td>
+<td align="right">24.8</td>
+<td align="right">24.15445</td>
+<td align="right">25.32652</td>
+</tr>
+<tr class="even">
+<td align="left">41</td>
+<td align="right">11</td>
+<td align="left">Arkansas</td>
+<td align="right">21.3</td>
+<td align="right">20.16882</td>
+<td align="right">22.44020</td>
+</tr>
+<tr class="odd">
+<td align="left">8</td>
+<td align="right">44</td>
+<td align="left">California</td>
+<td align="right">27.1</td>
+<td align="right">26.69090</td>
+<td align="right">27.51122</td>
+</tr>
+<tr class="even">
+<td align="left">20</td>
+<td align="right">32</td>
+<td align="left">Colorado</td>
+<td align="right">24.5</td>
+<td align="right">23.92230</td>
+<td align="right">25.09271</td>
+</tr>
+<tr class="odd">
+<td align="left">17</td>
+<td align="right">35</td>
+<td align="left">Connecticut</td>
+<td align="right">25.0</td>
+<td align="right">24.22215</td>
+<td align="right">25.90300</td>
+</tr>
+<tr class="even">
+<td align="left">16</td>
+<td align="right">36</td>
+<td align="left">Delaware</td>
+<td align="right">25.3</td>
+<td align="right">24.62998</td>
+<td align="right">25.83866</td>
+</tr>
+<tr class="odd">
+<td align="left">4</td>
+<td align="right">48</td>
+<td align="left">District of Columbia</td>
+<td align="right">30.1</td>
+<td align="right">29.54860</td>
+<td align="right">30.65274</td>
+</tr>
+<tr class="even">
+<td align="left">12</td>
+<td align="right">40</td>
+<td align="left">Florida</td>
+<td align="right">25.8</td>
+<td align="right">25.34000</td>
+<td align="right">26.44800</td>
+</tr>
+<tr class="odd">
+<td align="left">9</td>
+<td align="right">44</td>
+<td align="left">Georgia</td>
+<td align="right">27.1</td>
+<td align="right">26.45318</td>
+<td align="right">27.60820</td>
+</tr>
+<tr class="even">
+<td align="left">13</td>
+<td align="right">39</td>
+<td align="left">Hawaii</td>
+<td align="right">25.7</td>
+<td align="right">25.20670</td>
+<td align="right">26.23718</td>
+</tr>
+<tr class="odd">
+<td align="left">43</td>
+<td align="right">9</td>
+<td align="left">Idaho</td>
+<td align="right">19.7</td>
+<td align="right">19.02911</td>
+<td align="right">20.42692</td>
+</tr>
+<tr class="even">
+<td align="left">5</td>
+<td align="right">47</td>
+<td align="left">Illinois</td>
+<td align="right">28.2</td>
+<td align="right">27.56441</td>
+<td align="right">28.83917</td>
+</tr>
+<tr class="odd">
+<td align="left">28</td>
+<td align="right">24</td>
+<td align="left">Indiana</td>
+<td align="right">23.5</td>
+<td align="right">22.93691</td>
+<td align="right">24.11935</td>
+</tr>
+<tr class="even">
+<td align="left">45</td>
+<td align="right">7</td>
+<td align="left">Iowa</td>
+<td align="right">18.8</td>
+<td align="right">18.14366</td>
+<td align="right">19.30741</td>
+</tr>
+<tr class="odd">
+<td align="left">44</td>
+<td align="right">8</td>
+<td align="left">Kansas</td>
+<td align="right">18.9</td>
+<td align="right">18.48361</td>
+<td align="right">19.47851</td>
+</tr>
+<tr class="even">
+<td align="left">35</td>
+<td align="right">17</td>
+<td align="left">Kentucky</td>
+<td align="right">22.9</td>
+<td align="right">22.38238</td>
+<td align="right">23.26853</td>
+</tr>
+<tr class="odd">
+<td align="left">21</td>
+<td align="right">32</td>
+<td align="left">Louisiana</td>
+<td align="right">24.5</td>
+<td align="right">23.93611</td>
+<td align="right">25.05924</td>
+</tr>
+<tr class="even">
+<td align="left">29</td>
+<td align="right">23</td>
+<td align="left">Maine</td>
+<td align="right">23.4</td>
+<td align="right">22.22073</td>
+<td align="right">24.56817</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<p>[1] “**** Output shown for K= 30 ****”</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left"></th>
+<th align="right">rhat_k</th>
+<th align="left">k</th>
+<th align="right">theta_k</th>
+<th align="right">lower_joint</th>
+<th align="right">upper_joint</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">25</td>
+<td align="right">27</td>
+<td align="left">Alabama</td>
+<td align="right">23.9</td>
+<td align="right">23.47922</td>
+<td align="right">24.52840</td>
+</tr>
+<tr class="even">
+<td align="left">46</td>
+<td align="right">6</td>
+<td align="left">Alaska</td>
+<td align="right">18.4</td>
+<td align="right">17.66398</td>
+<td align="right">19.08090</td>
+</tr>
+<tr class="odd">
+<td align="left">18</td>
+<td align="right">34</td>
+<td align="left">Arizona</td>
+<td align="right">24.8</td>
+<td align="right">24.18949</td>
+<td align="right">25.24528</td>
+</tr>
+<tr class="even">
+<td align="left">41</td>
+<td align="right">11</td>
+<td align="left">Arkansas</td>
+<td align="right">21.3</td>
+<td align="right">20.87730</td>
+<td align="right">21.78266</td>
+</tr>
+<tr class="odd">
+<td align="left">8</td>
+<td align="right">44</td>
+<td align="left">California</td>
+<td align="right">27.1</td>
+<td align="right">26.74769</td>
+<td align="right">27.33012</td>
+</tr>
+<tr class="even">
+<td align="left">20</td>
+<td align="right">32</td>
+<td align="left">Colorado</td>
+<td align="right">24.5</td>
+<td align="right">23.73444</td>
+<td align="right">25.27471</td>
+</tr>
+<tr class="odd">
+<td align="left">17</td>
+<td align="right">35</td>
+<td align="left">Connecticut</td>
+<td align="right">25.0</td>
+<td align="right">24.23201</td>
+<td align="right">25.76862</td>
+</tr>
+<tr class="even">
+<td align="left">16</td>
+<td align="right">36</td>
+<td align="left">Delaware</td>
+<td align="right">25.3</td>
+<td align="right">24.91945</td>
+<td align="right">25.75992</td>
+</tr>
+<tr class="odd">
+<td align="left">4</td>
+<td align="right">48</td>
+<td align="left">District of Columbia</td>
+<td align="right">30.1</td>
+<td align="right">29.76641</td>
+<td align="right">30.45365</td>
+</tr>
+<tr class="even">
+<td align="left">12</td>
+<td align="right">40</td>
+<td align="left">Florida</td>
+<td align="right">25.8</td>
+<td align="right">25.38485</td>
+<td align="right">26.18461</td>
+</tr>
+<tr class="odd">
+<td align="left">9</td>
+<td align="right">44</td>
+<td align="left">Georgia</td>
+<td align="right">27.1</td>
+<td align="right">26.47400</td>
+<td align="right">27.81674</td>
+</tr>
+<tr class="even">
+<td align="left">13</td>
+<td align="right">39</td>
+<td align="left">Hawaii</td>
+<td align="right">25.7</td>
+<td align="right">25.14732</td>
+<td align="right">26.15088</td>
+</tr>
+<tr class="odd">
+<td align="left">43</td>
+<td align="right">9</td>
+<td align="left">Idaho</td>
+<td align="right">19.7</td>
+<td align="right">19.27198</td>
+<td align="right">20.34828</td>
+</tr>
+<tr class="even">
+<td align="left">5</td>
+<td align="right">47</td>
+<td align="left">Illinois</td>
+<td align="right">28.2</td>
+<td align="right">27.73509</td>
+<td align="right">28.60334</td>
+</tr>
+<tr class="odd">
+<td align="left">28</td>
+<td align="right">24</td>
+<td align="left">Indiana</td>
+<td align="right">23.5</td>
+<td align="right">23.08678</td>
+<td align="right">23.99381</td>
+</tr>
+<tr class="even">
+<td align="left">45</td>
+<td align="right">7</td>
+<td align="left">Iowa</td>
+<td align="right">18.8</td>
+<td align="right">18.19269</td>
+<td align="right">19.19695</td>
+</tr>
+<tr class="odd">
+<td align="left">44</td>
+<td align="right">8</td>
+<td align="left">Kansas</td>
+<td align="right">18.9</td>
+<td align="right">18.53132</td>
+<td align="right">19.41644</td>
+</tr>
+<tr class="even">
+<td align="left">35</td>
+<td align="right">17</td>
+<td align="left">Kentucky</td>
+<td align="right">22.9</td>
+<td align="right">22.33594</td>
+<td align="right">23.31862</td>
+</tr>
+<tr class="odd">
+<td align="left">21</td>
+<td align="right">32</td>
+<td align="left">Louisiana</td>
+<td align="right">24.5</td>
+<td align="right">24.07771</td>
+<td align="right">24.96513</td>
+</tr>
+<tr class="even">
+<td align="left">29</td>
+<td align="right">23</td>
+<td align="left">Maine</td>
+<td align="right">23.4</td>
+<td align="right">22.82137</td>
+<td align="right">24.03487</td>
+</tr>
+<tr class="odd">
+<td align="left">1</td>
+<td align="right">51</td>
+<td align="left">Maryland</td>
+<td align="right">32.2</td>
+<td align="right">31.64861</td>
+<td align="right">32.75632</td>
+</tr>
+<tr class="even">
+<td align="left">6</td>
+<td align="right">46</td>
+<td align="left">Massachusetts</td>
+<td align="right">28.0</td>
+<td align="right">27.51428</td>
+<td align="right">28.54079</td>
+</tr>
+<tr class="odd">
+<td align="left">23</td>
+<td align="right">29</td>
+<td align="left">Michigan</td>
+<td align="right">24.1</td>
+<td align="right">23.52136</td>
+<td align="right">24.53131</td>
+</tr>
+<tr class="even">
+<td align="left">34</td>
+<td align="right">18</td>
+<td align="left">Minnesota</td>
+<td align="right">23.0</td>
+<td align="right">22.53327</td>
+<td align="right">23.61285</td>
+</tr>
+<tr class="odd">
+<td align="left">26</td>
+<td align="right">27</td>
+<td align="left">Mississippi</td>
+<td align="right">23.9</td>
+<td align="right">23.57644</td>
+<td align="right">24.29008</td>
+</tr>
+<tr class="even">
+<td align="left">32</td>
+<td align="right">20</td>
+<td align="left">Missouri</td>
+<td align="right">23.1</td>
+<td align="right">22.48444</td>
+<td align="right">23.49052</td>
+</tr>
+<tr class="odd">
+<td align="left">47</td>
+<td align="right">5</td>
+<td align="left">Montana</td>
+<td align="right">18.2</td>
+<td align="right">17.72446</td>
+<td align="right">18.69847</td>
+</tr>
+<tr class="even">
+<td align="left">48</td>
+<td align="right">4</td>
+<td align="left">Nebraska</td>
+<td align="right">18.1</td>
+<td align="right">17.65338</td>
+<td align="right">18.51580</td>
+</tr>
+<tr class="odd">
+<td align="left">24</td>
+<td align="right">29</td>
+<td align="left">Nevada</td>
+<td align="right">24.1</td>
+<td align="right">23.07522</td>
+<td align="right">25.11320</td>
+</tr>
+<tr class="even">
+<td align="left">10</td>
+<td align="right">42</td>
+<td align="left">New Hampshire</td>
+<td align="right">26.9</td>
+<td align="right">26.39343</td>
+<td align="right">27.40109</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<p>[1] “**** Output shown for K= 40 ****”</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left"></th>
+<th align="right">rhat_k</th>
+<th align="left">k</th>
+<th align="right">theta_k</th>
+<th align="right">lower_joint</th>
+<th align="right">upper_joint</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">25</td>
+<td align="right">27</td>
+<td align="left">Alabama</td>
+<td align="right">23.9</td>
+<td align="right">23.19168</td>
+<td align="right">24.59520</td>
+</tr>
+<tr class="even">
+<td align="left">46</td>
+<td align="right">6</td>
+<td align="left">Alaska</td>
+<td align="right">18.4</td>
+<td align="right">17.64426</td>
+<td align="right">19.36216</td>
+</tr>
+<tr class="odd">
+<td align="left">18</td>
+<td align="right">34</td>
+<td align="left">Arizona</td>
+<td align="right">24.8</td>
+<td align="right">24.19026</td>
+<td align="right">25.35401</td>
+</tr>
+<tr class="even">
+<td align="left">41</td>
+<td align="right">11</td>
+<td align="left">Arkansas</td>
+<td align="right">21.3</td>
+<td align="right">20.19393</td>
+<td align="right">22.24075</td>
+</tr>
+<tr class="odd">
+<td align="left">8</td>
+<td align="right">44</td>
+<td align="left">California</td>
+<td align="right">27.1</td>
+<td align="right">26.82615</td>
+<td align="right">27.43388</td>
+</tr>
+<tr class="even">
+<td align="left">20</td>
+<td align="right">32</td>
+<td align="left">Colorado</td>
+<td align="right">24.5</td>
+<td align="right">23.74812</td>
+<td align="right">25.13060</td>
+</tr>
+<tr class="odd">
+<td align="left">17</td>
+<td align="right">35</td>
+<td align="left">Connecticut</td>
+<td align="right">25.0</td>
+<td align="right">24.13947</td>
+<td align="right">25.86950</td>
+</tr>
+<tr class="even">
+<td align="left">16</td>
+<td align="right">36</td>
+<td align="left">Delaware</td>
+<td align="right">25.3</td>
+<td align="right">24.80156</td>
+<td align="right">25.90247</td>
+</tr>
+<tr class="odd">
+<td align="left">4</td>
+<td align="right">48</td>
+<td align="left">District of Columbia</td>
+<td align="right">30.1</td>
+<td align="right">29.39267</td>
+<td align="right">30.89235</td>
+</tr>
+<tr class="even">
+<td align="left">12</td>
+<td align="right">40</td>
+<td align="left">Florida</td>
+<td align="right">25.8</td>
+<td align="right">25.10723</td>
+<td align="right">26.29331</td>
+</tr>
+<tr class="odd">
+<td align="left">9</td>
+<td align="right">44</td>
+<td align="left">Georgia</td>
+<td align="right">27.1</td>
+<td align="right">26.27091</td>
+<td align="right">27.93354</td>
+</tr>
+<tr class="even">
+<td align="left">13</td>
+<td align="right">39</td>
+<td align="left">Hawaii</td>
+<td align="right">25.7</td>
+<td align="right">25.28066</td>
+<td align="right">26.20129</td>
+</tr>
+<tr class="odd">
+<td align="left">43</td>
+<td align="right">9</td>
+<td align="left">Idaho</td>
+<td align="right">19.7</td>
+<td align="right">19.36947</td>
+<td align="right">20.08172</td>
+</tr>
+<tr class="even">
+<td align="left">5</td>
+<td align="right">47</td>
+<td align="left">Illinois</td>
+<td align="right">28.2</td>
+<td align="right">27.95079</td>
+<td align="right">28.52383</td>
+</tr>
+<tr class="odd">
+<td align="left">28</td>
+<td align="right">24</td>
+<td align="left">Indiana</td>
+<td align="right">23.5</td>
+<td align="right">23.15815</td>
+<td align="right">23.77415</td>
+</tr>
+<tr class="even">
+<td align="left">45</td>
+<td align="right">7</td>
+<td align="left">Iowa</td>
+<td align="right">18.8</td>
+<td align="right">18.41998</td>
+<td align="right">19.45865</td>
+</tr>
+<tr class="odd">
+<td align="left">44</td>
+<td align="right">8</td>
+<td align="left">Kansas</td>
+<td align="right">18.9</td>
+<td align="right">18.40652</td>
+<td align="right">19.43660</td>
+</tr>
+<tr class="even">
+<td align="left">35</td>
+<td align="right">17</td>
+<td align="left">Kentucky</td>
+<td align="right">22.9</td>
+<td align="right">22.34886</td>
+<td align="right">23.28010</td>
+</tr>
+<tr class="odd">
+<td align="left">21</td>
+<td align="right">32</td>
+<td align="left">Louisiana</td>
+<td align="right">24.5</td>
+<td align="right">23.84964</td>
+<td align="right">24.93533</td>
+</tr>
+<tr class="even">
+<td align="left">29</td>
+<td align="right">23</td>
+<td align="left">Maine</td>
+<td align="right">23.4</td>
+<td align="right">22.92745</td>
+<td align="right">24.06893</td>
+</tr>
+<tr class="odd">
+<td align="left">1</td>
+<td align="right">51</td>
+<td align="left">Maryland</td>
+<td align="right">32.2</td>
+<td align="right">31.68051</td>
+<td align="right">32.64942</td>
+</tr>
+<tr class="even">
+<td align="left">6</td>
+<td align="right">46</td>
+<td align="left">Massachusetts</td>
+<td align="right">28.0</td>
+<td align="right">27.52857</td>
+<td align="right">28.54972</td>
+</tr>
+<tr class="odd">
+<td align="left">23</td>
+<td align="right">29</td>
+<td align="left">Michigan</td>
+<td align="right">24.1</td>
+<td align="right">23.43033</td>
+<td align="right">24.55830</td>
+</tr>
+<tr class="even">
+<td align="left">34</td>
+<td align="right">18</td>
+<td align="left">Minnesota</td>
+<td align="right">23.0</td>
+<td align="right">22.57683</td>
+<td align="right">23.57100</td>
+</tr>
+<tr class="odd">
+<td align="left">26</td>
+<td align="right">27</td>
+<td align="left">Mississippi</td>
+<td align="right">23.9</td>
+<td align="right">23.27537</td>
+<td align="right">24.37908</td>
+</tr>
+<tr class="even">
+<td align="left">32</td>
+<td align="right">20</td>
+<td align="left">Missouri</td>
+<td align="right">23.1</td>
+<td align="right">22.62306</td>
+<td align="right">23.61982</td>
+</tr>
+<tr class="odd">
+<td align="left">47</td>
+<td align="right">5</td>
+<td align="left">Montana</td>
+<td align="right">18.2</td>
+<td align="right">17.54648</td>
+<td align="right">18.90947</td>
+</tr>
+<tr class="even">
+<td align="left">48</td>
+<td align="right">4</td>
+<td align="left">Nebraska</td>
+<td align="right">18.1</td>
+<td align="right">17.23634</td>
+<td align="right">18.96928</td>
+</tr>
+<tr class="odd">
+<td align="left">24</td>
+<td align="right">29</td>
+<td align="left">Nevada</td>
+<td align="right">24.1</td>
+<td align="right">23.42027</td>
+<td align="right">24.84600</td>
+</tr>
+<tr class="even">
+<td align="left">10</td>
+<td align="right">42</td>
+<td align="left">New Hampshire</td>
+<td align="right">26.9</td>
+<td align="right">26.43671</td>
+<td align="right">27.30231</td>
+</tr>
+<tr class="odd">
+<td align="left">3</td>
+<td align="right">49</td>
+<td align="left">New Jersey</td>
+<td align="right">30.5</td>
+<td align="right">30.08943</td>
+<td align="right">30.81763</td>
+</tr>
+<tr class="even">
+<td align="left">40</td>
+<td align="right">12</td>
+<td align="left">New Mexico</td>
+<td align="right">21.4</td>
+<td align="right">20.41487</td>
+<td align="right">22.53016</td>
+</tr>
+<tr class="odd">
+<td align="left">2</td>
+<td align="right">50</td>
+<td align="left">New York</td>
+<td align="right">31.5</td>
+<td align="right">31.13270</td>
+<td align="right">31.93444</td>
+</tr>
+<tr class="even">
+<td align="left">30</td>
+<td align="right">23</td>
+<td align="left">North Carolina</td>
+<td align="right">23.4</td>
+<td align="right">22.72176</td>
+<td align="right">23.85197</td>
+</tr>
+<tr class="odd">
+<td align="left">50</td>
+<td align="right">2</td>
+<td align="left">North Dakota</td>
+<td align="right">16.9</td>
+<td align="right">16.36452</td>
+<td align="right">17.45851</td>
+</tr>
+<tr class="even">
+<td align="left">33</td>
+<td align="right">20</td>
+<td align="left">Ohio</td>
+<td align="right">23.1</td>
+<td align="right">22.78006</td>
+<td align="right">23.38857</td>
+</tr>
+<tr class="odd">
+<td align="left">42</td>
+<td align="right">10</td>
+<td align="left">Oklahoma</td>
+<td align="right">21.1</td>
+<td align="right">20.47617</td>
+<td align="right">21.75538</td>
+</tr>
+<tr class="even">
+<td align="left">36</td>
+<td align="right">16</td>
+<td align="left">Oregon</td>
+<td align="right">22.5</td>
+<td align="right">21.95142</td>
+<td align="right">23.02615</td>
+</tr>
+<tr class="odd">
+<td align="left">11</td>
+<td align="right">41</td>
+<td align="left">Pennsylvania</td>
+<td align="right">25.9</td>
+<td align="right">25.58826</td>
+<td align="right">26.20869</td>
+</tr>
+<tr class="even">
+<td align="left">31</td>
+<td align="right">23</td>
+<td align="left">Rhode Island</td>
+<td align="right">23.4</td>
+<td align="right">22.83138</td>
+<td align="right">23.96318</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<p>[1] “**** Output shown for K= 51 ****”</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left"></th>
+<th align="right">rhat_k</th>
+<th align="left">k</th>
+<th align="right">theta_k</th>
+<th align="right">lower_joint</th>
+<th align="right">upper_joint</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">25</td>
+<td align="right">27</td>
+<td align="left">Alabama</td>
+<td align="right">23.9</td>
+<td align="right">23.37914</td>
+<td align="right">24.80129</td>
+</tr>
+<tr class="even">
+<td align="left">46</td>
+<td align="right">6</td>
+<td align="left">Alaska</td>
+<td align="right">18.4</td>
+<td align="right">16.84054</td>
+<td align="right">19.59825</td>
+</tr>
+<tr class="odd">
+<td align="left">18</td>
+<td align="right">34</td>
+<td align="left">Arizona</td>
+<td align="right">24.8</td>
+<td align="right">24.35122</td>
+<td align="right">25.75508</td>
+</tr>
+<tr class="even">
+<td align="left">41</td>
+<td align="right">11</td>
+<td align="left">Arkansas</td>
+<td align="right">21.3</td>
+<td align="right">20.38458</td>
+<td align="right">22.19218</td>
+</tr>
+<tr class="odd">
+<td align="left">8</td>
+<td align="right">44</td>
+<td align="left">California</td>
+<td align="right">27.1</td>
+<td align="right">26.58796</td>
+<td align="right">27.38332</td>
+</tr>
+<tr class="even">
+<td align="left">20</td>
+<td align="right">32</td>
+<td align="left">Colorado</td>
+<td align="right">24.5</td>
+<td align="right">23.42422</td>
+<td align="right">25.30970</td>
+</tr>
+<tr class="odd">
+<td align="left">17</td>
+<td align="right">35</td>
+<td align="left">Connecticut</td>
+<td align="right">25.0</td>
+<td align="right">24.44093</td>
+<td align="right">25.59493</td>
+</tr>
+<tr class="even">
+<td align="left">16</td>
+<td align="right">36</td>
+<td align="left">Delaware</td>
+<td align="right">25.3</td>
+<td align="right">24.44983</td>
+<td align="right">26.00648</td>
+</tr>
+<tr class="odd">
+<td align="left">4</td>
+<td align="right">48</td>
+<td align="left">District of Columbia</td>
+<td align="right">30.1</td>
+<td align="right">28.87501</td>
+<td align="right">31.33304</td>
+</tr>
+<tr class="even">
+<td align="left">12</td>
+<td align="right">40</td>
+<td align="left">Florida</td>
+<td align="right">25.8</td>
+<td align="right">25.24116</td>
+<td align="right">26.46597</td>
+</tr>
+<tr class="odd">
+<td align="left">9</td>
+<td align="right">44</td>
+<td align="left">Georgia</td>
+<td align="right">27.1</td>
+<td align="right">26.36072</td>
+<td align="right">27.94553</td>
+</tr>
+<tr class="even">
+<td align="left">13</td>
+<td align="right">39</td>
+<td align="left">Hawaii</td>
+<td align="right">25.7</td>
+<td align="right">24.82016</td>
+<td align="right">26.50989</td>
+</tr>
+<tr class="odd">
+<td align="left">43</td>
+<td align="right">9</td>
+<td align="left">Idaho</td>
+<td align="right">19.7</td>
+<td align="right">18.92504</td>
+<td align="right">20.41746</td>
+</tr>
+<tr class="even">
+<td align="left">5</td>
+<td align="right">47</td>
+<td align="left">Illinois</td>
+<td align="right">28.2</td>
+<td align="right">27.63835</td>
+<td align="right">28.90061</td>
+</tr>
+<tr class="odd">
+<td align="left">28</td>
+<td align="right">24</td>
+<td align="left">Indiana</td>
+<td align="right">23.5</td>
+<td align="right">22.71153</td>
+<td align="right">24.01095</td>
+</tr>
+<tr class="even">
+<td align="left">45</td>
+<td align="right">7</td>
+<td align="left">Iowa</td>
+<td align="right">18.8</td>
+<td align="right">18.14634</td>
+<td align="right">19.44549</td>
+</tr>
+<tr class="odd">
+<td align="left">44</td>
+<td align="right">8</td>
+<td align="left">Kansas</td>
+<td align="right">18.9</td>
+<td align="right">18.42784</td>
+<td align="right">19.45442</td>
+</tr>
+<tr class="even">
+<td align="left">35</td>
+<td align="right">17</td>
+<td align="left">Kentucky</td>
+<td align="right">22.9</td>
+<td align="right">22.52859</td>
+<td align="right">23.32280</td>
+</tr>
+<tr class="odd">
+<td align="left">21</td>
+<td align="right">32</td>
+<td align="left">Louisiana</td>
+<td align="right">24.5</td>
+<td align="right">24.21790</td>
+<td align="right">24.85694</td>
+</tr>
+<tr class="even">
+<td align="left">29</td>
+<td align="right">23</td>
+<td align="left">Maine</td>
+<td align="right">23.4</td>
+<td align="right">23.02251</td>
+<td align="right">23.71051</td>
+</tr>
+<tr class="odd">
+<td align="left">1</td>
+<td align="right">51</td>
+<td align="left">Maryland</td>
+<td align="right">32.2</td>
+<td align="right">31.78609</td>
+<td align="right">32.90076</td>
+</tr>
+<tr class="even">
+<td align="left">6</td>
+<td align="right">46</td>
+<td align="left">Massachusetts</td>
+<td align="right">28.0</td>
+<td align="right">27.49718</td>
+<td align="right">28.57269</td>
+</tr>
+<tr class="odd">
+<td align="left">23</td>
+<td align="right">29</td>
+<td align="left">Michigan</td>
+<td align="right">24.1</td>
+<td align="right">23.57627</td>
+<td align="right">24.50264</td>
+</tr>
+<tr class="even">
+<td align="left">34</td>
+<td align="right">18</td>
+<td align="left">Minnesota</td>
+<td align="right">23.0</td>
+<td align="right">22.45434</td>
+<td align="right">23.43455</td>
+</tr>
+<tr class="odd">
+<td align="left">26</td>
+<td align="right">27</td>
+<td align="left">Mississippi</td>
+<td align="right">23.9</td>
+<td align="right">23.24351</td>
+<td align="right">24.41567</td>
+</tr>
+<tr class="even">
+<td align="left">32</td>
+<td align="right">20</td>
+<td align="left">Missouri</td>
+<td align="right">23.1</td>
+<td align="right">22.59568</td>
+<td align="right">23.76927</td>
+</tr>
+<tr class="odd">
+<td align="left">47</td>
+<td align="right">5</td>
+<td align="left">Montana</td>
+<td align="right">18.2</td>
+<td align="right">17.64940</td>
+<td align="right">18.67888</td>
+</tr>
+<tr class="even">
+<td align="left">48</td>
+<td align="right">4</td>
+<td align="left">Nebraska</td>
+<td align="right">18.1</td>
+<td align="right">17.64936</td>
+<td align="right">18.65551</td>
+</tr>
+<tr class="odd">
+<td align="left">24</td>
+<td align="right">29</td>
+<td align="left">Nevada</td>
+<td align="right">24.1</td>
+<td align="right">23.56459</td>
+<td align="right">24.52895</td>
+</tr>
+<tr class="even">
+<td align="left">10</td>
+<td align="right">42</td>
+<td align="left">New Hampshire</td>
+<td align="right">26.9</td>
+<td align="right">26.28169</td>
+<td align="right">27.38458</td>
+</tr>
+<tr class="odd">
+<td align="left">3</td>
+<td align="right">49</td>
+<td align="left">New Jersey</td>
+<td align="right">30.5</td>
+<td align="right">30.03088</td>
+<td align="right">31.10544</td>
+</tr>
+<tr class="even">
+<td align="left">40</td>
+<td align="right">12</td>
+<td align="left">New Mexico</td>
+<td align="right">21.4</td>
+<td align="right">20.71470</td>
+<td align="right">21.94163</td>
+</tr>
+<tr class="odd">
+<td align="left">2</td>
+<td align="right">50</td>
+<td align="left">New York</td>
+<td align="right">31.5</td>
+<td align="right">31.18431</td>
+<td align="right">31.93653</td>
+</tr>
+<tr class="even">
+<td align="left">30</td>
+<td align="right">23</td>
+<td align="left">North Carolina</td>
+<td align="right">23.4</td>
+<td align="right">23.01572</td>
+<td align="right">23.72632</td>
+</tr>
+<tr class="odd">
+<td align="left">50</td>
+<td align="right">2</td>
+<td align="left">North Dakota</td>
+<td align="right">16.9</td>
+<td align="right">16.22237</td>
+<td align="right">17.61706</td>
+</tr>
+<tr class="even">
+<td align="left">33</td>
+<td align="right">20</td>
+<td align="left">Ohio</td>
+<td align="right">23.1</td>
+<td align="right">22.77068</td>
+<td align="right">23.57466</td>
+</tr>
+<tr class="odd">
+<td align="left">42</td>
+<td align="right">10</td>
+<td align="left">Oklahoma</td>
+<td align="right">21.1</td>
+<td align="right">20.51289</td>
+<td align="right">21.77838</td>
+</tr>
+<tr class="even">
+<td align="left">36</td>
+<td align="right">16</td>
+<td align="left">Oregon</td>
+<td align="right">22.5</td>
+<td align="right">21.79350</td>
+<td align="right">23.19240</td>
+</tr>
+<tr class="odd">
+<td align="left">11</td>
+<td align="right">41</td>
+<td align="left">Pennsylvania</td>
+<td align="right">25.9</td>
+<td align="right">25.52354</td>
+<td align="right">26.20935</td>
+</tr>
+<tr class="even">
+<td align="left">31</td>
+<td align="right">23</td>
+<td align="left">Rhode Island</td>
+<td align="right">23.4</td>
+<td align="right">22.88836</td>
+<td align="right">23.80203</td>
+</tr>
+<tr class="odd">
+<td align="left">27</td>
+<td align="right">25</td>
+<td align="left">South Carolina</td>
+<td align="right">23.6</td>
+<td align="right">23.07601</td>
+<td align="right">23.98066</td>
+</tr>
+<tr class="even">
+<td align="left">51</td>
+<td align="right">2</td>
+<td align="left">South Dakota</td>
+<td align="right">16.9</td>
+<td align="right">15.79392</td>
+<td align="right">18.15269</td>
+</tr>
+<tr class="odd">
+<td align="left">22</td>
+<td align="right">30</td>
+<td align="left">Tennessee</td>
+<td align="right">24.2</td>
+<td align="right">23.78681</td>
+<td align="right">24.68104</td>
+</tr>
+<tr class="even">
+<td align="left">19</td>
+<td align="right">34</td>
+<td align="left">Texas</td>
+<td align="right">24.8</td>
+<td align="right">24.33380</td>
+<td align="right">25.03423</td>
+</tr>
+<tr class="odd">
+<td align="left">39</td>
+<td align="right">13</td>
+<td align="left">Utah</td>
+<td align="right">21.6</td>
+<td align="right">20.98975</td>
+<td align="right">22.20962</td>
+</tr>
+<tr class="even">
+<td align="left">37</td>
+<td align="right">15</td>
+<td align="left">Vermont</td>
+<td align="right">21.9</td>
+<td align="right">21.30121</td>
+<td align="right">22.51727</td>
+</tr>
+<tr class="odd">
+<td align="left">7</td>
+<td align="right">45</td>
+<td align="left">Virginia</td>
+<td align="right">27.7</td>
+<td align="right">27.14430</td>
+<td align="right">28.22426</td>
+</tr>
+<tr class="even">
+<td align="left">15</td>
+<td align="right">37</td>
+<td align="left">Washington</td>
+<td align="right">25.5</td>
+<td align="right">24.80511</td>
+<td align="right">26.23136</td>
+</tr>
+<tr class="odd">
+<td align="left">14</td>
+<td align="right">38</td>
+<td align="left">West Virginia</td>
+<td align="right">25.6</td>
+<td align="right">24.98939</td>
+<td align="right">26.18792</td>
+</tr>
+<tr class="even">
+<td align="left">38</td>
+<td align="right">15</td>
+<td align="left">Wisconsin</td>
+<td align="right">21.9</td>
+<td align="right">21.27198</td>
+<td align="right">22.52460</td>
+</tr>
+<tr class="odd">
+<td align="left">49</td>
+<td align="right">4</td>
+<td align="left">Wyoming</td>
+<td align="right">18.1</td>
+<td align="right">17.46627</td>
+<td align="right">18.72833</td>
+</tr>
+</tbody>
+</table>
+<hr />
 </div>
 </div>
 <div id="references" class="section level1 unnumbered">
