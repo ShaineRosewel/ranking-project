@@ -687,7 +687,7 @@ kable(data.frame(T1 = sapply(Oks, get_t1),
 library(doParallel)
 library(tictoc)
 alpha <- 0.10
-K <- 10
+K <- 30
 df <- readRDS("../data/mean_travel_time_ranking_2011.rds")
 calculate_variance <- function(moe) (moe/1.645)^2
 dataset_or <- df[order(df$k),][1:K,]
@@ -732,8 +732,9 @@ zzz <- home1()
 toc()
 stopCluster(cl)
 saveRDS(zzz,  paste0("../output/coverage_probability_",K, ".rds"))
-#8999.084 sec elapsed
-#1885.258 sec elapsed
+#8999.084 sec elapsed 51
+#5701.035 sec elapsed 30
+#1885.258 sec elapsed 10
 ```
 ```{r}
 saveRDS(zzz,  paste0("../output/coverage_probability_",K, ".rds"))
@@ -742,20 +743,39 @@ saveRDS(zzz,  paste0("../output/coverage_probability_",K, ".rds"))
 
 
 ```{r}
-mean(51-zzz$inside)
+a251<-readRDS("../output/coverage_probability_51.rds")
+mean(a251$inside)
+mean(a251$t2)
+```
+
+```{r}
+a251<-readRDS("../output/coverage_probability_30.rds")
+mean(30==a251$inside)
+mean(a251$t2)
+mean(a251$inside)
+```
+```{r}
+a251<-readRDS("../output/coverage_probability_10.rds")
+mean(10==a251$inside)
+mean(a251$t2)
+mean(a251$inside)
 ```
 
 
 
-
 ```{r}
-mean(zzz$inside)
+3.53-51
 ```
 
 ```{r}
 mean(10-zzz$t2)
 ```
 
+
+
+```{r}
+so
+```
 
 
 # Appendices
