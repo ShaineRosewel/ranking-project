@@ -14,7 +14,7 @@ bibliography: references.bib
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE,fig.align = "center", fig.width = 5, fig.height = 3, comment="")
+knitr::opts_chunk$set(echo = TRUE,fig.align = "center", fig.width = 5, fig.height = 3, comment="", warning = FALSE, message = FALSE)
 ```
 
 # Kernel Density Estimation
@@ -360,6 +360,8 @@ rownames(dataset) <- dataset[,2]
 
 ## Algorithm 1
 
+### Steps
+
 Suppose the data consist of $\hat{\theta}_1, \hat{\theta}_1, \dots, \hat{\theta}_K$ and known values $\sigma_1^2, \sigma_2^2, \dots, \sigma_K^2$
 
 1. Generate $\hat{\theta}^*_{bi} \sim \mathcal{N}(\hat{\theta}_i, \sigma_i^2)$
@@ -435,7 +437,7 @@ kable(head(Y)) %>% kable_styling(bootstrap_options = "responsive")
 
 ```{r results='asis'}
 U <- apply(apply(Y, MARGIN = c(1, 2), FUN = get_inner_max), 1, max)
-kable(head(U)) %>% kable_styling(bootstrap_options = "responsive")
+head(U)
 ```
 
 7. Compute $\hat{u}$ as the $(1-\alpha)$-sample quantile of $U^*_1, U^*_2, \dots, U^*_B$
@@ -460,7 +462,7 @@ dataset['kde_ci_upper'] <- dataset['theta_k'] - dataset['F.inv_1-u']
 kable(head(dataset)) %>% kable_styling(bootstrap_options = "responsive")
 ```
 
-Full algorithm function:
+### Full function
 
 
 ```{r}
@@ -471,7 +473,6 @@ library("GoFKernel")
 alpha <- 0.10
 df <- readRDS("../data/mean_travel_time_ranking_2011.rds")
 ```
-
 
 
 ```{r}
@@ -512,7 +513,7 @@ run_algorithm1 <- function(B, dataset) {
 }
 ```
 
-
+### Application to diff K
 ```{r eval = FALSE}
 
 alpha <- 0.10
@@ -573,12 +574,57 @@ for (K in c(10, 20, 30, 40, 51)) {
 }
 ```
 
+
+```{r fig.height = 8, fig.width=10, echo = FALSE}
+kde_result <- output[[51]]
+df <- readRDS("../data/mean_travel_time_ranking_2011.rds")
+
+df$iso <- c('MD', 'NY', 'NJ', 'DC','IL', 'MA', 'VA', 'CA', 'GA', 'NH', 'PA', 'FL', 'HI', 'WV','WA', 'DE', 'CT', 'AZ', 'TX', 'CO','LA', 'TN', 'MI', 'NV', 'AL', 'MS', 'SC', 'IN', 'ME', 'NC', 'RI', 'MO', 'OH', 'MN', 'KY', 'OR', 'VI', 'WI', 'UT', 'NM', 'AR', 'OK', 'ID', 'KS', 'IA', 'AK', 'MT', 'NE', 'WY', 'ND', 'SD'  )
+
+kde_result <- merge(x = df[,c('k', 'iso')], y = kde_result, by = "k", all.x = TRUE)
+
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+
+to_string_seq <- function(x, y){paste(seq(x, y, 1), collapse=',')}
+
+dat_to_plot <- kde_result %>% 
+    select(c(k, iso, kde_rank_lower, kde_rank_upper, sample_rank)) %>%
+    mutate(string_ranks = mapply(to_string_seq, kde_rank_lower, kde_rank_upper)) %>%
+    separate_rows(string_ranks, sep=",") %>%
+    select(c(k, iso, sample_rank, string_ranks))
+
+dat_to_plot$highlight <- ifelse(dat_to_plot$sample_rank == as.numeric(dat_to_plot$string_ranks), "highlight", "normal")
+
+p <- ggplot(data = dat_to_plot, aes(x = reorder(k, as.numeric(string_ranks)),
+                               y = as.numeric(string_ranks),
+                               label = iso,
+                               color = highlight)) + geom_text(size = 2) +
+  scale_color_manual(values = c("highlight" = "red", "normal" = "black")) +
+  scale_y_continuous(breaks = 1:51) +
+  labs(title='(KDE) visualization of the 90% joint confidence') + xlab('States') + ylab('Sample rank') +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),
+        ) +
+  guides(colour=FALSE) +
+    theme(axis.line = element_line(colour = "gray"),
+    panel.grid.minor = element_blank(),
+    panel.grid.major.x = element_blank(),)
+
+#ggsave("kde_ranks_plot.png", plot = p, width = 10, height = 8, dpi = 300)
+p
+```
+
+
 ## T1, T2, T3
 
 
-```{r}
-df <- readRDS("../data/mean_travel_time_ranking_2011.rds")
 
+
+
+
+```{r}
 tuple_list <- t(apply(df[,c('bonf_ci_lower', 'bonf_ci_upper')], 1, function(row) as.numeric(row)))
 df['bonf_Lambda_Ok_length'] <- sapply(1:K, function(x) length(get_ranks(x, tuple_list)$Lambda_Ok))
 df['bonf_rank_range_length'] <- sapply(1:K, function(x) length(get_ranks(x, tuple_list)$ranks))
