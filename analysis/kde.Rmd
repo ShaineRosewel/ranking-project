@@ -612,7 +612,7 @@ p <- ggplot(data = dat_to_plot, aes(x = reorder(k, as.numeric(string_ranks)),
     panel.grid.minor = element_blank(),
     panel.grid.major.x = element_blank(),)
 
-#ggsave("kde_ranks_plot.png", plot = p, width = 10, height = 8, dpi = 300)
+#ggsave("../figures/kde_ranks_plot.png", plot = p, width = 10, height = 8, dpi = 300)
 p
 ```
 
