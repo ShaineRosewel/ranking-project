@@ -687,7 +687,7 @@ kable(data.frame(T1 = sapply(Oks, get_t1),
 library(doParallel)
 library(tictoc)
 alpha <- 0.10
-K <- 51
+K <- 10
 df <- readRDS("../data/mean_travel_time_ranking_2011.rds")
 calculate_variance <- function(moe) (moe/1.645)^2
 dataset_or <- df[order(df$k),][1:K,]
@@ -716,9 +716,12 @@ outt <- foreach(iter = 1:5000, .combine = rbind,.packages = c("foreach"), .expor
   
   result['ind_rank_range_length'] <- sapply(1:K, function(x) length(get_ranks(x, tuple_list)$ranks))
 
-  sorted_ci <- result[order(result$theta_k),]
-  sorted_theta <- sort(dataset$otheta_k)
-  inside_check <- all(sorted_theta >= sorted_ci$kde_ci_lower & sorted_theta <= sorted_ci$kde_ci_upper)
+  result$otheta_k <- dataset$otheta_k
+  
+  sorted_ci <- result[order(result$otheta_k),] # mali sorting
+  #sorted_theta <- sort(dataset$otheta_k)
+  
+  inside_check <- sum(sorted_ci$otheta_k >= sorted_ci$kde_ci_lower & sorted_ci$otheta_k <= sorted_ci$kde_ci_upper)
   t2_val <- get_t2(result$ind_rank_range_length)
   
   data.frame(t2 = t2_val, inside = inside_check)
@@ -729,8 +732,30 @@ zzz <- home1()
 toc()
 stopCluster(cl)
 saveRDS(zzz,  paste0("../output/coverage_probability_",K, ".rds"))
-# 8770.893
+#8999.084 sec elapsed
+#1885.258 sec elapsed
 ```
+```{r}
+saveRDS(zzz,  paste0("../output/coverage_probability_",K, ".rds"))
+```
+
+
+
+```{r}
+mean(51-zzz$inside)
+```
+
+
+
+
+```{r}
+mean(zzz$inside)
+```
+
+```{r}
+mean(10-zzz$t2)
+```
+
 
 
 # Appendices
