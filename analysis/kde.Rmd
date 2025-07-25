@@ -76,6 +76,21 @@ rownames(dataset) <- dataset[,2]
 ```
 
 
+
+```{r echo = FALSE}
+# library("RankingProject")
+# TravelTime2011
+# 
+# pck <- merge(df, TravelTime2011[c('State', 'Estimate.2dec', 'SE.2dec')], by.x = 'k', by.y="State")
+# names(pck)[names(pck) == "theta_k"] <- "theta_k_COPIED"
+# names(pck)[names(pck) == "Estimate.2dec"] <- "theta_k"
+# names(pck)[names(pck) == "SE.2dec"] <- "S"
+# 
+# saveRDS(pck,"../data/mean_travel_time_ranking_2011.rds")
+```
+
+
+
 ## Algorithm 1
 
 ### Steps
@@ -259,7 +274,7 @@ for (K in c(10, 20, 30, 40, 51)) {
   result <- run_algorithm1(B, dataset)
   # saving the file
   filename <- paste0("../data/kde_intervals_", K, ".rds")
-  # saveRDS(result, file = filename)
+  saveRDS(result, file = filename)
 }
 ```
 
@@ -339,14 +354,14 @@ library(tidyr)
 to_string_seq <- function(x, y){paste(seq(x, y, 1), collapse=',')}
 
 dat_to_plot <- kde_result %>% 
-    select(c(k, iso, kde_rank_lower, kde_rank_upper, sample_rank, order_index)) %>%
+    select(c(k, iso, kde_rank_lower, kde_rank_upper, sample_rank, order_index, theta_k)) %>%
     mutate(string_ranks = mapply(to_string_seq, kde_rank_lower, kde_rank_upper)) %>%
     separate_rows(string_ranks, sep=",") %>%
-    select(c(k, iso, sample_rank, string_ranks, order_index))
+    select(c(k, iso, sample_rank, string_ranks, theta_k))
 
 dat_to_plot$highlight <- ifelse(dat_to_plot$sample_rank == as.numeric(dat_to_plot$string_ranks), "highlight", "normal")
 
-p <- ggplot(data = dat_to_plot, aes(x = reorder(k, order_index),
+p <- ggplot(data = dat_to_plot, aes(x = reorder(k, theta_k),
                                y = as.numeric(string_ranks),
                                label = iso,
                                color = highlight)) + geom_text(size = 2) +
@@ -371,14 +386,14 @@ p
 to_string_seq <- function(x, y){paste(seq(x, y, 1), collapse=',')}
 
 dat_to_plot <- df %>% 
-    select(c(k, iso, ind_rank_lower, ind_rank_upper, rhat_k, order_index)) %>%
+    select(c(k, iso, ind_rank_lower, ind_rank_upper, rhat_k, order_index, theta_k)) %>%
     mutate(string_ranks = mapply(to_string_seq, ind_rank_lower, ind_rank_upper)) %>%
     separate_rows(string_ranks, sep=",") %>%
-    select(c(k, iso, rhat_k, string_ranks, order_index))
+    select(c(k, iso, rhat_k, string_ranks, order_index, theta_k))
 
 dat_to_plot$highlight <- ifelse(dat_to_plot$rhat_k == as.numeric(dat_to_plot$string_ranks), "highlight", "normal")
 
-p <- ggplot(data = dat_to_plot, aes(x = reorder(k, order_index),
+p <- ggplot(data = dat_to_plot, aes(x = reorder(k, theta_k),
                                y = as.numeric(string_ranks),
                                label = iso,
                                color = highlight)) + geom_text(size = 2) +
@@ -448,29 +463,32 @@ kable(data.frame(
 
 ```{r echo = FALSE, eval = FALSE}
 library(doParallel)
+library(arrow)
 library(tictoc)
 alpha <- 0.10
-K <- 40
+K <- 20
 df <- readRDS("../data/mean_travel_time_ranking_2011.rds")
-calculate_variance <- function(moe) (moe/1.645)^2
+#calculate_variance <- function(moe) (moe/1.645)^2
 dataset_or <- df[order(df$k),][1:K,]
-dataset_or['variance'] <- lapply(dataset_or['moe_k'], calculate_variance)
-rownames(dataset_or) <- dataset_or[,2]
+#dataset_or['variance'] <- lapply(dataset_or['moe_k'], calculate_variance)
+#rownames(dataset_or) <- dataset_or[,2]
 
 
 cl=parallel::makeCluster(15)
 registerDoParallel(cl)
 
-get_coverage <- function(dataset_or, K, reps = 5, B=1000, alpha= 0.10){
-  foreach(iter = 1:reps, .combine = rbind,.packages = c("foreach"),
-          .export = c("run_algorithm1", 'calculate_variance', "estimate_CDF",
+get_coverage <- function(dataset_or, K, reps = 100, B=1000, alpha= 0.10){
+  foreach(iter = 1:reps, .combine = rbind,.packages = c("foreach", "arrow"),
+          .export = c("run_algorithm1", 
+                     # 'calculate_variance', 
+                      "estimate_CDF",
                       "get_ranks", "get_t2", "kde_cdf_function",'get_inner_max',
                       "inverse")) %dopar% {
 
   dataset <- dataset_or
   set.seed(iter)
   mat2 <- foreach(i = 1:K, .combine = cbind) %do% {
-      rnorm(1, mean = dataset[i, 'theta_k'], sd = sqrt(dataset[i, 'variance']))
+      rnorm(1, mean = dataset[i, 'theta_k'], sd = dataset[i, 'S'])
   }
   sort_reference <- data.frame(theta = dataset$theta_k, theta_k = t(mat2))
   colnames(dataset)[colnames(dataset) == 'theta_k'] <- 'otheta_k'
@@ -490,11 +508,15 @@ get_coverage <- function(dataset_or, K, reps = 5, B=1000, alpha= 0.10){
 
   ci <- merge(result, sort_reference, by = "theta_k", all = FALSE)
   sorted_ci <- ci[order(ci$theta),]
+  
+  write_feather(sorted_ci, sprintf("../output/iters/K%d/sorted_ci_%04d.feather", K, iter))
 
   inside_check <- sum(sorted_ci$theta >= sorted_ci$kde_ci_lower & sorted_ci$theta <= sorted_ci$kde_ci_upper)
   t2_val <- get_t2(result$ind_rank_range_length)
-
+  
   data.frame(t2 = t2_val, inside = inside_check)
+  #sorted_ci$iteration <- rep(iter, K)#
+  #sorted_ci
 }
 }
 tic("Running...")
@@ -506,6 +528,102 @@ saveRDS(coverage_output_df,  paste0("../output/coverage_probability_",K, ".rds")
 #5701.035 sec elapsed 30
 #1885.258 sec elapsed 10
 ```
+
+### Iteration samples
+
+K = 10
+
+```{r echo = FALSE, results = "asis"}
+library(arrow)
+file_list <- list.files(path = "../output/iters/K10", pattern = "\\.feather$", full.names = TRUE)
+
+coverage_output_df <- lapply(file_list, function(file) {
+  df <- read_feather(file)
+  df$filename <- basename(file)  # or use tools::file_path_sans_ext(basename(file)) to remove .feather
+  return(df)
+}) %>%
+  bind_rows()
+
+subs <- coverage_output_df[,c('k', "theta_k", "theta", "kde_ci_lower", "kde_ci_upper", "filename")]
+subs$theta_within <- (subs$theta >= subs$kde_ci_lower) & (subs$theta <= subs$kde_ci_upper)
+subs$theta_k_within <- (subs$theta_k >= subs$kde_ci_lower) & (subs$theta_k <= subs$kde_ci_upper)
+kable(subs %>% select(c('k', "theta_k", "theta", "kde_ci_lower", "kde_ci_upper", "theta_within", "filename")) %>% filter(!theta_within)) %>% kable_styling(bootstrap_options = "responsive")
+```
+
+K = 20 
+
+```{r echo = FALSE, results = "asis"}
+file_list <- list.files(path = "../output/iters/K20", pattern = "\\.feather$", full.names = TRUE)
+
+coverage_output_df <- lapply(file_list, function(file) {
+  df <- read_feather(file)
+  df$filename <- basename(file)  # or use tools::file_path_sans_ext(basename(file)) to remove .feather
+  return(df)
+}) %>%
+  bind_rows()
+
+subs <- coverage_output_df[,c('k', "theta_k", "theta", "kde_ci_lower", "kde_ci_upper", "filename")]
+subs$theta_within <- (subs$theta >= subs$kde_ci_lower) & (subs$theta <= subs$kde_ci_upper)
+subs$theta_k_within <- (subs$theta_k >= subs$kde_ci_lower) & (subs$theta_k <= subs$kde_ci_upper)
+kable(subs %>% select(c('k', "theta_k", "theta", "kde_ci_lower", "kde_ci_upper", "theta_within", "filename")) %>% filter(!theta_within)) %>% kable_styling(bootstrap_options = "responsive")
+```
+
+K = 30
+
+```{r echo = FALSE, results = "asis"}
+file_list <- list.files(path = "../output/iters/K30", pattern = "\\.feather$", full.names = TRUE)
+
+coverage_output_df <- lapply(file_list, function(file) {
+  df <- read_feather(file)
+  df$filename <- basename(file)  # or use tools::file_path_sans_ext(basename(file)) to remove .feather
+  return(df)
+}) %>%
+  bind_rows()
+
+subs <- coverage_output_df[,c('k', "theta_k", "theta", "kde_ci_lower", "kde_ci_upper", "filename")]
+subs$theta_within <- (subs$theta >= subs$kde_ci_lower) & (subs$theta <= subs$kde_ci_upper)
+subs$theta_k_within <- (subs$theta_k >= subs$kde_ci_lower) & (subs$theta_k <= subs$kde_ci_upper)
+kable(subs %>% select(c('k', "theta_k", "theta", "kde_ci_lower", "kde_ci_upper", "theta_within", "filename")) %>% filter(!theta_within)) %>% kable_styling(bootstrap_options = "responsive")
+```
+K = 40
+
+```{r echo = FALSE, results = "asis"}
+file_list <- list.files(path = "../output/iters/K40", pattern = "\\.feather$", full.names = TRUE)
+
+coverage_output_df <- lapply(file_list, function(file) {
+  df <- read_feather(file)
+  df$filename <- basename(file)  # or use tools::file_path_sans_ext(basename(file)) to remove .feather
+  return(df)
+}) %>%
+  bind_rows()
+
+subs <- coverage_output_df[,c('k', "theta_k", "theta", "kde_ci_lower", "kde_ci_upper", "filename")]
+subs$theta_within <- (subs$theta >= subs$kde_ci_lower) & (subs$theta <= subs$kde_ci_upper)
+subs$theta_k_within <- (subs$theta_k >= subs$kde_ci_lower) & (subs$theta_k <= subs$kde_ci_upper)
+kable(subs %>% select(c('k', "theta_k", "theta", "kde_ci_lower", "kde_ci_upper", "theta_within", "filename")) %>% filter(!theta_within)) %>% kable_styling(bootstrap_options = "responsive")
+```
+K = 51
+
+```{r echo = FALSE, results = "asis"}
+file_list <- list.files(path = "../output/iters/K51", pattern = "\\.feather$", full.names = TRUE)
+
+coverage_output_df <- lapply(file_list, function(file) {
+  df <- read_feather(file)
+  df$filename <- basename(file)  # or use tools::file_path_sans_ext(basename(file)) to remove .feather
+  return(df)
+}) %>%
+  bind_rows()
+
+subs <- coverage_output_df[,c('k', "theta_k", "theta", "kde_ci_lower", "kde_ci_upper", "filename")]
+subs$theta_within <- (subs$theta >= subs$kde_ci_lower) & (subs$theta <= subs$kde_ci_upper)
+subs$theta_k_within <- (subs$theta_k >= subs$kde_ci_lower) & (subs$theta_k <= subs$kde_ci_upper)
+kable(subs %>% select(c('k', "theta_k", "theta", "kde_ci_lower", "kde_ci_upper", "theta_within", "filename")) %>% filter(!theta_within)) %>% kable_styling(bootstrap_options = "responsive")
+```
+
+
+
+`
+
 
 ### Results from **100** reps
 
