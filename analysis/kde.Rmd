@@ -8,6 +8,7 @@ output:
     toc: true
     toc_float:
       toc_collapsed: false
+      toc_depth: 4
     fig_caption: true
     highlight: tango
 bibliography: references.bib
@@ -17,7 +18,533 @@ bibliography: references.bib
 knitr::opts_chunk$set(echo = TRUE,fig.align = "center", fig.width = 5, fig.height = 3, comment="", warning = FALSE, message = FALSE)
 ```
 
-# Kernel Density Estimation
+
+
+# Uncertainty for ranks
+
+Let $\theta_1, \theta_2, \dots, \theta_K$ be the true values of the parameters and let $\theta_{(1)}, \theta_{(2)}, \dots, \theta_{(K)}$ be the corresponding ordered parameter values.
+
+
+Let $F_i$ be the CDF of $\hat{\theta}_{(i)} - \theta_{(i)}, i = 1, 2, \dots, K$. Note that $F_i \left( \hat{\theta}_{(i)} - \theta_{(i)}\right) \sim U(0,1)$. We want the quantity $u$ that satisfies :
+
+$$
+P \left( 1-u < F_i \left ( \hat{\theta}_{(i)}-\theta_{(i)} \right) < u, \forall i\right) = 1 - \alpha
+\\
+\Longleftrightarrow
+P \left( 
+\underset{1 \leq i \leq p} {\max}  
+\left\{ \max
+\left\{
+F_i
+\left( \hat{\theta}_{(i)} - \theta_{(i)}
+\right),
+1-F_i
+\left( \hat{\theta}_{(i)} - \theta_{(i)}
+\right)
+\right\}
+\right\} < u
+\right) = 1 - \alpha
+$$
+
+
+Taking the inverse,
+
+$$
+F_i^{-1} (1-u) <  \hat{\theta}_{(i)}-\theta_{(i)}  < F_i^{-1} (u), i = 1, 2, \dots, K
+$$
+
+Isolating the true value,
+
+$$
+F_i^{-1} (1-u) - \hat{\theta}_{(i)} <  -\theta_{(i)}  < F_i^{-1} (u)-\hat{\theta}_{(i)}
+\\
+\hat{\theta}_{(i)} - F_i^{-1} (u) < \theta_{(i)} < \hat{\theta}_{(i)} - F_i^{-1} (1-u) 
+$$
+
+Problem 1: We do not know $F_i^{-1}$
+Problem 2: We do not know $u$
+
+
+```{r}
+alpha <- 0.10
+K <- 10
+df <- readRDS("../data/mean_travel_time_ranking_2011.rds")
+calculate_variance <- function(moe) (moe/1.645)^2
+dataset <- df[order(df$k),][1:K,]
+dataset['variance'] <- lapply(dataset['moe_k'], calculate_variance)
+rownames(dataset) <- dataset[,2]
+```
+
+
+## Algorithm 1
+
+### Steps
+
+Suppose the data consist of $\hat{\theta}_1, \hat{\theta}_1, \dots, \hat{\theta}_K$ and known values $\sigma_1^2, \sigma_2^2, \dots, \sigma_K^2$
+
+1. Generate $\hat{\theta}^*_{bi} \sim \mathcal{N}(\hat{\theta}_i, \sigma_i^2)$
+
+
+```{r results='asis'}
+library(knitr)
+library(kableExtra)
+
+B=1000
+library(foreach)
+set.seed(4)
+mat1 <- foreach(i = 1:K, .combine = cbind) %do% {
+  foreach(b = 1:B, .combine = c) %do% {
+    rnorm(1, mean = dataset[i, 'theta_k'], sd = sqrt(dataset[i, 'variance']))
+  }
+}
+
+kable(head(mat1)) %>% kable_styling(bootstrap_options = "responsive")
+```
+
+2. For each $b$, order the set $\left\{ \hat{\theta}^*_{b1}, \hat{\theta}^*_{b2}, \dots, \hat{\theta}^*_{bK} \right\}$ to obtain $\left\{ \hat{\theta}^*_{b(1)}, \hat{\theta}^*_{b(2)}, \dots, \hat{\theta}^*_{b(K)} \right\}$
+
+
+```{r results='asis'}
+source('../R/algo1_helper.R')
+mat1_sorted <- t(apply(mat1, 1, sort))
+
+kable(head(mat1_sorted)) %>% kable_styling(bootstrap_options = "responsive")
+```
+
+3. For each $b$, compute the difference $r^*_{bi} = \hat{\theta}^*_{b(i)} - \hat{\theta}^*_{(i)}, i = 1, 2, \dots, K$
+
+```{r results='asis'}
+r <- mat1_sorted - matrix(sort(t(dataset['theta_k'])),B, K, byrow=TRUE)
+kable(head(r)) %>% kable_styling(bootstrap_options = "responsive")
+```
+
+4. Let $F_i$ be the density of $\hat{\theta}_{(i)} - \theta_{(i)}, i = 1, 2, \dots, K$. Estimate each $F_i$ bu computing $\hat{F}_i$ using KDE based on $r^*_{1i}, r^*_{2i}, \dots, r^*_{Bi}$, that is
+
+$$
+\hat{F}_i(x) = \frac{1}{B}\sum^B_{\alpha=1} \Phi \left( \frac{x-r^*_{\alpha i}}{h_i} \right), \ \ \ h_i=0.9\min\{S_i, IQR_i/1.34\}\ B^{-1/5}
+$$
+
+```{r echo = FALSE}
+#source('../R/algo1_helper.R')
+# kde_cdf_function <- function(datapoints, bandwidth) {
+#   return(function(x) mean(pnorm((x - datapoints) / bandwidth)))
+# }
+# 
+# estimate_CDF <- function(dataset, i){
+#   S = sqrt(dataset[i,'variance'])#sd(r[,i])
+#   IQR = quantile(r[,i], .75) - quantile(r[,i], .25)
+#   h_i <- 0.9*min(S, IQR/1.34)*(B^(1/5))
+#   return(kde_cdf_function(r[,i], h_i))
+# }
+
+```
+
+```{r}
+estimated_CDF <- lapply(1:K, function(x)(estimate_CDF(dataset, x, r)))
+```
+
+5. Compute $Y^*_{bi}= \hat{F}_i(r^*_{bi})$ for each $b = 1, 2, \dots, B$ and $i = 1, 2, \dots, K$
+
+
+```{r echo = FALSE}
+# get_inner_max <- function(value) return(max(value, 1-value))
+```
+
+```{r results='asis'}
+Y <- foreach(i = 1:K, .combine = cbind) %do% {
+  sapply(r[,i], estimated_CDF[[i]])
+}
+
+kable(head(Y)) %>% kable_styling(bootstrap_options = "responsive")
+```
+
+6. Compute $U^*_b = \underset{1 \leq i \leq p} {\max} \{\max\{Y^*_{bi}, 1-Y^*_{bi}\}\}$ for $b = 1, 2, \dots, B$
+
+```{r results='asis'}
+U <- apply(apply(Y, MARGIN = c(1, 2), FUN = get_inner_max), 1, max)
+head(U)
+```
+
+7. Compute $\hat{u}$ as the $(1-\alpha)$-sample quantile of $U^*_1, U^*_2, \dots, U^*_B$
+
+```{r}
+uhat <- quantile(U, probs = 1 - alpha)
+uhat
+```
+
+8. The join confidence region is calculated
+
+```{r results='asis'}
+library("GoFKernel")
+
+F.inv <- lapply(estimated_CDF, function(F){inverse(F, lower = -100, upper = 100)})
+dataset['F.inv_u'] <- sapply(1:K, function(i){F.inv[[i]](uhat)})
+dataset['F.inv_1-u'] <- sapply(1:K, function(i){F.inv[[i]](1-uhat)})
+
+dataset['kde_ci_lower'] <- dataset['theta_k'] - dataset['F.inv_u'] 
+dataset['kde_ci_upper'] <- dataset['theta_k'] - dataset['F.inv_1-u'] 
+
+kable(head(dataset)) %>% kable_styling(bootstrap_options = "responsive")
+```
+
+### Full function
+
+#### Sample usage
+
+```{r}
+source('../R/algo1_helper.R')
+
+alpha <- 0.10
+K <- 10
+B <- 1000
+df <- readRDS("../data/mean_travel_time_ranking_2011.rds")
+```
+
+```{r}
+# filter accdg to K
+dataset <- df[order(df$k),][1:K,]
+# run for K = 10
+output_for_k10 <- run_algorithm1(B, dataset, seed = 4, alpha = 0.1)
+kable(output_for_k10, row.names = FALSE) %>% kable_styling(bootstrap_options = "responsive")
+```
+
+
+
+
+```{r echo = FALSE}
+# dataset <- df[order(df$k),][1:30,]
+# B=1000
+# 
+# run_algorithm1 <- function(B, dataset, seed = 4) {
+#   dataset['variance'] <- lapply(dataset['moe_k'], calculate_variance)
+#   K <- dim(dataset)[1]
+#   set.seed(seed)
+#   mat1 <- foreach(i = 1:K, .combine = cbind) %do% {
+#     foreach(b = 1:B, .combine = c) %do% {
+#       rnorm(1, mean = dataset[i, 'theta_k'], sd = sqrt(dataset[i, 'variance']))
+#     }
+#   }
+#   # 2
+#   mat1_sorted <- t(apply(mat1, 1, sort))
+#   # 3
+#   r <- mat1_sorted - matrix(sort(t(dataset['theta_k'])),B, K, byrow=TRUE)
+#   # 4
+#   estimated_CDF <- lapply(1:K, function(x)(estimate_CDF(dataset, x, r)))
+#   # 5
+#   Y <- foreach(i = 1:K, .combine = cbind) %do% {
+#     sapply(r[,i], estimated_CDF[[i]])
+#   }
+#   # 6
+#   U <- apply(apply(Y, MARGIN = c(1, 2), FUN = get_inner_max), 1, max)
+#   # 7
+#   uhat <- quantile(U, probs = 1 - alpha)
+#   # 8
+#   
+#   F.inv <- lapply(estimated_CDF, function(F){inverse(F, lower = -100, upper = 100)})
+#   dataset['F.inv_u'] <- sapply(1:K, function(i){F.inv[[i]](uhat)})
+#   dataset['F.inv_1-u'] <- sapply(1:K, function(i){F.inv[[i]](1-uhat)})
+#   dataset['kde_ci_lower'] <- dataset['theta_k'] - dataset['F.inv_u'] 
+#   dataset['kde_ci_upper'] <- dataset['theta_k'] - dataset['F.inv_1-u']
+#   return(dataset[, c('rhat_k', 'k', 'theta_k', 'kde_ci_lower', 'kde_ci_upper')])
+# }
+```
+
+#### Application to diff K
+
+```{r eval = FALSE}
+for (K in c(10, 20, 30, 40, 51)) {
+  # filtering the dataset
+  dataset <- df[order(df$k),][1:K,]
+  # running the algo1
+  result <- run_algorithm1(B, dataset)
+  # saving the file
+  filename <- paste0("../data/kde_intervals_", K, ".rds")
+  # saveRDS(result, file = filename)
+}
+```
+
+
+```{r echo = FALSE}
+# get_ranks <- function(k, tuple_list){
+#   Lambda_lk <- which(tuple_list[,2]<=tuple_list[k,1])
+#   Lambda_lk <- Lambda_lk[Lambda_lk != k]
+#   Lambda_Ok <- which(tuple_list[,2]>tuple_list[k,1] & tuple_list[k,2] > tuple_list[,1])
+#   Lambda_Ok <- Lambda_Ok[Lambda_Ok != k]
+# 
+#   ranks <- seq(
+#     length(unique(Lambda_lk)) + 1,
+#     length(unique(Lambda_lk)) + length(unique(Lambda_Ok)) + 1,
+#     1
+#   )
+#   
+#   return(list(
+#     ranks = ranks,
+#     Lambda_Ok = Lambda_Ok
+#   ))
+# }
+```
+
+
+```{r results='asis'}
+output <- list()
+
+# original columns: "rhat_k","k","theta_k","kde_ci_lower,kde_ci_upper"
+# the rest are added on this chunk
+
+for (K in c(10, 20, 30, 40, 51)) {
+  # reading the outputs saved previously
+  filename <- paste0("../data/kde_intervals_", K, ".rds")
+  output[[K]] <- readRDS(filename)
+  
+  # converting into tuples
+  tuple_list <- t(apply(output[[K]][,c('kde_ci_lower', 'kde_ci_upper')], 1, function(row) as.numeric(row)))
+  
+  # calculating the min from ranks
+  output[[K]]['kde_rank_lower'] <- sapply(1:K, function(x) min(get_ranks(x, tuple_list)$ranks))
+  
+  # calculating the max from ranks
+  output[[K]]['kde_rank_upper'] <- sapply(1:K, function(x) max(get_ranks(x, tuple_list)$ranks))
+  
+  # cardinality based on lambdaOK
+  output[[K]]['kde_Lambda_Ok_length'] <- sapply(1:K, function(x) length(get_ranks(x, tuple_list)$Lambda_Ok))
+  
+  # cardinality based on computed ranks
+  output[[K]]['kde_rank_range_length'] <- sapply(1:K, function(x) length(get_ranks(x, tuple_list)$ranks))
+  print(paste("**** Output shown for K=", K, "****"))
+  
+  # adding something similar to rhatk only for K=10
+  output[[K]]['sample_rank'] <- rank(output[[K]]$theta_k, ties.method = "max")
+  print(kable(output[[K]][order(output[[K]]$theta_k), ], row.names = FALSE) %>% kable_styling(bootstrap_options = "responsive"))
+  cat("\n\n---\n\n")
+}
+```
+
+
+
+### Plots
+
+#### KDE
+
+```{r fig.height = 8, fig.width=10, echo = FALSE}
+kde_result <- output[[51]]
+df <- readRDS("../data/mean_travel_time_ranking_2011.rds")
+df$order_index <- seq(K, 1, -1)
+
+kde_result <- merge(x = df[,c('k', 'iso', 'order_index')], y = kde_result, by = "k", all.x = TRUE)
+
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+
+to_string_seq <- function(x, y){paste(seq(x, y, 1), collapse=',')}
+
+dat_to_plot <- kde_result %>% 
+    select(c(k, iso, kde_rank_lower, kde_rank_upper, sample_rank, order_index)) %>%
+    mutate(string_ranks = mapply(to_string_seq, kde_rank_lower, kde_rank_upper)) %>%
+    separate_rows(string_ranks, sep=",") %>%
+    select(c(k, iso, sample_rank, string_ranks, order_index))
+
+dat_to_plot$highlight <- ifelse(dat_to_plot$sample_rank == as.numeric(dat_to_plot$string_ranks), "highlight", "normal")
+
+p <- ggplot(data = dat_to_plot, aes(x = reorder(k, order_index),
+                               y = as.numeric(string_ranks),
+                               label = iso,
+                               color = highlight)) + geom_text(size = 2) +
+  scale_color_manual(values = c("highlight" = "red", "normal" = "black")) +
+  scale_y_continuous(breaks = 1:51) +
+  labs(title='(KDE) visualization of the 90% joint confidence') + xlab('States') + ylab('Sample rank') +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),
+        ) +
+  guides(colour=FALSE) +
+    theme(axis.line = element_line(colour = "gray"),
+    panel.grid.minor = element_blank(),
+    panel.grid.major.x = element_blank(),)
+
+#ggsave("../figures/kde_ranks_plot.png", plot = p, width = 10, height = 8, dpi = 300)
+p
+```
+
+#### IND
+
+```{r fig.height = 8, fig.width=10, echo = FALSE}
+to_string_seq <- function(x, y){paste(seq(x, y, 1), collapse=',')}
+
+dat_to_plot <- df %>% 
+    select(c(k, iso, ind_rank_lower, ind_rank_upper, rhat_k, order_index)) %>%
+    mutate(string_ranks = mapply(to_string_seq, ind_rank_lower, ind_rank_upper)) %>%
+    separate_rows(string_ranks, sep=",") %>%
+    select(c(k, iso, rhat_k, string_ranks, order_index))
+
+dat_to_plot$highlight <- ifelse(dat_to_plot$rhat_k == as.numeric(dat_to_plot$string_ranks), "highlight", "normal")
+
+p <- ggplot(data = dat_to_plot, aes(x = reorder(k, order_index),
+                               y = as.numeric(string_ranks),
+                               label = iso,
+                               color = highlight)) + geom_text(size = 2) +
+  scale_color_manual(values = c("highlight" = "red", "normal" = "black")) +
+  scale_y_continuous(breaks = 1:51) +
+  labs(title='(IND) visualization of the 90% joint confidence') + xlab('States') + ylab('Sample rank') +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),
+        ) +
+  guides(colour=FALSE) +
+    theme(axis.line = element_line(colour = "gray"),
+    panel.grid.minor = element_blank(),
+    panel.grid.major.x = element_blank(),)
+
+#ggsave("../figures/ind_ranks_plot.png", plot = p, width = 10, height = 8, dpi = 300)
+p
+```
+
+## T1, T2, T3
+
+
+```{r}
+tuple_list <- t(apply(df[,c('bonf_ci_lower', 'bonf_ci_upper')], 1, function(row) as.numeric(row)))
+df['bonf_Lambda_Ok_length'] <- sapply(1:K, function(x) length(get_ranks(x, tuple_list)$Lambda_Ok))
+df['bonf_rank_range_length'] <- sapply(1:K, function(x) length(get_ranks(x, tuple_list)$ranks))
+head(tuple_list)
+```
+
+
+```{r}
+kable(head(df[,c("k", "bonf_rank_lower", "bonf_rank_upper", "bonf_ci_lower", "bonf_ci_upper", 'bonf_Lambda_Ok_length', 'bonf_rank_range_length')])) %>% kable_styling(bootstrap_options = "responsive")
+```
+
+
+```{r}
+tuple_list <- t(apply(df[,c('ind_ci_lower', 'ind_ci_upper')], 1, function(row) as.numeric(row)))
+df['ind_Lambda_Ok_length'] <- sapply(1:K, function(x) length(get_ranks(x, tuple_list)$Lambda_Ok))
+df['ind_rank_range_length'] <- sapply(1:K, function(x) length(get_ranks(x, tuple_list)$ranks))
+head(tuple_list)
+```
+
+
+```{r}
+kable(head(df[,c("k", "ind_rank_lower", "ind_rank_upper", "ind_ci_lower", "ind_ci_upper", 'ind_Lambda_Ok_length', 'ind_rank_range_length')])) %>% kable_styling(bootstrap_options = "responsive")
+```
+
+
+```{r echo = FALSE}
+# get_t1 <- function(v){mean(v)}
+# get_t2 <- function(v){prod(v)^(1/length(v))}
+# get_t3 <- function(v){1 - ((length(v)+sum(v))/(length(v)^2))}
+```
+
+
+
+```{r results='asis'}
+#Oks <- list(df$bonf_Lambda_Ok_length, df$ind_Lambda_Ok_length, output[[51]]$kde_Lambda_Ok_length)
+Oks <- list(df$bonf_rank_range_length, df$ind_rank_range_length, output[[51]]$kde_rank_range_length)
+
+kable(data.frame(
+  T1 = sapply(Oks, get_t1),
+  T2 = sapply(Oks, get_t2),
+  T3 = sapply(Oks, get_t3), row.names = c("bonf", "ind", "kde"))) %>% kable_styling(bootstrap_options = "responsive")
+```
+
+## Algorithm 2
+
+```{r}
+library(doParallel)
+library(tictoc)
+alpha <- 0.10
+K <- 10
+df <- readRDS("../data/mean_travel_time_ranking_2011.rds")
+calculate_variance <- function(moe) (moe/1.645)^2
+dataset_or <- df[order(df$k),][1:K,]
+dataset_or['variance'] <- lapply(dataset_or['moe_k'], calculate_variance)
+rownames(dataset_or) <- dataset_or[,2]
+
+
+cl=parallel::makeCluster(15)
+registerDoParallel(cl)
+
+get_coverage <- function(dataset_or, K, reps = 5, B=1000, alpha= 0.10){
+  foreach(iter = 1:reps, .combine = rbind,.packages = c("foreach"), 
+          .export = c("run_algorithm1", 'calculate_variance', "estimate_CDF", 
+                      "get_ranks", "get_t2", "kde_cdf_function",'get_inner_max', 
+                      "inverse")) %dopar% {
+
+  dataset <- dataset_or
+  set.seed(iter)
+  mat2 <- foreach(i = 1:K, .combine = cbind) %do% {
+      rnorm(1, mean = dataset[i, 'theta_k'], sd = sqrt(dataset[i, 'variance']))
+  }
+  
+  colnames(dataset)[colnames(dataset) == 'theta_k'] <- 'otheta_k'
+  
+  dataset$theta_k <- t(mat2)
+  result <- run_algorithm1(B, dataset, iter, alpha)
+  
+  tuple_list <- t(apply(result[,c('kde_ci_lower', 'kde_ci_upper')], 1, function(row) as.numeric(row)))
+  
+  result['ind_rank_range_length'] <- sapply(1:K, function(x) length(get_ranks(x, tuple_list)$ranks))
+
+  result$otheta_k <- dataset$otheta_k
+  
+  sorted_ci <- result[order(result$otheta_k),]
+  #sorted_theta <- sort(dataset$otheta_k)
+  
+  inside_check <- sum(sorted_ci$otheta_k >= sorted_ci$kde_ci_lower & sorted_ci$otheta_k <= sorted_ci$kde_ci_upper)
+  t2_val <- get_t2(result$ind_rank_range_length)
+  
+  data.frame(t2 = t2_val, inside = inside_check)
+}
+}
+tic("Running...")
+coverage_output_df <- get_coverage(dataset_or, K, reps = 5, B=1000, alpha=0.1)
+toc()
+stopCluster(cl)
+#saveRDS(zzz,  paste0("../output/coverage_probability_",K, ".rds"))
+#8999.084 sec elapsed 51
+#5701.035 sec elapsed 30
+#1885.258 sec elapsed 10
+```
+
+```{r}
+coverage_output_df
+```
+
+
+```{r}
+# t
+mean(coverage_output_df$t2)
+```
+
+
+```{r}
+# proportion 
+mean(coverage_output_df$inside==K)
+```
+
+### Results from K = 5000
+
+
+```{r}
+a251<-readRDS("../output/coverage_probability_51.rds")
+print("K = 51")
+print(paste("Coverage:", mean(a251$inside)))
+print(paste("T:",mean(a251$t2)))
+cat("\n")
+a251<-readRDS("../output/coverage_probability_30.rds")
+print("K = 30")
+print(paste("Coverage:", mean(30==a251$inside)))
+print(paste("T:",mean(a251$t2)))
+print(paste("Average within CI:",mean(a251$inside)))
+cat("\n")
+a251<-readRDS("../output/coverage_probability_10.rds")
+print("K = 10")
+print(paste("Coverage:", mean(10==a251$inside)))
+print(paste("T:",mean(a251$t2)))
+print(paste("Average within CI:",mean(a251$inside)))
+```
+
+
+# Appendices
+
+## Kernel Density Estimation
 
 This is from @mariarizzo.
 
@@ -302,484 +829,6 @@ renderPlot({
 
 
 
-# Uncertainty for ranks
-
-Let $\theta_1, \theta_2, \dots, \theta_K$ be the true values of the parameters and let $\theta_{(1)}, \theta_{(2)}, \dots, \theta_{(K)}$ be the corresponding ordered parameter values.
-
-
-Let $F_i$ be the CDF of $\hat{\theta}_{(i)} - \theta_{(i)}, i = 1, 2, \dots, K$. Note that $F_i \left( \hat{\theta}_{(i)} - \theta_{(i)}\right) \sim U(0,1)$. We want the quantity $u$ that satisfies :
-
-$$
-P \left( 1-u < F_i \left ( \hat{\theta}_{(i)}-\theta_{(i)} \right) < u, \forall i\right) = 1 - \alpha
-\\
-\Longleftrightarrow
-P \left( 
-\underset{1 \leq i \leq p} {\max}  
-\left\{ \max
-\left\{
-F_i
-\left( \hat{\theta}_{(i)} - \theta_{(i)}
-\right),
-1-F_i
-\left( \hat{\theta}_{(i)} - \theta_{(i)}
-\right)
-\right\}
-\right\} < u
-\right) = 1 - \alpha
-$$
-
-
-Taking the inverse,
-
-$$
-F_i^{-1} (1-u) <  \hat{\theta}_{(i)}-\theta_{(i)}  < F_i^{-1} (u), i = 1, 2, \dots, K
-$$
-
-Isolating the true value,
-
-$$
-F_i^{-1} (1-u) - \hat{\theta}_{(i)} <  -\theta_{(i)}  < F_i^{-1} (u)-\hat{\theta}_{(i)}
-\\
-\hat{\theta}_{(i)} - F_i^{-1} (u) < \theta_{(i)} < \hat{\theta}_{(i)} - F_i^{-1} (1-u) 
-$$
-
-Problem 1: We do not know $F_i^{-1}$
-Problem 2: We do not know $u$
-
-
-```{r}
-alpha <- 0.10
-K <- 10
-df <- readRDS("../data/mean_travel_time_ranking_2011.rds")
-calculate_variance <- function(moe) (moe/1.645)^2
-dataset <- df[order(df$k),][1:K,]
-dataset['variance'] <- lapply(dataset['moe_k'], calculate_variance)
-rownames(dataset) <- dataset[,2]
-```
-
-
-## Algorithm 1
-
-### Steps
-
-Suppose the data consist of $\hat{\theta}_1, \hat{\theta}_1, \dots, \hat{\theta}_K$ and known values $\sigma_1^2, \sigma_2^2, \dots, \sigma_K^2$
-
-1. Generate $\hat{\theta}^*_{bi} \sim \mathcal{N}(\hat{\theta}_i, \sigma_i^2)$
-
-
-```{r results='asis'}
-library(knitr)
-library(kableExtra)
-
-B=1000
-library(foreach)
-set.seed(4)
-mat1 <- foreach(i = 1:K, .combine = cbind) %do% {
-  foreach(b = 1:B, .combine = c) %do% {
-    rnorm(1, mean = dataset[i, 'theta_k'], sd = sqrt(dataset[i, 'variance']))
-  }
-}
-
-kable(head(mat1)) %>% kable_styling(bootstrap_options = "responsive")
-```
-
-2. For each $b$, order the set $\left\{ \hat{\theta}^*_{b1}, \hat{\theta}^*_{b2}, \dots, \hat{\theta}^*_{bK} \right\}$ to obtain $\left\{ \hat{\theta}^*_{b(1)}, \hat{\theta}^*_{b(2)}, \dots, \hat{\theta}^*_{b(K)} \right\}$
-
-
-```{r results='asis'}
-source('../R/algo1_helper.R')
-mat1_sorted <- t(apply(mat1, 1, sort))
-
-kable(head(mat1_sorted)) %>% kable_styling(bootstrap_options = "responsive")
-```
-
-3. For each $b$, compute the difference $r^*_{bi} = \hat{\theta}^*_{b(i)} - \hat{\theta}^*_{(i)}, i = 1, 2, \dots, K$
-
-```{r results='asis'}
-r <- mat1_sorted - matrix(sort(t(dataset['theta_k'])),B, K, byrow=TRUE)
-kable(head(r)) %>% kable_styling(bootstrap_options = "responsive")
-```
-
-4. Let $F_i$ be the density of $\hat{\theta}_{(i)} - \theta_{(i)}, i = 1, 2, \dots, K$. Estimate each $F_i$ bu computing $\hat{F}_i$ using KDE based on $r^*_{1i}, r^*_{2i}, \dots, r^*_{Bi}$, that is
-
-$$
-\hat{F}_i(x) = \frac{1}{B}\sum^B_{\alpha=1} \Phi \left( \frac{x-r^*_{\alpha i}}{h_i} \right), \ \ \ h_i=0.9\min\{S_i, IQR_i/1.34\}\ B^{-1/5}
-$$
-```{r}
-#source('../R/algo1_helper.R')
-# kde_cdf_function <- function(datapoints, bandwidth) {
-#   return(function(x) mean(pnorm((x - datapoints) / bandwidth)))
-# }
-# 
-# estimate_CDF <- function(dataset, i){
-#   S = sqrt(dataset[i,'variance'])#sd(r[,i])
-#   IQR = quantile(r[,i], .75) - quantile(r[,i], .25)
-#   h_i <- 0.9*min(S, IQR/1.34)*(B^(1/5))
-#   return(kde_cdf_function(r[,i], h_i))
-# }
-
-estimated_CDF <- lapply(1:K, function(x)(estimate_CDF(dataset, x, r)))
-```
-
-5. Compute $Y^*_{bi}= \hat{F}_i(r^*_{bi})$ for each $b = 1, 2, \dots, B$ and $i = 1, 2, \dots, K$
-
-```{r results='asis'}
-# get_inner_max <- function(value) return(max(value, 1-value))
-
-Y <- foreach(i = 1:K, .combine = cbind) %do% {
-  sapply(r[,i], estimated_CDF[[i]])
-}
-
-kable(head(Y)) %>% kable_styling(bootstrap_options = "responsive")
-```
-
-6. Compute $U^*_b = \underset{1 \leq i \leq p} {\max} \{\max\{Y^*_{bi}, 1-Y^*_{bi}\}\}$ for $b = 1, 2, \dots, B$
-
-```{r results='asis'}
-U <- apply(apply(Y, MARGIN = c(1, 2), FUN = get_inner_max), 1, max)
-head(U)
-```
-
-7. Compute $\hat{u}$ as the $(1-\alpha)$-sample quantile of $U^*_1, U^*_2, \dots, U^*_B$
-
-```{r}
-uhat <- quantile(U, probs = 1 - alpha)
-uhat
-```
-
-8. The join confidence region is calculated
-
-```{r results='asis'}
-library("GoFKernel")
-
-F.inv <- lapply(estimated_CDF, function(F){inverse(F, lower = -100, upper = 100)})
-dataset['F.inv_u'] <- sapply(1:K, function(i){F.inv[[i]](uhat)})
-dataset['F.inv_1-u'] <- sapply(1:K, function(i){F.inv[[i]](1-uhat)})
-
-dataset['kde_ci_lower'] <- dataset['theta_k'] - dataset['F.inv_u'] 
-dataset['kde_ci_upper'] <- dataset['theta_k'] - dataset['F.inv_1-u'] 
-
-kable(head(dataset)) %>% kable_styling(bootstrap_options = "responsive")
-```
-
-### Full function
-
-
-```{r}
-source('../R/algo1_helper.R')
-library(foreach)
-library("GoFKernel")
-
-alpha <- 0.10
-df <- readRDS("../data/mean_travel_time_ranking_2011.rds")
-```
-
-
-```{r}
-dataset <- df[order(df$k),][1:30,]
-B=1000
-
-run_algorithm1 <- function(B, dataset, seed = 4) {
-  dataset['variance'] <- lapply(dataset['moe_k'], calculate_variance)
-  K <- dim(dataset)[1]
-  set.seed(seed)
-  mat1 <- foreach(i = 1:K, .combine = cbind) %do% {
-    foreach(b = 1:B, .combine = c) %do% {
-      rnorm(1, mean = dataset[i, 'theta_k'], sd = sqrt(dataset[i, 'variance']))
-    }
-  }
-  # 2
-  mat1_sorted <- t(apply(mat1, 1, sort))
-  # 3
-  r <- mat1_sorted - matrix(sort(t(dataset['theta_k'])),B, K, byrow=TRUE)
-  # 4
-  estimated_CDF <- lapply(1:K, function(x)(estimate_CDF(dataset, x, r)))
-  # 5
-  Y <- foreach(i = 1:K, .combine = cbind) %do% {
-    sapply(r[,i], estimated_CDF[[i]])
-  }
-  # 6
-  U <- apply(apply(Y, MARGIN = c(1, 2), FUN = get_inner_max), 1, max)
-  # 7
-  uhat <- quantile(U, probs = 1 - alpha)
-  # 8
-  
-  F.inv <- lapply(estimated_CDF, function(F){inverse(F, lower = -100, upper = 100)})
-  dataset['F.inv_u'] <- sapply(1:K, function(i){F.inv[[i]](uhat)})
-  dataset['F.inv_1-u'] <- sapply(1:K, function(i){F.inv[[i]](1-uhat)})
-  dataset['kde_ci_lower'] <- dataset['theta_k'] - dataset['F.inv_u'] 
-  dataset['kde_ci_upper'] <- dataset['theta_k'] - dataset['F.inv_1-u']
-  return(dataset[, c('rhat_k', 'k', 'theta_k', 'kde_ci_lower', 'kde_ci_upper')])
-}
-```
-
-### Application to diff K
-```{r eval = FALSE}
-
-alpha <- 0.10
-df <- readRDS("../data/mean_travel_time_ranking_2011.rds")
-
-B=1000
-
-for (K in c(10, 20, 30, 40, 51)) {
-  dataset <- df[order(df$k),][1:K,]
-  result <- run_algorithm1(B, dataset)
-
-  filename <- paste0("../data/kde_intervals_", K, ".rds")
-  saveRDS(result, file = filename)
-}
-```
-
-
-```{r results='asis'}
-get_ranks <- function(k, tuple_list){
-  Lambda_lk <- which(tuple_list[,2]<=tuple_list[k,1])
-  Lambda_lk <- Lambda_lk[Lambda_lk != k]
-  Lambda_Ok <- which(tuple_list[,2]>tuple_list[k,1] & tuple_list[k,2] > tuple_list[,1])
-  Lambda_Ok <- Lambda_Ok[Lambda_Ok != k]
-
-  # return(paste(seq(length(unique(Lambda_lk))+1, 
-  #     length(unique(Lambda_lk)) + length(unique(Lambda_Ok)) + 1, 
-  #     1), collapse = ", "))
-  ranks <- seq(
-    length(unique(Lambda_lk)) + 1,
-    length(unique(Lambda_lk)) + length(unique(Lambda_Ok)) + 1,
-    1
-  )
-  
-  return(list(
-    ranks = ranks,
-    Lambda_Ok = Lambda_Ok
-  ))
-  
-  
-}
-
-output <- list()
-
-for (K in c(10, 20, 30, 40, 51)) {
-  filename <- paste0("../data/kde_intervals_", K, ".rds")
-  output[[K]] <- readRDS(filename)
-  tuple_list <- t(apply(output[[K]][,c('kde_ci_lower', 'kde_ci_upper')], 1, function(row) as.numeric(row)))
-  
-  output[[K]]['kde_rank_lower'] <- sapply(1:K, function(x) min(get_ranks(x, tuple_list)$ranks))
-  output[[K]]['kde_rank_upper'] <- sapply(1:K, function(x) max(get_ranks(x, tuple_list)$ranks))
-  output[[K]]['kde_Lambda_Ok_length'] <- sapply(1:K, function(x) length(get_ranks(x, tuple_list)$Lambda_Ok))
-  output[[K]]['kde_rank_range_length'] <- sapply(1:K, function(x) length(get_ranks(x, tuple_list)$ranks))
-  print(paste("**** Output shown for K=", K, "****"))
-  
-  output[[K]]['sample_rank'] <- rank(output[[K]]$theta_k, ties.method = "max")
-  print(kable(output[[K]][order(output[[K]]$theta_k), ], row.names = FALSE) %>% kable_styling(bootstrap_options = "responsive"))
-  cat("\n\n---\n\n")
-}
-```
-
-
-```{r}
-
-```
-
-
-```{r fig.height = 8, fig.width=10, echo = FALSE}
-kde_result <- output[[51]]
-df <- readRDS("../data/mean_travel_time_ranking_2011.rds")
-df$order_index <- seq(K, 1, -1)
-
-df$iso <- c('MD', 'NY', 'NJ', 'DC','IL', 'MA', 'VA', 'CA', 'GA', 'NH', 'PA', 'FL', 'HI', 'WV','WA', 'DE', 'CT', 'AZ', 'TX', 'CO','LA', 'TN', 'MI', 'NV', 'AL', 'MS', 'SC', 'IN', 'ME', 'NC', 'RI', 'MO', 'OH', 'MN', 'KY', 'OR', 'VT', 'WI', 'UT', 'NM', 'AR', 'OK', 'ID', 'KS', 'IA', 'AK', 'MT', 'NE', 'WY', 'ND', 'SD'  )
-
-kde_result <- merge(x = df[,c('k', 'iso', 'order_index')], y = kde_result, by = "k", all.x = TRUE)
-
-library(ggplot2)
-library(dplyr)
-library(tidyr)
-
-to_string_seq <- function(x, y){paste(seq(x, y, 1), collapse=',')}
-
-dat_to_plot <- kde_result %>% 
-    select(c(k, iso, kde_rank_lower, kde_rank_upper, sample_rank, order_index)) %>%
-    mutate(string_ranks = mapply(to_string_seq, kde_rank_lower, kde_rank_upper)) %>%
-    separate_rows(string_ranks, sep=",") %>%
-    select(c(k, iso, sample_rank, string_ranks, order_index))
-
-dat_to_plot$highlight <- ifelse(dat_to_plot$sample_rank == as.numeric(dat_to_plot$string_ranks), "highlight", "normal")
-
-p <- ggplot(data = dat_to_plot, aes(x = reorder(k, order_index),
-                               y = as.numeric(string_ranks),
-                               label = iso,
-                               color = highlight)) + geom_text(size = 2) +
-  scale_color_manual(values = c("highlight" = "red", "normal" = "black")) +
-  scale_y_continuous(breaks = 1:51) +
-  labs(title='(KDE) visualization of the 90% joint confidence') + xlab('States') + ylab('Sample rank') +
-  theme_bw() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1),
-        ) +
-  guides(colour=FALSE) +
-    theme(axis.line = element_line(colour = "gray"),
-    panel.grid.minor = element_blank(),
-    panel.grid.major.x = element_blank(),)
-
-#ggsave("../figures/kde_ranks_plot.png", plot = p, width = 10, height = 8, dpi = 300)
-p
-```
-
-
-
-```{r fig.height = 8, fig.width=10, echo = FALSE}
-to_string_seq <- function(x, y){paste(seq(x, y, 1), collapse=',')}
-
-dat_to_plot <- df %>% 
-    select(c(k, iso, ind_rank_lower, ind_rank_upper, rhat_k, order_index)) %>%
-    mutate(string_ranks = mapply(to_string_seq, ind_rank_lower, ind_rank_upper)) %>%
-    separate_rows(string_ranks, sep=",") %>%
-    select(c(k, iso, rhat_k, string_ranks, order_index))
-
-dat_to_plot$highlight <- ifelse(dat_to_plot$rhat_k == as.numeric(dat_to_plot$string_ranks), "highlight", "normal")
-
-p <- ggplot(data = dat_to_plot, aes(x = reorder(k, order_index),
-                               y = as.numeric(string_ranks),
-                               label = iso,
-                               color = highlight)) + geom_text(size = 2) +
-  scale_color_manual(values = c("highlight" = "red", "normal" = "black")) +
-  scale_y_continuous(breaks = 1:51) +
-  labs(title='(IND) visualization of the 90% joint confidence') + xlab('States') + ylab('Sample rank') +
-  theme_bw() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1),
-        ) +
-  guides(colour=FALSE) +
-    theme(axis.line = element_line(colour = "gray"),
-    panel.grid.minor = element_blank(),
-    panel.grid.major.x = element_blank(),)
-
-#ggsave("../figures/ind_ranks_plot.png", plot = p, width = 10, height = 8, dpi = 300)
-p
-```
-
-## T1, T2, T3
-
-
-```{r}
-tuple_list <- t(apply(df[,c('bonf_ci_lower', 'bonf_ci_upper')], 1, function(row) as.numeric(row)))
-df['bonf_Lambda_Ok_length'] <- sapply(1:K, function(x) length(get_ranks(x, tuple_list)$Lambda_Ok))
-df['bonf_rank_range_length'] <- sapply(1:K, function(x) length(get_ranks(x, tuple_list)$ranks))
-
-tuple_list <- t(apply(df[,c('ind_ci_lower', 'ind_ci_upper')], 1, function(row) as.numeric(row)))
-df['ind_Lambda_Ok_length'] <- sapply(1:K, function(x) length(get_ranks(x, tuple_list)$Lambda_Ok))
-df['ind_rank_range_length'] <- sapply(1:K, function(x) length(get_ranks(x, tuple_list)$ranks))
-```
-
-
-```{r results='asis'}
-get_t1 <- function(v){mean(v)}
-get_t2 <- function(v){prod(v)^(1/length(v))}
-get_t3 <- function(v){1 - ((length(v)+sum(v))/(length(v)^2))}
-
-#Oks <- list(df$bonf_Lambda_Ok_length, df$ind_Lambda_Ok_length, output[[51]]$kde_Lambda_Ok_length)
-Oks <- list(df$bonf_rank_range_length, df$ind_rank_range_length, output[[51]]$kde_rank_range_length)
-
-kable(data.frame(T1 = sapply(Oks, get_t1),
-           T2 = sapply(Oks, get_t2),
-           T3 = sapply(Oks, get_t3), row.names = c("bonf", "ind", "kde"))) %>% kable_styling(bootstrap_options = "responsive")
-```
-
-## Algorithm 2
-
-```{r}
-library(doParallel)
-library(tictoc)
-alpha <- 0.10
-K <- 30
-df <- readRDS("../data/mean_travel_time_ranking_2011.rds")
-calculate_variance <- function(moe) (moe/1.645)^2
-dataset_or <- df[order(df$k),][1:K,]
-dataset_or['variance'] <- lapply(dataset_or['moe_k'], calculate_variance)
-rownames(dataset_or) <- dataset_or[,2]
-
-
-cl=parallel::makeCluster(15)
-registerDoParallel(cl)
-
-home1 <- function(){
-outt <- foreach(iter = 1:5000, .combine = rbind,.packages = c("foreach"), .export = c('alpha', 'K', "df", "dataset_or", "run_algorithm1", 'calculate_variance', "B", "estimate_CDF", "get_ranks", "get_t2", "kde_cdf_function",'get_inner_max', "inverse")) %dopar% {
-
-  dataset <- dataset_or
-  set.seed(iter)
-  mat2 <- foreach(i = 1:K, .combine = cbind) %do% {
-      rnorm(1, mean = dataset[i, 'theta_k'], sd = sqrt(dataset[i, 'variance']))
-  }
-  
-  colnames(dataset)[colnames(dataset) == 'theta_k'] <- 'otheta_k'
-  
-  dataset$theta_k <- t(mat2)
-  result <- run_algorithm1(B, dataset, iter)
-  
-  tuple_list <- t(apply(result[,c('kde_ci_lower', 'kde_ci_upper')], 1, function(row) as.numeric(row)))
-  
-  result['ind_rank_range_length'] <- sapply(1:K, function(x) length(get_ranks(x, tuple_list)$ranks))
-
-  result$otheta_k <- dataset$otheta_k
-  
-  sorted_ci <- result[order(result$otheta_k),] # mali sorting
-  #sorted_theta <- sort(dataset$otheta_k)
-  
-  inside_check <- sum(sorted_ci$otheta_k >= sorted_ci$kde_ci_lower & sorted_ci$otheta_k <= sorted_ci$kde_ci_upper)
-  t2_val <- get_t2(result$ind_rank_range_length)
-  
-  data.frame(t2 = t2_val, inside = inside_check)
-}
-}
-tic("Running...")
-zzz <- home1()
-toc()
-stopCluster(cl)
-saveRDS(zzz,  paste0("../output/coverage_probability_",K, ".rds"))
-#8999.084 sec elapsed 51
-#5701.035 sec elapsed 30
-#1885.258 sec elapsed 10
-```
-```{r}
-saveRDS(zzz,  paste0("../output/coverage_probability_",K, ".rds"))
-```
-
-
-
-```{r}
-a251<-readRDS("../output/coverage_probability_51.rds")
-mean(a251$inside)
-mean(a251$t2)
-```
-
-```{r}
-a251<-readRDS("../output/coverage_probability_30.rds")
-mean(30==a251$inside)
-mean(a251$t2)
-mean(a251$inside)
-```
-```{r}
-a251<-readRDS("../output/coverage_probability_10.rds")
-mean(10==a251$inside)
-mean(a251$t2)
-mean(a251$inside)
-```
-
-
-
-```{r}
-3.53-51
-```
-
-```{r}
-mean(10-zzz$t2)
-```
-
-
-
-```{r}
-so
-```
-
-
-# Appendices
-
 ... checking `get_ranks` fcn is aligned to handout example
 
 ```{r}
@@ -807,6 +856,57 @@ tuple_list <- t(apply(df[,c('ind_ci_lower', 'ind_ci_upper')], 1, function(row) a
 df$ind_rank_lower == sapply(1:K, function(x) min(get_ranks(x, tuple_list)$ranks))
 df$ind_rank_upper == sapply(1:K, function(x) max(get_ranks(x, tuple_list)$ranks))
 ```
+
+
+## Looped coverage
+
+```{r echo = FALSE, eval = FALSE}
+get_coverage <- function(dataset_or, K, reps = 5, B = 1000, alpha = 0.1) {
+  results_list <- vector("list", reps)  # preallocate list for results
+  
+  for (iter in 1:reps) {
+    set.seed(iter)
+    dataset <- dataset_or
+    
+    # Generate one sample per row
+    mat2 <- sapply(1:K, function(i) {
+      rnorm(1, mean = dataset[i, 'theta_k'], sd = sqrt(dataset[i, 'variance']))
+    })
+    
+    dataset$otheta_k <- dataset$theta_k
+    dataset$theta_k <- mat2  # already a vector, no need to transpose
+    
+    result <- run_algorithm1(B, dataset, iter)
+    
+    tuple_list <- t(apply(result[, c('kde_ci_lower', 'kde_ci_upper')], 1, as.numeric))
+    
+    result$ind_rank_range_length <- sapply(1:K, function(x) {
+      length(get_ranks(x, tuple_list)$ranks)
+    })
+    
+    result$otheta_k <- dataset$otheta_k
+    
+    sorted_ci <- result[order(result$otheta_k), ]
+    inside_check <- sum(sorted_ci$otheta_k >= sorted_ci$kde_ci_lower &
+                        sorted_ci$otheta_k <= sorted_ci$kde_ci_upper)
+    
+    t2_val <- get_t2(result$ind_rank_range_length)
+    
+    results_list[[iter]] <- data.frame(t2 = t2_val, inside = inside_check)
+  }
+  
+  # Combine all iteration results
+  do.call(rbind, results_list)
+}
+
+looped <- get_coverage(dataset_or, K, reps = 5, B = 1000, alpha = 0.1)
+```
+
+
+```{r echo = FALSE, eval = FALSE}
+all_equal(looped, zzz)
+```
+
 
 
 # References
