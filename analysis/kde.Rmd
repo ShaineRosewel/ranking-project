@@ -446,11 +446,11 @@ kable(data.frame(
 
 ## Algorithm 2
 
-```{r}
+```{r echo = FALSE, eval = FALSE}
 library(doParallel)
 library(tictoc)
 alpha <- 0.10
-K <- 10
+K <- 40
 df <- readRDS("../data/mean_travel_time_ranking_2011.rds")
 calculate_variance <- function(moe) (moe/1.645)^2
 dataset_or <- df[order(df$k),][1:K,]
@@ -462,9 +462,9 @@ cl=parallel::makeCluster(15)
 registerDoParallel(cl)
 
 get_coverage <- function(dataset_or, K, reps = 5, B=1000, alpha= 0.10){
-  foreach(iter = 1:reps, .combine = rbind,.packages = c("foreach"), 
-          .export = c("run_algorithm1", 'calculate_variance', "estimate_CDF", 
-                      "get_ranks", "get_t2", "kde_cdf_function",'get_inner_max', 
+  foreach(iter = 1:reps, .combine = rbind,.packages = c("foreach"),
+          .export = c("run_algorithm1", 'calculate_variance', "estimate_CDF",
+                      "get_ranks", "get_t2", "kde_cdf_function",'get_inner_max',
                       "inverse")) %dopar% {
 
   dataset <- dataset_or
@@ -472,75 +472,62 @@ get_coverage <- function(dataset_or, K, reps = 5, B=1000, alpha= 0.10){
   mat2 <- foreach(i = 1:K, .combine = cbind) %do% {
       rnorm(1, mean = dataset[i, 'theta_k'], sd = sqrt(dataset[i, 'variance']))
   }
-  
+  sort_reference <- data.frame(theta = dataset$theta_k, theta_k = t(mat2))
   colnames(dataset)[colnames(dataset) == 'theta_k'] <- 'otheta_k'
-  
+
+
+
   dataset$theta_k <- t(mat2)
   result <- run_algorithm1(B, dataset, iter, alpha)
-  
+
   tuple_list <- t(apply(result[,c('kde_ci_lower', 'kde_ci_upper')], 1, function(row) as.numeric(row)))
-  
+
   result['ind_rank_range_length'] <- sapply(1:K, function(x) length(get_ranks(x, tuple_list)$ranks))
 
-  result$otheta_k <- dataset$otheta_k
-  
-  sorted_ci <- result[order(result$otheta_k),]
+  #result$otheta_k <- dataset$otheta_k
+  #sorted_ci <- result[order(result$otheta_k),]
   #sorted_theta <- sort(dataset$otheta_k)
-  
-  inside_check <- sum(sorted_ci$otheta_k >= sorted_ci$kde_ci_lower & sorted_ci$otheta_k <= sorted_ci$kde_ci_upper)
+
+  ci <- merge(result, sort_reference, by = "theta_k", all = FALSE)
+  sorted_ci <- ci[order(ci$theta),]
+
+  inside_check <- sum(sorted_ci$theta >= sorted_ci$kde_ci_lower & sorted_ci$theta <= sorted_ci$kde_ci_upper)
   t2_val <- get_t2(result$ind_rank_range_length)
-  
+
   data.frame(t2 = t2_val, inside = inside_check)
 }
 }
 tic("Running...")
-coverage_output_df <- get_coverage(dataset_or, K, reps = 5, B=1000, alpha=0.1)
+coverage_output_df <- get_coverage(dataset_or, K, reps = 100, B=1000, alpha=0.1)
 toc()
 stopCluster(cl)
-#saveRDS(zzz,  paste0("../output/coverage_probability_",K, ".rds"))
+saveRDS(coverage_output_df,  paste0("../output/coverage_probability_",K, ".rds"))
 #8999.084 sec elapsed 51
 #5701.035 sec elapsed 30
 #1885.258 sec elapsed 10
 ```
 
-```{r}
-coverage_output_df
+### Results from **100** reps
+
+```{r echo = FALSE, results = "asis"}
+Ks <- c(51, 40, 30, 20, 10)
+
+results <- lapply(Ks, function(K) {
+  a <- readRDS(paste0("../output/coverage_probability_", K, ".rds"))
+  data.frame(
+    K = K,
+    Coverage = mean(a$inside == K),  # only TRUE if inside == K
+    Within_CI_mean = mean(a$inside),
+    Within_CI_max = max(a$inside),
+    Within_CI_min = min(a$inside),
+    T_mean = mean(a$t2)
+  )
+})
+
+df <- do.call(rbind, results)
+
+kable(df) %>% kable_styling(bootstrap_options = "responsive")
 ```
-
-
-```{r}
-# t
-mean(coverage_output_df$t2)
-```
-
-
-```{r}
-# proportion 
-mean(coverage_output_df$inside==K)
-```
-
-### Results from K = 5000
-
-
-```{r}
-a251<-readRDS("../output/coverage_probability_51.rds")
-print("K = 51")
-print(paste("Coverage:", mean(a251$inside)))
-print(paste("T:",mean(a251$t2)))
-cat("\n")
-a251<-readRDS("../output/coverage_probability_30.rds")
-print("K = 30")
-print(paste("Coverage:", mean(30==a251$inside)))
-print(paste("T:",mean(a251$t2)))
-print(paste("Average within CI:",mean(a251$inside)))
-cat("\n")
-a251<-readRDS("../output/coverage_probability_10.rds")
-print("K = 10")
-print(paste("Coverage:", mean(10==a251$inside)))
-print(paste("T:",mean(a251$t2)))
-print(paste("Average within CI:",mean(a251$inside)))
-```
-
 
 # Appendices
 
@@ -592,8 +579,6 @@ weights <- sapply(t, naive_kernel)
 # naive density estimate for a point x
 f_hat <- (1 / (n * h)) * sum(weights)
 print(f_hat)
-
-
 ```
 
 ```{r}
