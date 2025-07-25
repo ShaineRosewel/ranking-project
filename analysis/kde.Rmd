@@ -213,7 +213,13 @@ alpha <- 0.10
 K <- 10
 B <- 1000
 df <- readRDS("../data/mean_travel_time_ranking_2011.rds")
+#df$S <-0.2
 ```
+
+```{r}
+df
+```
+
 
 ```{r}
 # filter accdg to K
@@ -466,8 +472,9 @@ library(doParallel)
 library(arrow)
 library(tictoc)
 alpha <- 0.10
-K <- 20
+K <- 10
 df <- readRDS("../data/mean_travel_time_ranking_2011.rds")
+#df$S <- 0.2
 #calculate_variance <- function(moe) (moe/1.645)^2
 dataset_or <- df[order(df$k),][1:K,]
 #dataset_or['variance'] <- lapply(dataset_or['moe_k'], calculate_variance)
@@ -571,8 +578,6 @@ misses %>%
   labs(color = "On Target?") + xlab("State Arranged in Increasing S") + ylab("Difference from closest bound") + scale_size_continuous(trans = "sqrt", range = c(0, 3)) + guides(size = FALSE)
 ```
 
-
-
 K = 20 
 
 ```{r echo = FALSE, results = "asis", fig.width=9}
@@ -590,7 +595,7 @@ misses %>%
   scale_color_manual(values = c("FALSE" = "black", "TRUE" = "red")) +
   theme_bw() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-  labs(color = "On Target?") + xlab("State Arranged in Increasing S") + ylab("Difference from closest bound") + scale_size_continuous(trans = "sqrt", range = c(0, 3)) + guides(size = FALSE)
+  labs(color = "On Target?") + xlab("States with all S = 0.2") + ylab("Difference from closest bound") + scale_size_continuous(trans = "sqrt", range = c(0, 3)) + guides(size = FALSE)
 ```
 
 K = 30
