@@ -533,91 +533,117 @@ saveRDS(coverage_output_df,  paste0("../output/coverage_probability_",K, ".rds")
 
 K = 10
 
-```{r echo = FALSE, results = "asis"}
+```{r echo = FALSE, results = "asis", fig.width=9}
 library(arrow)
-file_list <- list.files(path = "../output/iters/K10", pattern = "\\.feather$", full.names = TRUE)
+df <- readRDS("../data/mean_travel_time_ranking_2011.rds")
+get_iter_misses <- function(K){
+  file_list <- list.files(path = paste0("../output/iters/K",K), pattern = "\\.feather$", full.names = TRUE)
+  
+  coverage_output_df <- lapply(file_list, function(file) {
+    df <- read_feather(file)
+    df$filename <- basename(file)  # or use tools::file_path_sans_ext(basename(file)) to remove .feather
+    return(df)
+  }) %>%
+    bind_rows()
+  
+  subs <- coverage_output_df[,c('k', "theta_k", "theta", "kde_ci_lower", "kde_ci_upper", "filename")]
+  subs$theta_within <- (subs$theta >= subs$kde_ci_lower) & (subs$theta <= subs$kde_ci_upper)
+  subs$theta_k_within <- (subs$theta_k >= subs$kde_ci_lower) & (subs$theta_k <= subs$kde_ci_upper)
+  return(subs %>% select(c('k', "theta_k", "theta", "kde_ci_lower", "kde_ci_upper", "theta_within", "filename")))# %>% filter(!theta_within))
+  }
 
-coverage_output_df <- lapply(file_list, function(file) {
-  df <- read_feather(file)
-  df$filename <- basename(file)  # or use tools::file_path_sans_ext(basename(file)) to remove .feather
-  return(df)
-}) %>%
-  bind_rows()
+misses <- get_iter_misses(K = 10)
+misses$diff1 <- misses$theta - misses$kde_ci_lower
+misses$diff2 <- misses$theta - misses$kde_ci_upper
 
-subs <- coverage_output_df[,c('k', "theta_k", "theta", "kde_ci_lower", "kde_ci_upper", "filename")]
-subs$theta_within <- (subs$theta >= subs$kde_ci_lower) & (subs$theta <= subs$kde_ci_upper)
-subs$theta_k_within <- (subs$theta_k >= subs$kde_ci_lower) & (subs$theta_k <= subs$kde_ci_upper)
-kable(subs %>% select(c('k', "theta_k", "theta", "kde_ci_lower", "kde_ci_upper", "theta_within", "filename")) %>% filter(!theta_within)) %>% kable_styling(bootstrap_options = "responsive")
+
+misses$closest_diff <- ifelse(abs(misses$diff1)<abs(misses$diff2), misses$diff1, 1*misses$diff2)
+misses$closest_diff <- ifelse(!misses$theta_within, misses$closest_diff, 0)
+
+misses <- misses %>% left_join(df[, c('k', 'S')], by = "k")
+
+misses %>%
+  ggplot(aes(x = reorder(k, S), y = closest_diff)) +
+  geom_point(aes(color = closest_diff == 0, size = S), alpha = 0.2) +
+  scale_color_manual(values = c("FALSE" = "black", "TRUE" = "red")) +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  labs(color = "On Target?") + xlab("State Arranged in Increasing S") + ylab("Difference from closest bound") + scale_size_continuous(trans = "sqrt", range = c(0, 3)) + guides(size = FALSE)
 ```
+
+
 
 K = 20 
 
-```{r echo = FALSE, results = "asis"}
-file_list <- list.files(path = "../output/iters/K20", pattern = "\\.feather$", full.names = TRUE)
+```{r echo = FALSE, results = "asis", fig.width=9}
+misses <- get_iter_misses(K = 20)
+misses$diff1 <- misses$theta - misses$kde_ci_lower
+misses$diff2 <- misses$theta - misses$kde_ci_upper
 
-coverage_output_df <- lapply(file_list, function(file) {
-  df <- read_feather(file)
-  df$filename <- basename(file)  # or use tools::file_path_sans_ext(basename(file)) to remove .feather
-  return(df)
-}) %>%
-  bind_rows()
+misses <- misses %>% left_join(df[, c('k', 'S')], by = "k")
 
-subs <- coverage_output_df[,c('k', "theta_k", "theta", "kde_ci_lower", "kde_ci_upper", "filename")]
-subs$theta_within <- (subs$theta >= subs$kde_ci_lower) & (subs$theta <= subs$kde_ci_upper)
-subs$theta_k_within <- (subs$theta_k >= subs$kde_ci_lower) & (subs$theta_k <= subs$kde_ci_upper)
-kable(subs %>% select(c('k', "theta_k", "theta", "kde_ci_lower", "kde_ci_upper", "theta_within", "filename")) %>% filter(!theta_within)) %>% kable_styling(bootstrap_options = "responsive")
+misses$closest_diff <- ifelse(abs(misses$diff1)<abs(misses$diff2), misses$diff1, 1*misses$diff2)
+misses$closest_diff <- ifelse(!misses$theta_within, misses$closest_diff, 0)
+misses %>%
+  ggplot(aes(x = reorder(k, S), y = closest_diff)) +
+  geom_point(aes(color = closest_diff == 0, size = S), alpha = 0.2) +
+  scale_color_manual(values = c("FALSE" = "black", "TRUE" = "red")) +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  labs(color = "On Target?") + xlab("State Arranged in Increasing S") + ylab("Difference from closest bound") + scale_size_continuous(trans = "sqrt", range = c(0, 3)) + guides(size = FALSE)
 ```
 
 K = 30
 
-```{r echo = FALSE, results = "asis"}
-file_list <- list.files(path = "../output/iters/K30", pattern = "\\.feather$", full.names = TRUE)
+```{r echo = FALSE, results = "asis", fig.width=10}
+misses <- get_iter_misses(K = 30)
+misses$diff1 <- misses$theta - misses$kde_ci_lower
+misses$diff2 <- misses$theta - misses$kde_ci_upper
 
-coverage_output_df <- lapply(file_list, function(file) {
-  df <- read_feather(file)
-  df$filename <- basename(file)  # or use tools::file_path_sans_ext(basename(file)) to remove .feather
-  return(df)
-}) %>%
-  bind_rows()
-
-subs <- coverage_output_df[,c('k', "theta_k", "theta", "kde_ci_lower", "kde_ci_upper", "filename")]
-subs$theta_within <- (subs$theta >= subs$kde_ci_lower) & (subs$theta <= subs$kde_ci_upper)
-subs$theta_k_within <- (subs$theta_k >= subs$kde_ci_lower) & (subs$theta_k <= subs$kde_ci_upper)
-kable(subs %>% select(c('k', "theta_k", "theta", "kde_ci_lower", "kde_ci_upper", "theta_within", "filename")) %>% filter(!theta_within)) %>% kable_styling(bootstrap_options = "responsive")
+misses <- misses %>% left_join(df[, c('k', 'S')], by = "k")
+misses$closest_diff <- ifelse(abs(misses$diff1)<abs(misses$diff2), misses$diff1, 1*misses$diff2)
+misses$closest_diff <- ifelse(!misses$theta_within, misses$closest_diff, 0)
+misses %>%
+  ggplot(aes(x = reorder(k, S), y = closest_diff)) +
+  geom_point(aes(color = closest_diff == 0, size = S), alpha = 0.2) +
+  scale_color_manual(values = c("FALSE" = "black", "TRUE" = "red")) +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  labs(color = "On Target?") + xlab("State Arranged in Increasing S") + ylab("Difference from closest bound") + scale_size_continuous(trans = "sqrt", range = c(0, 3)) + guides(size = FALSE)
 ```
 K = 40
 
-```{r echo = FALSE, results = "asis"}
-file_list <- list.files(path = "../output/iters/K40", pattern = "\\.feather$", full.names = TRUE)
-
-coverage_output_df <- lapply(file_list, function(file) {
-  df <- read_feather(file)
-  df$filename <- basename(file)  # or use tools::file_path_sans_ext(basename(file)) to remove .feather
-  return(df)
-}) %>%
-  bind_rows()
-
-subs <- coverage_output_df[,c('k', "theta_k", "theta", "kde_ci_lower", "kde_ci_upper", "filename")]
-subs$theta_within <- (subs$theta >= subs$kde_ci_lower) & (subs$theta <= subs$kde_ci_upper)
-subs$theta_k_within <- (subs$theta_k >= subs$kde_ci_lower) & (subs$theta_k <= subs$kde_ci_upper)
-kable(subs %>% select(c('k', "theta_k", "theta", "kde_ci_lower", "kde_ci_upper", "theta_within", "filename")) %>% filter(!theta_within)) %>% kable_styling(bootstrap_options = "responsive")
+```{r echo = FALSE, results = "asis", fig.width=10}
+misses <- get_iter_misses(K = 40)
+misses$diff1 <- misses$theta - misses$kde_ci_lower
+misses$diff2 <- misses$theta - misses$kde_ci_upper
+misses <- misses %>% left_join(df[, c('k', 'S')], by = "k")
+misses$closest_diff <- ifelse(abs(misses$diff1)<abs(misses$diff2), misses$diff1, 1*misses$diff2)
+misses$closest_diff <- ifelse(!misses$theta_within, misses$closest_diff, 0)
+misses %>%
+  ggplot(aes(x = reorder(k, S), y = closest_diff)) +
+  geom_point(aes(color = closest_diff == 0, size = S), alpha = 0.2) +
+  scale_color_manual(values = c("FALSE" = "black", "TRUE" = "red")) +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  labs(color = "On Target?") + xlab("State Arranged in Increasing S") + ylab("Difference from closest bound") + scale_size_continuous(trans = "sqrt", range = c(0, 3)) + guides(size = FALSE)
 ```
 K = 51
 
-```{r echo = FALSE, results = "asis"}
-file_list <- list.files(path = "../output/iters/K51", pattern = "\\.feather$", full.names = TRUE)
-
-coverage_output_df <- lapply(file_list, function(file) {
-  df <- read_feather(file)
-  df$filename <- basename(file)  # or use tools::file_path_sans_ext(basename(file)) to remove .feather
-  return(df)
-}) %>%
-  bind_rows()
-
-subs <- coverage_output_df[,c('k', "theta_k", "theta", "kde_ci_lower", "kde_ci_upper", "filename")]
-subs$theta_within <- (subs$theta >= subs$kde_ci_lower) & (subs$theta <= subs$kde_ci_upper)
-subs$theta_k_within <- (subs$theta_k >= subs$kde_ci_lower) & (subs$theta_k <= subs$kde_ci_upper)
-kable(subs %>% select(c('k', "theta_k", "theta", "kde_ci_lower", "kde_ci_upper", "theta_within", "filename")) %>% filter(!theta_within)) %>% kable_styling(bootstrap_options = "responsive")
+```{r echo = FALSE, results = "asis", fig.width=10}
+misses <- get_iter_misses(K = 51)
+misses$diff1 <- misses$theta - misses$kde_ci_lower
+misses$diff2 <- misses$theta - misses$kde_ci_upper
+misses <- misses %>% left_join(df[, c('k', 'S')], by = "k")
+misses$closest_diff <- ifelse(abs(misses$diff1)<abs(misses$diff2), misses$diff1, 1*misses$diff2)
+misses$closest_diff <- ifelse(!misses$theta_within, misses$closest_diff, 0)
+misses %>%
+  ggplot(aes(x = reorder(k, S), y = closest_diff)) +
+  geom_point(aes(color = closest_diff == 0, size = S), alpha = 0.2) +
+  scale_color_manual(values = c("FALSE" = "black", "TRUE" = "red")) +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  labs(color = "On Target?") + xlab("State Arranged in Increasing S") + ylab("Difference from closest bound") + scale_size_continuous(trans = "sqrt", range = c(0, 3)) + guides(size = FALSE)
 ```
 
 
