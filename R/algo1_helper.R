@@ -40,12 +40,13 @@ get_t2 <- function(v){prod(v)^(1/length(v))}
 get_t3 <- function(v){1 - ((length(v)+sum(v))/(length(v)^2))}
 
 run_algorithm1 <- function(B, dataset, seed = 4, alpha = 0.1) {
-  dataset['variance'] <- lapply(dataset['moe_k'], calculate_variance)
+  #dataset['variance'] <- lapply(dataset['moe_k'], calculate_variance)
   K <- dim(dataset)[1]
   set.seed(seed)
   mat1 <- foreach(i = 1:K, .combine = cbind) %do% {
     foreach(b = 1:B, .combine = c) %do% {
-      rnorm(1, mean = dataset[i, 'theta_k'], sd = sqrt(dataset[i, 'variance']))
+      # rnorm(1, mean = dataset[i, 'theta_k'], sd = sqrt(dataset[i, 'variance']))
+      rnorm(1, mean = dataset[i, 'theta_k'], sd = dataset[i, 'S'])
     }
   }
   # 2
