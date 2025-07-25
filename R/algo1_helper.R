@@ -64,7 +64,6 @@ run_algorithm1 <- function(B, dataset, seed = 4, alpha = 0.1) {
   # 7
   uhat <- quantile(U, probs = 1 - alpha)
   # 8
-  
   F.inv <- lapply(estimated_CDF, function(F){inverse(F, lower = -100, upper = 100)})
   dataset['F.inv_u'] <- sapply(1:K, function(i){F.inv[[i]](uhat)})
   dataset['F.inv_1-u'] <- sapply(1:K, function(i){F.inv[[i]](1-uhat)})
