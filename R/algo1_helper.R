@@ -6,10 +6,10 @@ kde_cdf_function <- function(datapoints, bandwidth) {
   return(function(x) mean(pnorm((x - datapoints) / bandwidth)))
 }
 
-estimate_CDF <- function(dataset, i, r){
+estimate_CDF <- function(dataset, i, r, B){
   S = sd(r[,i])
   IQR = quantile(r[,i], .75) - quantile(r[,i], .25)
-  h_i <- 0.9*min(S, IQR/1.34)*(B^(1/5))
+  h_i <- 0.9*min(S, IQR/1.34)*(B^(-1/5))
   return(kde_cdf_function(r[,i], h_i))
 }
 
@@ -43,27 +43,28 @@ run_algorithm1 <- function(B, dataset, seed = 4, alpha = 0.1) {
   #dataset['variance'] <- lapply(dataset['moe_k'], calculate_variance)
   K <- dim(dataset)[1]
   set.seed(seed)
+  # step 1
   mat1 <- foreach(i = 1:K, .combine = cbind) %do% {
     foreach(b = 1:B, .combine = c) %do% {
       # rnorm(1, mean = dataset[i, 'theta_k'], sd = sqrt(dataset[i, 'variance']))
       rnorm(1, mean = dataset[i, 'theta_k'], sd = dataset[i, 'S'])
     }
   }
-  # 2
+  # step 2
   mat1_sorted <- t(apply(mat1, 1, sort))
-  # 3
+  # step 3
   r <- mat1_sorted - matrix(sort(t(dataset['theta_k'])),B, K, byrow=TRUE)
-  # 4
-  estimated_CDF <- lapply(1:K, function(x)(estimate_CDF(dataset, x, r)))
-  # 5
+  # step 4
+  estimated_CDF <- lapply(1:K, function(x)(estimate_CDF(dataset, x, r, B)))
+  # step 5
   Y <- foreach(i = 1:K, .combine = cbind) %do% {
     sapply(r[,i], estimated_CDF[[i]])
   }
-  # 6
+  # step 6
   U <- apply(apply(Y, MARGIN = c(1, 2), FUN = get_inner_max), 1, max)
-  # 7
+  # step 7
   uhat <- quantile(U, probs = 1 - alpha)
-  # 8
+  # step 8
   F.inv <- lapply(estimated_CDF, function(F){inverse(F, lower = -100, upper = 100)})
   dataset['F.inv_u'] <- sapply(1:K, function(i){F.inv[[i]](uhat)})
   dataset['F.inv_1-u'] <- sapply(1:K, function(i){F.inv[[i]](1-uhat)})
