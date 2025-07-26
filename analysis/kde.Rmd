@@ -76,7 +76,6 @@ rownames(dataset) <- dataset[,2]
 ```
 
 
-
 ```{r echo = FALSE}
 # library("RankingProject")
 # TravelTime2011
@@ -99,6 +98,10 @@ Suppose the data consist of $\hat{\theta}_1, \hat{\theta}_1, \dots, \hat{\theta}
 
 1. Generate $\hat{\theta}^*_{bi} \sim \mathcal{N}(\hat{\theta}_i, \sigma_i^2)$
 
+```{r}
+
+```
+
 
 ```{r results='asis'}
 library(knitr)
@@ -109,7 +112,7 @@ library(foreach)
 set.seed(4)
 mat1 <- foreach(i = 1:K, .combine = cbind) %do% {
   foreach(b = 1:B, .combine = c) %do% {
-    rnorm(1, mean = dataset[i, 'theta_k'], sd = sqrt(dataset[i, 'variance']))
+    rnorm(1, mean = dataset[i, 'theta_k'], sd = dataset[i, 'S'])
   }
 }
 
@@ -126,7 +129,7 @@ mat1_sorted <- t(apply(mat1, 1, sort))
 kable(head(mat1_sorted)) %>% kable_styling(bootstrap_options = "responsive")
 ```
 
-3. For each $b$, compute the difference $r^*_{bi} = \hat{\theta}^*_{b(i)} - \hat{\theta}^*_{(i)}, i = 1, 2, \dots, K$
+3. For each $b$, compute the difference $r^*_{bi} = \hat{\theta}^*_{b(i)} - \hat{\theta}_{(i)}, i = 1, 2, \dots, K$
 
 ```{r results='asis'}
 r <- mat1_sorted - matrix(sort(t(dataset['theta_k'])),B, K, byrow=TRUE)
@@ -155,7 +158,7 @@ $$
 ```
 
 ```{r}
-estimated_CDF <- lapply(1:K, function(x)(estimate_CDF(dataset, x, r)))
+estimated_CDF <- lapply(1:K, function(x)(estimate_CDF(dataset, x, r, B)))
 ```
 
 5. Compute $Y^*_{bi}= \hat{F}_i(r^*_{bi})$ for each $b = 1, 2, \dots, B$ and $i = 1, 2, \dots, K$
@@ -214,10 +217,6 @@ K <- 10
 B <- 1000
 df <- readRDS("../data/mean_travel_time_ranking_2011.rds")
 #df$S <-0.2
-```
-
-```{r}
-df
 ```
 
 
@@ -425,34 +424,12 @@ p
 tuple_list <- t(apply(df[,c('bonf_ci_lower', 'bonf_ci_upper')], 1, function(row) as.numeric(row)))
 df['bonf_Lambda_Ok_length'] <- sapply(1:K, function(x) length(get_ranks(x, tuple_list)$Lambda_Ok))
 df['bonf_rank_range_length'] <- sapply(1:K, function(x) length(get_ranks(x, tuple_list)$ranks))
-head(tuple_list)
-```
 
-
-```{r}
-kable(head(df[,c("k", "bonf_rank_lower", "bonf_rank_upper", "bonf_ci_lower", "bonf_ci_upper", 'bonf_Lambda_Ok_length', 'bonf_rank_range_length')])) %>% kable_styling(bootstrap_options = "responsive")
-```
-
-
-```{r}
 tuple_list <- t(apply(df[,c('ind_ci_lower', 'ind_ci_upper')], 1, function(row) as.numeric(row)))
 df['ind_Lambda_Ok_length'] <- sapply(1:K, function(x) length(get_ranks(x, tuple_list)$Lambda_Ok))
 df['ind_rank_range_length'] <- sapply(1:K, function(x) length(get_ranks(x, tuple_list)$ranks))
-head(tuple_list)
+
 ```
-
-
-```{r}
-kable(head(df[,c("k", "ind_rank_lower", "ind_rank_upper", "ind_ci_lower", "ind_ci_upper", 'ind_Lambda_Ok_length', 'ind_rank_range_length')])) %>% kable_styling(bootstrap_options = "responsive")
-```
-
-
-```{r echo = FALSE}
-# get_t1 <- function(v){mean(v)}
-# get_t2 <- function(v){prod(v)^(1/length(v))}
-# get_t3 <- function(v){1 - ((length(v)+sum(v))/(length(v)^2))}
-```
-
 
 
 ```{r results='asis'}
@@ -467,19 +444,17 @@ kable(data.frame(
 
 ## Algorithm 2
 
-```{r echo = FALSE, eval = FALSE}
+```{r eval = FALSE}
+source('../R/algo1_helper.R')
 library(doParallel)
 library(arrow)
 library(tictoc)
-alpha <- 0.10
+
 K <- 10
 df <- readRDS("../data/mean_travel_time_ranking_2011.rds")
-#df$S <- 0.2
 #calculate_variance <- function(moe) (moe/1.645)^2
 dataset_or <- df[order(df$k),][1:K,]
 #dataset_or['variance'] <- lapply(dataset_or['moe_k'], calculate_variance)
-#rownames(dataset_or) <- dataset_or[,2]
-
 
 cl=parallel::makeCluster(15)
 registerDoParallel(cl)
@@ -508,14 +483,11 @@ get_coverage <- function(dataset_or, K, reps = 100, B=1000, alpha= 0.10){
   tuple_list <- t(apply(result[,c('kde_ci_lower', 'kde_ci_upper')], 1, function(row) as.numeric(row)))
 
   result['ind_rank_range_length'] <- sapply(1:K, function(x) length(get_ranks(x, tuple_list)$ranks))
-
-  #result$otheta_k <- dataset$otheta_k
-  #sorted_ci <- result[order(result$otheta_k),]
-  #sorted_theta <- sort(dataset$otheta_k)
-
+  
   ci <- merge(result, sort_reference, by = "theta_k", all = FALSE)
   sorted_ci <- ci[order(ci$theta),]
   
+  print(sprintf("../output/iters/K%d/sorted_ci_%04d.feather", K, iter))
   write_feather(sorted_ci, sprintf("../output/iters/K%d/sorted_ci_%04d.feather", K, iter))
 
   inside_check <- sum(sorted_ci$theta >= sorted_ci$kde_ci_lower & sorted_ci$theta <= sorted_ci$kde_ci_upper)
@@ -526,47 +498,56 @@ get_coverage <- function(dataset_or, K, reps = 100, B=1000, alpha= 0.10){
   #sorted_ci
 }
 }
-tic("Running...")
-coverage_output_df <- get_coverage(dataset_or, K, reps = 100, B=1000, alpha=0.1)
-toc()
-stopCluster(cl)
-saveRDS(coverage_output_df,  paste0("../output/coverage_probability_",K, ".rds"))
-#8999.084 sec elapsed 51
-#5701.035 sec elapsed 30
-#1885.258 sec elapsed 10
 ```
 
+
+```{r eval = FALSE}
+df <- readRDS("../data/mean_travel_time_ranking_2011.rds")
+
+
+cl=parallel::makeCluster(15)
+registerDoParallel(cl)
+for (K in c(10, 20, 30 ,40, 51)) {
+  set.seed(4)
+  dataset_or <- df[order(df$k),][1:K,]
+
+  tic("Running...")
+  
+  
+  coverage_output_df <- get_coverage(dataset_or, K, reps = 100, B=1000, alpha=0.1)
+  toc()
+  
+  saveRDS(coverage_output_df,  paste0("../output/coverage_probability_",K, ".rds"))
+  coverage_output_df
+  
+}
+stopCluster(cl)
+```
+
+
+
 ### Iteration samples
+
+
+Aim is to observe which states usually fail to make it within the estimated interval, making the coverage low, even if it is just one miss. It appears that states with higher SD usually fail to make it within the interval. Plots below show misses as black points. They are below the y = 0 line if they are closer to the lower bound and above it otherwise. 
 
 K = 10
 
 ```{r echo = FALSE, results = "asis", fig.width=9}
 library(arrow)
+source('../R/algo2_helper.R')
+K = 10
+file_list <- list.files(path = paste0("../output/iters/K",K), pattern = "\\.feather$", full.names = TRUE)
 df <- readRDS("../data/mean_travel_time_ranking_2011.rds")
-get_iter_misses <- function(K){
-  file_list <- list.files(path = paste0("../output/iters/K",K), pattern = "\\.feather$", full.names = TRUE)
-  
-  coverage_output_df <- lapply(file_list, function(file) {
-    df <- read_feather(file)
-    df$filename <- basename(file)  # or use tools::file_path_sans_ext(basename(file)) to remove .feather
-    return(df)
-  }) %>%
-    bind_rows()
-  
-  subs <- coverage_output_df[,c('k', "theta_k", "theta", "kde_ci_lower", "kde_ci_upper", "filename")]
-  subs$theta_within <- (subs$theta >= subs$kde_ci_lower) & (subs$theta <= subs$kde_ci_upper)
-  subs$theta_k_within <- (subs$theta_k >= subs$kde_ci_lower) & (subs$theta_k <= subs$kde_ci_upper)
-  return(subs %>% select(c('k', "theta_k", "theta", "kde_ci_lower", "kde_ci_upper", "theta_within", "filename")))# %>% filter(!theta_within))
-  }
 
-misses <- get_iter_misses(K = 10)
+dataset_or <- df[order(df$k),][1:K,]
+misses <- get_iter_misses(K=1, file_list=file_list)
+
 misses$diff1 <- misses$theta - misses$kde_ci_lower
 misses$diff2 <- misses$theta - misses$kde_ci_upper
 
-
 misses$closest_diff <- ifelse(abs(misses$diff1)<abs(misses$diff2), misses$diff1, 1*misses$diff2)
 misses$closest_diff <- ifelse(!misses$theta_within, misses$closest_diff, 0)
-
 misses <- misses %>% left_join(df[, c('k', 'S')], by = "k")
 
 misses %>%
@@ -578,10 +559,16 @@ misses %>%
   labs(color = "On Target?") + xlab("State Arranged in Increasing S") + ylab("Difference from closest bound") + scale_size_continuous(trans = "sqrt", range = c(0, 3)) + guides(size = FALSE)
 ```
 
+
+
+
 K = 20 
 
 ```{r echo = FALSE, results = "asis", fig.width=9}
-misses <- get_iter_misses(K = 20)
+K<-20
+file_list <- list.files(path = paste0("../output/iters/K",K), pattern = "\\.feather$", full.names = TRUE)
+
+misses <- get_iter_misses(K=20, file_list=file_list)
 misses$diff1 <- misses$theta - misses$kde_ci_lower
 misses$diff2 <- misses$theta - misses$kde_ci_upper
 
@@ -600,8 +587,13 @@ misses %>%
 
 K = 30
 
+
 ```{r echo = FALSE, results = "asis", fig.width=10}
-misses <- get_iter_misses(K = 30)
+K<-30
+file_list <- list.files(path = paste0("../output/iters/K",K), pattern = "\\.feather$", full.names = TRUE)
+
+misses <- get_iter_misses(K, file_list=file_list)
+
 misses$diff1 <- misses$theta - misses$kde_ci_lower
 misses$diff2 <- misses$theta - misses$kde_ci_upper
 
@@ -619,9 +611,14 @@ misses %>%
 K = 40
 
 ```{r echo = FALSE, results = "asis", fig.width=10}
-misses <- get_iter_misses(K = 40)
+K<-40
+file_list <- list.files(path = paste0("../output/iters/K",K), pattern = "\\.feather$", full.names = TRUE)
+
+misses <- get_iter_misses(K, file_list=file_list)
+
 misses$diff1 <- misses$theta - misses$kde_ci_lower
 misses$diff2 <- misses$theta - misses$kde_ci_upper
+
 misses <- misses %>% left_join(df[, c('k', 'S')], by = "k")
 misses$closest_diff <- ifelse(abs(misses$diff1)<abs(misses$diff2), misses$diff1, 1*misses$diff2)
 misses$closest_diff <- ifelse(!misses$theta_within, misses$closest_diff, 0)
@@ -633,12 +630,19 @@ misses %>%
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
   labs(color = "On Target?") + xlab("State Arranged in Increasing S") + ylab("Difference from closest bound") + scale_size_continuous(trans = "sqrt", range = c(0, 3)) + guides(size = FALSE)
 ```
+
 K = 51
 
+
 ```{r echo = FALSE, results = "asis", fig.width=10}
-misses <- get_iter_misses(K = 51)
+K<-51
+file_list <- list.files(path = paste0("../output/iters/K",K), pattern = "\\.feather$", full.names = TRUE)
+
+misses <- get_iter_misses(K, file_list=file_list)
+
 misses$diff1 <- misses$theta - misses$kde_ci_lower
 misses$diff2 <- misses$theta - misses$kde_ci_upper
+
 misses <- misses %>% left_join(df[, c('k', 'S')], by = "k")
 misses$closest_diff <- ifelse(abs(misses$diff1)<abs(misses$diff2), misses$diff1, 1*misses$diff2)
 misses$closest_diff <- ifelse(!misses$theta_within, misses$closest_diff, 0)
@@ -650,15 +654,10 @@ misses %>%
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
   labs(color = "On Target?") + xlab("State Arranged in Increasing S") + ylab("Difference from closest bound") + scale_size_continuous(trans = "sqrt", range = c(0, 3)) + guides(size = FALSE)
 ```
-
-
-
-`
-
 
 ### Results from **100** reps
 
-```{r echo = FALSE, results = "asis"}
+```{r}
 Ks <- c(51, 40, 30, 20, 10)
 
 results <- lapply(Ks, function(K) {
@@ -678,6 +677,85 @@ df <- do.call(rbind, results)
 kable(df) %>% kable_styling(bootstrap_options = "responsive")
 ```
 
+### Breakdown of within CI per K
+
+
+```{r}
+Ks <- c(51, 40, 30, 20, 10)
+
+results <- lapply(Ks, function(K) {
+  a <- readRDS(paste0("../output/coverage_probability_", K, ".rds"))
+  data.frame(K = K, inside = a$inside)
+})
+
+df_all <- do.call(rbind, results)
+
+summary_counts <- df_all %>%
+  group_by(K, inside) %>% summarise(count = n(), .groups = "drop_last") %>% mutate(proportion = count / sum(count)) %>%
+  ungroup()
+
+summary_counts %>%
+  kable(align = "c") %>%
+  kable_styling(bootstrap_options = "striped", full_width = FALSE) %>%
+  row_spec(which(summary_counts$K == summary_counts$inside), background = "lightyellow")
+
+
+```
+
+
+### Experimental runs results
+
+#### alpha
+
+K = 10, 100 reps
+alpha = 0.05, B=1000: cov 0.2857143  
+alpha = 0.01, B=1000: cov 0.44  
+alpha = 0.01, B=2000: cov 0.43  
+alpha = 0.0005, B=1000: cov 0.67  
+alpha = 0.0001, B=1000: cov 0.67  
+alpha = 0.00001, B=1000: cov 0.68  
+
+#### SD
+
+Notes:  
+0.14 0.33 0.15 0.23 0.07 0.19 0.19 0.37 0.32 0.11  
+original SDs: 0.23  
+
+SD set to 0.2 (fixed), coverage: 0.77  
+SD set to rnorm(n, 0.2, 0.001), coverage: 0.77  
+SD set to rnorm(n, 0.2, 0.01), coverage: 0.77  
+SD set to rnorm(n, 0.2, 0.1), coverage: 0.39  
+
+SD set to 0.1 (fixed), coverage: 0.86  
+SD set to rnorm(n, 0.1, 0.001), coverage: 0.86  
+SD set to rnorm(n, 0.1, 0.01), coverage: 0.83  
+
+
+SD set to 0.5 (fixed), coverage: 0.52  
+SD set to rnorm(n, 0.5, 0.001), coverage: 0.52  
+SD set to rnorm(n, 0.5, 0.01), coverage: 0.5  
+SD set to rnorm(n, 0.5, 0.1), coverage: 0.43  
+
+0.14 0.33 0.15 0.23 0.07 0.19 0.19 0.37 0.32 0.11  
+original SDs: 0.23  
+
+SD set to runif(dim(df)[1], 0.1, 0.6): 0.24  
+SD set to runif(dim(df)[1], 0.1, 0.5): 0.28 <-  min max of K=51 is used  
+SD set to runif(dim(df)[1], 0.07, 0.37): 0.28 <-  min max of K=10 is used  
+SD set to runif(dim(df)[1], 0.1, 0.4): 0.33  
+SD set to runif(dim(df)[1], 0.1, 0.3): 0.41  
+SD set to runif(dim(df)[1], 0.1, 0.2): 0.55  
+
+SD set to 0.1 (fixed), coverage: 0.86 <- fixed higher  
+SD set to 0.05 (fixed), coverage: 0.91 <- fixed higher  
+SD set to runif(dim(df)[1], 0.05, 0.06): 0.87 <- narrower  
+SD set to runif(dim(df)[1], 0.05, 0.1): 0.64 <- broader  
+
+Seems like when SD across varies highly across items to rank, leads to lower coverage, besides the extremeness of the SD themselves  
+
+
+
+
 # Appendices
 
 ## Kernel Density Estimation
@@ -690,7 +768,6 @@ Let
 # Generate data
 set.seed(123)
 x_data <- rnorm(100, mean = 3, sd = 1)
-
 # Parameters
 x_point <- 3
 h <- 0.5 # arbitrary
