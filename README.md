@@ -18,11 +18,12 @@
     │   ├── coverage_probability_20.rds
     │   ├── coverage_probability_30.rds
     │   ├── coverage_probability_40.rds
-    │   ├── coverage_probability_5.rds
     │   ├── coverage_probability_51.rds
     │   └── iters
     ├── R
     │   ├── algo1_helper.R
     │   └── algo2_helper.R
+    ├── README.html
     ├── README.md
+    ├── README.Rmd
     ├── renv.lock
