@@ -50,10 +50,17 @@ run_algorithm1 <- function(B, dataset, seed = 4, alpha = 0.1) {
       rnorm(1, mean = dataset[i, 'theta_k'], sd = dataset[i, 'S'])
     }
   }
-  # step 2
+  #step 2
   mat1_sorted <- t(apply(mat1, 1, sort))
-  # step 3
+  #step 3
   r <- mat1_sorted - matrix(sort(t(dataset['theta_k'])),B, K, byrow=TRUE)
+  
+
+  # ord_ind <- order(dataset$theta_k)
+  # mat1_sorted <- mat1[, ord_ind]
+  # r <- mat1_sorted - matrix(dataset$theta_k[ord_ind], B, K, byrow = TRUE)
+  # 
+  
   # step 4
   estimated_CDF <- lapply(1:K, function(x)(estimate_CDF(dataset, x, r, B)))
   # step 5
@@ -70,5 +77,10 @@ run_algorithm1 <- function(B, dataset, seed = 4, alpha = 0.1) {
   dataset['F.inv_1-u'] <- sapply(1:K, function(i){F.inv[[i]](1-uhat)})
   dataset['kde_ci_lower'] <- dataset['theta_k'] - dataset['F.inv_u'] 
   dataset['kde_ci_upper'] <- dataset['theta_k'] - dataset['F.inv_1-u']
-  return(dataset[, c('rhat_k', 'k', 'theta_k', 'kde_ci_lower', 'kde_ci_upper')])
+  
+  return(list(interval_table = dataset[, c('rhat_k', 'k', 'theta_k', 'kde_ci_lower', 'kde_ci_upper')], 
+              Finv_u = sapply(F.inv, function(x)x(uhat)),
+              Finv_1_u = sapply(F.inv, function(x)x(1-uhat)),
+              sorted_thetahat = sort(dataset$theta_k) # sampled!
+              ))
 }
