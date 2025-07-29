@@ -336,14 +336,14 @@ uhat
 
 ```{r}
 # definition of quantile
-length(U[U<= 0.9931013])/length(U)
+length(Ustar[Ustar<= 0.9931013])/length(Ustar)
 ```
 
 
 8. The join confidence region is calculated
 
 ```{r results='asis'}
-# library("GoFKernel")
+library("dplyr")
 # 
 # F.inv <- lapply(estimated_CDF, function(F){inverse(F, lower = -100, upper = 100)})
 # dataset['F.inv_u'] <- sapply(1:K, function(i){F.inv[[i]](uhat)})
@@ -401,7 +401,7 @@ sorted_thetahat <- sort(dataset$theta_k)
 
 #### Sample usage
 
-```{r}
+```{r eval=FALSE}
 source('../R/algo1_helper.R')
 
 alpha <- 0.10
@@ -412,7 +412,6 @@ df <- readRDS("../data/mean_travel_time_ranking_2011.rds")
 dataset <- df[order(df$k),][1:K,]
 # run for K = 10
 output_for_k10 <- run_algorithm1(B, dataset, seed = 4, alpha = 0.1)
-kable(output_for_k10, row.names = FALSE) %>% kable_styling(bootstrap_options = "responsive")
 ```
 
 
@@ -916,7 +915,7 @@ misses %>%
 ```{r}
 library(dplyr)
 # Ks <- c(51, 40, 30, 20, 10)
-Ks <- c(51)
+Ks <- c(51,45,40,35,30,25,20,15,10,9,8,7,6,5,4,3)
 
 results <- lapply(Ks, function(K) {
   a <- readRDS(paste0("../output/coverage_probability_", K, ".rds"))
@@ -933,9 +932,9 @@ results <- lapply(Ks, function(K) {
 
 df <- do.call(rbind, results)
 
-#kable(df) %>% kable_styling(bootstrap_options = "responsive")
-df
-write.csv(df, "constant_variance_point7_result.csv", row.names = FALSE)
+kable(df) %>% kable_styling(bootstrap_options = "responsive")
+
+#write.csv(df, "constant_variance_point7_result.csv", row.names = FALSE)
 ```
 
 ### Breakdown of within CI per K
@@ -970,7 +969,7 @@ order in inc S, K = 10, alpha = 0.1, rep 100, cov = 0.79
 
 ### Experimental runs results - to redo {.hidden .unlisted .unnumbered}
 
-#### alpha
+#### alpha {.hidden .unlisted .unnumbered}
 
 K = 10, 100 reps
 alpha = 0.05, B=1000: cov 0.2857143  
@@ -980,7 +979,7 @@ alpha = 0.0005, B=1000: cov 0.67
 alpha = 0.0001, B=1000: cov 0.67  
 alpha = 0.00001, B=1000: cov 0.68  
 
-#### SD
+#### SD {.hidden .unlisted .unnumbered}
 
 Notes:  
 0.14 0.33 0.15 0.23 0.07 0.19 0.19 0.37 0.32 0.11  
@@ -1331,7 +1330,7 @@ df$ind_rank_upper == sapply(1:K, function(x) max(get_ranks(x, tuple_list)$ranks)
 ```
 
 
-## Looped coverage
+## Looped coverage {.hidden .unlisted .unnumbered}
 
 ```{r echo = FALSE, eval = FALSE}
 get_coverage <- function(dataset_or, K, reps = 5, B = 1000, alpha = 0.1) {
