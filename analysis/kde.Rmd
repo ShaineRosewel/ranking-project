@@ -360,7 +360,7 @@ length(U[U<= 0.9931013])/length(U)
 library("GoFKernel")
 
 sorted_indices <- order(dataset$theta_k)
-sorted_dataset <- dataset[sorted_indices, ]  # for safe CI computation
+sorted_dataset <- dataset[sorted_indices, ]
 sorted_theta_k <- sorted_dataset$theta_k
 
 Fhat.inv <- lapply(Fhat, function(F) inverse(F, lower = -100, upper = 100))
@@ -916,7 +916,7 @@ misses %>%
 ```{r}
 library(dplyr)
 # Ks <- c(51, 40, 30, 20, 10)
-Ks <- c(51,45,40,35,30,25,20,15,10,9,8,7,6,5,4,3)
+Ks <- c(51)
 
 results <- lapply(Ks, function(K) {
   a <- readRDS(paste0("../output/coverage_probability_", K, ".rds"))
