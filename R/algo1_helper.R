@@ -2,11 +2,29 @@ library("GoFKernel")
 
 calculate_variance <- function(moe) return((moe/1.645)^2)
 
-kde_cdf_function <- function(datapoints, bandwidth) {
-  return(function(x) mean(pnorm((x - datapoints) / bandwidth)))
+kde_cdf_function <- function(datapoints, h) {
+
+  return(function(x) mean(pnorm((x - datapoints) / h)))
 }
 
-estimate_CDF <- function(dataset, i, r, B){
+kde_pdf_function <- function(datapoints,h) {
+  function(x) {
+    sapply(x, function(xi) {
+      mean(dnorm((xi - datapoints) / h) / h)
+    })
+  }
+}
+
+
+estimate_PDF <- function(i, r, B){
+  S = sd(r[,i])
+  IQR = quantile(r[,i], .75) - quantile(r[,i], .25)
+  h_i <- 0.9*min(S, IQR/1.34)*(B^(-1/5))
+  return(kde_pdf_function(r[,i], h_i))
+}
+
+
+estimate_CDF <- function(i, r, B){
   S = sd(r[,i])
   IQR = quantile(r[,i], .75) - quantile(r[,i], .25)
   h_i <- 0.9*min(S, IQR/1.34)*(B^(-1/5))
@@ -44,43 +62,58 @@ run_algorithm1 <- function(B, dataset, seed = 4, alpha = 0.1) {
   K <- dim(dataset)[1]
   set.seed(seed)
   # step 1
-  mat1 <- foreach(i = 1:K, .combine = cbind) %do% {
+  set.seed(4)
+  thetahat_star <- foreach(i = 1:K, .combine = cbind) %do% {
     foreach(b = 1:B, .combine = c) %do% {
-      # rnorm(1, mean = dataset[i, 'theta_k'], sd = sqrt(dataset[i, 'variance']))
       rnorm(1, mean = dataset[i, 'theta_k'], sd = dataset[i, 'S'])
     }
   }
+  colnames(thetahat_star) <- paste0("thetahat_star", sprintf("%02d", 1:K))
+  
   #step 2
-  mat1_sorted <- t(apply(mat1, 1, sort))
+  sorted_thetahat_star <- t(apply(thetahat_star, 1, sort))
+  colnames(sorted_thetahat_star) <- paste0("sorted_thetahat_star", sprintf("%02d", 1:K))
   #step 3
-  r <- mat1_sorted - matrix(sort(t(dataset['theta_k'])),B, K, byrow=TRUE)
-  
-
-  # ord_ind <- order(dataset$theta_k)
-  # mat1_sorted <- mat1[, ord_ind]
-  # r <- mat1_sorted - matrix(dataset$theta_k[ord_ind], B, K, byrow = TRUE)
-  # 
-  
+  rstar <- sorted_thetahat_star - matrix(sort(t(dataset['theta_k'])),B, K, byrow=TRUE)
+  colnames(rstar) <- paste0("rstar", sprintf("%02d", 1:K))
   # step 4
-  estimated_CDF <- lapply(1:K, function(x)(estimate_CDF(dataset, x, r, B)))
+  Fhat <- lapply(1:K, function(x)(estimate_CDF(x, rstar, B)))
   # step 5
-  Y <- foreach(i = 1:K, .combine = cbind) %do% {
-    sapply(r[,i], estimated_CDF[[i]])
+  Ystar <- foreach(i = 1:K, .combine = cbind) %do% {
+    sapply(rstar[,i], Fhat[[i]])
   }
+  colnames(Ystar) <- paste0("Ystar", sprintf("%02d", 1:K))
   # step 6
-  U <- apply(apply(Y, MARGIN = c(1, 2), FUN = get_inner_max), 1, max)
+  Ustar <- apply(apply(Ystar, MARGIN = c(1, 2), FUN = get_inner_max), 1, max)
   # step 7
-  uhat <- quantile(U, probs = 1 - alpha)
+  uhat <- quantile(Ustar, probs = 1 - alpha)
   # step 8
-  F.inv <- lapply(estimated_CDF, function(F){inverse(F, lower = -100, upper = 100)})
-  dataset['F.inv_u'] <- sapply(1:K, function(i){F.inv[[i]](uhat)})
-  dataset['F.inv_1-u'] <- sapply(1:K, function(i){F.inv[[i]](1-uhat)})
-  dataset['kde_ci_lower'] <- dataset['theta_k'] - dataset['F.inv_u'] 
-  dataset['kde_ci_upper'] <- dataset['theta_k'] - dataset['F.inv_1-u']
+  sorted_indices <- order(dataset$theta_k)
+  sorted_dataset <- dataset[sorted_indices, ]
+  sorted_theta_k <- sorted_dataset$theta_k
   
-  return(list(interval_table = dataset[, c('rhat_k', 'k', 'theta_k', 'kde_ci_lower', 'kde_ci_upper')], 
-              Finv_u = sapply(F.inv, function(x)x(uhat)),
-              Finv_1_u = sapply(F.inv, function(x)x(1-uhat)),
-              sorted_thetahat = sort(dataset$theta_k) # sampled!
+  Fhat.inv <- lapply(Fhat, function(F) inverse(F, lower = -100, upper = 100))
+  
+  sorted_dataset$Fhat.inv_u    <- sapply(1:K, function(i) Fhat.inv[[i]](uhat))
+  sorted_dataset$Fhat.inv_1_u  <- sapply(1:K, function(i) Fhat.inv[[i]](1 - uhat))
+  
+  sorted_dataset$kde_ci_lower <- sorted_theta_k - sorted_dataset$Fhat.inv_u
+  sorted_dataset$kde_ci_upper <- sorted_theta_k - sorted_dataset$Fhat.inv_1_u
+  
+  sorted_dataset$original_index <- sorted_indices
+  
+  interval_table <- sorted_dataset %>%
+    select(k = k,
+           theta_k = theta_k,
+           kde_ci_lower = kde_ci_lower,
+           kde_ci_upper = kde_ci_upper)
+
+  return(list(interval_table = interval_table, 
+              Finv_u = sapply(Fhat.inv, function(x)x(uhat)),
+              Finv_1_u = sapply(Fhat.inv, function(x)x(1-uhat)),
+              sorted_thetahat = sorted_theta_k, # sampled thetahats
+              sorted_indices = sorted_indices,
+              Fhat = Fhat,
+              uhat = uhat
               ))
 }
