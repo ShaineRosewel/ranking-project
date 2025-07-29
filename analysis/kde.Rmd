@@ -98,43 +98,98 @@ Suppose the data consist of $\hat{\theta}_1, \hat{\theta}_1, \dots, \hat{\theta}
 
 1. Generate $\hat{\theta}^*_{bi} \sim \mathcal{N}(\hat{\theta}_i, \sigma_i^2)$
 
-```{r}
-
-```
-
 
 ```{r results='asis'}
 library(knitr)
 library(kableExtra)
 
-B=1000
+B <- 1000
 library(foreach)
 set.seed(4)
-mat1 <- foreach(i = 1:K, .combine = cbind) %do% {
+thetahat_star <- foreach(i = 1:K, .combine = cbind) %do% {
   foreach(b = 1:B, .combine = c) %do% {
     rnorm(1, mean = dataset[i, 'theta_k'], sd = dataset[i, 'S'])
   }
 }
 
-kable(head(mat1)) %>% kable_styling(bootstrap_options = "responsive")
+colnames(thetahat_star) <- paste0("thetahat_star", sprintf("%02d", 1:K))
+
+kable(head(thetahat_star)) %>% kable_styling(bootstrap_options = "responsive")
 ```
+
+```{r fig.height=3, fig.align='center', fig.width=12, echo = FALSE}
+library(tidyr)
+library(ggplot2)
+
+dat10 <- data.frame(thetahat_star)
+x <- paste0("thetahat_star", sprintf("%02d", 1:10))
+colnames(dat10) <- x
+
+gather(dat10) %>% ggplot(aes(x = key, y = value)) + geom_boxplot() +
+  labs(title='Boxplot of Bootstrap Samples') + xlab('States') + ylab('Boxplot') +
+  theme_bw() #+
+  #theme(axis.text.x = element_text(angle = 45, hjust = 1),
+  #      ) 
+```
+
+```{r fig.height=4, fig.align='center', fig.width=12, echo = FALSE}
+gather(dat10) %>% ggplot(aes(x = value)) +geom_histogram(alpha = 0.7)+coord_flip() + theme_bw() +
+  labs(title='Histogram of BS samples') + xlab('Histogram') + ylab('') +facet_grid(.~key,scales = "free") + guides(fill = FALSE)
+```
+
+
 
 2. For each $b$, order the set $\left\{ \hat{\theta}^*_{b1}, \hat{\theta}^*_{b2}, \dots, \hat{\theta}^*_{bK} \right\}$ to obtain $\left\{ \hat{\theta}^*_{b(1)}, \hat{\theta}^*_{b(2)}, \dots, \hat{\theta}^*_{b(K)} \right\}$
 
 
 ```{r results='asis'}
 source('../R/algo1_helper.R')
-mat1_sorted <- t(apply(mat1, 1, sort))
+sorted_thetahat_star <- t(apply(thetahat_star, 1, sort))
+colnames(sorted_thetahat_star) <- paste0("sorted_thetahat_star", sprintf("%02d", 1:10))
 
-kable(head(mat1_sorted)) %>% kable_styling(bootstrap_options = "responsive")
+kable(head(sorted_thetahat_star)) %>% kable_styling(bootstrap_options = "responsive")
 ```
+
+
+```{r fig.height=4, fig.align='center', fig.width=12, echo = FALSE}
+dat10 <- data.frame(sorted_thetahat_star)
+x <- paste0("thetahat_star(", sprintf("%02d", 1:10), ")")
+colnames(dat10) <- x
+
+gather(dat10) %>% ggplot(aes(x = key, y = value)) + geom_boxplot() +
+  labs(title='Boxplot of Ordered Bootstrap Samples') + xlab('States') + ylab('Boxplot') +
+  theme_bw()
+```
+
+```{r fig.height=4, fig.align='center', fig.width=12, echo = FALSE}
+gather(dat10) %>% ggplot(aes(x = value)) +geom_histogram(alpha = 0.7)+coord_flip() + theme_bw() +
+  labs(title='Histogram of Ordered BS samples') + xlab('Histogram') + ylab('') +facet_grid(.~key,scales = "free_x") + guides(fill = FALSE)
+```
+
 
 3. For each $b$, compute the difference $r^*_{bi} = \hat{\theta}^*_{b(i)} - \hat{\theta}_{(i)}, i = 1, 2, \dots, K$
 
 ```{r results='asis'}
-r <- mat1_sorted - matrix(sort(t(dataset['theta_k'])),B, K, byrow=TRUE)
-kable(head(r)) %>% kable_styling(bootstrap_options = "responsive")
+rstar <- sorted_thetahat_star - matrix(sort(t(dataset['theta_k'])),B, K, byrow=TRUE)
+colnames(rstar) <- paste0("rstar", sprintf("%02d", 1:10))
+kable(head(rstar)) %>% kable_styling(bootstrap_options = "responsive")
 ```
+
+```{r fig.height=4, fig.align='center', fig.width=12, echo = FALSE}
+dat10 <- data.frame(rstar)
+x <- paste0("rstar", sprintf("%02d", 1:10))
+colnames(dat10) <- x
+
+gather(dat10) %>% ggplot(aes(x = key, y = value)) + geom_boxplot() +
+  labs(title='Boxplot of rstar') + xlab('States') + ylab('Boxplot') +
+  theme_bw()
+```
+
+```{r fig.height=4, fig.align='center', fig.width=12, echo = FALSE}
+gather(dat10) %>% ggplot(aes(x = value)) + geom_histogram(alpha = 0.7)+coord_flip() + theme_bw() +
+  labs(title='Histogram of rstar') + xlab('Histogram') + ylab('') +facet_grid(.~key,scales = "free") + guides(fill = FALSE)
+```
+
 
 4. Let $F_i$ be the density of $\hat{\theta}_{(i)} - \theta_{(i)}, i = 1, 2, \dots, K$. Estimate each $F_i$ bu computing $\hat{F}_i$ using KDE based on $r^*_{1i}, r^*_{2i}, \dots, r^*_{Bi}$, that is
 
@@ -143,7 +198,7 @@ $$
 $$
 
 ```{r echo = FALSE}
-#source('../R/algo1_helper.R')
+source('../R/algo1_helper.R')
 # kde_cdf_function <- function(datapoints, bandwidth) {
 #   return(function(x) mean(pnorm((x - datapoints) / bandwidth)))
 # }
@@ -158,51 +213,188 @@ $$
 ```
 
 ```{r}
-estimated_CDF <- lapply(1:K, function(x)(estimate_CDF(dataset, x, r, B)))
+Fhat <- lapply(1:K, function(x)(estimate_CDF(x, rstar, B)))
+fhat <- lapply(1:K, function(x)(estimate_PDF(x, rstar, B)))
 ```
 
-5. Compute $Y^*_{bi}= \hat{F}_i(r^*_{bi})$ for each $b = 1, 2, \dots, B$ and $i = 1, 2, \dots, K$
+
+```{r fig.height=4, fig.align='center', fig.width=12, echo = FALSE}
+xgrid <- seq(-1, 1, length.out = 200)
+
+pdf_data <- do.call(rbind, lapply(1:length(fhat), function(k) {
+  data.frame(
+    x = xgrid,
+    density = fhat[[k]](xgrid),
+    key = names(dat10)[k]
+  )
+}))
 
 
-```{r echo = FALSE}
-# get_inner_max <- function(value) return(max(value, 1-value))
+gather(dat10) %>%
+  ggplot(aes(x = value)) +
+  geom_histogram(aes(y = ..density..), bins = 30, alpha = 0.7) +
+  geom_line(data = pdf_data, aes(x = x, y = density), color = "red", size = 1) +
+  coord_flip() +
+  theme_bw() +
+  labs(title = 'Histogram of rstar with Estimated PDF Overlay',
+       x = 'Value',
+       y = 'Density') +
+  facet_grid(. ~ key, scales = "free") +
+  guides(fill = FALSE)
 ```
+
+
+
+
+
+5. Compute $Y^*_{bi}= \hat{F}_i(r^*_{bi})$ for each $b = 1, 2, \dots, B$ and $i = 1, 2, \dots, K$ (PIT part)
+
 
 ```{r results='asis'}
-Y <- foreach(i = 1:K, .combine = cbind) %do% {
-  sapply(r[,i], estimated_CDF[[i]])
+Ystar <- foreach(i = 1:K, .combine = cbind) %do% {
+  sapply(rstar[,i], Fhat[[i]])
 }
-
-kable(head(Y)) %>% kable_styling(bootstrap_options = "responsive")
+colnames(Ystar) <- paste0("Ystar", sprintf("%02d", 1:10))
+kable(head(Ystar)) %>% kable_styling(bootstrap_options = "responsive")
 ```
 
-6. Compute $U^*_b = \underset{1 \leq i \leq p} {\max} \{\max\{Y^*_{bi}, 1-Y^*_{bi}\}\}$ for $b = 1, 2, \dots, B$
+```{r fig.height=4, fig.align='center', fig.width=12, echo = FALSE}
+dat10 <- data.frame(Ystar)
+x <- paste0("Ystar", sprintf("%02d", 1:10))
+colnames(dat10) <- x
+
+gather(dat10) %>% ggplot(aes(x = key, y = value)) + geom_boxplot() +
+  labs(title='Boxplot of Ystar') + xlab('States') + ylab('Boxplot') +
+  theme_bw()
+```
+
+```{r fig.height=4, fig.align='center', fig.width=12, echo = FALSE}
+# gather(dat10) %>% ggplot(aes(x = value)) +geom_histogram(alpha = 0.7)+coord_flip() + theme_bw() +
+#   labs(title='Histogram of Ystar') + xlab('Histogram') + ylab('') +facet_grid(.~key,scales = "free") + guides(fill = FALSE)
+
+gather(dat10) %>%
+  ggplot(aes(x = value)) +
+  geom_histogram(aes(y = ..density..), bins = 30, alpha = 0.7) +
+  stat_function(fun = function(x) dunif(x, min = 0, max = 1), color = "red", size = 1) +
+  coord_flip() +
+  theme_bw() +
+  labs(title = 'Histogram of Ystar with Uniform(0,1) Overlay',
+       x = 'Value',
+       y = 'Density') +
+  facet_grid(. ~ key, scales = "free") +
+  guides(fill = FALSE)
+```
+
+
+
+```{r fig.height=8, fig.align='center', fig.width=20, echo = FALSE}
+gather(dat10) %>%
+  ggplot(aes(sample = value)) +
+  stat_qq(distribution = qunif, dparams = list(min = 0, max = 1)) +
+  stat_qq_line(distribution = qunif, dparams = list(min = 0, max = 1), color = "red") +
+  facet_wrap(. ~ key, scales = "free", nrow = 2) +
+  theme_bw() +
+  labs(title = 'Q-Q Plot vs Uniform(0,1)', x = 'Theoretical Quantiles', y = 'Sample Quantiles')
+```
+
+
+
+```{r}
+#apply(dat10, 2, function(col) ks.test(col, "punif", min = 0, max = 1))
+```
+
+
+6. Compute $U^*_b = \underset{1 \leq i \leq p} {\max} \{\max\{Y^*_{bi}, 1-Y^*_{bi}\}\}$ for $b = 1, 2, \dots, B$.
+
+Due to PIT result in item 5, we can be sure that $\max\{Y^*_{bi}, 1-Y^*_{bi}\} \geq 0.5$ since $0 \leq Y^*_{bi}= \hat{F}_i(r^*_{bi}) \leq 1$. It follows that $U^*_b \geq 0.5$
 
 ```{r results='asis'}
-U <- apply(apply(Y, MARGIN = c(1, 2), FUN = get_inner_max), 1, max)
-head(U)
+Ustar <- apply(apply(Ystar, MARGIN = c(1, 2), FUN = get_inner_max), 1, max)
+head(Ustar)
 ```
+
+
+```{r}
+summary(Ustar)
+```
+
+
+
+```{r}
+hist(Ustar)
+```
+
 
 7. Compute $\hat{u}$ as the $(1-\alpha)$-sample quantile of $U^*_1, U^*_2, \dots, U^*_B$
 
 ```{r}
-uhat <- quantile(U, probs = 1 - alpha)
+# what is the value of uhat ST when we repeat the experiment n times (calculate F(r) in all those times), we are sure that the intervals (1-u, u) jointly contain Y=F(r), 1-alpha of the time
+uhat <- quantile(Ustar, probs = 1 - alpha)
 uhat
 ```
+
+
+```{r}
+# definition of quantile
+length(U[U<= 0.9931013])/length(U)
+```
+
 
 8. The join confidence region is calculated
 
 ```{r results='asis'}
+# library("GoFKernel")
+# 
+# F.inv <- lapply(estimated_CDF, function(F){inverse(F, lower = -100, upper = 100)})
+# dataset['F.inv_u'] <- sapply(1:K, function(i){F.inv[[i]](uhat)})
+# dataset['F.inv_1-u'] <- sapply(1:K, function(i){F.inv[[i]](1-uhat)})
+# 
+# # sorted_theta_k <- sort(dataset$theta_k)
+# dataset['kde_ci_lower'] <- dataset['theta_k'] - dataset['F.inv_u']
+# dataset['kde_ci_upper'] <- dataset['theta_k'] - dataset['F.inv_1-u']
+# 
+# interval_table <- dataset %>%
+#     select(rank = k, estimate = theta_k, lower = kde_ci_lower, upper = kde_ci_upper)
+# kable(interval_table) %>% kable_styling(bootstrap_options = "responsive")
+
 library("GoFKernel")
 
-F.inv <- lapply(estimated_CDF, function(F){inverse(F, lower = -100, upper = 100)})
-dataset['F.inv_u'] <- sapply(1:K, function(i){F.inv[[i]](uhat)})
-dataset['F.inv_1-u'] <- sapply(1:K, function(i){F.inv[[i]](1-uhat)})
+sorted_indices <- order(dataset$theta_k)
+sorted_dataset <- dataset[sorted_indices, ]  # for safe CI computation
+sorted_theta_k <- sorted_dataset$theta_k
 
-dataset['kde_ci_lower'] <- dataset['theta_k'] - dataset['F.inv_u'] 
-dataset['kde_ci_upper'] <- dataset['theta_k'] - dataset['F.inv_1-u'] 
+Fhat.inv <- lapply(Fhat, function(F) inverse(F, lower = -100, upper = 100))
 
-kable(head(dataset)) %>% kable_styling(bootstrap_options = "responsive")
+sorted_dataset$Fhat.inv_u    <- sapply(1:K, function(i) Fhat.inv[[i]](uhat))
+sorted_dataset$Fhat.inv_1_u  <- sapply(1:K, function(i) Fhat.inv[[i]](1 - uhat))
+
+sorted_dataset$kde_ci_lower <- sorted_theta_k - sorted_dataset$Fhat.inv_u
+sorted_dataset$kde_ci_upper <- sorted_theta_k - sorted_dataset$Fhat.inv_1_u
+
+sorted_dataset$original_index <- sorted_indices
+
+interval_table <- sorted_dataset %>%
+  select(k = k,
+         theta_k = theta_k,
+         kde_ci_lower = kde_ci_lower,
+         kde_ci_upper = kde_ci_upper)
+
+kable(interval_table, digits = 4) %>%
+  kable_styling(bootstrap_options = "responsive")
+```
+
+```{r echo=FALSE, eval =FALSE}
+
+within_ci_transformed <- function(Y, uhat){1-uhat < Y & Y < uhat}
+sum(rowSums(apply(Y,c(1,2), function(Y)within_ci_transformed(Y, uhat))) == 10)/B
+
+Finv_u <- sapply(F.inv, function(x)x(uhat))
+Finv_1_u <- sapply(F.inv, function(x)x(1-uhat))
+sorted_thetahat <- sort(dataset$theta_k)
+
+#(sorted_thetahat - Finv_u < theta) & (theta <= sorted_thetahat - Finv_1_u)
+
+#mean(sapply(1:B, function(i)sum((mat1_sorted[i,] - Finv_u < theta) & (theta <- mat1_sorted[i,] - Finv_1_u)))==K)
 ```
 
 ### Full function
@@ -216,18 +408,12 @@ alpha <- 0.10
 K <- 10
 B <- 1000
 df <- readRDS("../data/mean_travel_time_ranking_2011.rds")
-#df$S <-0.2
-```
-
-
-```{r}
 # filter accdg to K
 dataset <- df[order(df$k),][1:K,]
 # run for K = 10
 output_for_k10 <- run_algorithm1(B, dataset, seed = 4, alpha = 0.1)
 kable(output_for_k10, row.names = FALSE) %>% kable_styling(bootstrap_options = "responsive")
 ```
-
 
 
 
@@ -272,11 +458,12 @@ kable(output_for_k10, row.names = FALSE) %>% kable_styling(bootstrap_options = "
 #### Application to diff K
 
 ```{r eval = FALSE}
+B<-1000
 for (K in c(10, 20, 30, 40, 51)) {
   # filtering the dataset
   dataset <- df[order(df$k),][1:K,]
   # running the algo1
-  result <- run_algorithm1(B, dataset)
+  result <- run_algorithm1(B, dataset)$interval_table
   # saving the file
   filename <- paste0("../data/kde_intervals_", K, ".rds")
   saveRDS(result, file = filename)
@@ -334,7 +521,7 @@ for (K in c(10, 20, 30, 40, 51)) {
   
   # adding something similar to rhatk only for K=10
   output[[K]]['sample_rank'] <- rank(output[[K]]$theta_k, ties.method = "max")
-  print(kable(output[[K]][order(output[[K]]$theta_k), ], row.names = FALSE) %>% kable_styling(bootstrap_options = "responsive"))
+  print(kable(output[[K]], row.names = FALSE) %>% kable_styling(bootstrap_options = "responsive"))
   cat("\n\n---\n\n")
 }
 ```
@@ -359,7 +546,7 @@ library(tidyr)
 to_string_seq <- function(x, y){paste(seq(x, y, 1), collapse=',')}
 
 dat_to_plot <- kde_result %>% 
-    select(c(k, iso, kde_rank_lower, kde_rank_upper, sample_rank, order_index, theta_k)) %>%
+    select(c(k, iso, kde_rank_lower, kde_rank_upper, sample_rank, order_index,theta_k)) %>%
     mutate(string_ranks = mapply(to_string_seq, kde_rank_lower, kde_rank_upper)) %>%
     separate_rows(string_ranks, sep=",") %>%
     select(c(k, iso, sample_rank, string_ranks, theta_k))
@@ -444,6 +631,7 @@ kable(data.frame(
 
 ## Algorithm 2
 
+
 ```{r eval = FALSE}
 source('../R/algo1_helper.R')
 library(doParallel)
@@ -452,15 +640,13 @@ library(tictoc)
 
 K <- 10
 df <- readRDS("../data/mean_travel_time_ranking_2011.rds")
-#calculate_variance <- function(moe) (moe/1.645)^2
 dataset_or <- df[order(df$k),][1:K,]
-#dataset_or['variance'] <- lapply(dataset_or['moe_k'], calculate_variance)
 
 cl=parallel::makeCluster(15)
 registerDoParallel(cl)
 
 get_coverage <- function(dataset_or, K, reps = 100, B=1000, alpha= 0.10){
-  foreach(iter = 1:reps, .combine = rbind,.packages = c("foreach", "arrow"),
+  foreach(iter = 1:reps, .combine = rbind,.packages = c("foreach", "arrow", "dplyr"),
           .export = c("run_algorithm1", 
                      # 'calculate_variance', 
                       "estimate_CDF",
@@ -469,47 +655,67 @@ get_coverage <- function(dataset_or, K, reps = 100, B=1000, alpha= 0.10){
 
   dataset <- dataset_or
   set.seed(iter)
-  mat2 <- foreach(i = 1:K, .combine = cbind) %do% {
+  theta_hat <- foreach(i = 1:K, .combine = cbind) %do% {
       rnorm(1, mean = dataset[i, 'theta_k'], sd = dataset[i, 'S'])
   }
-  sort_reference <- data.frame(theta = dataset$theta_k, theta_k = t(mat2))
+  sort_reference <- data.frame(theta = dataset$theta_k, theta_hat = t(theta_hat))
   colnames(dataset)[colnames(dataset) == 'theta_k'] <- 'otheta_k'
 
 
-
-  dataset$theta_k <- t(mat2)
+  dataset$theta_k <- t(theta_hat) #sampled
   result <- run_algorithm1(B, dataset, iter, alpha)
-
-  tuple_list <- t(apply(result[,c('kde_ci_lower', 'kde_ci_upper')], 1, function(row) as.numeric(row)))
-
-  result['ind_rank_range_length'] <- sapply(1:K, function(x) length(get_ranks(x, tuple_list)$ranks))
   
-  ci <- merge(result, sort_reference, by = "theta_k", all = FALSE)
-  sorted_ci <- ci[order(ci$theta),]
+  #sorted_theta <- sort(sort_reference$theta) #true value
+  sorted_indices <- result$sorted_indices
+  sorted_theta <- sort_reference$theta[sorted_indices]
+  sorted_thetahat <- sort_reference$theta_hat[sorted_indices]
   
-  print(sprintf("../output/iters/K%d/sorted_ci_%04d.feather", K, iter))
-  write_feather(sorted_ci, sprintf("../output/iters/K%d/sorted_ci_%04d.feather", K, iter))
-
-  inside_check <- sum(sorted_ci$theta >= sorted_ci$kde_ci_lower & sorted_ci$theta <= sorted_ci$kde_ci_upper)
-  t2_val <- get_t2(result$ind_rank_range_length)
+  # inside_check <- sum((result$sorted_thetahat - result$Finv_u < sorted_theta) & (sorted_theta < result$sorted_thetahat - result$Finv_1_u))
   
-  data.frame(t2 = t2_val, inside = inside_check)
-  #sorted_ci$iteration <- rep(iter, K)#
-  #sorted_ci
+  inside_check <- sum((sorted_thetahat - result$Finv_u < sorted_theta) & 
+                    (sorted_theta < sorted_thetahat - result$Finv_1_u))
+  
+  Fhat <- result$Fhat
+  uhat <- result$uhat
+  #rstar <- result$sorted_thetahat - sorted_theta
+  rstar <- sorted_thetahat - sorted_theta
+  
+  Ystar <- sapply(1:length(Fhat), function(i) {
+    Fhat[[i]](rstar[i])
+  })
+  
+  inside_check_primary <-  sum(((1-uhat) < Ystar) & ((Ystar) < uhat))
+  
+  tab_result <- result$interval_table
+  tuple_list <- t(apply(tab_result[,c('kde_ci_lower', 'kde_ci_upper')], 1, function(row) as.numeric(row)))
+  
+  tab_result['ind_rank_range_length'] <- sapply(1:K, function(x) length(get_ranks(x, tuple_list)$ranks))
+  
+  write_feather(tab_result, sprintf("../output/iters/K%d/sorted_ci_%04d.feather", K, iter))
+  
+  t2_val <- get_t2(tab_result$ind_rank_range_length)
+  
+  inside_check_table <- sum((sorted_theta > tab_result$kde_ci_lower) & (sorted_theta < tab_result$kde_ci_upper))
+  
+  data.frame(t2 = t2_val, inside = inside_check, inside_primary = inside_check_primary, inside_check_table = inside_check_table)
 }
 }
 ```
 
 
 ```{r eval = FALSE}
+library(doParallel)
+library(foreach)
+library(tictoc)
+
 df <- readRDS("../data/mean_travel_time_ranking_2011.rds")
-
-
 cl=parallel::makeCluster(15)
 registerDoParallel(cl)
-for (K in c(10, 20, 30 ,40, 51)) {
+for (K in c(3,4,5,6,7,8,9,10,15,20,25,30,35,40,45,51)) {
   set.seed(4)
-  dataset_or <- df[order(df$k),][1:K,]
+  dataset_or <- df[order(df$k), ][1:K, ] #df[order(df$k),][1:K,]
+  #set.seed(5)
+  #dataset_or$S <- runif(K, 0.07, 0.07) #0.37
 
   tic("Running...")
   
@@ -522,29 +728,45 @@ for (K in c(10, 20, 30 ,40, 51)) {
   
 }
 stopCluster(cl)
+
+# Running...: 16.932 sec elapsed
+# Running...: 17.73 sec elapsed
+# Running...: 23.867 sec elapsed
+# Running...: 27.409 sec elapsed
+# Running...: 30.998 sec elapsed
+# Running...: 35.408 sec elapsed
+# Running...: 39.138 sec elapsed
+# Running...: 42.961 sec elapsed
+# Running...: 84.71 sec elapsed
+# Running...: 127.815 sec elapsed
+# Running...: 168.727 sec elapsed
+# Running...: 173.434 sec elapsed
+# Running...: 230.43 sec elapsed
 ```
 
 
-
-### Iteration samples
+### Iteration samples {.hidden .unlisted .unnumbered}
 
 
 Aim is to observe which states usually fail to make it within the estimated interval, making the coverage low, even if it is just one miss. It appears that states with higher SD usually fail to make it within the interval. Plots below show misses as black points. They are below the y = 0 line if they are closer to the lower bound and above it otherwise. 
 
 K = 10
 
-```{r echo = FALSE, results = "asis", fig.width=9}
+```{r echo = FALSE, results = "asis", fig.width=9, eval = FALSE}
 library(arrow)
+library(ggplot2)
 source('../R/algo2_helper.R')
 K = 10
 file_list <- list.files(path = paste0("../output/iters/K",K), pattern = "\\.feather$", full.names = TRUE)
 df <- readRDS("../data/mean_travel_time_ranking_2011.rds")
 
 dataset_or <- df[order(df$k),][1:K,]
-misses <- get_iter_misses(K=1, file_list=file_list)
 
-misses$diff1 <- misses$theta - misses$kde_ci_lower
-misses$diff2 <- misses$theta - misses$kde_ci_upper
+sorted_theta <- sort(dataset_or$theta_k)
+misses <- get_iter_misses(K=K, file_list=file_list, sorted_theta=sorted_theta)
+
+misses$diff1 <- misses$theta_k - misses$kde_ci_lower
+misses$diff2 <- misses$theta_k - misses$kde_ci_upper
 
 misses$closest_diff <- ifelse(abs(misses$diff1)<abs(misses$diff2), misses$diff1, 1*misses$diff2)
 misses$closest_diff <- ifelse(!misses$theta_within, misses$closest_diff, 0)
@@ -559,49 +781,56 @@ misses %>%
   labs(color = "On Target?") + xlab("State Arranged in Increasing S") + ylab("Difference from closest bound") + scale_size_continuous(trans = "sqrt", range = c(0, 3)) + guides(size = FALSE)
 ```
 
-
-
-
 K = 20 
 
-```{r echo = FALSE, results = "asis", fig.width=9}
+```{r echo = FALSE, results = "asis", fig.width=9, eval = FALSE}
 K<-20
 file_list <- list.files(path = paste0("../output/iters/K",K), pattern = "\\.feather$", full.names = TRUE)
+df <- readRDS("../data/mean_travel_time_ranking_2011.rds")
 
-misses <- get_iter_misses(K=20, file_list=file_list)
-misses$diff1 <- misses$theta - misses$kde_ci_lower
-misses$diff2 <- misses$theta - misses$kde_ci_upper
+dataset_or <- df[order(df$k),][1:K,]
 
-misses <- misses %>% left_join(df[, c('k', 'S')], by = "k")
+sorted_theta <- sort(dataset$otheta_k)
+misses <- get_iter_misses(K=K, file_list=file_list, sorted_theta=sorted_theta)
+
+misses$diff1 <- misses$estimate - misses$lower
+misses$diff2 <- misses$estimate - misses$upper
 
 misses$closest_diff <- ifelse(abs(misses$diff1)<abs(misses$diff2), misses$diff1, 1*misses$diff2)
 misses$closest_diff <- ifelse(!misses$theta_within, misses$closest_diff, 0)
+misses <- merge(misses, df[, c('k', 'S')], by.x = "rank", by.y = "k")
+
 misses %>%
-  ggplot(aes(x = reorder(k, S), y = closest_diff)) +
+  ggplot(aes(x = reorder(rank, S), y = closest_diff)) +
   geom_point(aes(color = closest_diff == 0, size = S), alpha = 0.2) +
   scale_color_manual(values = c("FALSE" = "black", "TRUE" = "red")) +
   theme_bw() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-  labs(color = "On Target?") + xlab("States with all S = 0.2") + ylab("Difference from closest bound") + scale_size_continuous(trans = "sqrt", range = c(0, 3)) + guides(size = FALSE)
+  labs(color = "On Target?") + xlab("State Arranged in Increasing S") + ylab("Difference from closest bound") + scale_size_continuous(trans = "sqrt", range = c(0, 3)) + guides(size = FALSE)
 ```
 
 K = 30
 
 
-```{r echo = FALSE, results = "asis", fig.width=10}
+```{r echo = FALSE, results = "asis", fig.width=9, eval = FALSE}
 K<-30
 file_list <- list.files(path = paste0("../output/iters/K",K), pattern = "\\.feather$", full.names = TRUE)
+df <- readRDS("../data/mean_travel_time_ranking_2011.rds")
 
-misses <- get_iter_misses(K, file_list=file_list)
+dataset_or <- df[order(df$k),][1:K,]
 
-misses$diff1 <- misses$theta - misses$kde_ci_lower
-misses$diff2 <- misses$theta - misses$kde_ci_upper
+sorted_theta <- sort(dataset$otheta_k)
+misses <- get_iter_misses(K=K, file_list=file_list, sorted_theta=sorted_theta)
 
-misses <- misses %>% left_join(df[, c('k', 'S')], by = "k")
+misses$diff1 <- misses$estimate - misses$lower
+misses$diff2 <- misses$estimate - misses$upper
+
 misses$closest_diff <- ifelse(abs(misses$diff1)<abs(misses$diff2), misses$diff1, 1*misses$diff2)
 misses$closest_diff <- ifelse(!misses$theta_within, misses$closest_diff, 0)
+misses <- merge(misses, df[, c('k', 'S')], by.x = "rank", by.y = "k")
+
 misses %>%
-  ggplot(aes(x = reorder(k, S), y = closest_diff)) +
+  ggplot(aes(x = reorder(rank, S), y = closest_diff)) +
   geom_point(aes(color = closest_diff == 0, size = S), alpha = 0.2) +
   scale_color_manual(values = c("FALSE" = "black", "TRUE" = "red")) +
   theme_bw() +
@@ -610,44 +839,71 @@ misses %>%
 ```
 K = 40
 
-```{r echo = FALSE, results = "asis", fig.width=10}
-K<-40
-file_list <- list.files(path = paste0("../output/iters/K",K), pattern = "\\.feather$", full.names = TRUE)
+```{r echo = FALSE, results = "asis", fig.width=9, eval = FALSE}
+K <- 10
+file_list <- list.files(path = paste0("../output/iters/K", K), pattern = "\\.feather$", full.names = TRUE)
+df <- readRDS("../data/mean_travel_time_ranking_2011.rds")
 
-misses <- get_iter_misses(K, file_list=file_list)
+# Extract true parameters from original dataset, sorted by true theta (not by rank)
+dataset_or <- df[order(df$k), ][1:K, ]
+names(dataset_or)[names(dataset_or) == "theta_k"] <- "otheta_k"
 
-misses$diff1 <- misses$theta - misses$kde_ci_lower
-misses$diff2 <- misses$theta - misses$kde_ci_upper
+# Create mapping: rank -> true theta (already sorted by rank in dataset_or)
+sorted_theta <- dataset_or$otheta_k  # already aligned with rank
 
-misses <- misses %>% left_join(df[, c('k', 'S')], by = "k")
-misses$closest_diff <- ifelse(abs(misses$diff1)<abs(misses$diff2), misses$diff1, 1*misses$diff2)
+# Get misses
+misses <- get_iter_misses(K = K, file_list = file_list, sorted_theta = sorted_theta)
+
+# Compute distance to nearest interval bound
+misses$diff1 <- misses$estimate - misses$lower
+misses$diff2 <- misses$estimate - misses$upper
+misses$theta_within <- !misses$theta_within
+
+misses$closest_diff <- ifelse(abs(misses$diff1) < abs(misses$diff2), misses$diff1, misses$diff2)
 misses$closest_diff <- ifelse(!misses$theta_within, misses$closest_diff, 0)
+
+# Merge standard error S by rank
+misses <- merge(misses, df[, c('k', 'S')], by.x = "rank", by.y = "k")
+
+# Plot
 misses %>%
-  ggplot(aes(x = reorder(k, S), y = closest_diff)) +
-  geom_point(aes(color = closest_diff == 0, size = S), alpha = 0.2) +
+  ggplot(aes(x = reorder(factor(rank), S), y = closest_diff)) +
+  geom_point(aes(color = closest_diff == 0, size = S), alpha = 0.4) +
   scale_color_manual(values = c("FALSE" = "black", "TRUE" = "red")) +
   theme_bw() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-  labs(color = "On Target?") + xlab("State Arranged in Increasing S") + ylab("Difference from closest bound") + scale_size_continuous(trans = "sqrt", range = c(0, 3)) + guides(size = FALSE)
+  labs(
+    color = "On Target?",
+    x = "State Arranged in Increasing S",
+    y = "Difference from Closest Bound"
+  ) +
+  scale_size_continuous(trans = "sqrt", range = c(0, 3)) +
+  guides(size = FALSE)
+
 ```
 
 K = 51
 
 
-```{r echo = FALSE, results = "asis", fig.width=10}
+```{r echo = FALSE, results = "asis", fig.width=9, eval = FALSE}
 K<-51
 file_list <- list.files(path = paste0("../output/iters/K",K), pattern = "\\.feather$", full.names = TRUE)
+df <- readRDS("../data/mean_travel_time_ranking_2011.rds")
 
-misses <- get_iter_misses(K, file_list=file_list)
+dataset_or <- df[order(df$k),][1:K,]
 
-misses$diff1 <- misses$theta - misses$kde_ci_lower
-misses$diff2 <- misses$theta - misses$kde_ci_upper
+sorted_theta <- sort(dataset$otheta_k)
+misses <- get_iter_misses(K=K, file_list=file_list, sorted_theta=sorted_theta)
 
-misses <- misses %>% left_join(df[, c('k', 'S')], by = "k")
+misses$diff1 <- misses$estimate - misses$lower
+misses$diff2 <- misses$estimate - misses$upper
+
 misses$closest_diff <- ifelse(abs(misses$diff1)<abs(misses$diff2), misses$diff1, 1*misses$diff2)
 misses$closest_diff <- ifelse(!misses$theta_within, misses$closest_diff, 0)
+misses <- merge(misses, df[, c('k', 'S')], by.x = "rank", by.y = "k")
+
 misses %>%
-  ggplot(aes(x = reorder(k, S), y = closest_diff)) +
+  ggplot(aes(x = reorder(rank, S), y = closest_diff)) +
   geom_point(aes(color = closest_diff == 0, size = S), alpha = 0.2) +
   scale_color_manual(values = c("FALSE" = "black", "TRUE" = "red")) +
   theme_bw() +
@@ -658,10 +914,13 @@ misses %>%
 ### Results from **100** reps
 
 ```{r}
-Ks <- c(51, 40, 30, 20, 10)
+library(dplyr)
+# Ks <- c(51, 40, 30, 20, 10)
+Ks <- c(51,45,40,35,30,25,20,15,10,9,8,7,6,5,4,3)
 
 results <- lapply(Ks, function(K) {
   a <- readRDS(paste0("../output/coverage_probability_", K, ".rds"))
+  #print(a)
   data.frame(
     K = K,
     Coverage = mean(a$inside == K),  # only TRUE if inside == K
@@ -674,14 +933,15 @@ results <- lapply(Ks, function(K) {
 
 df <- do.call(rbind, results)
 
-kable(df) %>% kable_styling(bootstrap_options = "responsive")
+#kable(df) %>% kable_styling(bootstrap_options = "responsive")
+df
+write.csv(df, "constant_variance_point7_result.csv", row.names = FALSE)
 ```
 
 ### Breakdown of within CI per K
 
-
 ```{r}
-Ks <- c(51, 40, 30, 20, 10)
+Ks <- c(51, 40, 30, 20, 10,5)
 
 results <- lapply(Ks, function(K) {
   a <- readRDS(paste0("../output/coverage_probability_", K, ".rds"))
@@ -702,8 +962,13 @@ summary_counts %>%
 
 ```
 
-
 ### Experimental runs results
+
+K = 51, 100 reps, alpha = 0.01, cov = 0.19  
+order in dec S, K = 10, alpha = 0.1, rep 100, cov = 0.75  
+order in inc S, K = 10, alpha = 0.1, rep 100, cov = 0.79  
+
+### Experimental runs results - to redo {.hidden .unlisted .unnumbered}
 
 #### alpha
 
@@ -752,9 +1017,6 @@ SD set to runif(dim(df)[1], 0.05, 0.06): 0.87 <- narrower
 SD set to runif(dim(df)[1], 0.05, 0.1): 0.64 <- broader  
 
 Seems like when SD across varies highly across items to rank, leads to lower coverage, besides the extremeness of the SD themselves  
-
-
-
 
 # Appendices
 
