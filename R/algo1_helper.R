@@ -23,12 +23,19 @@ estimate_PDF <- function(i, r, B){
 }
 
 
+empirical_cdf_function <- function(datapoints) {
+  function(x) mean(datapoints <= x)
+}
+
 estimate_CDF <- function(i, r, B){
   S = sd(r[,i])
   IQR = quantile(r[,i], .75) - quantile(r[,i], .25)
   h_i <- 0.9*min(S, IQR/1.34)*(B^(-1/5))
+  #return(empirical_cdf_function(r[,i]))
   return(kde_cdf_function(r[,i], h_i))
 }
+
+
 
 get_inner_max <- function(value) return(max(value, 1-value))
 
@@ -55,6 +62,16 @@ get_t1 <- function(v) mean(v)
 get_t2 <- function(v) prod(v)^(1/length(v))
 
 get_t3 <- function(v) 1 - ((length(v)+sum(v))/(length(v)^2))
+
+generate_synthetic_dataset <- function(K = 51, seed = 42) {
+  set.seed(seed)
+  # true parameter values, evenly spaced
+  theta_k <- seq(1, 2*K, length.out = K)
+  # fixed small standard errors
+  S <- rep(0.1, K)
+  k <- 1:K
+  data.frame(k = k, theta_k = theta_k, S = S)
+}
 
 run_algorithm1 <- function(B, dataset, seed = 4, alpha = 0.1) {
 
@@ -87,6 +104,7 @@ run_algorithm1 <- function(B, dataset, seed = 4, alpha = 0.1) {
   # step 3 =====================================================================
   
   rstar <- sorted_thetahat_star - matrix(sorted_theta_hat,B, K, byrow=TRUE)
+  #rstar <- sweep(sorted_thetahat_star, 2, colMeans(sorted_thetahat_star), FUN = "-")
   colnames(rstar) <- paste0("rstar", sprintf("%02d", 1:K))
   
   # step 4 =====================================================================
@@ -102,11 +120,14 @@ run_algorithm1 <- function(B, dataset, seed = 4, alpha = 0.1) {
   
   # step 6 =====================================================================
   Ustar <- apply(
-    apply(Ystar, 
-          MARGIN = c(1, 2), 
-          FUN = get_inner_max), 
-    1, 
+    apply(Ystar,
+          MARGIN = c(1, 2),
+          FUN = get_inner_max),
+    1,
     max)
+  # Ustar <- apply(Ystar, 1, function(row) {
+  #   quantile(sapply(row, get_inner_max), probs = 0.9)
+  # })
   
   # step 7 =====================================================================
   
