@@ -412,6 +412,7 @@ df <- readRDS("../data/mean_travel_time_ranking_2011.rds")
 dataset <- df[order(df$k),][1:K,]
 # run for K = 10
 output_for_k10 <- run_algorithm1(B, dataset, seed = 4, alpha = 0.1)
+output_for_k10
 ```
 
 
@@ -644,59 +645,70 @@ dataset_or <- df[order(df$k),][1:K,]
 cl=parallel::makeCluster(15)
 registerDoParallel(cl)
 
-get_coverage <- function(dataset_or, K, reps = 100, B=1000, alpha= 0.10){
-  foreach(iter = 1:reps, .combine = rbind,.packages = c("foreach", "arrow", "dplyr"),
-          .export = c("run_algorithm1", 
-                     # 'calculate_variance', 
-                      "estimate_CDF",
-                      "get_ranks", "get_t2", "kde_cdf_function",'get_inner_max',
-                      "inverse")) %dopar% {
-
+get_coverage <- function(dataset_or, 
+                         K, 
+                         reps = 100, # step 4
+                         B=1000, 
+                         alpha= 0.10){
+  foreach(iter = 1:reps, 
+          .combine = rbind,
+          .packages = c("foreach", "arrow", "dplyr"),
+          .export = c("run_algorithm1", "estimate_CDF","get_ranks", 
+                      "get_t2", "kde_cdf_function",'get_inner_max',"inverse")
+          ) %dopar% {
+                        
   dataset <- dataset_or
+  
+  # step 1
   set.seed(iter)
-  theta_hat <- foreach(i = 1:K, .combine = cbind) %do% {
-      rnorm(1, mean = dataset[i, 'theta_k'], sd = dataset[i, 'S'])
-  }
-  sort_reference <- data.frame(theta = dataset$theta_k, theta_hat = t(theta_hat))
-  colnames(dataset)[colnames(dataset) == 'theta_k'] <- 'otheta_k'
-
-
-  dataset$theta_k <- t(theta_hat) #sampled
+  theta_hat <- foreach(i = 1:K, 
+                       .combine = cbind) %do% {
+                         rnorm(1, 
+                               mean = dataset[i, 'theta_k'], 
+                               sd = dataset[i, 'S'])
+                       }
+  
+  sort_reference <- data.frame(theta = dataset$theta_k, 
+                               theta_hat = t(theta_hat))
+  
+  dataset$theta_k <- NULL # remove theta k from the dataset
+  dataset$theta_k <- t(theta_hat) # then replace it with the sampled so usable in algo 1 fcn
+  
+  # step 2
   result <- run_algorithm1(B, dataset, iter, alpha)
   
-  #sorted_theta <- sort(sort_reference$theta) #true value
+  # step 3
   sorted_indices <- result$sorted_indices
   sorted_theta <- sort_reference$theta[sorted_indices]
   sorted_thetahat <- sort_reference$theta_hat[sorted_indices]
   
-  # inside_check <- sum((result$sorted_thetahat - result$Finv_u < sorted_theta) & (sorted_theta < result$sorted_thetahat - result$Finv_1_u))
+  inside_check_1 <- sum((sorted_thetahat - result$Finv_u < sorted_theta) & 
+                        (sorted_theta < sorted_thetahat - result$Finv_1_u))
   
-  inside_check <- sum((sorted_thetahat - result$Finv_u < sorted_theta) & 
-                    (sorted_theta < sorted_thetahat - result$Finv_1_u))
+  tab_result <- result$interval_table
+  inside_check_2 <- sum((sorted_theta > tab_result$kde_ci_lower) & 
+                        (sorted_theta < tab_result$kde_ci_upper))
   
   Fhat <- result$Fhat
   uhat <- result$uhat
-  #rstar <- result$sorted_thetahat - sorted_theta
   rstar <- sorted_thetahat - sorted_theta
   
   Ystar <- sapply(1:length(Fhat), function(i) {
     Fhat[[i]](rstar[i])
   })
   
-  inside_check_primary <-  sum(((1-uhat) < Ystar) & ((Ystar) < uhat))
+  inside_check_3 <-  sum(((1-uhat) < Ystar) & ((Ystar) < uhat))
   
-  tab_result <- result$interval_table
   tuple_list <- t(apply(tab_result[,c('kde_ci_lower', 'kde_ci_upper')], 1, function(row) as.numeric(row)))
-  
   tab_result['ind_rank_range_length'] <- sapply(1:K, function(x) length(get_ranks(x, tuple_list)$ranks))
+  t2_val <- get_t2(tab_result$ind_rank_range_length)
   
   write_feather(tab_result, sprintf("../output/iters/K%d/sorted_ci_%04d.feather", K, iter))
   
-  t2_val <- get_t2(tab_result$ind_rank_range_length)
-  
-  inside_check_table <- sum((sorted_theta > tab_result$kde_ci_lower) & (sorted_theta < tab_result$kde_ci_upper))
-  
-  data.frame(t2 = t2_val, inside = inside_check, inside_primary = inside_check_primary, inside_check_table = inside_check_table)
+  data.frame(t2 = t2_val, 
+             inside_check_1 = inside_check_1, 
+             inside_check_2 = inside_check_2, 
+             inside_check_3 = inside_check_3)
 }
 }
 ```
@@ -710,18 +722,15 @@ library(tictoc)
 df <- readRDS("../data/mean_travel_time_ranking_2011.rds")
 cl=parallel::makeCluster(15)
 registerDoParallel(cl)
-for (K in c(3,4,5,6,7,8,9,10,15,20,25,30,35,40,45,51)) {
+for (K in c(10,20,30,40,51)) {
+  
   set.seed(4)
   dataset_or <- df[order(df$k), ][1:K, ] #df[order(df$k),][1:K,]
-  #set.seed(5)
-  #dataset_or$S <- runif(K, 0.07, 0.07) #0.37
-
+  
   tic("Running...")
-  
-  
   coverage_output_df <- get_coverage(dataset_or, K, reps = 100, B=1000, alpha=0.1)
   toc()
-  
+
   saveRDS(coverage_output_df,  paste0("../output/coverage_probability_",K, ".rds"))
   coverage_output_df
   
@@ -914,18 +923,17 @@ misses %>%
 
 ```{r}
 library(dplyr)
-# Ks <- c(51, 40, 30, 20, 10)
-Ks <- c(51,45,40,35,30,25,20,15,10,9,8,7,6,5,4,3)
+Ks <- c(51, 40, 30, 20, 10)
 
 results <- lapply(Ks, function(K) {
   a <- readRDS(paste0("../output/coverage_probability_", K, ".rds"))
   #print(a)
   data.frame(
     K = K,
-    Coverage = mean(a$inside == K),  # only TRUE if inside == K
-    Within_CI_mean = mean(a$inside),
-    Within_CI_max = max(a$inside),
-    Within_CI_min = min(a$inside),
+    Coverage = mean(a$inside_check_1 == K),  # only TRUE if inside == K
+    Within_CI_mean = mean(a$inside_check_1),
+    Within_CI_max = max(a$inside_check_1),
+    Within_CI_min = min(a$inside_check_1),
     T_mean = mean(a$t2)
   )
 })
