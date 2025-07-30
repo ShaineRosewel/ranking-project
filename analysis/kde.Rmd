@@ -753,171 +753,50 @@ stopCluster(cl)
 ```
 
 
-### Iteration samples {.hidden .unlisted .unnumbered}
+### How often is a state missed across reps?
 
 
-Aim is to observe which states usually fail to make it within the estimated interval, making the coverage low, even if it is just one miss. It appears that states with higher SD usually fail to make it within the interval. Plots below show misses as black points. They are below the y = 0 line if they are closer to the lower bound and above it otherwise. 
+Aim is to observe which states usually fail to make it within the estimated interval, making the coverage low, even if it is just one miss. It appears that states with higher SD usually fail to make it within the interval. Plots below show misses as triangular points. They are below the y = 0 line if they are closer to the lower bound and above it if closer to upper bound. 
 
 K = 10
 
-```{r echo = FALSE, results = "asis", fig.width=9, eval = FALSE}
+```{r echo = FALSE, results = "asis", fig.width=9, fig.height=5}
 library(arrow)
 library(ggplot2)
 source('../R/algo2_helper.R')
 K = 10
 file_list <- list.files(path = paste0("../output/iters/K",K), pattern = "\\.feather$", full.names = TRUE)
-df <- readRDS("../data/mean_travel_time_ranking_2011.rds")
+# df <- readRDS("../data/mean_travel_time_ranking_2011.rds")
 
-dataset_or <- df[order(df$k),][1:K,]
 
-sorted_theta <- sort(dataset_or$theta_k)
-misses <- get_iter_misses(K=K, file_list=file_list, sorted_theta=sorted_theta)
-
-misses$diff1 <- misses$theta_k - misses$kde_ci_lower
-misses$diff2 <- misses$theta_k - misses$kde_ci_upper
-
-misses$closest_diff <- ifelse(abs(misses$diff1)<abs(misses$diff2), misses$diff1, 1*misses$diff2)
-misses$closest_diff <- ifelse(!misses$theta_within, misses$closest_diff, 0)
-misses <- misses %>% left_join(df[, c('k', 'S')], by = "k")
-
-misses %>%
-  ggplot(aes(x = reorder(k, S), y = closest_diff)) +
-  geom_point(aes(color = closest_diff == 0, size = S), alpha = 0.2) +
-  scale_color_manual(values = c("FALSE" = "black", "TRUE" = "red")) +
-  theme_bw() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-  labs(color = "On Target?") + xlab("State Arranged in Increasing S") + ylab("Difference from closest bound") + scale_size_continuous(trans = "sqrt", range = c(0, 3)) + guides(size = FALSE)
+plot_misses(prepare_misses(file_input_path = paste0("../output/iters/K", K), K = 10))
 ```
 
-K = 20 
 
-```{r echo = FALSE, results = "asis", fig.width=9, eval = FALSE}
-K<-20
-file_list <- list.files(path = paste0("../output/iters/K",K), pattern = "\\.feather$", full.names = TRUE)
-df <- readRDS("../data/mean_travel_time_ranking_2011.rds")
+K = 20
 
-dataset_or <- df[order(df$k),][1:K,]
-
-sorted_theta <- sort(dataset$otheta_k)
-misses <- get_iter_misses(K=K, file_list=file_list, sorted_theta=sorted_theta)
-
-misses$diff1 <- misses$estimate - misses$lower
-misses$diff2 <- misses$estimate - misses$upper
-
-misses$closest_diff <- ifelse(abs(misses$diff1)<abs(misses$diff2), misses$diff1, 1*misses$diff2)
-misses$closest_diff <- ifelse(!misses$theta_within, misses$closest_diff, 0)
-misses <- merge(misses, df[, c('k', 'S')], by.x = "rank", by.y = "k")
-
-misses %>%
-  ggplot(aes(x = reorder(rank, S), y = closest_diff)) +
-  geom_point(aes(color = closest_diff == 0, size = S), alpha = 0.2) +
-  scale_color_manual(values = c("FALSE" = "black", "TRUE" = "red")) +
-  theme_bw() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-  labs(color = "On Target?") + xlab("State Arranged in Increasing S") + ylab("Difference from closest bound") + scale_size_continuous(trans = "sqrt", range = c(0, 3)) + guides(size = FALSE)
+```{r echo = FALSE, results = "asis", fig.width=9, fig.height=5}
+plot_misses(prepare_misses(file_input_path = paste0("../output/iters/K", 20), K = 20))
 ```
 
 K = 30
 
-
-```{r echo = FALSE, results = "asis", fig.width=9, eval = FALSE}
-K<-30
-file_list <- list.files(path = paste0("../output/iters/K",K), pattern = "\\.feather$", full.names = TRUE)
-df <- readRDS("../data/mean_travel_time_ranking_2011.rds")
-
-dataset_or <- df[order(df$k),][1:K,]
-
-sorted_theta <- sort(dataset$otheta_k)
-misses <- get_iter_misses(K=K, file_list=file_list, sorted_theta=sorted_theta)
-
-misses$diff1 <- misses$estimate - misses$lower
-misses$diff2 <- misses$estimate - misses$upper
-
-misses$closest_diff <- ifelse(abs(misses$diff1)<abs(misses$diff2), misses$diff1, 1*misses$diff2)
-misses$closest_diff <- ifelse(!misses$theta_within, misses$closest_diff, 0)
-misses <- merge(misses, df[, c('k', 'S')], by.x = "rank", by.y = "k")
-
-misses %>%
-  ggplot(aes(x = reorder(rank, S), y = closest_diff)) +
-  geom_point(aes(color = closest_diff == 0, size = S), alpha = 0.2) +
-  scale_color_manual(values = c("FALSE" = "black", "TRUE" = "red")) +
-  theme_bw() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-  labs(color = "On Target?") + xlab("State Arranged in Increasing S") + ylab("Difference from closest bound") + scale_size_continuous(trans = "sqrt", range = c(0, 3)) + guides(size = FALSE)
+```{r echo = FALSE, results = "asis", fig.width=9, fig.height=5}
+plot_misses(prepare_misses(file_input_path = paste0("../output/iters/K", 30), K = 30))
 ```
+
 K = 40
 
-```{r echo = FALSE, results = "asis", fig.width=9, eval = FALSE}
-K <- 10
-file_list <- list.files(path = paste0("../output/iters/K", K), pattern = "\\.feather$", full.names = TRUE)
-df <- readRDS("../data/mean_travel_time_ranking_2011.rds")
-
-# Extract true parameters from original dataset, sorted by true theta (not by rank)
-dataset_or <- df[order(df$k), ][1:K, ]
-names(dataset_or)[names(dataset_or) == "theta_k"] <- "otheta_k"
-
-# Create mapping: rank -> true theta (already sorted by rank in dataset_or)
-sorted_theta <- dataset_or$otheta_k  # already aligned with rank
-
-# Get misses
-misses <- get_iter_misses(K = K, file_list = file_list, sorted_theta = sorted_theta)
-
-# Compute distance to nearest interval bound
-misses$diff1 <- misses$estimate - misses$lower
-misses$diff2 <- misses$estimate - misses$upper
-misses$theta_within <- !misses$theta_within
-
-misses$closest_diff <- ifelse(abs(misses$diff1) < abs(misses$diff2), misses$diff1, misses$diff2)
-misses$closest_diff <- ifelse(!misses$theta_within, misses$closest_diff, 0)
-
-# Merge standard error S by rank
-misses <- merge(misses, df[, c('k', 'S')], by.x = "rank", by.y = "k")
-
-# Plot
-misses %>%
-  ggplot(aes(x = reorder(factor(rank), S), y = closest_diff)) +
-  geom_point(aes(color = closest_diff == 0, size = S), alpha = 0.4) +
-  scale_color_manual(values = c("FALSE" = "black", "TRUE" = "red")) +
-  theme_bw() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-  labs(
-    color = "On Target?",
-    x = "State Arranged in Increasing S",
-    y = "Difference from Closest Bound"
-  ) +
-  scale_size_continuous(trans = "sqrt", range = c(0, 3)) +
-  guides(size = FALSE)
-
+```{r echo = FALSE, results = "asis", fig.width=9, fig.height=5}
+plot_misses(prepare_misses(file_input_path = paste0("../output/iters/K", 40), K = 40))
 ```
 
 K = 51
 
-
-```{r echo = FALSE, results = "asis", fig.width=9, eval = FALSE}
-K<-51
-file_list <- list.files(path = paste0("../output/iters/K",K), pattern = "\\.feather$", full.names = TRUE)
-df <- readRDS("../data/mean_travel_time_ranking_2011.rds")
-
-dataset_or <- df[order(df$k),][1:K,]
-
-sorted_theta <- sort(dataset$otheta_k)
-misses <- get_iter_misses(K=K, file_list=file_list, sorted_theta=sorted_theta)
-
-misses$diff1 <- misses$estimate - misses$lower
-misses$diff2 <- misses$estimate - misses$upper
-
-misses$closest_diff <- ifelse(abs(misses$diff1)<abs(misses$diff2), misses$diff1, 1*misses$diff2)
-misses$closest_diff <- ifelse(!misses$theta_within, misses$closest_diff, 0)
-misses <- merge(misses, df[, c('k', 'S')], by.x = "rank", by.y = "k")
-
-misses %>%
-  ggplot(aes(x = reorder(rank, S), y = closest_diff)) +
-  geom_point(aes(color = closest_diff == 0, size = S), alpha = 0.2) +
-  scale_color_manual(values = c("FALSE" = "black", "TRUE" = "red")) +
-  theme_bw() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-  labs(color = "On Target?") + xlab("State Arranged in Increasing S") + ylab("Difference from closest bound") + scale_size_continuous(trans = "sqrt", range = c(0, 3)) + guides(size = FALSE)
+```{r echo = FALSE, results = "asis", fig.width=9, fig.height=5}
+plot_misses(prepare_misses(file_input_path = paste0("../output/iters/K", 51), K = 51))
 ```
+
 
 ### Results from **100** reps
 
@@ -948,11 +827,11 @@ kable(df) %>% kable_styling(bootstrap_options = "responsive")
 ### Breakdown of within CI per K
 
 ```{r}
-Ks <- c(51, 40, 30, 20, 10,5)
+Ks <- c(51, 40, 30, 20, 10)
 
 results <- lapply(Ks, function(K) {
   a <- readRDS(paste0("../output/coverage_probability_", K, ".rds"))
-  data.frame(K = K, inside = a$inside)
+  data.frame(K = K, inside = a$inside_check_1)
 })
 
 df_all <- do.call(rbind, results)
