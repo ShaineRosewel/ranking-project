@@ -30,3 +30,7 @@
     ├── README.Rmd
     ├── renv.lock
 
+# To-do
+## Experiments
+[ ] Using the same DGP, have the theta's overlap, retain the SDs
+[ ] Using a different bs approach for simulation - ie, generate an entire bs sample from MVRnorm instead of individually sampling from each K centered normal distribution for each state
