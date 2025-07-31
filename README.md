@@ -32,5 +32,6 @@
 
 # Experiments to-do
 
-- [ ] Using the same DGP, have the theta's overlap, retain the SDs  
-- [ ] Using a different bs approach for simulation - ie, generate an entire bs sample from MVRnorm instead of individually sampling from each K centered normal distribution for each state  
+- [ ] Using the same DGP, have the theta's overlap, retain the SDs
+- [ ] Using the same DGP, set to a higher SD that allows overlap of samples  
+- [x] Using a different bs approach for simulation - ie, generate an entire bs sample from MVRnorm instead of individually sampling from each K centered normal distribution for each state: does not preserve the position of the estimate - this lead to a lower coverage ie for SD=0.7 that uses the data generating fcn, from 0.72 using the original bs meth, it became 0.69 for K=10, 100 reps
