@@ -64,6 +64,7 @@ Please refer to [figures folder](https://github.com/ShaineRosewel/kde-ranking/tr
     │   ├── onethird1p20sd_twothird0p05sd_even1p0f.png
     │   ├── onethird1p20sd_twothird0p05sd_even2p0f.png
     │   ├── original_data_minus_the_sorting.png
+    │   ├── original_data_sorting_bs_accdg_to_theta_k.png
     │   ├── sample_data_monte_carlo_1p2sd_2p0f.png
     │   ├── simple_data_monte_carlo_0p01sd_2p0f.png
     │   ├── simple_data_monte_carlo_0p05sd_2p0f.png
@@ -78,5 +79,4 @@ Please refer to [figures folder](https://github.com/ShaineRosewel/kde-ranking/tr
     │   ├── algo1_helper.R
     │   └── algo2_helper.R
     ├── README.md
-    ├── README.Rmd
     └── renv.lock
