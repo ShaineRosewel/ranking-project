@@ -1,12 +1,12 @@
 # Experiments Summary
 
-Coverage starts to diminish when theta's overlap.  
+Coverage starts to diminish when $\theta$ s overlap.  
 
 **For K=10, 100 reps**
 
-Fixed even spacing between theta's; increasing SD
+Fixed even spacing between $\theta$ s; increasing SD
 
-| Theta Sequence       | SD    | Coverage |
+| $\theta$ s      | SD    | Coverage |
 |----------------------|-------|----------|
 | seq(1, 2.0*10, 10)   | 0.05  | 0.89     |
 | seq(1, 2.0*10, 10)   | 0.10  | 0.89     |
@@ -15,9 +15,9 @@ Fixed even spacing between theta's; increasing SD
 | seq(1, 2.0*10, 10)   | 1.20  | 0.42     |
 
 
-Decreasing even spacing between theta's; fixed, higher SD
+Decreasing even spacing between $\theta$s; fixed, higher SD
 
-| Theta Sequence       | SD    | Coverage |
+| $\theta$ s      | SD    | Coverage |
 |----------------------|-------|----------|
 | seq(1, 9.0*10, 10)   | 0.70  | 0.89     |
 | seq(1, 7.0*10, 10)   | 0.70  | 0.89     |
@@ -28,7 +28,7 @@ Decreasing even spacing between theta's; fixed, higher SD
  
 Various controlled setting:
  
-| Theta Sequence       | SD Allocation                         | Coverage |
+| $\theta$ s      | SD                      | Coverage |
 |----------------------|----------------------------------------|----------|
 | seq(1, 2.00*10, 10)  | 1/3 with 0.05, 2/3 with 1.20            | 0.42     |
 | seq(1, 0.05*10, 10)  | 1/3 with 1.20, 2/3 with 0.05            | 0.21     |
