@@ -1,6 +1,7 @@
 # Experiments Summary
 
-Coverage starts to diminish when $\theta$ s overlap.  
+- Coverage starts to diminish when $\theta$ s overlap.
+- Sorting is what lowers the coverage but without it T1, T2, & T3 are only as good as Klein's.
 
 **For K=10, 100 reps**
 
@@ -36,6 +37,7 @@ Various controlled setting:
 | seq(1, 1.00*10, 10)  | 1/3 with 1.20, 2/3 with 0.50            | 0.89     |
 | seq(1, 2.00*10, 10)  | 1/3 with 1.20, 2/3 with 0.50            | 0.89     |
 | Original (unsorted) | Original (unsorted)                      | 0.89     |
+| BS sorted accdg to estimate $\hat{\theta}$ | sorted accdg to estimate $\hat{\theta}$               | 0.89     |
 
 Please refer to [figures folder](https://github.com/ShaineRosewel/kde-ranking/tree/master/figures) to see results for other K values (20, 30, 40, 51)
 
