@@ -19,6 +19,7 @@
     │   ├── onethird1p20sd_twothird0p05sd_even0p5f.png
     │   ├── onethird1p20sd_twothird0p05sd_even1p0f.png
     │   ├── onethird1p20sd_twothird0p05sd_even2p0f.png
+    │   ├── original_data_minus_the_sorting.png
     │   ├── sample_data_monte_carlo_1p2sd_2p0f.png
     │   ├── simple_data_monte_carlo_0p01sd_2p0f.png
     │   ├── simple_data_monte_carlo_0p05sd_2p0f.png
