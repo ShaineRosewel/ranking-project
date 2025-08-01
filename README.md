@@ -32,9 +32,9 @@ Various controlled setting:
 |----------------------|----------------------------------------|----------|
 | seq(1, 2.00*10, 10)  | 1/3 with 0.05, 2/3 with 1.20            | 0.42     |
 | seq(1, 0.05*10, 10)  | 1/3 with 1.20, 2/3 with 0.05            | 0.21     |
-| seq(1, 0.05*10, 10)  | 1/3 with 1.20, 2/3 with 0.50            | 0.89     |
-| seq(1, 0.05*10, 10)  | 1/3 with 1.20, 2/3 with 0.50            | 0.89     |
-| seq(1, 0.05*10, 10)  | 1/3 with 1.20, 2/3 with 0.50            | 0.89     |
+| seq(1, 0.50*10, 10)  | 1/3 with 1.20, 2/3 with 0.50            | 0.89     |
+| seq(1, 1.00*10, 10)  | 1/3 with 1.20, 2/3 with 0.50            | 0.89     |
+| seq(1, 2.00*10, 10)  | 1/3 with 1.20, 2/3 with 0.50            | 0.89     |
 | Original (unsorted) | Original (unsorted)                      | 0.89     |
 
 Please refer to [figures folder](https://github.com/ShaineRosewel/kde-ranking/tree/master/figures) to see results for other K values (20, 30, 40, 51)
