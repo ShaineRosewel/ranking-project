@@ -1,3 +1,45 @@
+# Experiments Summary
+
+Coverage starts to diminish when $\theta$ s overlap.  
+
+**For K=10, 100 reps**
+
+Fixed even spacing between $\theta$ s; increasing SD
+
+| $\theta$ s      | SD    | Coverage |
+|----------------------|-------|----------|
+| seq(1, 2.0*10, 10)   | 0.05  | 0.89     |
+| seq(1, 2.0*10, 10)   | 0.10  | 0.89     |
+| seq(1, 2.0*10, 10)   | 0.70  | 0.72     |
+| seq(1, 2.0*10, 10)   | 0.90  | 0.50     |
+| seq(1, 2.0*10, 10)   | 1.20  | 0.42     |
+
+
+Decreasing even spacing between $\theta$s; fixed, higher SD
+
+| $\theta$ s      | SD    | Coverage |
+|----------------------|-------|----------|
+| seq(1, 9.0*10, 10)   | 0.70  | 0.89     |
+| seq(1, 7.0*10, 10)   | 0.70  | 0.89     |
+| seq(1, 5.0*10, 10)   | 0.70  | 0.89     |
+| seq(1, 2.0*10, 10)   | 0.70  | 0.72     |
+| seq(1, 0.5*10, 10)   | 0.70  | 0.22     |
+
+ 
+Various controlled setting:
+ 
+| $\theta$ s      | SD                      | Coverage |
+|----------------------|----------------------------------------|----------|
+| seq(1, 2.00*10, 10)  | 1/3 with 0.05, 2/3 with 1.20            | 0.42     |
+| seq(1, 0.05*10, 10)  | 1/3 with 1.20, 2/3 with 0.05            | 0.21     |
+| seq(1, 0.50*10, 10)  | 1/3 with 1.20, 2/3 with 0.50            | 0.89     |
+| seq(1, 1.00*10, 10)  | 1/3 with 1.20, 2/3 with 0.50            | 0.89     |
+| seq(1, 2.00*10, 10)  | 1/3 with 1.20, 2/3 with 0.50            | 0.89     |
+| Original (unsorted) | Original (unsorted)                      | 0.89     |
+
+Please refer to [figures folder](https://github.com/ShaineRosewel/kde-ranking/tree/master/figures) to see results for other K values (20, 30, 40, 51)
+
+
 # Project Directory Tree
 
     ├── analysis
@@ -36,10 +78,3 @@
     ├── README.md
     ├── README.Rmd
     └── renv.lock
-
-# Experiments to-do
-
-- [x] Removing the sorting leads to the expected coverage, despite SD and theta overlap but T1, T2, T3 is almost similar to Klein's
-- [x] Using the same DGP, have the theta's overlap, retain the SDs
-- [x] Using the same DGP, set to a higher SD that allows overlap of samples  
-- [x] Using a different bs approach for simulation - ie, generate an entire bs sample from MVRnorm instead of individually sampling from each K centered normal distribution for each state: does not preserve the position of the estimate - this lead to a lower coverage ie for SD=0.7 that uses the data generating fcn, from 0.72 using the original bs meth, it became 0.69 for K=10, 100 reps
