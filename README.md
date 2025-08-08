@@ -67,6 +67,8 @@ Please refer to [figures folder](https://github.com/ShaineRosewel/kde-ranking/tr
     │   ├── onethird1p20sd_twothird0p05sd_even1p0f.png
     │   ├── onethird1p20sd_twothird0p05sd_even2p0f.png
     │   ├── original_data_minus_the_sorting.png
+    │   ├── original_data_sorted_S_dec.png
+    │   ├── original_data_sorted_S_inc.png
     │   ├── original_data_sorting_bs_accdg_to_theta_k.png
     │   ├── sample_data_monte_carlo_1p2sd_2p0f.png
     │   ├── simple_data_monte_carlo_0p01sd_2p0f.png
@@ -81,5 +83,7 @@ Please refer to [figures folder](https://github.com/ShaineRosewel/kde-ranking/tr
     ├── R
     │   ├── algo1_helper.R
     │   └── algo2_helper.R
+    ├── references
+    │   └── KleinWrightWieczorek2020.pdf
     ├── README.md
     └── renv.lock
