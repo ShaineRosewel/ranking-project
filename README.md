@@ -87,3 +87,8 @@ Please refer to [figures folder](https://github.com/ShaineRosewel/kde-ranking/tr
     │   └── KleinWrightWieczorek2020.pdf
     ├── README.md
     └── renv.lock
+  
+# To-Do
+
+- [ ] Read full text - Klein
+- [ ] Structure writeup template
