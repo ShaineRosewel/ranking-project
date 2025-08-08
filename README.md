@@ -90,5 +90,5 @@ Please refer to [figures folder](https://github.com/ShaineRosewel/kde-ranking/tr
   
 # To-Do
 
-- [ ] Read full text - Klein
+- [ ] Read full text - [Klein](https://github.com/ShaineRosewel/kde-ranking/tree/master/references)
 - [ ] Structure writeup template
