@@ -37,6 +37,9 @@ Various controlled setting:
 | seq(1, 1.00*10, 10)  | 1/3 with 1.20, 2/3 with 0.50            | 0.89     |
 | seq(1, 2.00*10, 10)  | 1/3 with 1.20, 2/3 with 0.50            | 0.89     |
 | Original (unsorted) | Original (unsorted)                      | 0.89     |
+| Original (sorted dec S) | dec                      | 0.75     |
+| Original (sorted inc S) | inc                    | 0.82     |
+| Original (sorted get every 5th) | sorted accdgly                | 0.66     |
 | BS sorted accdg to estimate $\hat{\theta}$ | sorted accdg to estimate $\hat{\theta}$               | 0.89     |
 
 Please refer to [figures folder](https://github.com/ShaineRosewel/kde-ranking/tree/master/figures) to see results for other K values (20, 30, 40, 51)
