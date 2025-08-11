@@ -37,6 +37,9 @@ Various controlled setting:
 | seq(1, 1.00*10, 10)  | 1/3 with 1.20, 2/3 with 0.50            | 0.89     |
 | seq(1, 2.00*10, 10)  | 1/3 with 1.20, 2/3 with 0.50            | 0.89     |
 | Original (unsorted) | Original (unsorted)                      | 0.89     |
+| Original (sorted dec S) | dec                      | 0.75     |
+| Original (sorted inc S) | inc                    | 0.82     |
+| Original (sorted get every 5th) | sorted accdgly                | 0.66     |
 | BS sorted accdg to estimate $\hat{\theta}$ | sorted accdg to estimate $\hat{\theta}$               | 0.89     |
 
 Please refer to [figures folder](https://github.com/ShaineRosewel/kde-ranking/tree/master/figures) to see results for other K values (20, 30, 40, 51)
@@ -64,6 +67,8 @@ Please refer to [figures folder](https://github.com/ShaineRosewel/kde-ranking/tr
     │   ├── onethird1p20sd_twothird0p05sd_even1p0f.png
     │   ├── onethird1p20sd_twothird0p05sd_even2p0f.png
     │   ├── original_data_minus_the_sorting.png
+    │   ├── original_data_sorted_S_dec.png
+    │   ├── original_data_sorted_S_inc.png
     │   ├── original_data_sorting_bs_accdg_to_theta_k.png
     │   ├── sample_data_monte_carlo_1p2sd_2p0f.png
     │   ├── simple_data_monte_carlo_0p01sd_2p0f.png
@@ -78,5 +83,12 @@ Please refer to [figures folder](https://github.com/ShaineRosewel/kde-ranking/tr
     ├── R
     │   ├── algo1_helper.R
     │   └── algo2_helper.R
+    ├── references
+    │   └── KleinWrightWieczorek2020.pdf
     ├── README.md
     └── renv.lock
+  
+# To-Do
+
+- [ ] Read full text - [Klein](https://github.com/ShaineRosewel/kde-ranking/tree/master/references)
+- [ ] Structure writeup template
