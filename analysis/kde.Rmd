@@ -66,6 +66,7 @@ Problem 2: We do not know $u$
 
 
 ```{r}
+library(dplyr)
 alpha <- 0.10
 K <- 10
 df <- readRDS("../data/mean_travel_time_ranking_2011.rds")
@@ -73,6 +74,8 @@ calculate_variance <- function(moe) (moe/1.645)^2
 dataset <- df[order(df$k),][1:K,]
 dataset['variance'] <- lapply(dataset['moe_k'], calculate_variance)
 rownames(dataset) <- dataset[,2]
+
+dataset %>% select(c(k, theta_k, variance, rhat_k)) %>% arrange(rhat_k)
 ```
 
 
@@ -102,9 +105,46 @@ Suppose the data consist of $\hat{\theta}_1, \hat{\theta}_1, \dots, \hat{\theta}
 ```{r results='asis'}
 library(knitr)
 library(kableExtra)
+library(foreach)
+source('../R/algo1_helper.R')
+
+K<-10
+
+generate_synthetic_dataset <- function(K = 51, seed = 42) {
+  set.seed(seed)
+  # true parameter values, evenly spaced
+  theta_k <- seq(1, 0.05*K, length.out = K)
+  # fixed small standard errors
+  #S <- rep(0.9, K)
+  
+  template <- c(rep(0.05, ceiling(2*K / 3)), rep(1.2, floor(K / 3)))
+  S <- rep(template, length.out = K)
+  
+  k <- 1:K
+  data.frame(k = k, theta_k = theta_k, S = S)
+}
+
+dataset_or <- generate_synthetic_dataset(K = K, seed = 42) #TRUE
+dataset<-dataset_or
+theta_hat <- foreach(i = 1:K, 
+                     .combine = cbind) %do% {
+                       rnorm(1, 
+                             mean = dataset[i, 'theta_k'], 
+                             sd = dataset[i, 'S'])
+                     } # SAMPLE
+
+sort_reference <- data.frame(theta = dataset$theta_k, 
+                             theta_hat = t(theta_hat))
+
+dataset$theta_k <- NULL # remove theta k from the dataset
+dataset$theta_k <- t(theta_hat)
+  
+  
+  
+  
 
 B <- 1000
-library(foreach)
+
 set.seed(4)
 thetahat_star <- foreach(i = 1:K, .combine = cbind) %do% {
   foreach(b = 1:B, .combine = c) %do% {
@@ -117,12 +157,12 @@ colnames(thetahat_star) <- paste0("thetahat_star", sprintf("%02d", 1:K))
 kable(head(thetahat_star)) %>% kable_styling(bootstrap_options = "responsive")
 ```
 
-```{r fig.height=3, fig.align='center', fig.width=12, echo = FALSE}
+```{r fig.height=3, fig.align='center', fig.width=20, echo = FALSE}
 library(tidyr)
 library(ggplot2)
 
 dat10 <- data.frame(thetahat_star)
-x <- paste0("thetahat_star", sprintf("%02d", 1:10))
+x <- paste0("thetahat_star", sprintf("%02d", 1:K))
 colnames(dat10) <- x
 
 gather(dat10) %>% ggplot(aes(x = key, y = value)) + geom_boxplot() +
@@ -132,7 +172,7 @@ gather(dat10) %>% ggplot(aes(x = key, y = value)) + geom_boxplot() +
   #      ) 
 ```
 
-```{r fig.height=4, fig.align='center', fig.width=12, echo = FALSE}
+```{r fig.height=4, fig.align='center', fig.width=20, echo = FALSE}
 gather(dat10) %>% ggplot(aes(x = value)) +geom_histogram(alpha = 0.7)+coord_flip() + theme_bw() +
   labs(title='Histogram of BS samples') + xlab('Histogram') + ylab('') +facet_grid(.~key,scales = "free") + guides(fill = FALSE)
 ```
@@ -145,15 +185,15 @@ gather(dat10) %>% ggplot(aes(x = value)) +geom_histogram(alpha = 0.7)+coord_flip
 ```{r results='asis'}
 source('../R/algo1_helper.R')
 sorted_thetahat_star <- t(apply(thetahat_star, 1, sort))
-colnames(sorted_thetahat_star) <- paste0("sorted_thetahat_star", sprintf("%02d", 1:10))
+colnames(sorted_thetahat_star) <- paste0("sorted_thetahat_star", sprintf("%02d", 1:K))
 
 kable(head(sorted_thetahat_star)) %>% kable_styling(bootstrap_options = "responsive")
 ```
 
 
-```{r fig.height=4, fig.align='center', fig.width=12, echo = FALSE}
+```{r fig.height=4, fig.align='center', fig.width=20, echo = FALSE}
 dat10 <- data.frame(sorted_thetahat_star)
-x <- paste0("thetahat_star(", sprintf("%02d", 1:10), ")")
+x <- paste0("thetahat_star(", sprintf("%02d", 1:K), ")")
 colnames(dat10) <- x
 
 gather(dat10) %>% ggplot(aes(x = key, y = value)) + geom_boxplot() +
@@ -161,7 +201,7 @@ gather(dat10) %>% ggplot(aes(x = key, y = value)) + geom_boxplot() +
   theme_bw()
 ```
 
-```{r fig.height=4, fig.align='center', fig.width=12, echo = FALSE}
+```{r fig.height=4, fig.align='center', fig.width=20, echo = FALSE}
 gather(dat10) %>% ggplot(aes(x = value)) +geom_histogram(alpha = 0.7)+coord_flip() + theme_bw() +
   labs(title='Histogram of Ordered BS samples') + xlab('Histogram') + ylab('') +facet_grid(.~key,scales = "free_x") + guides(fill = FALSE)
 ```
@@ -172,13 +212,13 @@ gather(dat10) %>% ggplot(aes(x = value)) +geom_histogram(alpha = 0.7)+coord_flip
 ```{r results='asis'}
 rstar <- sorted_thetahat_star - matrix(sort(t(dataset['theta_k'])),B, K, byrow=TRUE)
 #rstar <- sweep(sorted_thetahat_star, 2, colMeans(sorted_thetahat_star), FUN = "-")
-colnames(rstar) <- paste0("rstar", sprintf("%02d", 1:10))
+colnames(rstar) <- paste0("rstar", sprintf("%02d", 1:K))
 kable(head(rstar)) %>% kable_styling(bootstrap_options = "responsive")
 ```
 
-```{r fig.height=4, fig.align='center', fig.width=12, echo = FALSE}
+```{r fig.height=4, fig.align='center', fig.width=20, echo = FALSE}
 dat10 <- data.frame(rstar)
-x <- paste0("rstar", sprintf("%02d", 1:10))
+x <- paste0("rstar", sprintf("%02d", 1:K))
 colnames(dat10) <- x
 
 gather(dat10) %>% ggplot(aes(x = key, y = value)) + geom_boxplot() +
@@ -186,7 +226,7 @@ gather(dat10) %>% ggplot(aes(x = key, y = value)) + geom_boxplot() +
   theme_bw()
 ```
 
-```{r fig.height=4, fig.align='center', fig.width=12, echo = FALSE}
+```{r fig.height=4, fig.align='center', fig.width=20, echo = FALSE}
 gather(dat10) %>% ggplot(aes(x = value)) + geom_histogram(alpha = 0.7)+coord_flip() + theme_bw() +
   labs(title='Histogram of rstar') + xlab('Histogram') + ylab('') +facet_grid(.~key,scales = "free") + guides(fill = FALSE)
 ```
@@ -219,8 +259,8 @@ fhat <- lapply(1:K, function(x)(estimate_PDF(x, rstar, B)))
 ```
 
 
-```{r fig.height=4, fig.align='center', fig.width=12, echo = FALSE}
-xgrid <- seq(-1, 1, length.out = 200)
+```{r fig.height=4, fig.align='center', fig.width=20, echo = FALSE}
+xgrid <- seq(-3, 3, length.out = 200)
 
 pdf_data <- do.call(rbind, lapply(1:length(fhat), function(k) {
   data.frame(
@@ -251,13 +291,13 @@ gather(dat10) %>%
 Ystar <- foreach(i = 1:K, .combine = cbind) %do% {
   sapply(rstar[,i], Fhat[[i]])
 }
-colnames(Ystar) <- paste0("Ystar", sprintf("%02d", 1:10))
+colnames(Ystar) <- paste0("Ystar", sprintf("%02d", 1:K))
 kable(head(Ystar)) %>% kable_styling(bootstrap_options = "responsive")
 ```
 
 ```{r fig.height=4, fig.align='center', fig.width=12, echo = FALSE}
 dat10 <- data.frame(Ystar)
-x <- paste0("Ystar", sprintf("%02d", 1:10))
+x <- paste0("Ystar", sprintf("%02d", 1:K))
 colnames(dat10) <- x
 
 gather(dat10) %>% ggplot(aes(x = key, y = value)) + geom_boxplot() +
@@ -339,6 +379,9 @@ length(Ustar[Ustar<= uhat])/length(Ustar)
 
 8. The join confidence region is calculated
 
+
+
+
 ```{r results='asis'}
 library("dplyr")
 library("GoFKernel")
@@ -391,8 +434,24 @@ alpha <- 0.10
 K <- 10
 B <- 1000
 df <- readRDS("../data/mean_travel_time_ranking_2011.rds")
+
 # filter accdg to K
 dataset <- df[order(df$k),][1:K,]
+
+dataset_or <- generate_synthetic_dataset(K = K, seed = 42) #TRUE
+dataset<-dataset_or
+theta_hat <- foreach(i = 1:K, 
+                     .combine = cbind) %do% {
+                       rnorm(1, 
+                             mean = dataset[i, 'theta_k'], 
+                             sd = dataset[i, 'S'])
+                     } # SAMPLE
+
+sort_reference <- data.frame(theta = dataset$theta_k, 
+                             theta_hat = t(theta_hat))
+
+dataset$theta_k <- NULL # remove theta k from the dataset
+dataset$theta_k <- t(theta_hat)
 # run for K = 10
 output_for_k10 <- run_algorithm1(B, dataset, seed = 4, alpha = 0.1)
 ```
@@ -580,6 +639,17 @@ kable(data.frame(
 ## Algorithm 2
 
 
+```{r}
+K <- 10
+df <- readRDS("../data/mean_travel_time_ranking_2011.rds")
+dataset_or <- df[order(df$S),][1:K,]
+
+
+kable(dataset_or) %>% kable_styling(bootstrap_options = "responsive")
+```
+
+
+
 ```{r eval = FALSE}
 source('../R/algo1_helper.R')
 library(doParallel)
@@ -588,7 +658,7 @@ library(tictoc)
 
 K <- 10
 df <- readRDS("../data/mean_travel_time_ranking_2011.rds")
-dataset_or <- df[order(df$k),][1:K,]
+dataset_or <- df[-order(df$S),][1:K,]
 
 get_coverage <- function(dataset_or, 
                          K, 
@@ -649,7 +719,7 @@ get_coverage <- function(dataset_or,
   tab_result['ind_rank_range_length'] <- sapply(1:K, function(x) length(get_ranks(x, tuple_list)$ranks))
   t2_val <- get_t2(tab_result$ind_rank_range_length)
   
-  #write_feather(tab_result, sprintf("../output/iters/test/K%d/sorted_ci_%04d.feather", K, iter))
+  write_feather(tab_result, sprintf("../output/iters/test/K%d/sorted_ci_%04d.feather", K, iter))
   
   data.frame(t2 = t2_val, 
              inside_check_1 = inside_check_1, 
@@ -667,31 +737,71 @@ library(tictoc)
 
 
 # step 4 =====================================================================
-#df <- readRDS("../data/mean_travel_time_ranking_2011.rds")
+df <- readRDS("../data/mean_travel_time_ranking_2011.rds")
 K=51
-df <- generate_synthetic_dataset(K = K, seed = 42)
+set.seed(4)
+#df <- generate_synthetic_dataset(K = K, seed = 42)
 cl=parallel::makeCluster(15)
 registerDoParallel(cl)
-for (K in c(20,30,40)) {
+for (K in c(51,40,30,20,10)) {
   
   set.seed(4)
-  #df <- generate_synthetic_dataset(K = K, seed = 42)
-  dataset_or <- df[order(df$k), ][1:K, ]
-  
+  #dataset_or <- df[order(df$theta_k), ][seq(1,50,5), ] #df[order(df$theta_k), ][1:K, ]
+  dataset_or <- df[order(df$k),][1:K,]
   tic("Running...")
   coverage_output_df <- get_coverage(dataset_or, 
                                      K, 
                                      reps = 100, 
                                      B=1000, 
-                                     alpha=0.1)
+                                     alpha=0.05)
   toc()
 
-  #saveRDS(coverage_output_df,  paste0("../output/test/coverage_probability_",K, ".rds"))
+  saveRDS(coverage_output_df,  paste0("../output/test/coverage_probability_",K, ".rds"))
   coverage_output_df
   
 }
 stopCluster(cl)
 ```
+
+```{r eval = FALSE, echo = FALSE}
+df <- readRDS("../data/mean_travel_time_ranking_2011.rds")
+results_list <- list()
+
+cl <- parallel::makeCluster(15)
+registerDoParallel(cl)
+
+for (alpha in c(0.01, 0.05, 0.10)) {
+  for (K in c(51, 40, 30, 20, 10)) {
+    
+    set.seed(4)
+    dataset_or <- df[order(df$k), ][1:K, ]
+    
+    tic(paste0("Running... alpha=", alpha, ", K=", K))
+    coverage_output_df <- get_coverage(dataset_or, 
+                                       K, 
+                                       reps = 100, 
+                                       B = 1000, 
+                                       alpha = alpha)
+    toc()
+    coverage_output_df <- coverage_output_df %>%
+      mutate(K = K, alpha = alpha)
+    results_list[[paste(K, alpha, sep = "_")]] <- coverage_output_df
+    
+
+    saveRDS(
+      coverage_output_df,
+      paste0("../output/test/coverage_probability_K", K, "_alpha", alpha, ".rds")
+    )
+  }
+}
+
+final_results <- bind_rows(results_list)
+
+
+saveRDS(final_results, "../output/test/coverage_probability_all.rds")
+```
+
+
 
 
 ### How often is a state missed across reps? {.tabset}
@@ -706,11 +816,11 @@ library(arrow)
 library(ggplot2)
 source('../R/algo2_helper.R')
 K = 10
-file_list <- list.files(path = paste0("../output/iters/K",K), pattern = "\\.feather$", full.names = TRUE)
+file_list <- list.files(path = paste0("../output/iters/test/K",K), pattern = "\\.feather$", full.names = TRUE)
 # df <- readRDS("../data/mean_travel_time_ranking_2011.rds")
 
 
-plot_misses(prepare_misses(file_input_path = paste0("../output/iters/K", K), K = 10))
+plot_misses(prepare_misses(file_input_path = paste0("../output/iters/test/K", K), K = 10))
 ```
 
 
@@ -743,11 +853,12 @@ plot_misses(prepare_misses(file_input_path = paste0("../output/iters/K", 51), K 
 
 ```{r}
 library(dplyr)
+library(kableExtra)
 Ks <- c(51, 40, 30, 20, 10)
 
 results <- lapply(Ks, function(K) {
-  # a <- readRDS(paste0("../output/test/coverage_probability_", K, ".rds"))
-  a <- readRDS(paste0("../output/coverage_probability_", K, ".rds"))
+  a <- readRDS(paste0("../output/test/coverage_probability_", K, ".rds"))
+  #a <- readRDS(paste0("../output/coverage_probability_", K, ".rds"))
   #print(a)
   data.frame(
     K = K,
@@ -762,6 +873,23 @@ results <- lapply(Ks, function(K) {
 df <- do.call(rbind, results)
 
 kable(df) %>% kable_styling(bootstrap_options = "responsive")
+```
+
+
+### Results for different alpha, **100** reps
+
+```{r}
+library(dplyr)
+final_results <- readRDS("../output/test/coverage_probability_all.rds")
+prepped <- final_results %>% 
+  mutate(ft = K==inside_check_1) %>% 
+  select(alpha, K, ft, t2) %>% 
+  group_by(alpha, K) %>% 
+  summarise(cov = mean(ft), mean_t2 = mean(t2)) %>% 
+  arrange(K)
+
+
+kable(prepped) %>% kable_styling(bootstrap_options = "responsive")
 ```
 
 ### Breakdown of within CI per K
@@ -846,6 +974,17 @@ SD set to runif(dim(df)[1], 0.05, 0.06): 0.87 <- narrower
 SD set to runif(dim(df)[1], 0.05, 0.1): 0.64 <- broader  
 
 Seems like when SD across varies highly across items to rank, leads to lower coverage, besides the extremeness of the SD themselves  
+
+
+
+# Notes from Klein
+
+
+
+
+
+
+
 
 # Appendices
 
@@ -1212,3 +1351,5 @@ all_equal(looped, zzz)
 
 
 # References
+
+
