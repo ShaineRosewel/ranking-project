@@ -75,7 +75,7 @@ dataset <- df[order(df$k),][1:K,]
 dataset['variance'] <- lapply(dataset['moe_k'], calculate_variance)
 rownames(dataset) <- dataset[,2]
 
-dataset %>% select(c(k, theta_k, variance, rhat_k)) %>% arrange(rhat_k)
+dataset %>% select(c(k, theta_k, variance, rhat_k, S, moe_k)) %>% arrange(rhat_k)
 ```
 
 
@@ -107,42 +107,6 @@ library(knitr)
 library(kableExtra)
 library(foreach)
 source('../R/algo1_helper.R')
-
-K<-10
-
-generate_synthetic_dataset <- function(K = 51, seed = 42) {
-  set.seed(seed)
-  # true parameter values, evenly spaced
-  theta_k <- seq(1, 0.05*K, length.out = K)
-  # fixed small standard errors
-  #S <- rep(0.9, K)
-  
-  template <- c(rep(0.05, ceiling(2*K / 3)), rep(1.2, floor(K / 3)))
-  S <- rep(template, length.out = K)
-  
-  k <- 1:K
-  data.frame(k = k, theta_k = theta_k, S = S)
-}
-
-dataset_or <- generate_synthetic_dataset(K = K, seed = 42) #TRUE
-dataset<-dataset_or
-theta_hat <- foreach(i = 1:K, 
-                     .combine = cbind) %do% {
-                       rnorm(1, 
-                             mean = dataset[i, 'theta_k'], 
-                             sd = dataset[i, 'S'])
-                     } # SAMPLE
-
-sort_reference <- data.frame(theta = dataset$theta_k, 
-                             theta_hat = t(theta_hat))
-
-dataset$theta_k <- NULL # remove theta k from the dataset
-dataset$theta_k <- t(theta_hat)
-  
-  
-  
-  
-
 B <- 1000
 
 set.seed(4)
@@ -180,6 +144,13 @@ gather(dat10) %>% ggplot(aes(x = value)) +geom_histogram(alpha = 0.7)+coord_flip
 
 
 2. For each $b$, order the set $\left\{ \hat{\theta}^*_{b1}, \hat{\theta}^*_{b2}, \dots, \hat{\theta}^*_{bK} \right\}$ to obtain $\left\{ \hat{\theta}^*_{b(1)}, \hat{\theta}^*_{b(2)}, \dots, \hat{\theta}^*_{b(K)} \right\}$
+
+
+
+
+
+
+
 
 
 ```{r results='asis'}
@@ -240,20 +211,7 @@ $$
 
 ```{r echo = FALSE}
 source('../R/algo1_helper.R')
-# kde_cdf_function <- function(datapoints, bandwidth) {
-#   return(function(x) mean(pnorm((x - datapoints) / bandwidth)))
-# }
-# 
-# estimate_CDF <- function(dataset, i){
-#   S = sqrt(dataset[i,'variance'])#sd(r[,i])
-#   IQR = quantile(r[,i], .75) - quantile(r[,i], .25)
-#   h_i <- 0.9*min(S, IQR/1.34)*(B^(1/5))
-#   return(kde_cdf_function(r[,i], h_i))
-# }
 
-```
-
-```{r}
 Fhat <- lapply(1:K, function(x)(estimate_CDF(x, rstar, B)))
 fhat <- lapply(1:K, function(x)(estimate_PDF(x, rstar, B)))
 ```
@@ -438,8 +396,8 @@ df <- readRDS("../data/mean_travel_time_ranking_2011.rds")
 # filter accdg to K
 dataset <- df[order(df$k),][1:K,]
 
-dataset_or <- generate_synthetic_dataset(K = K, seed = 42) #TRUE
-dataset<-dataset_or
+#dataset_or <- generate_synthetic_dataset(K = K, seed = 42) #TRUE
+#dataset<-dataset_or
 theta_hat <- foreach(i = 1:K, 
                      .combine = cbind) %do% {
                        rnorm(1, 
@@ -454,12 +412,25 @@ dataset$theta_k <- NULL # remove theta k from the dataset
 dataset$theta_k <- t(theta_hat)
 # run for K = 10
 output_for_k10 <- run_algorithm1(B, dataset, seed = 4, alpha = 0.1)
+output_for_k10
 ```
+
+
+
+
 
 #### Application to diff K {.tabset}
 
 ```{r eval = FALSE}
 B<-1000
+source('../R/algo1_helper.R')
+
+alpha <- 0.10
+K <- 10
+B <- 1000
+df <- readRDS("../data/mean_travel_time_ranking_2011.rds")
+
+
 for (K in c(10, 20, 30, 40, 51)) {
   # filtering the dataset
   dataset <- df[order(df$k),][1:K,]
@@ -485,20 +456,20 @@ for (K in c(10, 20, 30, 40, 51)) {
   
   # converting into tuples
   tuple_list <- t(apply(output[[K]][,c('kde_ci_lower', 'kde_ci_upper')], 1, function(row) as.numeric(row)))
-  
+
   # calculating the min from ranks
   output[[K]]['kde_rank_lower'] <- sapply(1:K, function(x) min(get_ranks(x, tuple_list)$ranks))
-  
+
   # calculating the max from ranks
   output[[K]]['kde_rank_upper'] <- sapply(1:K, function(x) max(get_ranks(x, tuple_list)$ranks))
-  
+
   # cardinality based on lambdaOK
   output[[K]]['kde_Lambda_Ok_length'] <- sapply(1:K, function(x) length(get_ranks(x, tuple_list)$Lambda_Ok))
-  
+
   # cardinality based on computed ranks
   output[[K]]['kde_rank_range_length'] <- sapply(1:K, function(x) length(get_ranks(x, tuple_list)$ranks))
  # print(paste("**** Output shown for K=", K, "****"))
-  
+
   # adding something similar to rhatk only for K=10
   output[[K]]['sample_rank'] <- rank(output[[K]]$theta_k, ties.method = "max")
   #cat("\n\n---\n\n")
@@ -536,6 +507,8 @@ kable(output[[51]], row.names = FALSE) %>% kable_styling(bootstrap_options = "re
 ```
 
 ### Plots {.tabset}
+
+
 
 #### KDE
 
@@ -627,7 +600,7 @@ df['ind_rank_range_length'] <- sapply(1:K, function(x) length(get_ranks(x, tuple
 
 
 ```{r results='asis'}
-#Oks <- list(df$bonf_Lambda_Ok_length, df$ind_Lambda_Ok_length, output[[51]]$kde_Lambda_Ok_length)
+Oks <- list(df$bonf_Lambda_Ok_length, df$ind_Lambda_Ok_length, output[[51]]$kde_Lambda_Ok_length)
 Oks <- list(df$bonf_rank_range_length, df$ind_rank_range_length, output[[51]]$kde_rank_range_length)
 
 kable(data.frame(
@@ -658,7 +631,9 @@ library(tictoc)
 
 K <- 10
 df <- readRDS("../data/mean_travel_time_ranking_2011.rds")
-dataset_or <- df[-order(df$S),][1:K,]
+dataset_or <- df[order(df$k),][1:K,] ### CONTAINS YOUR TRUE THETA OR YOUR MEANS~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
 
 get_coverage <- function(dataset_or, 
                          K, 
@@ -672,62 +647,101 @@ get_coverage <- function(dataset_or,
                       "get_t2", "kde_cdf_function",'get_inner_max',"inverse",
                       "empirical_cdf_function")
           ) %dopar% {
-                        
   dataset <- dataset_or
   
   # step 1 =====================================================================
   set.seed(iter)
-  theta_hat <- foreach(i = 1:K, 
-                       .combine = cbind) %do% {
-                         rnorm(1, 
-                               mean = dataset[i, 'theta_k'], 
-                               sd = dataset[i, 'S'])
-                       }
   
-  sort_reference <- data.frame(theta = dataset$theta_k, 
+  # sir mike's theta.h
+  theta_hat <- foreach(i = 1:K, .combine = cbind) %do% {
+    rnorm(1, mean = dataset[i, 'theta_k'],  sd = dataset[i, 'S'])}
+  
+  sort_reference <- data.frame(theta = dataset$theta_k,
                                theta_hat = t(theta_hat))
   
-  dataset$theta_k <- NULL # remove theta k from the dataset
-  dataset$theta_k <- t(theta_hat) # then replace it with the sampled so usable in algo 1 fcn
-  
+  dataset$theta_k <- NULL
+  # for the dataset, replace the means with theta.h, matching S
+  dataset$theta_k <- t(theta_hat)
+
   # step 2 =====================================================================
   result <- run_algorithm1(B, dataset, iter, alpha)
   
   # step 3 =====================================================================
   sorted_indices <- result$sorted_indices
-  sorted_theta <- sort_reference$theta[sorted_indices]
+  sorted_theta <- sort(dataset_or$theta_k)#sort_reference$theta[sorted_indices]
   sorted_thetahat <- sort_reference$theta_hat[sorted_indices]
-  
-  inside_check_1 <- sum((sorted_thetahat - result$Finv_u < sorted_theta) & 
+
+  inside_check_1 <- sum((sorted_thetahat - result$Finv_u < sorted_theta) &
                         (sorted_theta < sorted_thetahat - result$Finv_1_u))
-  
+
   tab_result <- result$interval_table
-  inside_check_2 <- sum((sorted_theta > tab_result$kde_ci_lower) & 
+  inside_check_2 <- sum((sorted_theta > tab_result$kde_ci_lower) &
                         (sorted_theta < tab_result$kde_ci_upper))
-  
+
   Fhat <- result$Fhat
   uhat <- result$uhat
   rstar <- sorted_thetahat - sorted_theta
-  
+
   Ystar <- sapply(1:length(Fhat), function(i) {
     Fhat[[i]](rstar[i])
   })
-  
+
   inside_check_3 <-  sum(((1-uhat) < Ystar) & ((Ystar) < uhat))
-  
+
   tuple_list <- t(apply(tab_result[,c('kde_ci_lower', 'kde_ci_upper')], 1, function(row) as.numeric(row)))
   tab_result['ind_rank_range_length'] <- sapply(1:K, function(x) length(get_ranks(x, tuple_list)$ranks))
   t2_val <- get_t2(tab_result$ind_rank_range_length)
-  
+
   write_feather(tab_result, sprintf("../output/iters/test/K%d/sorted_ci_%04d.feather", K, iter))
-  
-  data.frame(t2 = t2_val, 
-             inside_check_1 = inside_check_1, 
-             inside_check_2 = inside_check_2, 
+
+  data.frame(t2 = t2_val,
+             inside_check_1 = inside_check_1,
+             inside_check_2 = inside_check_2,
              inside_check_3 = inside_check_3)
 }
 }
+
+
+#   #sorted_indices <- result$sorted_indices #sorted_theta <-
+#  # sort_reference$theta[sorted_indices]
+# 
+#   sorted_theta <- sort(dataset_or$theta_k) # TRUE VALUE #sorted_thetahat <-
+#   #sort_reference$theta_hat[sorted_indices]
+# 
+#   #inside_check_1 <- sum((sorted_thetahat - result$Finv_u < sorted_theta) & #
+#   #(sorted_theta < sorted_thetahat - result$Finv_1_u))
+# 
+#   tab_result <- result#$interval_table
+# 
+#   inside_check_2 <- all((sorted_theta >= tab_result$kde_ci_lower) & (sorted_theta <= tab_result$kde_ci_upper))
+# 
+# 
+#   indicator <- all(result$kde_ci_lower <= sorted_theta) & all(sorted_theta <=result$kde_ci_upper)
+# 
+#   #Fhat <- result$Fhat #uhat <- result$uhat #rstar <- sorted_thetahat -
+#  # sorted_theta
+# 
+#   #Ystar <- sapply(1:length(Fhat), function(i) {
+#   #  Fhat[[i]](rstar[i])
+#   #})
+# 
+#   #inside_check_3 <-  sum(((1-uhat) < Ystar) & ((Ystar) < uhat))
+# 
+#   tuple_list <- t(apply(tab_result[,c('kde_ci_lower', 'kde_ci_upper')], 1, function(row) as.numeric(row)))
+#   tab_result['ind_rank_range_length'] <- sapply(1:K, function(x) length(get_ranks(x, tuple_list)$ranks))
+#   t2_val <- get_t2(tab_result$ind_rank_range_length)
+# 
+#   write_feather(tab_result, sprintf("../output/iters/test/K%d/sorted_ci_%04d.feather", K, iter))
+# 
+#   data.frame(t2 = t2_val,
+#              #inside_check_1 = inside_check_1,
+#              original =inside_check_2,
+#              inside_check_2 = indicator)
+#              #inside_check_3 = inside_check_3)
+# }
+# }
 ```
+
 
 
 ```{r eval = FALSE}
@@ -743,17 +757,19 @@ set.seed(4)
 #df <- generate_synthetic_dataset(K = K, seed = 42)
 cl=parallel::makeCluster(15)
 registerDoParallel(cl)
-for (K in c(51,40,30,20,10)) {
-  
-  set.seed(4)
+for (K in c(10, 20, 30, 40, 51)) {
+
   #dataset_or <- df[order(df$theta_k), ][seq(1,50,5), ] #df[order(df$theta_k), ][1:K, ]
   dataset_or <- df[order(df$k),][1:K,]
+  true_theta <- sort(dataset_or$theta_k)
+  
+  
   tic("Running...")
   coverage_output_df <- get_coverage(dataset_or, 
                                      K, 
                                      reps = 100, 
                                      B=1000, 
-                                     alpha=0.05)
+                                     alpha=0.10)
   toc()
 
   saveRDS(coverage_output_df,  paste0("../output/test/coverage_probability_",K, ".rds"))
@@ -762,6 +778,8 @@ for (K in c(51,40,30,20,10)) {
 }
 stopCluster(cl)
 ```
+
+
 
 ```{r eval = FALSE, echo = FALSE}
 df <- readRDS("../data/mean_travel_time_ranking_2011.rds")
@@ -804,7 +822,7 @@ saveRDS(final_results, "../output/test/coverage_probability_all.rds")
 
 
 
-### How often is a state missed across reps? {.tabset}
+### How often is a state missed across reps?  to redo {.hidden .unlisted .unnumbered}
 
 
 Aim is to observe which states usually fail to make it within the estimated interval, making the coverage low, even if it is just one miss. It appears that states with higher SD usually fail to make it within the interval. Plots below show misses as triangular points. They are below the y = 0 line if they are closer to the lower bound and above it if closer to upper bound. 
@@ -863,9 +881,9 @@ results <- lapply(Ks, function(K) {
   data.frame(
     K = K,
     Coverage = mean(a$inside_check_1 == K),  # only TRUE if inside == K
-    Within_CI_mean = mean(a$inside_check_1),
-    Within_CI_max = max(a$inside_check_1),
-    Within_CI_min = min(a$inside_check_1),
+    Within_CI_mean = mean(a$inside_check_2),
+    Within_CI_max = max(a$inside_check_2),
+    Within_CI_min = min(a$inside_check_2),
     T_mean = mean(a$t2)
   )
 })
@@ -876,7 +894,8 @@ kable(df) %>% kable_styling(bootstrap_options = "responsive")
 ```
 
 
-### Results for different alpha, **100** reps
+
+### Results for different alpha, **100** reps - to redo {.hidden .unlisted .unnumbered}
 
 ```{r}
 library(dplyr)
@@ -898,7 +917,9 @@ kable(prepped) %>% kable_styling(bootstrap_options = "responsive")
 Ks <- c(51, 40, 30, 20, 10)
 
 results <- lapply(Ks, function(K) {
-  a <- readRDS(paste0("../output/coverage_probability_", K, ".rds"))
+  # "../output/coverage_probability_"
+  fname <- "../output/test/coverage_probability_"
+  a <- readRDS(paste0(fname, K, ".rds"))
   data.frame(K = K, inside = a$inside_check_1)
 })
 
@@ -916,7 +937,7 @@ summary_counts %>%
 
 ```
 
-### Experimental runs results
+### Experimental runs results {.hidden .unlisted .unnumbered}
 
 - K = 10, 100 reps, cov: changing rstar from `rstar <- sorted_thetahat_star - matrix(sorted_theta_hat,B, K, byrow=TRUE)` to 
 `rstar <- sweep(sorted_thetahat_star, 2, colMeans(sorted_thetahat_star), FUN = "-")` increased coverage by ~0.10  
