@@ -27,14 +27,13 @@ empirical_cdf_function <- function(datapoints) {
   function(x) mean(datapoints <= x)
 }
 
+
 estimate_CDF <- function(i, r, B){
   S = sd(r[,i])
   IQR = quantile(r[,i], .75) - quantile(r[,i], .25)
   h_i <- 0.9*min(S, IQR/1.34)*(B^(-1/5))
-  #return(empirical_cdf_function(r[,i]))
   return(kde_cdf_function(r[,i], h_i))
 }
-
 
 
 get_inner_max <- function(value) return(max(value, 1-value))
@@ -73,30 +72,30 @@ generate_synthetic_dataset <- function(K = 51, seed = 42) {
   data.frame(k = k, theta_k = theta_k, S = S)
 }
 
-run_algorithm1 <- function(B, dataset, seed = 4, alpha = 0.1) {
+run_algorithm1 <- function(B, dataset, seed = 1469382642, alpha = 0.1) {
 
-  K <- dim(dataset)[1]
+  K <- dim(dataset)[1] # number of rows
   set.seed(seed)
 
   # step 1 =====================================================================
- 
-   set.seed(4)
+
   thetahat_star <- foreach(i = 1:K, .combine = cbind) %do% {
     foreach(b = 1:B, .combine = c) %do% {
-      rnorm(1, 
-            mean = dataset[i, 'theta_k'], 
-            sd = dataset[i, 'S'])
-    }
-  }
+      rnorm(1, mean = dataset[i, 'theta_k'], sd = dataset[i, 'S'])}}
+  
   colnames(thetahat_star) <- paste0("thetahat_star", 
                                     sprintf("%02d", 1:K))
-  theta_hat <- dataset$theta_k
-  
+
   # step 2 =====================================================================
   
-  sorted_indices <- order(dataset$theta_k) # index when order is increasing
+  sorted_indices <- order(dataset$theta_k) # sorted in increasing theta.h
   sorted_dataset <- dataset[sorted_indices, ]
-  sorted_theta_hat <- sorted_dataset$theta_k
+  #sorted_theta_hat <- sorted_dataset$theta_k # theta.h.o
+  
+  # sir mike's theta.h.o
+  sorted_theta_hat <- sort(dataset$theta_k)
+  
+  # sir mike's theta.h.B
   sorted_thetahat_star <- t(apply(thetahat_star, 1, sort))
   colnames(sorted_thetahat_star) <- paste0("sorted_thetahat_star", 
                                            sprintf("%02d", 1:K))
@@ -136,15 +135,25 @@ run_algorithm1 <- function(B, dataset, seed = 4, alpha = 0.1) {
   # step 8 =====================================================================
   
   Fhat.inv <- lapply(Fhat, 
-                     function(F) inverse(F, lower = -100, upper = 100))
-  sorted_dataset$Fhat.inv_u    <- sapply(1:K, 
+                     function(F) inverse(F, lower = -Inf, upper = Inf))
+  sorted_dataset$Fhat.inv_u    <- sapply(1:K,
                                          function(i) Fhat.inv[[i]](uhat))
-  sorted_dataset$Fhat.inv_1_u  <- sapply(1:K, 
+  sorted_dataset$Fhat.inv_1_u  <- sapply(1:K,
                                          function(i) Fhat.inv[[i]](1 - uhat))
+  # Fhat.inv_u    <- sapply(1:K, function(i) Fhat.inv[[i]](uhat))
+  # Fhat.inv_1_u  <- sapply(1:K, function(i) Fhat.inv[[i]](1 - uhat))
   
   sorted_dataset$kde_ci_lower <- sorted_theta_hat - sorted_dataset$Fhat.inv_u
+  
   sorted_dataset$kde_ci_upper <- sorted_theta_hat - sorted_dataset$Fhat.inv_1_u
+  
   sorted_dataset$original_index <- sorted_indices
+  # 
+  # kde_ci_lower <- sorted_theta_hat - Fhat.inv_u
+  # kde_ci_upper <- sorted_theta_hat - Fhat.inv_1_u
+  # 
+  # return(data.frame(kde_ci_lower = kde_ci_lower,
+  #            kde_ci_upper = kde_ci_upper))
   
   interval_table <- sorted_dataset %>%
     select(k = k,
@@ -153,9 +162,9 @@ run_algorithm1 <- function(B, dataset, seed = 4, alpha = 0.1) {
            kde_ci_upper = kde_ci_upper,
            original_index = original_index)
 
-  # END ------------------------------------------------------------------------
-
-  return(list(interval_table = interval_table, 
+  # # END ------------------------------------------------------------------------
+  #
+  return(list(interval_table = interval_table,
               Finv_u = sorted_dataset$Fhat.inv_u,
               Finv_1_u = sorted_dataset$Fhat.inv_1_u,
               sorted_thetahat = sorted_theta_hat,
