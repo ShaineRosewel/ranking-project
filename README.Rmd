@@ -1,0 +1,51 @@
+---
+title: "Project Outline"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, comment="")
+```
+
+
+```{r}
+print_tree <- function(path = ".", prefix = "", exclude = c("analysis/renv", "kde-ranking.Rproj"), root = path) {
+  items <- list.files(path, full.names = TRUE)
+  rel_paths <- sub(paste0("^", normalizePath(root), "/?"), "", normalizePath(items))
+  
+  # Exclude full relative paths (e.g., "analysis/renv")
+  keep <- !rel_paths %in% exclude
+  items <- items[keep]
+  rel_paths <- rel_paths[keep]
+  base_names <- basename(items)
+  
+  # Sort folders first
+  is_dir <- file.info(items)$isdir
+  order_idx <- order(!is_dir, base_names)
+  items <- items[order_idx]
+  rel_paths <- rel_paths[order_idx]
+  base_names <- base_names[order_idx]
+  is_dir <- is_dir[order_idx]
+
+  for (i in seq_along(items)) {
+    name <- base_names[i]
+    is_last <- i == length(items)
+    connector <- if (is_last) "└── " else "├── "
+    cat(prefix, connector, name, "\n", sep = "")
+
+    # Recurse only if directory and not excluded
+    if (is_dir[i]) {
+      # Check if this dir is in exclude
+      if (!(rel_paths[i] %in% exclude)) {
+        new_prefix <- paste0(prefix, if (is_last) "    " else "│   ")
+        print_tree(items[i], new_prefix, exclude, root)
+      }
+    }
+  }
+}
+
+print_tree("~/PDev/kde-ranking", exclude = c("renv", "kde-ranking.Rproj", "analysis/kde_files", "output"))
+
+
+```
+
