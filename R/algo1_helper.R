@@ -135,7 +135,7 @@ run_algorithm1 <- function(B, dataset, seed = 1469382642, alpha = 0.1) {
   # step 8 =====================================================================
   
   Fhat.inv <- lapply(Fhat, 
-                     function(F) inverse(F, lower = -Inf, upper = Inf))
+                     function(F) inverse(F, lower = -Inf, upper = Inf)) # last tried -2, 2
   sorted_dataset$Fhat.inv_u    <- sapply(1:K,
                                          function(i) Fhat.inv[[i]](uhat))
   sorted_dataset$Fhat.inv_1_u  <- sapply(1:K,
