@@ -40,6 +40,19 @@
     │   └── KleinWrightWieczorek2020.pdf
     ├── README.md
     └── renv.lock
+    
+# Runtime Notes
+
+This is for 5000 replications with 1000 bootstrap samples.
+
+| K  | hh:mm:ss   |
+|----|------------|
+| 10 | 00:35:57.42 |
+| 20 | 01:08:57.12 |
+| 30 | 01:37:38.38 |
+| 40 | 02:05:10.57 |
+| 51 | 02:40:11.92 |
+
   
 # To-Do
 
