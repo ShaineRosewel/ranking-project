@@ -767,12 +767,12 @@ for (K in c(10, 20, 30, 40, 51)) {
   tic("Running...")
   coverage_output_df <- get_coverage(dataset_or, 
                                      K, 
-                                     reps = 100, 
+                                     reps = 5000, 
                                      B=1000, 
                                      alpha=0.10)
   toc()
 
-  saveRDS(coverage_output_df,  paste0("../output/test/coverage_probability_",K, ".rds"))
+  saveRDS(coverage_output_df,  paste0("../output/coverage_probability_",K, ".rds"))
   coverage_output_df
   
 }
@@ -867,7 +867,7 @@ plot_misses(prepare_misses(file_input_path = paste0("../output/iters/K", 51), K 
 ```
 
 
-### Results from **100** reps
+### Results from **5000** reps
 
 ```{r}
 library(dplyr)
@@ -875,7 +875,7 @@ library(kableExtra)
 Ks <- c(51, 40, 30, 20, 10)
 
 results <- lapply(Ks, function(K) {
-  a <- readRDS(paste0("../output/test/coverage_probability_", K, ".rds"))
+  a <- readRDS(paste0("../output/coverage_probability_", K, ".rds"))
   #a <- readRDS(paste0("../output/coverage_probability_", K, ".rds"))
   #print(a)
   data.frame(
@@ -918,7 +918,7 @@ Ks <- c(51, 40, 30, 20, 10)
 
 results <- lapply(Ks, function(K) {
   # "../output/coverage_probability_"
-  fname <- "../output/test/coverage_probability_"
+  fname <- "../output/coverage_probability_"
   a <- readRDS(paste0(fname, K, ".rds"))
   data.frame(K = K, inside = a$inside_check_1)
 })
