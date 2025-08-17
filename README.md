@@ -58,5 +58,5 @@ This is for 5000 replications with 1000 bootstrap samples.
 
 - [ ] Read full text - [Klein](https://github.com/ShaineRosewel/kde-ranking/tree/master/references)
 - [ ] Structure writeup template: Use `multipleStrategies` repo as pattern to edit content
-- [x] Update texLive and test that citation works
+- [x] Update texLive and test that citation works - [refer to stackoverflow solution](https://stackoverflow.com/questions/79087384/pandoc-rstudio-failing-simple-rmarkdown-document-with-undefined-control-sequenc?noredirect=1#comment139455462_79087384)
 - [ ] Check if inverse can have limited data driven search space
