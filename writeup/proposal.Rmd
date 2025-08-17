@@ -1,0 +1,93 @@
+---
+number_sections: true
+fig_caption: yes
+output:
+  bookdown::pdf_document2:
+    toc: false
+fontsize: 12pt 
+indent: true
+header-includes:
+- \usepackage{amsmath}
+- \numberwithin{equation}{section}
+- \usepackage{setspace}\doublespacing
+- \usepackage{pdflscape}
+- \newcommand{\blandscape}{\begin{landscape}}
+- \newcommand{\elandscape}{\end{landscape}}
+- \usepackage{indentfirst}
+- \usepackage{xparse}
+papersize: a4
+bibliography: /home/realiseshewon/PDev/kde-ranking/writeup/references.bib
+csl: /home/realiseshewon/PDev/kde-ranking/writeup/harvard-educational-review.csl
+---
+
+
+
+\title{\vspace{20mm}TITLE HERE}
+\maketitle
+\thispagestyle{empty} 
+\vspace*{95px}
+\begin{center}
+A Thesis Proposal Presented to\\
+The Faculty of the SS\\
+univ\\
+\vspace*{100px}
+In Partial Fulfillment\\
+of the Requirements for the Degree of\\
+degree\\
+1st Semester A.Y. 2025-2026
+
+\vspace*{100px}
+by\\
+Nmae
+\end{center}
+
+
+\newpage
+
+```{r eval = FALSE}
+knitr::opts_knit$set(root.dir = getwd())
+```
+
+# Abstract {-}
+
+
+
+```{r, child = "child/abstract.Rmd"}
+
+```
+
+\newpage
+
+\tableofcontents
+
+\newpage
+
+# Introduction
+
+```{r, child = "child/introduction.Rmd"}
+
+```
+
+# Literature Review
+
+```{r, child = "child/rrl.Rmd"}
+
+```
+
+# Methodology
+
+```{r, child = "child/methodology.Rmd"}
+
+```
+
+THIS IS @mariarizzo
+
+# References
+
+
+# Appendices {-}
+
+```{r, child = "child/appendix.Rmd"}
+
+```
+
