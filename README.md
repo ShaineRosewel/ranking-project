@@ -57,5 +57,6 @@ This is for 5000 replications with 1000 bootstrap samples.
 # To-Do
 
 - [ ] Read full text - [Klein](https://github.com/ShaineRosewel/kde-ranking/tree/master/references)
-- [ ] Structure writeup template
+- [ ] Structure writeup template: Use `multipleStrategies` repo as pattern to edit content
+- [ ] Update texLive and test that citation works
 - [ ] Check if inverse can have limited data driven search space
