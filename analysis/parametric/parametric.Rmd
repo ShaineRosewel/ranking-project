@@ -223,7 +223,7 @@ cl=parallel::makeCluster(15)
 registerDoParallel(cl)
 
 sds <- c(2, 3.6, 6)
-Ks <- c(51, 40, 30, 20, 10)
+Ks <- c(51, 40, 30, 20, 10, 5)
 
 for (sd in sds) {
   set.seed(123974)
@@ -257,8 +257,7 @@ stopCluster(cl)
 
 ```{r results='asis'}
 sds <- c(2, 3.6, 6)
-Ks <- c(51, 40, 30, 20, 10)
-
+Ks <- c(51, 40, 30, 20, 10, 5)
 param_grid <- expand.grid(K = Ks, sd = sds)
 
 results <- do.call(rbind, lapply(seq_len(nrow(param_grid)), function(i) {
@@ -279,7 +278,7 @@ results <- do.call(rbind, lapply(seq_len(nrow(param_grid)), function(i) {
 }))
 
 
-kable(results %>% arrange(-K, -sd) %>% select(K, sd, Coverage, T_mean)) %>% kable_styling(bootstrap_options = "responsive")
+kable(results %>% arrange(-sd) %>% select(K, sd, Coverage, T_mean)) %>% kable_styling(bootstrap_options = "responsive")
 ```
 
 

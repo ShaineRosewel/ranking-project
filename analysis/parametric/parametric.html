@@ -3792,7 +3792,7 @@ Arizona
 <span id="cb21-7"><a href="#cb21-7" tabindex="-1"></a><span class="fu">registerDoParallel</span>(cl)</span>
 <span id="cb21-8"><a href="#cb21-8" tabindex="-1"></a></span>
 <span id="cb21-9"><a href="#cb21-9" tabindex="-1"></a>sds <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="fl">3.6</span>, <span class="dv">6</span>)</span>
-<span id="cb21-10"><a href="#cb21-10" tabindex="-1"></a>Ks <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">51</span>, <span class="dv">40</span>, <span class="dv">30</span>, <span class="dv">20</span>, <span class="dv">10</span>)</span>
+<span id="cb21-10"><a href="#cb21-10" tabindex="-1"></a>Ks <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">51</span>, <span class="dv">40</span>, <span class="dv">30</span>, <span class="dv">20</span>, <span class="dv">10</span>, <span class="dv">5</span>)</span>
 <span id="cb21-11"><a href="#cb21-11" tabindex="-1"></a></span>
 <span id="cb21-12"><a href="#cb21-12" tabindex="-1"></a><span class="cf">for</span> (sd <span class="cf">in</span> sds) {</span>
 <span id="cb21-13"><a href="#cb21-13" tabindex="-1"></a>  <span class="fu">set.seed</span>(<span class="dv">123974</span>)</span>
@@ -3822,29 +3822,28 @@ Arizona
 <span id="cb21-37"><a href="#cb21-37" tabindex="-1"></a></span>
 <span id="cb21-38"><a href="#cb21-38" tabindex="-1"></a><span class="fu">stopCluster</span>(cl)</span></code></pre></div>
 <div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" tabindex="-1"></a>sds <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="fl">3.6</span>, <span class="dv">6</span>)</span>
-<span id="cb22-2"><a href="#cb22-2" tabindex="-1"></a>Ks <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">51</span>, <span class="dv">40</span>, <span class="dv">30</span>, <span class="dv">20</span>, <span class="dv">10</span>)</span>
-<span id="cb22-3"><a href="#cb22-3" tabindex="-1"></a></span>
-<span id="cb22-4"><a href="#cb22-4" tabindex="-1"></a>param_grid <span class="ot">&lt;-</span> <span class="fu">expand.grid</span>(<span class="at">K =</span> Ks, <span class="at">sd =</span> sds)</span>
-<span id="cb22-5"><a href="#cb22-5" tabindex="-1"></a></span>
-<span id="cb22-6"><a href="#cb22-6" tabindex="-1"></a>results <span class="ot">&lt;-</span> <span class="fu">do.call</span>(rbind, <span class="fu">lapply</span>(<span class="fu">seq_len</span>(<span class="fu">nrow</span>(param_grid)), <span class="cf">function</span>(i) {</span>
-<span id="cb22-7"><a href="#cb22-7" tabindex="-1"></a>  K <span class="ot">&lt;-</span> param_grid<span class="sc">$</span>K[i]</span>
-<span id="cb22-8"><a href="#cb22-8" tabindex="-1"></a>  sd <span class="ot">&lt;-</span> param_grid<span class="sc">$</span>sd[i]</span>
-<span id="cb22-9"><a href="#cb22-9" tabindex="-1"></a>  </span>
-<span id="cb22-10"><a href="#cb22-10" tabindex="-1"></a>  a <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="fu">paste0</span>(<span class="st">&quot;output/coverage_probability_&quot;</span>, K, <span class="st">&quot;_&quot;</span>, sd, <span class="st">&quot;.rds&quot;</span>))</span>
-<span id="cb22-11"><a href="#cb22-11" tabindex="-1"></a>  </span>
-<span id="cb22-12"><a href="#cb22-12" tabindex="-1"></a>  <span class="fu">data.frame</span>(</span>
-<span id="cb22-13"><a href="#cb22-13" tabindex="-1"></a>    <span class="at">K =</span> K,</span>
-<span id="cb22-14"><a href="#cb22-14" tabindex="-1"></a>    <span class="at">sd =</span> sd,</span>
-<span id="cb22-15"><a href="#cb22-15" tabindex="-1"></a>    <span class="at">Coverage =</span> <span class="fu">mean</span>(a<span class="sc">$</span>inside_check_2 <span class="sc">==</span> K),</span>
-<span id="cb22-16"><a href="#cb22-16" tabindex="-1"></a>    <span class="at">Within_CI_mean =</span> <span class="fu">mean</span>(a<span class="sc">$</span>inside_check_2),</span>
-<span id="cb22-17"><a href="#cb22-17" tabindex="-1"></a>    <span class="at">Within_CI_max =</span> <span class="fu">max</span>(a<span class="sc">$</span>inside_check_2),</span>
-<span id="cb22-18"><a href="#cb22-18" tabindex="-1"></a>    <span class="at">Within_CI_min =</span> <span class="fu">min</span>(a<span class="sc">$</span>inside_check_2),</span>
-<span id="cb22-19"><a href="#cb22-19" tabindex="-1"></a>    <span class="at">T_mean =</span> <span class="fu">mean</span>(a<span class="sc">$</span>t2)</span>
-<span id="cb22-20"><a href="#cb22-20" tabindex="-1"></a>  )</span>
-<span id="cb22-21"><a href="#cb22-21" tabindex="-1"></a>}))</span>
+<span id="cb22-2"><a href="#cb22-2" tabindex="-1"></a>Ks <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">51</span>, <span class="dv">40</span>, <span class="dv">30</span>, <span class="dv">20</span>, <span class="dv">10</span>, <span class="dv">5</span>)</span>
+<span id="cb22-3"><a href="#cb22-3" tabindex="-1"></a>param_grid <span class="ot">&lt;-</span> <span class="fu">expand.grid</span>(<span class="at">K =</span> Ks, <span class="at">sd =</span> sds)</span>
+<span id="cb22-4"><a href="#cb22-4" tabindex="-1"></a></span>
+<span id="cb22-5"><a href="#cb22-5" tabindex="-1"></a>results <span class="ot">&lt;-</span> <span class="fu">do.call</span>(rbind, <span class="fu">lapply</span>(<span class="fu">seq_len</span>(<span class="fu">nrow</span>(param_grid)), <span class="cf">function</span>(i) {</span>
+<span id="cb22-6"><a href="#cb22-6" tabindex="-1"></a>  K <span class="ot">&lt;-</span> param_grid<span class="sc">$</span>K[i]</span>
+<span id="cb22-7"><a href="#cb22-7" tabindex="-1"></a>  sd <span class="ot">&lt;-</span> param_grid<span class="sc">$</span>sd[i]</span>
+<span id="cb22-8"><a href="#cb22-8" tabindex="-1"></a>  </span>
+<span id="cb22-9"><a href="#cb22-9" tabindex="-1"></a>  a <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="fu">paste0</span>(<span class="st">&quot;output/coverage_probability_&quot;</span>, K, <span class="st">&quot;_&quot;</span>, sd, <span class="st">&quot;.rds&quot;</span>))</span>
+<span id="cb22-10"><a href="#cb22-10" tabindex="-1"></a>  </span>
+<span id="cb22-11"><a href="#cb22-11" tabindex="-1"></a>  <span class="fu">data.frame</span>(</span>
+<span id="cb22-12"><a href="#cb22-12" tabindex="-1"></a>    <span class="at">K =</span> K,</span>
+<span id="cb22-13"><a href="#cb22-13" tabindex="-1"></a>    <span class="at">sd =</span> sd,</span>
+<span id="cb22-14"><a href="#cb22-14" tabindex="-1"></a>    <span class="at">Coverage =</span> <span class="fu">mean</span>(a<span class="sc">$</span>inside_check_2 <span class="sc">==</span> K),</span>
+<span id="cb22-15"><a href="#cb22-15" tabindex="-1"></a>    <span class="at">Within_CI_mean =</span> <span class="fu">mean</span>(a<span class="sc">$</span>inside_check_2),</span>
+<span id="cb22-16"><a href="#cb22-16" tabindex="-1"></a>    <span class="at">Within_CI_max =</span> <span class="fu">max</span>(a<span class="sc">$</span>inside_check_2),</span>
+<span id="cb22-17"><a href="#cb22-17" tabindex="-1"></a>    <span class="at">Within_CI_min =</span> <span class="fu">min</span>(a<span class="sc">$</span>inside_check_2),</span>
+<span id="cb22-18"><a href="#cb22-18" tabindex="-1"></a>    <span class="at">T_mean =</span> <span class="fu">mean</span>(a<span class="sc">$</span>t2)</span>
+<span id="cb22-19"><a href="#cb22-19" tabindex="-1"></a>  )</span>
+<span id="cb22-20"><a href="#cb22-20" tabindex="-1"></a>}))</span>
+<span id="cb22-21"><a href="#cb22-21" tabindex="-1"></a></span>
 <span id="cb22-22"><a href="#cb22-22" tabindex="-1"></a></span>
-<span id="cb22-23"><a href="#cb22-23" tabindex="-1"></a></span>
-<span id="cb22-24"><a href="#cb22-24" tabindex="-1"></a><span class="fu">kable</span>(results <span class="sc">%&gt;%</span> <span class="fu">arrange</span>(<span class="sc">-</span>K, <span class="sc">-</span>sd) <span class="sc">%&gt;%</span> <span class="fu">select</span>(K, sd, Coverage, T_mean)) <span class="sc">%&gt;%</span> <span class="fu">kable_styling</span>(<span class="at">bootstrap_options =</span> <span class="st">&quot;responsive&quot;</span>)</span></code></pre></div>
+<span id="cb22-23"><a href="#cb22-23" tabindex="-1"></a><span class="fu">kable</span>(results <span class="sc">%&gt;%</span> <span class="fu">arrange</span>(<span class="sc">-</span>sd) <span class="sc">%&gt;%</span> <span class="fu">select</span>(K, sd, Coverage, T_mean)) <span class="sc">%&gt;%</span> <span class="fu">kable_styling</span>(<span class="at">bootstrap_options =</span> <span class="st">&quot;responsive&quot;</span>)</span></code></pre></div>
 <table class="table table-responsive" style="margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
@@ -3879,6 +3878,76 @@ T_mean
 </tr>
 <tr>
 <td style="text-align:right;">
+40
+</td>
+<td style="text-align:right;">
+6.0
+</td>
+<td style="text-align:right;">
+0.854
+</td>
+<td style="text-align:right;">
+5.735638
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+30
+</td>
+<td style="text-align:right;">
+6.0
+</td>
+<td style="text-align:right;">
+0.842
+</td>
+<td style="text-align:right;">
+4.230725
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+20
+</td>
+<td style="text-align:right;">
+6.0
+</td>
+<td style="text-align:right;">
+0.848
+</td>
+<td style="text-align:right;">
+2.507955
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:right;">
+6.0
+</td>
+<td style="text-align:right;">
+0.843
+</td>
+<td style="text-align:right;">
+1.718803
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+6.0
+</td>
+<td style="text-align:right;">
+0.838
+</td>
+<td style="text-align:right;">
+1.500499
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
 51
 </td>
 <td style="text-align:right;">
@@ -3889,6 +3958,76 @@ T_mean
 </td>
 <td style="text-align:right;">
 12.130553
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+40
+</td>
+<td style="text-align:right;">
+3.6
+</td>
+<td style="text-align:right;">
+0.889
+</td>
+<td style="text-align:right;">
+9.375756
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+30
+</td>
+<td style="text-align:right;">
+3.6
+</td>
+<td style="text-align:right;">
+0.866
+</td>
+<td style="text-align:right;">
+6.763327
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+20
+</td>
+<td style="text-align:right;">
+3.6
+</td>
+<td style="text-align:right;">
+0.913
+</td>
+<td style="text-align:right;">
+3.819702
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:right;">
+3.6
+</td>
+<td style="text-align:right;">
+0.900
+</td>
+<td style="text-align:right;">
+2.399220
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+3.6
+</td>
+<td style="text-align:right;">
+0.860
+</td>
+<td style="text-align:right;">
+1.768144
 </td>
 </tr>
 <tr>
@@ -3910,34 +4049,6 @@ T_mean
 40
 </td>
 <td style="text-align:right;">
-6.0
-</td>
-<td style="text-align:right;">
-0.854
-</td>
-<td style="text-align:right;">
-5.735638
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-40
-</td>
-<td style="text-align:right;">
-3.6
-</td>
-<td style="text-align:right;">
-0.889
-</td>
-<td style="text-align:right;">
-9.375756
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-40
-</td>
-<td style="text-align:right;">
 2.0
 </td>
 <td style="text-align:right;">
@@ -3945,34 +4056,6 @@ T_mean
 </td>
 <td style="text-align:right;">
 13.754077
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-30
-</td>
-<td style="text-align:right;">
-6.0
-</td>
-<td style="text-align:right;">
-0.842
-</td>
-<td style="text-align:right;">
-4.230725
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-30
-</td>
-<td style="text-align:right;">
-3.6
-</td>
-<td style="text-align:right;">
-0.866
-</td>
-<td style="text-align:right;">
-6.763327
 </td>
 </tr>
 <tr>
@@ -3994,34 +4077,6 @@ T_mean
 20
 </td>
 <td style="text-align:right;">
-6.0
-</td>
-<td style="text-align:right;">
-0.848
-</td>
-<td style="text-align:right;">
-2.507955
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-20
-</td>
-<td style="text-align:right;">
-3.6
-</td>
-<td style="text-align:right;">
-0.913
-</td>
-<td style="text-align:right;">
-3.819702
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-20
-</td>
-<td style="text-align:right;">
 2.0
 </td>
 <td style="text-align:right;">
@@ -4036,34 +4091,6 @@ T_mean
 10
 </td>
 <td style="text-align:right;">
-6.0
-</td>
-<td style="text-align:right;">
-0.843
-</td>
-<td style="text-align:right;">
-1.718803
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-10
-</td>
-<td style="text-align:right;">
-3.6
-</td>
-<td style="text-align:right;">
-0.900
-</td>
-<td style="text-align:right;">
-2.399220
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-10
-</td>
-<td style="text-align:right;">
 2.0
 </td>
 <td style="text-align:right;">
@@ -4071,6 +4098,20 @@ T_mean
 </td>
 <td style="text-align:right;">
 3.445395
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+2.0
+</td>
+<td style="text-align:right;">
+0.905
+</td>
+<td style="text-align:right;">
+1.940891
 </td>
 </tr>
 </tbody>
