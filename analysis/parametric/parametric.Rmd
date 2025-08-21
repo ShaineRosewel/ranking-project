@@ -11,7 +11,6 @@ output:
       toc_depth: 5
     fig_caption: true
     highlight: tango
-bibliography: references.bib
 ---
 
 ```{r setup, include=FALSE}
@@ -27,6 +26,13 @@ Generate mean values from N(23.8, sd), where sd = 3.6, sd = 6, sd = 2
 K = 5, 10, 30, 51
 
 ```{r}
+library(dplyr)
+library(kableExtra)
+library(doParallel)
+library(foreach)
+library(tictoc)
+
+
 sd <- 3.6 #  sd = 3.6, sd = 6, sd = 2
 mean <- 23.8
 
@@ -35,27 +41,27 @@ theta <- rnorm(51, mean, sd)
 df <- readRDS("../../data/mean_travel_time_ranking_2011.rds")
 df$theta_k <- theta
 full_dataset <- df %>% select(theta_k, k,S)
-full_dataset
+kable(full_dataset) %>% kable_styling(bootstrap_options = "responsive")
 ```
 
 SE can be the same one used in the study of Klein 
 
 ```{r results='asis'}
-library(dplyr)
 alpha <- 0.1
 K <- 10
 B<- 1000
 dataset <- full_dataset[order(full_dataset$k),][1:K,]
-dataset
+kable(dataset) %>% kable_styling(bootstrap_options = "responsive")
 ```
 
-# Algorithm 1 (Stepwise)
+# Algorithm 1: Stepwise Implementation
 
-# 1
+## Step 1
 
 (a)
 
-```{r}
+```{r results='asis'}
+set.seed(123974)
 thetahat_star <- foreach(i = 1:K, .combine = cbind) %do% {
   foreach(b = 1:B, .combine = c) %do% {
     rnorm(1, mean = dataset[i, 'theta_k'], sd = dataset[i, 'S'])}}
@@ -63,10 +69,19 @@ thetahat_star <- foreach(i = 1:K, .combine = cbind) %do% {
 colnames(thetahat_star) <- paste0("thetahat_star", 
                                   sprintf("%02d", 1:K))
 
+kable(head(thetahat_star)) %>% kable_styling(bootstrap_options = "responsive")
+```
+
+
+```{r results='asis'}
+set.seed(123974)
 sorted_thetahat_star <- t(apply(thetahat_star, 1, sort))
 colnames(sorted_thetahat_star) <- paste0("sorted_thetahat_star", 
                                          sprintf("%02d", 1:K))
+kable(head(sorted_thetahat_star)) %>% kable_styling(bootstrap_options = "responsive")
 ```
+
+
 
 
 (b)
@@ -77,18 +92,19 @@ variance_vector
 ```
 
 
-```{r}
+```{r results='asis'}
 # for b = 1
 # if k = 1
 k<-10
 b<-1
 minuend <- thetahat_star^2 + rep(variance_vector, each = nrow(thetahat_star))
 #sqrt(among[b,k]^2 - sorted_thetahat_star[b, ][k]^2)
+kable(head(minuend)) %>% kable_styling(bootstrap_options = "responsive")
 ```
 
-
-```{r}
+```{r results='asis'}
 sigma_hat_star <- sqrt(t(apply(minuend, 1, sort)) - sorted_thetahat_star^2)
+kable(head(sigma_hat_star)) %>% kable_styling(bootstrap_options = "responsive")
 ```
 
 (c)
@@ -98,15 +114,17 @@ sigma_hat_star <- sqrt(t(apply(minuend, 1, sort)) - sorted_thetahat_star^2)
 sorted_theta_hat <- sort(dataset$theta_k)
 
 t_star <- apply(abs((sorted_thetahat_star - rep(sorted_theta_hat, each = nrow(sorted_thetahat_star)))/sigma_hat_star), 1, max)
+t_star[1:6]
 ```
 
-# 2
+## Step 2
 
 ```{r}
 t_hat <- quantile(t_star, probs = 1 - alpha)
+t_hat
 ```
 
-# 3
+## Step 3
 
 ```{r}
 theta_hat <- dataset$theta_k
@@ -114,6 +132,8 @@ theta_hat <- dataset$theta_k
 sigma_hat <- sqrt(sort(theta_hat^2 + variance_vector) - sorted_theta_hat^2)
 sigma_hat
 ```
+
+## Resulting CI
 
 ```{r}
 sorted_theta_hat - t_hat*sigma_hat
@@ -124,24 +144,21 @@ sorted_theta_hat + t_hat*sigma_hat
 ```
 
 
-```{r}
+# Algorithm 1: Full Implementation
+
+```{r results='asis'}
 source("../../R/algo1_parametric.R")
 
-run_algorithm1(B, dataset, alpha = 0.1)
+res <- run_algorithm1(B, dataset, seed = 123974, alpha = 0.1)
+
+kable(res) %>% kable_styling(bootstrap_options = "responsive")
 ```
 
 # Algorithm 2
 
 
 ```{r eval = FALSE}
-
-library(doParallel)
-library(arrow)
-library(tictoc)
-
 source("../../R/algo1_parametric.R")
-
-#dataset_or <- dataset
 get_coverage <- function(dataset_or, 
                          K, 
                          reps = 5, # step 4
@@ -196,20 +213,7 @@ get_coverage <- function(dataset_or,
 ```
 
 
-```{r}
-library(doParallel)
-library(foreach)
-library(tictoc)
-
-
-# step 4 =====================================================================
-
-library(dplyr)
-#alpha <- 0.1
-#K <- 51
-#B<- 1000
-#dataset <- full_dataset[order(full_dataset$k),][1:K,]
-
+```{r eval = FALSE}
 #sd <- 3.6 #  sd = 3.6, sd = 6, sd = 2
 mean <- 23.8
 
@@ -251,9 +255,9 @@ stopCluster(cl)
 ```
 
 
-```{r}
-library(dplyr)
-library(kableExtra)
+```{r results='asis'}
+sds <- c(2, 3.6, 6)
+Ks <- c(51, 40, 30, 20, 10)
 
 param_grid <- expand.grid(K = Ks, sd = sds)
 
@@ -275,9 +279,7 @@ results <- do.call(rbind, lapply(seq_len(nrow(param_grid)), function(i) {
 }))
 
 
-results
-#kable(df) %>% kable_styling(bootstrap_options = "responsive")
-
+kable(results %>% arrange(-K, -sd) %>% select(K, sd, Coverage, T_mean)) %>% kable_styling(bootstrap_options = "responsive")
 ```
 
 
