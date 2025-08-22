@@ -195,8 +195,8 @@ get_coverage <- function(dataset_or,
   sorted_thetahat <- sort(sort_reference$theta_hat)
 
 
-  inside_check_2 <- sum((sorted_theta > result$ci_lower) &
-                        (sorted_theta < result$ci_upper))
+  inside_check_2 <- sum((sorted_theta >= result$ci_lower) &
+                        (sorted_theta <= result$ci_upper))
 
 
   tuple_list <- t(apply(result[,c('ci_lower', 'ci_upper')], 1, function(row) as.numeric(row)))
@@ -241,8 +241,8 @@ for (sd in sds) {
     tic("Running...")
     coverage_output_df <- get_coverage(dataset_or, 
                                        K, 
-                                       reps = 1000, 
-                                       B=500, 
+                                       reps = 5000, 
+                                       B=1000, 
                                        alpha=0.10)
     toc()
   
@@ -280,10 +280,6 @@ results <- do.call(rbind, lapply(seq_len(nrow(param_grid)), function(i) {
 
 kable(results %>% arrange(-sd) %>% select(K, sd, Coverage, T_mean)) %>% kable_styling(bootstrap_options = "responsive")
 ```
-
-
-
-
 
 
 

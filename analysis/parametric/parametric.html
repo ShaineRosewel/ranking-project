@@ -11,7 +11,7 @@
 
 <meta name="author" content="Shaine" />
 
-<meta name="date" content="2025-08-21" />
+<meta name="date" content="2025-08-23" />
 
 <title>KDE</title>
 
@@ -1769,7 +1769,7 @@ font-size: 0.95em;
 
 <h1 class="title toc-ignore">KDE</h1>
 <h4 class="author">Shaine</h4>
-<h4 class="date">2025-08-21</h4>
+<h4 class="date">2025-08-23</h4>
 
 </div>
 
@@ -3769,8 +3769,8 @@ Arizona
 <span id="cb20-35"><a href="#cb20-35" tabindex="-1"></a>  sorted_thetahat <span class="ot">&lt;-</span> <span class="fu">sort</span>(sort_reference<span class="sc">$</span>theta_hat)</span>
 <span id="cb20-36"><a href="#cb20-36" tabindex="-1"></a></span>
 <span id="cb20-37"><a href="#cb20-37" tabindex="-1"></a></span>
-<span id="cb20-38"><a href="#cb20-38" tabindex="-1"></a>  inside_check_2 <span class="ot">&lt;-</span> <span class="fu">sum</span>((sorted_theta <span class="sc">&gt;</span> result<span class="sc">$</span>ci_lower) <span class="sc">&amp;</span></span>
-<span id="cb20-39"><a href="#cb20-39" tabindex="-1"></a>                        (sorted_theta <span class="sc">&lt;</span> result<span class="sc">$</span>ci_upper))</span>
+<span id="cb20-38"><a href="#cb20-38" tabindex="-1"></a>  inside_check_2 <span class="ot">&lt;-</span> <span class="fu">sum</span>((sorted_theta <span class="sc">&gt;=</span> result<span class="sc">$</span>ci_lower) <span class="sc">&amp;</span></span>
+<span id="cb20-39"><a href="#cb20-39" tabindex="-1"></a>                        (sorted_theta <span class="sc">&lt;=</span> result<span class="sc">$</span>ci_upper))</span>
 <span id="cb20-40"><a href="#cb20-40" tabindex="-1"></a></span>
 <span id="cb20-41"><a href="#cb20-41" tabindex="-1"></a></span>
 <span id="cb20-42"><a href="#cb20-42" tabindex="-1"></a>  tuple_list <span class="ot">&lt;-</span> <span class="fu">t</span>(<span class="fu">apply</span>(result[,<span class="fu">c</span>(<span class="st">&#39;ci_lower&#39;</span>, <span class="st">&#39;ci_upper&#39;</span>)], <span class="dv">1</span>, <span class="cf">function</span>(row) <span class="fu">as.numeric</span>(row)))</span>
@@ -3810,8 +3810,8 @@ Arizona
 <span id="cb21-25"><a href="#cb21-25" tabindex="-1"></a>    <span class="fu">tic</span>(<span class="st">&quot;Running...&quot;</span>)</span>
 <span id="cb21-26"><a href="#cb21-26" tabindex="-1"></a>    coverage_output_df <span class="ot">&lt;-</span> <span class="fu">get_coverage</span>(dataset_or, </span>
 <span id="cb21-27"><a href="#cb21-27" tabindex="-1"></a>                                       K, </span>
-<span id="cb21-28"><a href="#cb21-28" tabindex="-1"></a>                                       <span class="at">reps =</span> <span class="dv">1000</span>, </span>
-<span id="cb21-29"><a href="#cb21-29" tabindex="-1"></a>                                       <span class="at">B=</span><span class="dv">500</span>, </span>
+<span id="cb21-28"><a href="#cb21-28" tabindex="-1"></a>                                       <span class="at">reps =</span> <span class="dv">5000</span>, </span>
+<span id="cb21-29"><a href="#cb21-29" tabindex="-1"></a>                                       <span class="at">B=</span><span class="dv">1000</span>, </span>
 <span id="cb21-30"><a href="#cb21-30" tabindex="-1"></a>                                       <span class="at">alpha=</span><span class="fl">0.10</span>)</span>
 <span id="cb21-31"><a href="#cb21-31" tabindex="-1"></a>    <span class="fu">toc</span>()</span>
 <span id="cb21-32"><a href="#cb21-32" tabindex="-1"></a>  </span>
@@ -3870,10 +3870,10 @@ T_mean
 6.0
 </td>
 <td style="text-align:right;">
-0.916
+0.9142
 </td>
 <td style="text-align:right;">
-7.780933
+7.814126
 </td>
 </tr>
 <tr>
@@ -3884,10 +3884,10 @@ T_mean
 6.0
 </td>
 <td style="text-align:right;">
-0.854
+0.8628
 </td>
 <td style="text-align:right;">
-5.735638
+5.770959
 </td>
 </tr>
 <tr>
@@ -3898,10 +3898,10 @@ T_mean
 6.0
 </td>
 <td style="text-align:right;">
-0.842
+0.8508
 </td>
 <td style="text-align:right;">
-4.230725
+4.254639
 </td>
 </tr>
 <tr>
@@ -3912,10 +3912,10 @@ T_mean
 6.0
 </td>
 <td style="text-align:right;">
-0.848
+0.8450
 </td>
 <td style="text-align:right;">
-2.507955
+2.516112
 </td>
 </tr>
 <tr>
@@ -3926,10 +3926,10 @@ T_mean
 6.0
 </td>
 <td style="text-align:right;">
-0.843
+0.8370
 </td>
 <td style="text-align:right;">
-1.718803
+1.724781
 </td>
 </tr>
 <tr>
@@ -3940,10 +3940,10 @@ T_mean
 6.0
 </td>
 <td style="text-align:right;">
-0.838
+0.8242
 </td>
 <td style="text-align:right;">
-1.500499
+1.501770
 </td>
 </tr>
 <tr>
@@ -3954,10 +3954,10 @@ T_mean
 3.6
 </td>
 <td style="text-align:right;">
-0.918
+0.9250
 </td>
 <td style="text-align:right;">
-12.130553
+12.133285
 </td>
 </tr>
 <tr>
@@ -3968,10 +3968,10 @@ T_mean
 3.6
 </td>
 <td style="text-align:right;">
-0.889
+0.8826
 </td>
 <td style="text-align:right;">
-9.375756
+9.402707
 </td>
 </tr>
 <tr>
@@ -3982,10 +3982,10 @@ T_mean
 3.6
 </td>
 <td style="text-align:right;">
-0.866
+0.8608
 </td>
 <td style="text-align:right;">
-6.763327
+6.806269
 </td>
 </tr>
 <tr>
@@ -3996,10 +3996,10 @@ T_mean
 3.6
 </td>
 <td style="text-align:right;">
-0.913
+0.9034
 </td>
 <td style="text-align:right;">
-3.819702
+3.818848
 </td>
 </tr>
 <tr>
@@ -4010,10 +4010,10 @@ T_mean
 3.6
 </td>
 <td style="text-align:right;">
-0.900
+0.8974
 </td>
 <td style="text-align:right;">
-2.399220
+2.398915
 </td>
 </tr>
 <tr>
@@ -4024,10 +4024,10 @@ T_mean
 3.6
 </td>
 <td style="text-align:right;">
-0.860
+0.8628
 </td>
 <td style="text-align:right;">
-1.768144
+1.770282
 </td>
 </tr>
 <tr>
@@ -4038,10 +4038,10 @@ T_mean
 2.0
 </td>
 <td style="text-align:right;">
-0.952
+0.9500
 </td>
 <td style="text-align:right;">
-19.048980
+18.991132
 </td>
 </tr>
 <tr>
@@ -4052,10 +4052,10 @@ T_mean
 2.0
 </td>
 <td style="text-align:right;">
-0.878
+0.8840
 </td>
 <td style="text-align:right;">
-13.754077
+13.767946
 </td>
 </tr>
 <tr>
@@ -4066,10 +4066,10 @@ T_mean
 2.0
 </td>
 <td style="text-align:right;">
-0.873
+0.8804
 </td>
 <td style="text-align:right;">
-10.555523
+10.541485
 </td>
 </tr>
 <tr>
@@ -4080,10 +4080,10 @@ T_mean
 2.0
 </td>
 <td style="text-align:right;">
-0.885
+0.8814
 </td>
 <td style="text-align:right;">
-6.293268
+6.321760
 </td>
 </tr>
 <tr>
@@ -4094,10 +4094,10 @@ T_mean
 2.0
 </td>
 <td style="text-align:right;">
-0.884
+0.8868
 </td>
 <td style="text-align:right;">
-3.445395
+3.447096
 </td>
 </tr>
 <tr>
@@ -4108,10 +4108,10 @@ T_mean
 2.0
 </td>
 <td style="text-align:right;">
-0.905
+0.9120
 </td>
 <td style="text-align:right;">
-1.940891
+1.947632
 </td>
 </tr>
 </tbody>
