@@ -189,29 +189,41 @@ get_coverage <- function(dataset_or,
   
   gamma = 1-(1-alpha)^(1/K)
   z1 = qnorm(gamma/2)
-  ind_lower_ci <- means - z1*dataset$S
-  ind_upper_ci <- means + z1*dataset$S
+  result$ind_ci_lower <- means - z1*dataset$S
+  result$ind_ci_upper <- means + z1*dataset$S
   
-  inside_check_ind <- sum((true_theta >= ind_lower_ci) &
-                        (true_theta <= ind_upper_ci))
+  inside_check_ind <- sum((true_theta >= result$ind_ci_lower) &
+                        (true_theta <= result$ind_ci_upper))
   
   
   z2 = qnorm((alpha/2)/2)
-  bonf_lower_ci <- means - z2*dataset$S
-  bonf_upper_ci <- means + z2*dataset$S
+  result$bonf_ci_lower <- means - z2*dataset$S
+  result$bonf_ci_upper <- means + z2*dataset$S
 
-  inside_check_bonf <- sum((true_theta >= bonf_lower_ci) &
-                        (true_theta <= bonf_upper_ci))
+  inside_check_bonf <- sum((true_theta >= result$bonf_ci_lower) &
+                        (true_theta <= result$bonf_ci_upper))
 
 
   tuple_list <- t(apply(result[,c('ci_lower', 'ci_upper')], 1, function(row) as.numeric(row)))
   ind_rank_range_length <- sapply(1:K, function(x) length(get_ranks(x, tuple_list)$ranks))
-  t2_val <- get_t2(ind_rank_range_length)
+  t2_val_nonrank <- get_t2(ind_rank_range_length)
+  
+  tuple_list <- t(apply(result[,c('ind_ci_lower', 'ind_ci_upper')], 1, function(row) as.numeric(row)))
+  ind_rank_range_length <- sapply(1:K, function(x) length(get_ranks(x, tuple_list)$ranks))
+  t2_val_ind <- get_t2(ind_rank_range_length)
+  
+  tuple_list <- t(apply(result[,c('bonf_ci_lower', 'bonf_ci_upper')], 1, function(row) as.numeric(row)))
+  ind_rank_range_length <- sapply(1:K, function(x) length(get_ranks(x, tuple_list)$ranks))
+  t2_val_bonf <- get_t2(ind_rank_range_length)
 
   #write_feather(tab_result, sprintf("../output/iters/test/K%d/sorted_ci_%04d.feather", K, iter))
 
-  data.frame(t2 = t2_val,
-             inside_check_2 = inside_check_2)
+  data.frame(t2_nonrank = t2_val_nonrank,
+             inside_check_nonrank = inside_check_nonrank,
+             t2_bonf = t2_val_bonf,
+             inside_check_bonf = inside_check_bonf,
+             t2_ind = t2_val_ind,
+             inside_check_ind = inside_check_ind)
 }
 }
 
@@ -233,7 +245,7 @@ registerDoParallel(cl)
 # sds <- c(2, 3.6, 6)
 sds <- c(2, 3.6, 6)
 Ks <- c(5,10,30,51)
-corrs <- c(0.1,0.9)
+corrs <- c(0.1,0.5,0.9)
 
 for (sd in sds) {
   set.seed(123974)
@@ -258,8 +270,8 @@ for (sd in sds) {
       tic("Running...")
       coverage_output_df <- get_coverage(dataset_or, 
                                          K, 
-                                         reps = 5000, 
-                                         B=1000, 
+                                         reps = 100, 
+                                         B=100, 
                                          alpha=0.10,
                                          varcovar_matrix = varcovar_matrix)
       toc()
@@ -283,7 +295,7 @@ stopCluster(cl)
 
 sds <- c(2, 3.6, 6)
 Ks <- c(5,10,30,51)
-corrs <- c(0.1,0.9)
+corrs <- c(0.1,0.5,0.9)
 param_grid <- expand.grid(K = Ks, sd = sds, corr = corrs)
 
 results <- do.call(rbind, lapply(seq_len(nrow(param_grid)), function(i) {
@@ -297,16 +309,17 @@ results <- do.call(rbind, lapply(seq_len(nrow(param_grid)), function(i) {
     K = K,
     sd = sd,
     corr = corr,
-    Coverage = mean(a$inside_check_2 == K),
-    Within_CI_mean = mean(a$inside_check_2),
-    Within_CI_max = max(a$inside_check_2),
-    Within_CI_min = min(a$inside_check_2),
-    T_mean = mean(a$t2)
+    Coverage_nonrank = mean(a$inside_check_nonrank == K),
+    T_mean_nonrank = mean(a$t2_nonrank),
+    Coverage_ind = mean(a$inside_check_ind == K),
+    T_mean_ind = mean(a$t2_ind),
+    Coverage_bonf = mean(a$inside_check_bonf == K),
+    T_mean_bonf = mean(a$t2_bonf)
   )
 }))
 
 
-kable(results %>% arrange(-sd) %>% dplyr::select(K, sd, Coverage, T_mean)) %>% kable_styling(bootstrap_options = "responsive")
+kable(results %>% arrange(-sd) %>% dplyr::select(K, sd, Coverage_nonrank,Coverage_ind, Coverage_bonf, T_mean_nonrank , T_mean_ind, T_mean_bonf)) %>% kable_styling(bootstrap_options = "responsive")
 ```
 
 
