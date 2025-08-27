@@ -1,0 +1,315 @@
+---
+title: "KDE"
+author: "Shaine"
+date: "`r Sys.Date()`"
+output:
+  bookdown::html_document2:
+    number_sections: true
+    toc: true
+    toc_float:
+      collapsed: false
+      toc_depth: 5
+    fig_caption: true
+    highlight: tango
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,fig.align = "center", fig.width = 5, fig.height = 3, comment="", warning = FALSE, message = FALSE)
+```
+
+# The dataset
+
+The following could be used as simulation settings for the thetas
+
+Generate mean values from N(23.8, sd), where sd = 3.6, sd = 6, sd = 2
+
+K = 5, 10, 30, 51
+
+```{r}
+library(dplyr)
+library(kableExtra)
+library(doParallel)
+library(foreach)
+library(tictoc)
+
+
+sd <- 3.6 #  sd = 3.6, sd = 6, sd = 2
+mean <- 23.8
+
+set.seed(123974)
+theta <- rnorm(51, mean, sd)
+df <- readRDS("../../data/mean_travel_time_ranking_2011.rds")
+df$theta_k <- theta
+full_dataset <- df %>% dplyr::select(theta_k, k,S)
+kable(full_dataset) %>% kable_styling(bootstrap_options = "responsive")
+```
+
+SE can be the same one used in the study of Klein 
+
+```{r results='asis'}
+alpha <- 0.1
+K <- 10
+B<- 1000
+dataset <- full_dataset[order(full_dataset$k),][1:K,]
+kable(dataset) %>% kable_styling(bootstrap_options = "responsive")
+```
+
+# Algorithm 1: Stepwise Implementation
+
+## Step 1a
+
+$$
+\boldsymbol{\Sigma} =  \boldsymbol{\Delta}^{\frac{1}{2}} \boldsymbol{\rho} \boldsymbol{\Delta}^{\frac{1}{2}}
+\\
+\boldsymbol{\Delta} = \text{diag}\{\sigma^2_1, \sigma^2_2, \dots, \sigma^2_K\}
+\\
+\boldsymbol{\rho} = \text{population correlation matrix}
+
+$$
+
+
+
+```{r}
+# library("expm")
+# m <- 100*diag(5) 
+# sqrtm(delta) == delta2^(1/2)
+```
+
+
+```{r}
+corr <- 0.1
+corr_matrix <- (1 - corr) * diag(K) + corr * matrix(1, K, K)
+variance_vector <- dataset$S^2
+delta <- diag(variance_vector)
+
+varcovar_matrix <- delta^(1/2) %*% corr_matrix %*% delta^(1/2)
+
+means <- dataset$theta_k
+
+
+library(MASS)
+
+# Generate 100 samples from a bivariate normal distribution
+generate_data <- function(){mvrnorm(n = 1, mu = means, Sigma = varcovar_matrix)}
+
+set.seed(110925)
+thetahat_star <- replicate(B, generate_data(), simplify = "array") %>% t
+```
+
+## Step 1b
+
+
+```{r}
+sd_vector <- dataset$S
+t_star <- apply(
+  abs((thetahat_star - rep(means, each = nrow(thetahat_star)))/sd_vector),
+  1,
+  max)
+```
+
+## Step 2
+
+```{r}
+t_hat <- quantile(t_star, probs = 1 - alpha)
+```
+
+## Step 3
+
+
+```{r}
+means - t_hat*sd_vector
+```
+
+```{r}
+means + t_hat*sd_vector
+```
+
+
+# Algorithm 1: Full Implementation
+
+```{r results='asis'}
+source("../../R/algo1_nonrankbased.R")
+
+corr <- 0.1
+corr_matrix <- (1 - corr) * diag(K) + corr * matrix(1, K, K)
+variance_vector <- dataset$S^2
+delta <- diag(variance_vector)
+
+varcovar_matrix <- delta^(1/2) %*% corr_matrix %*% delta^(1/2)
+
+res <- run_algorithm1(B, dataset, seed = 123974, alpha = 0.1, varcovar_matrix=varcovar_matrix)
+
+kable(res) %>% kable_styling(bootstrap_options = "responsive")
+```
+
+# Algorithm 2
+
+
+```{r eval = FALSE}
+source("../../R/algo1_nonrankbased.R")
+get_coverage <- function(dataset_or, 
+                         K, 
+                         reps = 5, # step 4
+                         B=100, 
+                         alpha= 0.10,
+                         varcovar_matrix){
+  foreach(iter = 1:reps, 
+          .combine = rbind,
+          .packages = c("foreach", "arrow", "dplyr", "MASS"),
+          .export = c("run_algorithm1","get_ranks", 
+                      "get_t2")
+          ) %dopar% {
+  dataset <- dataset_or
+  
+  # step 1 =====================================================================
+  
+  means <- dataset$theta_k
+  
+  set.seed(iter)
+  theta_hat <- mvrnorm(n = 1, mu = means, Sigma = varcovar_matrix)
+  print(theta_hat)
+  dataset$theta_k <- NULL
+  # for the dataset, replace the means with theta.h, matching S
+  dataset$theta_k <- theta_hat
+
+  # step 2 =====================================================================
+  result <- run_algorithm1(B, dataset, iter, alpha, varcovar_matrix)
+  
+  # step 3 =====================================================================
+  #sorted_indices <- result$sorted_indices
+  true_theta <- dataset_or$theta_k
+  
+  # print(result$ci_lower)
+  # print(true_theta)
+  # print(result$ci_upper)
+  # 
+  # print("===")
+  inside_check_nonrank <- sum((true_theta >= result$ci_lower) &
+                        (true_theta <= result$ci_upper))
+  
+  gamma = 1-(1-alpha)^(1/K)
+  z1 = qnorm(gamma/2)
+  ind_lower_ci <- means - z1*dataset$S
+  ind_upper_ci <- means + z1*dataset$S
+  
+  inside_check_ind <- sum((true_theta >= ind_lower_ci) &
+                        (true_theta <= ind_upper_ci))
+  
+  
+  z2 = qnorm((alpha/2)/2)
+  bonf_lower_ci <- means - z2*dataset$S
+  bonf_upper_ci <- means + z2*dataset$S
+
+  inside_check_bonf <- sum((true_theta >= bonf_lower_ci) &
+                        (true_theta <= bonf_upper_ci))
+
+
+  tuple_list <- t(apply(result[,c('ci_lower', 'ci_upper')], 1, function(row) as.numeric(row)))
+  ind_rank_range_length <- sapply(1:K, function(x) length(get_ranks(x, tuple_list)$ranks))
+  t2_val <- get_t2(ind_rank_range_length)
+
+  #write_feather(tab_result, sprintf("../output/iters/test/K%d/sorted_ci_%04d.feather", K, iter))
+
+  data.frame(t2 = t2_val,
+             inside_check_2 = inside_check_2)
+}
+}
+
+```
+
+
+
+
+
+```{r eval = FALSE}
+#sd <- 3.6 #  sd = 3.6, sd = 6, sd = 2
+mean <- 23.8
+
+df <- readRDS("../../data/mean_travel_time_ranking_2011.rds")
+
+cl=parallel::makeCluster(15)
+registerDoParallel(cl)
+
+# sds <- c(2, 3.6, 6)
+sds <- c(2, 3.6, 6)
+Ks <- c(5,10,30,51)
+corrs <- c(0.1,0.9)
+
+for (sd in sds) {
+  set.seed(123974)
+  theta <- rnorm(51, mean, sd)
+  df$theta_k <- theta
+  full_dataset <- df %>% dplyr::select(theta_k, k,S)
+
+
+  for (K in Ks) {
+    datasetx <- full_dataset[order(full_dataset$k),][1:K,]
+    #dataset_or <- df[order(df$theta_k), ][seq(1,50,5), ] #df[order(df$theta_k), ][1:K, ]
+    dataset_or <- datasetx
+    #true_theta <- dataset_or$theta_k
+    
+    for (corr in corrs) {
+      corr_matrix <- (1 - corr) * diag(K) + corr * matrix(1, K, K)
+      variance_vector <- dataset_or$S^2
+      delta <- diag(variance_vector)
+      varcovar_matrix <- delta^(1/2) %*% corr_matrix %*% delta^(1/2)
+        
+      
+      tic("Running...")
+      coverage_output_df <- get_coverage(dataset_or, 
+                                         K, 
+                                         reps = 5000, 
+                                         B=1000, 
+                                         alpha=0.10,
+                                         varcovar_matrix = varcovar_matrix)
+      toc()
+    
+      saveRDS(coverage_output_df,  paste0("output/coverage_probability_",K,"_", sd, "_", corr, ".rds"))
+      coverage_output_df
+    }
+    }
+}
+
+stopCluster(cl)
+```
+
+
+
+
+
+```{r results='asis'}
+# sds <- c(2,6)#, 3.6, 6)
+# Ks <- c(51)#1, 40, 30, 20, 10, 5)
+
+sds <- c(2, 3.6, 6)
+Ks <- c(5,10,30,51)
+corrs <- c(0.1,0.9)
+param_grid <- expand.grid(K = Ks, sd = sds, corr = corrs)
+
+results <- do.call(rbind, lapply(seq_len(nrow(param_grid)), function(i) {
+  K <- param_grid$K[i]
+  sd <- param_grid$sd[i]
+  corr <- param_grid$corr[i]
+  
+  a <- readRDS(paste0("output/coverage_probability_", K, "_", sd, "_", corr, ".rds"))
+  
+  data.frame(
+    K = K,
+    sd = sd,
+    corr = corr,
+    Coverage = mean(a$inside_check_2 == K),
+    Within_CI_mean = mean(a$inside_check_2),
+    Within_CI_max = max(a$inside_check_2),
+    Within_CI_min = min(a$inside_check_2),
+    T_mean = mean(a$t2)
+  )
+}))
+
+
+kable(results %>% arrange(-sd) %>% dplyr::select(K, sd, Coverage, T_mean)) %>% kable_styling(bootstrap_options = "responsive")
+```
+
+
+
+
+
