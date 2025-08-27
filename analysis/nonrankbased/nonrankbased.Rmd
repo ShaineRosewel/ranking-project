@@ -1,5 +1,5 @@
 ---
-title: "KDE"
+title: "Nonrankbased"
 author: "Shaine"
 date: "`r Sys.Date()`"
 output:
@@ -163,13 +163,13 @@ get_coverage <- function(dataset_or,
   
   # step 1 =====================================================================
   
-  means <- dataset$theta_k
+  means <- dataset$theta_k # true theta!
   
   set.seed(iter)
   theta_hat <- mvrnorm(n = 1, mu = means, Sigma = varcovar_matrix)
   dataset$theta_k <- NULL
   # for the dataset, replace the means with theta.h, matching S
-  dataset$theta_k <- theta_hat
+  dataset$theta_k <- theta_hat # theta hat
 
   # step 2 =====================================================================
   result <- run_algorithm1(B, dataset, iter, alpha, varcovar_matrix)
@@ -323,7 +323,7 @@ results <- do.call(rbind, lapply(seq_len(nrow(param_grid)), function(i) {
 }))
 
 
-kable(results %>% arrange(-sd) %>% dplyr::select(K, sd, Coverage_nonrank,Coverage_ind, Coverage_bonf, T_mean_nonrank , T_mean_ind, T_mean_bonf)) %>% kable_styling(bootstrap_options = "responsive")
+kable(results %>% arrange(-sd) %>% dplyr::select(K, sd, corr,Coverage_nonrank,Coverage_ind, Coverage_bonf, T_mean_nonrank , T_mean_ind, T_mean_bonf)) %>% kable_styling(bootstrap_options = "responsive")
 ```
 
 
