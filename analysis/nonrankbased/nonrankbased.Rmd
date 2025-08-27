@@ -189,16 +189,16 @@ get_coverage <- function(dataset_or,
   
   gamma = 1-(1-alpha)^(1/K)
   z1 = qnorm(gamma/2)
-  result$ind_ci_lower <- means - z1*dataset$S
-  result$ind_ci_upper <- means + z1*dataset$S
+  result$ind_ci_lower <- theta_hat - z1*dataset$S
+  result$ind_ci_upper <- theta_hat + z1*dataset$S
   
   inside_check_ind <- sum((true_theta >= result$ind_ci_lower) &
                         (true_theta <= result$ind_ci_upper))
   
   
   z2 = qnorm((alpha/2)/2)
-  result$bonf_ci_lower <- means - z2*dataset$S
-  result$bonf_ci_upper <- means + z2*dataset$S
+  result$bonf_ci_lower <- theta_hat - z2*dataset$S
+  result$bonf_ci_upper <- theta_hat + z2*dataset$S
 
   inside_check_bonf <- sum((true_theta >= result$bonf_ci_lower) &
                         (true_theta <= result$bonf_ci_upper))
