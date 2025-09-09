@@ -1,3 +1,5 @@
+library(MASS)
+
 get_ranks <- function(k, tuple_list){
   Lambda_lk <- which(tuple_list[,2]<=tuple_list[k,1])
   Lambda_lk <- Lambda_lk[Lambda_lk != k]
@@ -23,52 +25,52 @@ get_t2 <- function(v) prod(v)^(1/length(v))
 get_t3 <- function(v) 1 - ((length(v)+sum(v))/(length(v)^2))
 
 run_algorithm1 <- function(B, 
-                           dataset, 
-                           seed = 1469382642, 
+                           theta_hat,
                            alpha = 0.1, 
                            varcovar_matrix) {
   
-  K <- dim(dataset)[1] # number of rows
-  set.seed(seed)
+  K <- length(theta_hat) # number of rows
+  # print(K)
+ # set.seed(seed)
   
   # step 1a =====================================================================
-  
-  # corr <- 0.1
-  # corr_matrix <- (1 - corr) * diag(K) + corr * matrix(1, K, K)
-  # variance_vector <- dataset$S^2
-  # delta <- diag(variance_vector)
-  # 
-  # varcovar_matrix <- delta^(1/2) %*% corr_matrix %*% delta^(1/2)
-  
-  means <- dataset$theta_k
+
+
+  generate_data <- function(){mvrnorm(n = 1,
+                                      mu = theta_hat,
+                                      Sigma = varcovar_matrix)}
   
   
-  library(MASS)
-  
-  # Generate 100 samples from a bivariate normal distribution
-  generate_data <- function(){mvrnorm(n = 1, mu = means, Sigma = varcovar_matrix)}
-  
-  set.seed(110925)
-  thetahat_star <- replicate(B, generate_data(), simplify = "array") %>% t
-  
+  thetahat_star <- t(replicate(B, generate_data()))
+  # print(dim(thetahat_star))
   # step 1b =====================================================================
-  
-  sd_vector <- dataset$S
-  t_star <- apply(
-    abs((thetahat_star - rep(means, each = nrow(thetahat_star)))/sd_vector),
-    1,
-    max)
-  
+
+  t_star <- apply(thetahat_star, 
+                  1, 
+                  function(x) max(abs((x - theta_hat) / sqrt(
+                    diag(varcovar_matrix)))))  
+  # t_star <- apply(
+  #   abs(sweep(thetahat_star, 2, theta_hat, "-") / sqrt(diag(varcovar_matrix))),
+  #   1, max
+  # )
+  # print(length(t_star))
+
   # step 2 =====================================================================
   
   t_hat <- quantile(t_star, probs = 1 - alpha)
+  # print(length(t_hat))
   
   # step 3 =====================================================================
   
-  dataset$ci_lower <- means - t_hat*sd_vector
-  dataset$ci_upper <- means + t_hat*sd_vector
+  ci_lower <- theta_hat - t_hat*sqrt(diag(varcovar_matrix))
+  # print(length(ci_lower))
+  ci_upper <- theta_hat + t_hat*sqrt(diag(varcovar_matrix))
+  # print(length(ci_upper))
   
   # # END ------------------------------------------------------------------------
   #
-  return(dataset)
+  return(list(
+    ci_lower = ci_lower,
+    ci_upper = ci_upper
+  ))
 }
