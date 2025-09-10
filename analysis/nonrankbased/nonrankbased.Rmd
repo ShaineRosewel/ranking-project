@@ -102,7 +102,7 @@ res <- run_algorithm1(B, dataset$theta_k,alpha = 0.1, varcovar_matrix=varcovar_m
 #kable(res) %>% kable_styling(bootstrap_options = "responsive")
 ```
 
-# Algorithm 2:
+# Algorithm 2
 
 ```{r eval = FALSE}
 source("../../R/algo1_nonrankbased.R")
@@ -148,7 +148,7 @@ get_coverage <- function(true_theta,
   result$ind_ci_upper <- theta_hat + z1*sqrt(diag(varcovar_matrix))
   inside_check_ind <- all(result$ind_ci_lower<=true_theta) & all(true_theta<=result$ind_ci_upper)
   
-  z2 = qnorm(1-(alpha/2)/2)
+  z2 = qnorm(1-(alpha/K)/2)
   result$bonf_ci_lower <- theta_hat - z2*sqrt(diag(varcovar_matrix))
   result$bonf_ci_upper <- theta_hat + z2*sqrt(diag(varcovar_matrix))
   inside_check_bonf <- all(result$bonf_ci_lower<=true_theta) & all(true_theta<=result$bonf_ci_upper)
