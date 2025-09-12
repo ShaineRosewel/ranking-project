@@ -1,4 +1,0 @@
----
-title: "rrl"
-output: pdf_document
----

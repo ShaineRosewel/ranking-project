@@ -65,7 +65,9 @@ Nmae
 
 ```
 
-# Literature Review
+
+# Background
+
 
 ```{r, child = "child/rrl.Rmd"}
 
@@ -79,8 +81,8 @@ Nmae
 
 THIS IS @mariarizzo
 
-# References
-
+# References {-}
+<div id="refs"></div>
 
 # Appendices {-}
 
