@@ -1,0 +1,49 @@
+## Nonrank-based method
+
+\begin{algorithm}
+	\caption{Computation of Joint Confidence Region} 
+	Let the data consist of $\hat \theta_1, \dots, \hat \theta_K$ and suppose $\boldsymbol{\Sigma}$ is known
+	\begin{algorithmic}[1]
+		\For {$b = 1, 2, \dots, B$}
+				\State Generate $\boldsymbol{\hat\theta}^*_b \sim N_K \left( \boldsymbol{\hat\theta}, \boldsymbol{\Sigma}\right)$ and write $\boldsymbol{\hat\theta}^*_b = \left( \hat\theta^*_{b1}, \hat\theta^*_{b2}, \dots, \hat\theta^*_{bK} \right)' $
+				\State Compute $t^*_b = \underset{1 \leq j \leq K}{\max} \Bigg| \frac{\hat\theta^*_{bj} - \hat\theta^*_{j}}{\sigma_j} \Bigg|$
+		\EndFor
+		\State Compute the $\left(1-\alpha\right)$-sample quantile of $t^*_1, t^*_2, \dots, t^*_B$, call this $\hat{t}$.
+		\State The joint confidence region of $\theta_1, \theta_2, \dots, \theta_K$ is given by 
+		$\mathfrak{R} = \left[ \hat\theta_1 \pm \hat t \times \sigma_1  \right] \times \left[ \hat\theta_2 \pm \hat t \times \sigma_2  \right] \times \dots \times \left[ \hat\theta_K \pm \hat t \times \sigma_K  \right]$
+
+	\end{algorithmic} 
+\end{algorithm}
+
+## Parametric bootstrap
+
+\begin{algorithm}
+	\caption{Computation of Joint Confidence Region} 
+	\begin{algorithmic}[1]
+		\For {$b = 1, 2, \dots, B$}
+				\State Generate $\hat\theta^*_{bi} \sim N \left( \hat\theta_i, \sigma_i^2 \right)$, $i = 1, 2, \dots, K$ and let $\hat{\theta}_{b(1)}, \hat{\theta}_{b(2)}, \dots, \hat{\theta}_{b(K)}$ be the corresponding ordered values
+		    \Statex \begin{minipage}{\linewidth}
+          \centering
+          \begin{tabular}{|c|c|c|c|c|}
+            \hline
+             & $k = 1$ & $k = 2$ & $\dots$ & $k = K$ \\
+            \hline
+            $b = 1$ & $\hat{\theta}^*_{1(1)}$ & $\hat{\theta}^*_{1(2)}$ & \dots & $\hat{\theta}^*_{1(K)}$ \\
+            \hline
+            $b = 2$ & $\hat{\theta}^*_{2(1)}$ & $\hat{\theta}^*_{2(2)}$ & \dots & $\hat{\theta}^*_{2(K)}$ \\
+            \hline
+            $\vdots$ & \vdots & \vdots & \dots & \vdots\\
+            \hline
+            $b = B$ & $\hat{\theta}^*_{B(1)}$ & $\hat{\theta}^*_{B(2)}$ & \dots & $\hat{\theta}^*_{B(K)}$ \\
+            \hline
+          \end{tabular}
+        \end{minipage}
+        \State Compute $\hat\sigma^*_{b(k)} = \sqrt{\text{kth ordered value among} \ \left\{ \hat{\theta}^{*2}_{b1} + \sigma_1^2, \hat{\theta}^{*2}_{b2} + \sigma_2^2, \dots, \hat{\theta}^{*2}_{bK} + \sigma_K^2 \right\} - \hat {\theta}^{*2}_{(k)}}$
+				\State Compute $t^*_b = \underset{1 \leq j \leq K}{\max} \Bigg| \frac{\hat\theta^*_{bj} - \hat\theta^*_{j}}{\sigma_j} \Bigg|$
+		\EndFor
+		\State Compute the $\left(1-\alpha\right)$-sample quantile of $t^*_1, t^*_2, \dots, t^*_B$, call this $\hat{t}$.
+		\State The joint confidence region of $\theta_1, \theta_2, \dots, \theta_K$ is given by 
+		$\mathfrak{R} = \left[ \hat\theta_1 \pm \hat t \times \sigma_1  \right] \times \left[ \hat\theta_2 \pm \hat t \times \sigma_2  \right] \times \dots \times \left[ \hat\theta_K \pm \hat t \times \sigma_K  \right]$
+
+	\end{algorithmic} 
+\end{algorithm}
