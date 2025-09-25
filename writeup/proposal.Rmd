@@ -50,20 +50,39 @@ Nmae
 
 # Abstract {-}
 
+
+
+```{r, child = "child/abstract.Rmd"}
+
+```
+
 \newpage
 
 \tableofcontents
 
 \newpage
 
-# Introduction
-
-# Background
 
 # Methodology
 
 ```{r, child = "child/methodology.Rmd"}
+
 ```
+
+
+# Introduction
+
+```{r, child = "child/introduction.Rmd", echo = FALSE}
+
+```
+
+
+# Background
+
+
+# ```{r, child = "child/rrl.Rmd"}
+# 
+# ```
 
 THIS IS @mariarizzo and @klein
 

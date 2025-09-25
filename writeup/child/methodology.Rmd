@@ -62,7 +62,7 @@ $\hat\sigma_{(k)} = \sqrt{\text{kth ordered value among} \ \left\{ \hat{\theta}^
 
 ## Nonrank-based method
 
-The nonrank-based method accounts for potential correlation among items being ranked. For this case, an exchangeable correlation, $\boldsymbol{\rho}$ (See Equation \ref{eq:equicorrelation}.), is assumed and used in the calculation of the variance covariance matrix (See Equation \ref{eq:sigma_matrix}.)
+The nonrank-based method accounts for potential correlation among items being ranked. For this case, an exchangeable correlation, $\boldsymbol{\rho}$ (See Equation \ref{eq:equicorrelation}.), is assumed and used in the calculation of the variance covariance matrix (See Equation \ref{eq:sigma_matrix}.).
 
 \begin{equation}
   \boldsymbol{\rho} = \left( 1-\rho \right) \mathbf{I}_K + \rho \boldsymbol{1}_K \boldsymbol{1}'_K
@@ -75,7 +75,7 @@ The nonrank-based method accounts for potential correlation among items being ra
   \label{eq:sigma_matrix}
 \end{equation}
 
-where $\boldsymbol{\Delta} = \text{diag} \left\{ \sigma^2_1, \sigma^2_2, \dots, \sigma^2_K \right\}$, with known $\sigma_k$'s.
+where $\boldsymbol{\Delta} = \text{diag} \left\{ \sigma^2_1, \sigma^2_2, \dots, \sigma^2_K \right\}$, with known $\sigma_k$'s and $\rho$ is studied for $0.1, 0.5, 0.9$.
 
 \begin{algorithm}[H]
 	\caption{Computation of Joint Confidence Region via Nonrank-based Method} 
