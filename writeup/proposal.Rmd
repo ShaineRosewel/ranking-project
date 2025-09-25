@@ -17,6 +17,7 @@ header-includes:
 - \usepackage{xparse}
 - \usepackage{algorithm}
 - \usepackage{algpseudocode}
+- \usepackage{float}
 papersize: a4
 bibliography: /home/realiseshewon/PDev/kde-ranking/writeup/references.bib
 csl: /home/realiseshewon/PDev/kde-ranking/writeup/harvard-educational-review.csl
@@ -49,12 +50,6 @@ Nmae
 
 # Abstract {-}
 
-
-
-```{r, child = "child/abstract.Rmd"}
-
-```
-
 \newpage
 
 \tableofcontents
@@ -63,22 +58,11 @@ Nmae
 
 # Introduction
 
-```{r, child = "child/introduction.Rmd"}
-
-```
-
-
 # Background
-
-
-```{r, child = "child/rrl.Rmd"}
-
-```
 
 # Methodology
 
 ```{r, child = "child/methodology.Rmd"}
-
 ```
 
 THIS IS @mariarizzo and @klein
