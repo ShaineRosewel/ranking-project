@@ -352,9 +352,33 @@ display: none;
 </div>
 
 
-<div id="algorithm-example" class="section level1">
-<h1>Algorithm Example</h1>
-<p>Here’s an example of an algorithm written in pseudocode:</p>
+<div id="parametric-bootstrap" class="section level2">
+<h2>Parametric bootstrap</h2>
+<p>Let <span class="math inline">\(\theta_1, \theta_2, \dots,
+\theta_K\)</span> be the true values of the parameters and <span class="math inline">\(\hat \theta_1, \hat \theta_2, \dots, \hat
+\theta_K\)</span> be the corresponding estimates, with the ordered
+values denoted by <span class="math inline">\(\hat \theta_{(1)}, \hat
+\theta_{(2)}, \dots, \hat \theta_{(K)}\)</span>.</p>
+</div>
+<div id="nonrank-based-method" class="section level2">
+<h2>Nonrank-based method</h2>
+<p>The nonrank-based method accounts for potential correlation among
+items being ranked. For this case, an exchangeable correlation, <span class="math inline">\(\boldsymbol{\rho}\)</span> (See Equation <span class="math inline">\(\ref{eq:equicorrelation}\)</span>.), is assumed
+and used in the calculation of the variance covariance matrix (See
+Equation <span class="math inline">\(\ref{eq:sigma_matrix}\)</span>.).</p>
+<p><span class="math display">\[\begin{equation}
+  \boldsymbol{\rho} = \left( 1-\rho \right) \mathbf{I}_K + \rho
+\boldsymbol{1}_K \boldsymbol{1}&#39;_K
+  \label{eq:equicorrelation}
+\end{equation}\]</span></p>
+<p><span class="math display">\[\begin{equation}
+  \boldsymbol{\Sigma} = \boldsymbol{\Delta}^{1/2} \boldsymbol{\rho}
+\boldsymbol{\Delta}^{1/2}
+  \label{eq:sigma_matrix}
+\end{equation}\]</span></p>
+<p>where <span class="math inline">\(\boldsymbol{\Delta} = \text{diag}
+\left\{ \sigma^2_1, \sigma^2_2, \dots, \sigma^2_K \right\}\)</span>,
+with known <span class="math inline">\(\sigma_k\)</span>’s and <span class="math inline">\(\rho\)</span> is studied for <span class="math inline">\(0.1, 0.5, 0.9\)</span>.</p>
 </div>
 
 

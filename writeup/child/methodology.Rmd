@@ -1,11 +1,16 @@
+Let $\theta_1, \theta_2, \dots, \theta_K$ be the true parameter values and $\hat \theta_1, \hat \theta_2, \dots, \hat \theta_K$ be the estimates obtained.
+
 ## Parametric bootstrap
+
+Let $\hat \theta_1, \hat \theta_2, \dots, \hat \theta_K$ be independent but not identically distributed estimates. For this study, it is assumed that $\hat{\theta}_k \sim N \left(\theta_k, \sigma_k^2 \right)$, $k = 1, 2, \dots, K$, where $\sigma^2_k$ is known. Denote the corresponding ordered values by $\hat \theta_{(1)}, \hat \theta_{(2)}, \dots, \hat \theta_{(K)}$.
+
 
 \begin{algorithm}[H]
 	\caption{Computation of Joint Confidence Region via Parametric Bootstrap} 
 	\label{alg:parametricbs_ci}
 	\begin{algorithmic}[1]
 		\For {$b = 1, 2, \dots, B$}
-				\State Generate $\hat\theta^*_{bi} \sim N \left( \hat\theta_i, \sigma_i^2 \right)$, $i = 1, 2, \dots, K$ and let $\hat{\theta}_{b(1)}, \hat{\theta}_{b(2)}, \dots, \hat{\theta}_{b(K)}$ be the corresponding ordered values
+				\State Generate $\hat\theta^*_{bk} \sim N \left( \hat\theta_k, \sigma_k^2 \right)$, $i = 1, 2, \dots, K$ and let $\hat{\theta}_{b(1)}, \hat{\theta}_{b(2)}, \dots, \hat{\theta}_{b(K)}$ be the corresponding ordered values
 		    \Statex \begin{minipage}{\linewidth}
           \centering
           \begin{tabular}{|c|c|c|c|c|}
@@ -51,18 +56,24 @@ $\hat\sigma_{(k)} = \sqrt{\text{kth ordered value among} \ \left\{ \hat{\theta}^
 	For given values of $\theta_1, \theta_2, \dots, \theta_K$ and thus $\theta_{(1)}, \theta_{(2)}, \dots, \theta_{(K)}$
 	\begin{algorithmic}[1] % Start algorithmic block
 			\For {$\text{replications} = 1, 2, \dots, 5000$}
-    		\State Generate $\hat\theta_i \sim N(\theta_i, \sigma^2_i)$, for $i = 1, 2, \dots, K$
+    		\State Generate $\hat\theta_k \sim N(\theta_k, \sigma^2_k)$, for $k = 1, 2, \dots, K$
     		\State Compute the rectangular confidence region $\mathfrak{R}$ using Algorithm \ref{alg:parametricbs_ci}.
-    		\State Check if $\left( \theta_{(1)}, \theta_{(2)}, \dots, \theta_{(K)}\right) \in \mathfrak{R}$ and compute $T = \prod^K_{k=1} \Big | \Lambda_{Ok} \Big|$.
+    		\State Check if $\left( \theta_{(1)}, \theta_{(2)}, \dots, \theta_{(K)}\right) \in \mathfrak{R}$ and compute 
+    		\Statex \begin{minipage}{\linewidth}
+        \centering
+    		$T_1 = \frac{1}{K} \sum^K_{k=1} \Big | \Lambda_{Ok} \Big|$\\
+    		$T_2 = \prod^K_{k=1} \Big | \Lambda_{Ok} \Big|$\\
+    		$T_3 = 1 - \frac{K + \sum^K_{k=1} \big | \Lambda_{Ok} \big|}{K^2}$\\
+    		\end{minipage}
     	\EndFor
-    \State Compute the proportion of times that the condition in step 4 is satisfied and the average of $T$
+    \State Compute the proportion of times that the condition in step 4 is satisfied and the average of $T_1, T_2$, and $T_3$.
 	\end{algorithmic} % End algorithmic block
 \end{algorithm}
 
 
 ## Nonrank-based method
 
-The nonrank-based method accounts for potential correlation among items being ranked. For this case, an exchangeable correlation, $\boldsymbol{\rho}$ (See Equation \ref{eq:equicorrelation}.), is assumed and used in the calculation of the variance covariance matrix (See Equation \ref{eq:sigma_matrix}.).
+The nonrank-based method assumes that $\boldsymbol{\hat\theta} = \left(\hat\theta_1, \hat\theta_2, \dots, \hat\theta_K\right) \sim N \left( \boldsymbol{\theta}, \boldsymbol{\Sigma}\right)$. It accounts for potential correlation among items being ranked. For this case, an exchangeable correlation, $\boldsymbol{\rho}$ (See Equation \ref{eq:equicorrelation}.), is assumed and used in the calculation of the variance covariance matrix (See Equation \ref{eq:sigma_matrix}.).
 
 \begin{equation}
   \boldsymbol{\rho} = \left( 1-\rho \right) \mathbf{I}_K + \rho \boldsymbol{1}_K \boldsymbol{1}'_K
@@ -105,9 +116,9 @@ $\mathfrak{R} = \left[ \hat\theta_1 \pm \hat t \times \sigma_1  \right] \times \
 			\For {$\text{replications} = 1, 2, \dots, 5000$}
     		\State Generate $\boldsymbol{\hat\theta} \sim N_K(\boldsymbol{\theta}, \boldsymbol{\Sigma})$
     		\State Compute the rectangular confidence region $\mathfrak{R}$ using Algorithm \ref{alg:nonrank_ci}.
-    		\State Check if $\left( \theta_1, \theta_2, \dots, \theta_K\right) \in \mathfrak{R}$ and compute $T = \prod^K_{k=1} \Big | \Lambda_{Ok} \Big|$.
+    		\State Check if $\left( \theta_1, \theta_2, \dots, \theta_K\right) \in \mathfrak{R}$ and compute $T_1, T_2$, and $T_3$.
     	\EndFor
-    \State Compute the proportion of times that the condition in step 4 is satisfied and the average of $T$
+    \State Compute the proportion of times that the condition in step 4 is satisfied and the average of $T_1, T_2$, and $T_3$.
 	\end{algorithmic} % End algorithmic block
 \end{algorithm}
 
