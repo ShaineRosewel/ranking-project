@@ -1,0 +1,8 @@
+## Codes for CI calculation {-}
+
+```{r, results='asis', echo=FALSE}
+code <- readLines("../../R/compute_ci.R")
+cat("```r\n", paste(code, collapse = "\n"), "\n```")
+```
+
+

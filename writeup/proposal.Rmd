@@ -4,6 +4,7 @@ fig_caption: yes
 output:
   bookdown::pdf_document2:
     toc: false
+    highlight: kate # monochrome
 fontsize: 12pt 
 indent: true
 header-includes:
@@ -18,6 +19,7 @@ header-includes:
 - \usepackage{algorithm}
 - \usepackage{algpseudocode}
 - \usepackage{float}
+- \renewcommand{\ttfamily}{\rmfamily}
 papersize: a4
 bibliography: /home/realiseshewon/PDev/kde-ranking/writeup/references.bib
 csl: /home/realiseshewon/PDev/kde-ranking/writeup/harvard-educational-review.csl
@@ -79,10 +81,6 @@ Nmae
 
 # Background
 
-
-# ```{r, child = "child/rrl.Rmd"}
-# 
-# ```
 
 THIS IS @mariarizzo and @klein
 
