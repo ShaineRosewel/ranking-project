@@ -1,13 +1,21 @@
-## Codes for CI calculation {-}
+## Codes for algorithm 1 {-}
 
 ```{r, results='asis', echo=FALSE, warning=FALSE}
 code <- readLines("../../R/compute_ci.R")
 cat("```r\n", paste(code, collapse = "\n"), "\n```")
 ```
 
-## Codes for $T_1, T_2, T_3$ calculation {-}
+## Codes for algorithm 2 {-}
 
 ```{r, results='asis', echo=FALSE, warning=FALSE}
-code <- readLines("../../R/compute_t.R")
+code <- readLines("../../R/compute_metrics.R")
+cat("```r\n", paste(code, collapse = "\n"), "\n```")
+```
+
+
+## Codes for simulation {-}
+
+```{r, results='asis', echo=FALSE, warning=FALSE}
+code <- readLines("../../R/implement.R")
 cat("```r\n", paste(code, collapse = "\n"), "\n```")
 ```
