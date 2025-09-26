@@ -122,3 +122,25 @@ $\mathfrak{R} = \left[ \hat\theta_1 \pm \hat t \times \sigma_1  \right] \times \
 	\end{algorithmic} % End algorithmic block
 \end{algorithm}
 
+## Results
+
+
+```{r echo = FALSE}
+library("gtsummary")
+load("../results/simulation_results.RData")
+```
+
+
+```{r echo = FALSE}
+library(knitr)
+library(kableExtra)
+library(gt)
+
+results %>% select(c(K, sd, corr, Cov_nonrankbased, Cov_independent, Cov_bonferroni)) %>% gt() |>
+  tab_options(latex.use_longtable = TRUE)
+```
+
+
+tbl_summary(trial) %>%
+  as_flex_table()
+
