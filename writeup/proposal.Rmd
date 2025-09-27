@@ -50,6 +50,15 @@ Nmae
 \newpage
 
 
+```{r}
+knitr::opts_chunk$set(
+  echo    = FALSE,
+  message = FALSE,
+  warning = FALSE
+)
+```
+
+
 # Abstract {-}
 
 

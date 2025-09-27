@@ -128,19 +128,65 @@ $\mathfrak{R} = \left[ \hat\theta_1 \pm \hat t \times \sigma_1  \right] \times \
 ```{r echo = FALSE}
 library("gtsummary")
 load("../results/simulation_results.RData")
+
+withcorr_nonrank <- results
+#compare <- results1
+
+load("../results/simulation_results_ocorr.RData")
+
+with0corr_nonrank <- results
+parametric <- results1
 ```
 
 
-```{r echo = FALSE}
+For the simulation studies, $\alpha$ is fixed at $0.1$, while the true standard deviations are varied ($sd = 2.0, 3.6, 6.0$) along with the number of items to be ranked ($K = 5, 10, 20, 30, 40, 51$). Table \@ref(tab:coverage) shows that when the correlation is zero, the nonrank-based methodology, independent, and Bonferroni CI exhibit similar coverage values regardless of $K$ and $sd$. In contrast, the parametric approach generally yields lower coverage for smaller $sd$ while showing comparable variability across different values of $K$.
+
+
+
+```{r coverage, echo = FALSE}
 library(knitr)
 library(kableExtra)
 library(gt)
+library(dplyr)
 
-results %>% select(c(K, sd, corr, Cov_nonrankbased, Cov_independent, Cov_bonferroni)) %>% gt() |>
-  tab_options(latex.use_longtable = TRUE)
+out <- with0corr_nonrank %>% left_join(parametric, by = c("K", "sd"))
+
+# out %>% select(c(K, sd, Cov_parametric, Cov_nonrankbased, Cov_independent, Cov_bonferroni)) %>% gt() |>
+#   tab_options(latex.use_longtable = TRUE)
+
+
+out %>%
+  select(K, sd, Cov_parametric, Cov_nonrankbased, Cov_independent, Cov_bonferroni) %>%
+  arrange(K, sd) %>%
+  kable("latex", booktabs = TRUE, longtable = TRUE,
+        col.names = c("K", "sd", "Parametric", "Non-rankbased", "Independent", "Bonferroni"),
+        caption = "Simulation results for coverage probabilities.") %>%
+  kable_styling(latex_options = c("repeat_header")) %>%
+  collapse_rows(columns = 1, latex_hline = "major") %>%   # <-- merges K column
+  add_header_above(c(" " = 2, "Coverage" = 4))             # spanner over techniques
 ```
 
 
-tbl_summary(trial) %>%
-  as_flex_table()
+The case is different in terms of $T_1$ as it increases with decreasing $sd$ and increasing $K$. The CIs are wider for the parametric approach compared to the remaining approaches whose $T_1$ only vary by a small margin, with nonrank-based method having the smallest $T_1$ and Bonferroni, the largest one. 
+
+
+```{r T1, echo = FALSE}
+out <- with0corr_nonrank %>% left_join(parametric, by = c("K", "sd"))
+
+# out %>% select(c(K, sd, Cov_parametric, Cov_nonrankbased, Cov_independent, Cov_bonferroni)) %>% gt() |>
+#   tab_options(latex.use_longtable = TRUE)
+
+
+out %>%
+  select(K, sd, T1_parametric, T1_nonrankbased, T1_independent, T1_bonferroni) %>%
+  arrange(K, sd) %>%
+  kable("latex", booktabs = TRUE, longtable = TRUE,
+        col.names = c("K", "sd", "Parametric", "Non-rankbased", "Independent", "Bonferroni"),
+        caption = "Simulation results for average $T_1$.") %>%
+  kable_styling(latex_options = c("repeat_header")) %>%
+  collapse_rows(columns = 1, latex_hline = "major") %>%   # <-- merges K column
+  add_header_above(c(" " = 2, "T1" = 4))             # spanner over techniques
+```
+
+
 
