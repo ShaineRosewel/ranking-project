@@ -175,7 +175,7 @@ out <- with0corr_nonrank %>% left_join(parametric, by = c("K", "sd"))
 
 
 out %>%
-  select(K, sd, Cov_parametric, Cov_nonrankbased, Cov_independent, Cov_bonferroni) %>%
+  select(K, sd, T1_parametric, T1_nonrankbased, T1_independent, T1_bonferroni) %>%
   arrange(K, sd) %>%
   kable("latex", booktabs = TRUE, longtable = TRUE,
         col.names = c("K", "sd", "Parametric", "Non-rankbased", "Independent", "Bonferroni"),
