@@ -71,6 +71,8 @@ knitr::opts_chunk$set(
 
 \newpage
 
+# Introduction
+
 # Background
 
 
@@ -86,11 +88,6 @@ knitr::opts_chunk$set(
 ```
 
 
-# Introduction
-
-```{r, child = "child/introduction.Rmd", echo = FALSE}
-
-```
 
 
 

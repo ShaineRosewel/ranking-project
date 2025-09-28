@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (TeX Live 2025) (preloaded format=pdflatex 2025.8.17)  28 SEP 2025 16:04
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (TeX Live 2025) (preloaded format=pdflatex 2025.8.17)  28 SEP 2025 16:20
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -703,11 +703,11 @@ al/texlive/2025/texmf-dist/fonts/enc/dvips/lm/lm-ec.enc}]
 
 [2] (./proposal.toc
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <12> on input line 4.
+(Font)              <12> on input line 5.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <8> on input line 4.
+(Font)              <8> on input line 5.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <6> on input line 4.
+(Font)              <6> on input line 5.
 )
 \tf@toc=\write4
 \openout4 = `proposal.toc'.
@@ -716,8 +716,8 @@ LaTeX Font Info:    External font `lmex10' loaded for size
 
 [3]
 Package hyperref Info: bookmark level for unknown algorithm defaults to 0 on in
-put line 226.
-LaTeX Font Info:    Trying to load font information for U+euf on input line 258
+put line 228.
+LaTeX Font Info:    Trying to load font information for U+euf on input line 260
 .
 (/usr/local/texlive/2025/texmf-dist/tex/latex/amsfonts/ueuf.fd
 File: ueuf.fd 2013/01/14 v3.01 Euler Fraktur
@@ -747,110 +747,114 @@ LaTeX Warning: `!h' float specifier changed to `!ht'.
 [10]
 
 [11]
+Overfull \vbox (1.28026pt too high) detected at line 674
+ []
+
+
 
 [12
 
 
 ]
-Underfull \vbox (badness 10000) detected at line 688
+Underfull \vbox (badness 10000) detected at line 674
  []
 
 
-Underfull \vbox (badness 10000) detected at line 688
+Underfull \vbox (badness 10000) detected at line 674
  []
 
 
 
 [13]
-Underfull \vbox (badness 10000) detected at line 688
+Underfull \vbox (badness 10000) detected at line 674
  []
 
 
-Underfull \vbox (badness 10000) detected at line 688
+Underfull \vbox (badness 10000) detected at line 674
  []
 
 
 
 [14]
-Underfull \vbox (badness 10000) detected at line 688
- []
-
-
-Underfull \vbox (badness 10000) detected at line 688
- []
-
-
 
 [15]
-
-[16]
-Underfull \vbox (badness 10000) detected at line 863
+Underfull \vbox (badness 10000) detected at line 849
  []
 
 
-Underfull \vbox (badness 10000) detected at line 863
+Underfull \vbox (badness 10000) detected at line 849
+ []
+
+
+
+[16]
+Underfull \vbox (badness 10000) detected at line 849
+ []
+
+
+Underfull \vbox (badness 10000) detected at line 849
  []
 
 
 
 [17]
-Underfull \vbox (badness 10000) detected at line 863
+Underfull \vbox (badness 10000) detected at line 849
  []
 
 
-Underfull \vbox (badness 10000) detected at line 863
+Underfull \vbox (badness 10000) detected at line 849
  []
 
 
 
 [18]
-Underfull \vbox (badness 10000) detected at line 863
+Underfull \vbox (badness 10000) detected at line 849
  []
 
 
-Underfull \vbox (badness 10000) detected at line 863
+Underfull \vbox (badness 10000) detected at line 849
  []
 
 
 
 [19]
-Underfull \vbox (badness 10000) detected at line 863
+Underfull \vbox (badness 10000) detected at line 849
  []
 
 
-Underfull \vbox (badness 10000) detected at line 863
+Underfull \vbox (badness 10000) detected at line 849
  []
 
 
 
 [20]
-Underfull \vbox (badness 10000) detected at line 863
- []
-
-
-Underfull \vbox (badness 10000) detected at line 863
- []
-
-
 
 [21]
-
-[22]
-Underfull \vbox (badness 10000) detected at line 978
+Underfull \vbox (badness 10000) detected at line 964
  []
 
 
-Underfull \vbox (badness 10000) detected at line 978
+Underfull \vbox (badness 10000) detected at line 964
+ []
+
+
+
+[22]
+Underfull \vbox (badness 10000) detected at line 964
+ []
+
+
+Underfull \vbox (badness 10000) detected at line 964
  []
 
 
 
 [23]
-Underfull \vbox (badness 10000) detected at line 978
+Underfull \vbox (badness 10000) detected at line 964
  []
 
 
-Underfull \vbox (badness 10000) detected at line 978
+Underfull \vbox (badness 10000) detected at line 964
  []
 
 
@@ -864,10 +868,10 @@ L3 programming layer <2025-08-13>
  ***********
  ) 
 Here is how much of TeX's memory you used:
- 16713 strings out of 467800
- 262985 string characters out of 5431888
- 742302 words of memory out of 5000000
- 44875 multiletter control sequences out of 15000+600000
+ 16692 strings out of 467800
+ 262682 string characters out of 5431888
+ 744500 words of memory out of 5000000
+ 44861 multiletter control sequences out of 15000+600000
  703077 words of font info for 152 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  89i,14n,93p,1005b,494s stack positions out of 10000i,1000n,20000p,200000b,200000s
@@ -886,10 +890,10 @@ public/lm/lmmib10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm
 e1/public/lm/lmsy10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/
 lm/lmsy6.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmsy8.pf
 b>
-Output written on proposal.pdf (25 pages, 248353 bytes).
+Output written on proposal.pdf (25 pages, 245035 bytes).
 PDF statistics:
- 340 PDF objects out of 1000 (max. 8388607)
- 276 compressed objects within 3 object streams
- 59 named destinations out of 1000 (max. 500000)
- 41113 words of extra memory for PDF output out of 42996 (max. 10000000)
+ 304 PDF objects out of 1000 (max. 8388607)
+ 240 compressed objects within 3 object streams
+ 52 named destinations out of 1000 (max. 500000)
+ 41057 words of extra memory for PDF output out of 42996 (max. 10000000)
 
