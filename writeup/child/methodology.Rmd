@@ -139,7 +139,7 @@ parametric <- results1
 ```
 
 
-For the simulation studies, $\alpha$ is fixed at $0.1$, while the true standard deviations are varied ($sd = 2.0, 3.6, 6.0$) along with the number of items to be ranked ($K = 5, 10, 20, 30, 40, 51$). Table \@ref(tab:coverage) shows that when the correlation is zero, the nonrank-based, independent, and Bonferroni CI methodology exhibit similar coverage values regardless of $K$ and $sd$. In contrast, the parametric approach generally yields lower coverage for smaller $sd$ while showing comparable variability across different values of $K$.
+For the simulation studies, $\alpha$ is fixed at $0.1$, while the true standard deviations are varied ($sd = 2.0, 3.6, 6.0$) along with the number of items to be ranked ($K = 5, 10, 20, 30, 40, 51$). Table \@ref(tab:coverage) shows that when the correlation is zero, the nonrank-based, independent, and Bonferroni CI methodology exhibit similar coverage values regardless of $K$ and $sd$. In contrast, the parametric approach generally yields higher coverage for smaller $sd$ while showing comparable variability across different values of $K$.
 
 
 

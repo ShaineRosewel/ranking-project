@@ -1,0 +1,936 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+  12pt,
+  a4paper,
+]{article}
+\usepackage{amsmath,amssymb}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\usepackage{xcolor}
+\usepackage[margin=1in]{geometry}
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{255,255,255}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.75,0.01,0.01}{\textbf{\colorbox[rgb]{0.97,0.90,0.90}{#1}}}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.79,0.38,0.79}{#1}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.00,0.34,0.68}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.69,0.50,0.00}{#1}}
+\newcommand{\BuiltInTok}[1]{\textcolor[rgb]{0.39,0.29,0.61}{\textbf{#1}}}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.57,0.30,0.62}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.54,0.53,0.53}{#1}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.00,0.58,1.00}{#1}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.67,0.33,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.12,0.11,0.11}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.00,0.34,0.68}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.69,0.50,0.00}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.38,0.47,0.50}{#1}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.75,0.01,0.01}{\underline{#1}}}
+\newcommand{\ExtensionTok}[1]{\textcolor[rgb]{0.00,0.58,1.00}{\textbf{#1}}}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.69,0.50,0.00}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.39,0.29,0.61}{#1}}
+\newcommand{\ImportTok}[1]{\textcolor[rgb]{1.00,0.33,0.00}{#1}}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.69,0.50,0.00}{#1}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.12,0.11,0.11}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{\textcolor[rgb]{0.12,0.11,0.11}{#1}}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.12,0.11,0.11}{#1}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.43,0.16}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.00,0.43,0.16}{#1}}
+\newcommand{\RegionMarkerTok}[1]{\textcolor[rgb]{0.00,0.34,0.68}{\colorbox[rgb]{0.88,0.91,0.97}{#1}}}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.24,0.68,0.91}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{1.00,0.33,0.00}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.75,0.01,0.01}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.34,0.68}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.75,0.01,0.01}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.75,0.01,0.01}{#1}}
+\usepackage{longtable,booktabs,array}
+\usepackage{calc} % for calculating minipage widths
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{5}
+% definitions for citeproc citations
+\NewDocumentCommand\citeproctext{}{}
+\NewDocumentCommand\citeproc{mm}{%
+  \begingroup\def\citeproctext{#2}\cite{#1}\endgroup}
+\makeatletter
+ % allow citations to break across lines
+ \let\@cite@ofmt\@firstofone
+ % avoid brackets around text for \cite:
+ \def\@biblabel#1{}
+ \def\@cite#1#2{{#1\if@tempswa , #2\fi}}
+\makeatother
+\newlength{\cslhangindent}
+\setlength{\cslhangindent}{1.5em}
+\newlength{\csllabelwidth}
+\setlength{\csllabelwidth}{3em}
+\newenvironment{CSLReferences}[2] % #1 hanging-indent, #2 entry-spacing
+ {\begin{list}{}{%
+  \setlength{\itemindent}{0pt}
+  \setlength{\leftmargin}{0pt}
+  \setlength{\parsep}{0pt}
+  % turn on hanging indent if param 1 is 1
+  \ifodd #1
+   \setlength{\leftmargin}{\cslhangindent}
+   \setlength{\itemindent}{-1\cslhangindent}
+  \fi
+  % set entry spacing
+  \setlength{\itemsep}{#2\baselineskip}}}
+ {\end{list}}
+\usepackage{calc}
+\newcommand{\CSLBlock}[1]{\hfill\break\parbox[t]{\linewidth}{\strut\ignorespaces#1\strut}}
+\newcommand{\CSLLeftMargin}[1]{\parbox[t]{\csllabelwidth}{\strut#1\strut}}
+\newcommand{\CSLRightInline}[1]{\parbox[t]{\linewidth - \csllabelwidth}{\strut#1\strut}}
+\newcommand{\CSLIndent}[1]{\hspace{\cslhangindent}#1}
+\usepackage{amsmath}
+\numberwithin{equation}{section}
+\usepackage{setspace}\doublespacing
+\usepackage{pdflscape}
+\newcommand{\blandscape}{\begin{landscape}}
+\newcommand{\elandscape}{\end{landscape}}
+\usepackage{indentfirst}
+\usepackage{xparse}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{float}
+\renewcommand{\ttfamily}{\rmfamily}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{colortbl}
+\usepackage{pdflscape}
+\usepackage{tabu}
+\usepackage{threeparttable}
+\usepackage{threeparttablex}
+\usepackage[normalem]{ulem}
+\usepackage{makecell}
+\usepackage{xcolor}
+\ifLuaTeX
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+\usepackage{bookmark}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+\hypersetup{
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+
+\author{}
+\date{\vspace{-2.5em}}
+
+\begin{document}
+
+\title{\vspace{20mm}TITLE HERE}
+\maketitle
+\thispagestyle{empty} 
+\vspace*{95px}
+\begin{center}
+A Thesis Proposal Presented to\\
+The Faculty of the SS\\
+univ\\
+\vspace*{100px}
+In Partial Fulfillment\\
+of the Requirements for the Degree of\\
+degree\\
+1st Semester A.Y. 2025-2026
+
+\vspace*{100px}
+by\\
+Nmae
+\end{center}
+
+\newpage
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{knitr}\SpecialCharTok{::}\NormalTok{opts\_chunk}\SpecialCharTok{$}\FunctionTok{set}\NormalTok{(}
+  \AttributeTok{echo    =} \ConstantTok{FALSE}\NormalTok{,}
+  \AttributeTok{message =} \ConstantTok{FALSE}\NormalTok{,}
+  \AttributeTok{warning =} \ConstantTok{FALSE}
+\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\section*{Abstract}\label{abstract}
+\addcontentsline{toc}{section}{Abstract}
+
+\newpage
+
+\tableofcontents
+
+\newpage
+
+\section{Methodology}\label{methodology}
+
+Let \(\theta_1, \theta_2, \dots, \theta_K\) be the true parameter values and \(\hat \theta_1, \hat \theta_2, \dots, \hat \theta_K\) be the estimates obtained.
+
+\subsection{Parametric bootstrap}\label{parametric-bootstrap}
+
+Let \(\hat \theta_1, \hat \theta_2, \dots, \hat \theta_K\) be independent but not identically distributed estimates. For this study, it is assumed that \(\hat{\theta}_k \sim N \left(\theta_k, \sigma_k^2 \right)\), \(k = 1, 2, \dots, K\), where \(\sigma^2_k\) is known. Denote the corresponding ordered values by \(\hat \theta_{(1)}, \hat \theta_{(2)}, \dots, \hat \theta_{(K)}\).
+
+\begin{algorithm}[H]
+    \caption{Computation of Joint Confidence Region via Parametric Bootstrap} 
+    \label{alg:parametricbs_ci}
+    \begin{algorithmic}[1]
+        \For {$b = 1, 2, \dots, B$}
+                \State Generate $\hat\theta^*_{bk} \sim N \left( \hat\theta_k, \sigma_k^2 \right)$, $i = 1, 2, \dots, K$ and let $\hat{\theta}_{b(1)}, \hat{\theta}_{b(2)}, \dots, \hat{\theta}_{b(K)}$ be the corresponding ordered values
+            \Statex \begin{minipage}{\linewidth}
+          \centering
+          \begin{tabular}{|c|c|c|c|c|}
+            \hline
+             & $k = 1$ & $k = 2$ & $\dots$ & $k = K$ \\
+            \hline
+            $b = 1$ & $\hat{\theta}^*_{1(1)}$ & $\hat{\theta}^*_{1(2)}$ & \dots & $\hat{\theta}^*_{1(K)}$ \\
+            \hline
+            $b = 2$ & $\hat{\theta}^*_{2(1)}$ & $\hat{\theta}^*_{2(2)}$ & \dots & $\hat{\theta}^*_{2(K)}$ \\
+            \hline
+            $\vdots$ & \vdots & \vdots & \dots & \vdots\\
+            \hline
+            $b = B$ & $\hat{\theta}^*_{B(1)}$ & $\hat{\theta}^*_{B(2)}$ & \dots & $\hat{\theta}^*_{B(K)}$ \\
+            \hline
+          \end{tabular}
+        \end{minipage}
+        \State Compute 
+        \Statex \begin{minipage}{\linewidth}
+        \centering
+$\hat\sigma^*_{b(k)} = \sqrt{\text{kth ordered value among} \ \left\{ \hat{\theta}^{*2}_{b1} + \sigma_1^2, \hat{\theta}^{*2}_{b2} + \sigma_2^2, \dots, \hat{\theta}^{*2}_{bK} + \sigma_K^2 \right\} - \hat {\theta}^{*2}_{(k)}}$
+        \end{minipage}
+                \State Compute $t^*_b = \underset{1 \leq k \leq K}{\max} \Bigg| \frac{\hat\theta^*_{b(k)} - \hat\theta^*_{k}}{\sigma^*_{b(k)}} \Bigg|$
+        \EndFor
+        \State Compute the $\left(1-\alpha\right)$-sample quantile of $t^*_1, t^*_2, \dots, t^*_B$, call this $\hat{t}$.
+        \State The joint confidence region of $\theta_{(1)}, \theta_{(2)}, \dots, \theta_{(K)}$ is given by 
+        \Statex \begin{minipage}{\linewidth}
+    \centering
+$\mathfrak{R} = \left[ \hat\theta_{(1)} \pm \hat t \times \hat\sigma_{(1)}  \right] \times \left[ \hat\theta_{(2)} \pm \hat t \times \hat\sigma_{(2)}  \right] \times \dots \times \left[ \hat\theta_{(K)} \pm \hat t \times \hat\sigma_{(K)}  \right]$
+    \end{minipage}
+         where $\hat \sigma_{(k)}$ is computed as
+        \Statex \begin{minipage}{\linewidth}
+    \centering
+$\hat\sigma_{(k)} = \sqrt{\text{kth ordered value among} \ \left\{ \hat{\theta}^{2}_{1} + \sigma_1^2, \hat{\theta}^{2}_{2} + \sigma_2^2, \dots, \hat{\theta}^{2}_{K} + \sigma_K^2 \right\} - \hat {\theta}^{2}_{(k)}}$
+\end{minipage}
+    \end{algorithmic} 
+\end{algorithm}
+
+\begin{algorithm}[H]
+    \caption{Computation of Coverage Probability for Parametric Bootstrap} 
+    \label{alg:parametricbs_cov}
+    For given values of $\theta_1, \theta_2, \dots, \theta_K$ and thus $\theta_{(1)}, \theta_{(2)}, \dots, \theta_{(K)}$
+    \begin{algorithmic}[1] % Start algorithmic block
+            \For {$\text{replications} = 1, 2, \dots, 5000$}
+            \State Generate $\hat\theta_k \sim N(\theta_k, \sigma^2_k)$, for $k = 1, 2, \dots, K$
+            \State Compute the rectangular confidence region $\mathfrak{R}$ using Algorithm \ref{alg:parametricbs_ci}.
+            \State Check if $\left( \theta_{(1)}, \theta_{(2)}, \dots, \theta_{(K)}\right) \in \mathfrak{R}$ and compute 
+            \Statex \begin{minipage}{\linewidth}
+        \centering
+            $T_1 = \frac{1}{K} \sum^K_{k=1} \Big | \Lambda_{Ok} \Big|$\\
+            $T_2 = \prod^K_{k=1} \Big | \Lambda_{Ok} \Big|$\\
+            $T_3 = 1 - \frac{K + \sum^K_{k=1} \big | \Lambda_{Ok} \big|}{K^2}$\\
+            \end{minipage}
+        \EndFor
+    \State Compute the proportion of times that the condition in step 4 is satisfied and the average of $T_1, T_2$, and $T_3$.
+    \end{algorithmic} % End algorithmic block
+\end{algorithm}
+
+\subsection{Nonrank-based method}\label{nonrank-based-method}
+
+The nonrank-based method assumes that \(\boldsymbol{\hat\theta} = \left(\hat\theta_1, \hat\theta_2, \dots, \hat\theta_K\right) \sim N \left( \boldsymbol{\theta}, \boldsymbol{\Sigma}\right)\). It accounts for potential correlation among items being ranked. For this case, an exchangeable correlation, \(\boldsymbol{\rho}\) (See Equation \ref{eq:equicorrelation}.), is assumed and used in the calculation of the variance covariance matrix (See Equation \ref{eq:sigma_matrix}.).
+
+\begin{equation}
+  \boldsymbol{\rho} = \left( 1-\rho \right) \mathbf{I}_K + \rho \boldsymbol{1}_K \boldsymbol{1}'_K
+  \label{eq:equicorrelation}
+\end{equation}
+
+\begin{equation}
+  \boldsymbol{\Sigma} = \boldsymbol{\Delta}^{1/2} \boldsymbol{\rho} \boldsymbol{\Delta}^{1/2}
+  \label{eq:sigma_matrix}
+\end{equation}
+
+where \(\boldsymbol{\Delta} = \text{diag} \left\{ \sigma^2_1, \sigma^2_2, \dots, \sigma^2_K \right\}\), with known \(\sigma_k\)'s and \(\rho\) is studied for \(0.1, 0.5, 0.9\).
+
+\begin{algorithm}[H]
+    \caption{Computation of Joint Confidence Region via Nonrank-based Method} 
+    \label{alg:nonrank_ci}
+    Let the data consist of $\hat \theta_1, \dots, \hat \theta_K$ and suppose $\boldsymbol{\Sigma}$ is known
+    \begin{algorithmic}[1]
+        \For {$b = 1, 2, \dots, B$}
+                \State Generate $\boldsymbol{\hat\theta}^*_b \sim N_K \left( \boldsymbol{\hat\theta}, \boldsymbol{\Sigma}\right)$ and write $\boldsymbol{\hat\theta}^*_b = \left( \hat\theta^*_{b1}, \hat\theta^*_{b2}, \dots, \hat\theta^*_{bK} \right)' $
+                \State Compute $t^*_b = \underset{1 \leq j \leq K}{\max} \Bigg| \frac{\hat\theta^*_{bj} - \hat\theta^*_{j}}{\sigma_j} \Bigg|$
+        \EndFor
+        \State Compute the $\left(1-\alpha\right)$-sample quantile of $t^*_1, t^*_2, \dots, t^*_B$, call this $\hat{t}$.
+        \State The joint confidence region of $\theta_1, \theta_2, \dots, \theta_K$ is given by 
+        \Statex \begin{minipage}{\linewidth}
+    \centering
+$\mathfrak{R} = \left[ \hat\theta_1 \pm \hat t \times \sigma_1  \right] \times \left[ \hat\theta_2 \pm \hat t \times \sigma_2  \right] \times \dots \times \left[ \hat\theta_K \pm \hat t \times \sigma_K  \right]$
+    \end{minipage}
+    \end{algorithmic} 
+\end{algorithm}
+
+\begin{algorithm}[H]
+    \caption{Computation of Coverage Probability for Nonrank-based Method} 
+    \label{alg:nonrank_cov}
+    For given values of $\theta_1, \theta_2, \dots, \theta_K$ and $\boldsymbol{\Sigma}$
+    \begin{algorithmic}[1] % Start algorithmic block
+            \For {$\text{replications} = 1, 2, \dots, 5000$}
+            \State Generate $\boldsymbol{\hat\theta} \sim N_K(\boldsymbol{\theta}, \boldsymbol{\Sigma})$
+            \State Compute the rectangular confidence region $\mathfrak{R}$ using Algorithm \ref{alg:nonrank_ci}.
+            \State Check if $\left( \theta_1, \theta_2, \dots, \theta_K\right) \in \mathfrak{R}$ and compute $T_1, T_2$, and $T_3$.
+        \EndFor
+    \State Compute the proportion of times that the condition in step 4 is satisfied and the average of $T_1, T_2$, and $T_3$.
+    \end{algorithmic} % End algorithmic block
+\end{algorithm}
+
+\subsection{Results}\label{results}
+
+For the simulation studies, \(\alpha\) is fixed at \(0.1\), while the true standard deviations are varied (\(sd = 2.0, 3.6, 6.0\)) along with the number of items to be ranked (\(K = 5, 10, 20, 30, 40, 51\)). Table \ref{tab:coverage} shows that when the correlation is zero, the nonrank-based, independent, and Bonferroni CI methodology exhibit similar coverage values regardless of \(K\) and \(sd\). In contrast, the parametric approach generally yields higher coverage for smaller \(sd\) while showing comparable variability across different values of \(K\).
+
+\begin{longtable}[t]{rrrrrr}
+\caption{\label{tab:coverage}Simulation results for coverage probabilities when correlation is zero.}\\
+\toprule
+\multicolumn{2}{c}{ } & \multicolumn{4}{c}{Coverage} \\
+\cmidrule(l{3pt}r{3pt}){3-6}
+K & sd & Parametric & Non-rankbased & Independent & Bonferroni\\
+\midrule
+\endfirsthead
+\caption[]{\label{tab:coverage}Simulation results for coverage probabilities when correlation is zero. \textit{(continued)}}\\
+\toprule
+K & sd & Parametric & Non-rankbased & Independent & Bonferroni\\
+\midrule
+\endhead
+
+\endfoot
+\bottomrule
+\endlastfoot
+ & 2.0 & 0.9198 & 0.8970 & 0.9000 & 0.9042\\
+\nopagebreak
+ & 3.6 & 0.8534 & 0.8970 & 0.9000 & 0.9042\\
+\nopagebreak
+\multirow{-3}{*}{\raggedleft\arraybackslash 5} & 6.0 & 0.8034 & 0.8970 & 0.9000 & 0.9042\\
+\cmidrule{1-6}\pagebreak[0]
+ & 2.0 & 0.8900 & 0.8962 & 0.8984 & 0.9034\\
+\nopagebreak
+ & 3.6 & 0.8830 & 0.8962 & 0.8984 & 0.9034\\
+\nopagebreak
+\multirow{-3}{*}{\raggedleft\arraybackslash 10} & 6.0 & 0.8212 & 0.8962 & 0.8984 & 0.9034\\
+\cmidrule{1-6}\pagebreak[0]
+ & 2.0 & 0.8842 & 0.9070 & 0.9096 & 0.9134\\
+\nopagebreak
+ & 3.6 & 0.8952 & 0.9070 & 0.9096 & 0.9134\\
+\nopagebreak
+\multirow{-3}{*}{\raggedleft\arraybackslash 20} & 6.0 & 0.8264 & 0.9070 & 0.9096 & 0.9134\\
+\cmidrule{1-6}\pagebreak[0]
+ & 2.0 & 0.8786 & 0.9026 & 0.9048 & 0.9088\\
+\nopagebreak
+ & 3.6 & 0.8594 & 0.9026 & 0.9048 & 0.9088\\
+\nopagebreak
+\multirow{-3}{*}{\raggedleft\arraybackslash 30} & 6.0 & 0.8458 & 0.9026 & 0.9048 & 0.9088\\
+\cmidrule{1-6}\pagebreak[0]
+ & 2.0 & 0.8820 & 0.8958 & 0.8972 & 0.9020\\
+\nopagebreak
+ & 3.6 & 0.8804 & 0.8958 & 0.8972 & 0.9020\\
+\nopagebreak
+\multirow{-3}{*}{\raggedleft\arraybackslash 40} & 6.0 & 0.8474 & 0.8958 & 0.8972 & 0.9020\\
+\cmidrule{1-6}\pagebreak[0]
+ & 2.0 & 0.9442 & 0.9010 & 0.9008 & 0.9054\\
+\nopagebreak
+ & 3.6 & 0.9128 & 0.9010 & 0.9008 & 0.9054\\
+\nopagebreak
+\multirow{-3}{*}{\raggedleft\arraybackslash 51} & 6.0 & 0.9124 & 0.9010 & 0.9008 & 0.9054\\*
+\end{longtable}
+
+The case is different in terms of \(T_1\) (See Table \ref{tab:T1}.) as it increases with decreasing \(sd\) and increasing \(K\). The CIs are wider for the parametric approach compared to the remaining approaches whose \(T_1\) only vary by a small margin, with nonrank-based method having the smallest \(T_1\) and Bonferroni, the largest one. The same behavior is observed for \(T_2\) and \(T_3\).
+
+\begin{longtable}[t]{rrrrrr}
+\caption{\label{tab:T1}Simulation results for coverage probabilities.}\\
+\toprule
+\multicolumn{2}{c}{ } & \multicolumn{4}{c}{$T_1$} \\
+\cmidrule(l{3pt}r{3pt}){3-6}
+K & sd & Parametric & Non-rankbased & Independent & Bonferroni\\
+\midrule
+\endfirsthead
+\caption[]{\label{tab:T1}Simulation results for coverage probabilities. \textit{(continued)}}\\
+\toprule
+K & sd & Parametric & Non-rankbased & Independent & Bonferroni\\
+\midrule
+\endhead
+
+\endfoot
+\bottomrule
+\endlastfoot
+ & 2.0 & 2.212960 & 2.127360 & 2.128560 & 2.130800\\
+\nopagebreak
+ & 3.6 & 1.983280 & 1.834720 & 1.835600 & 1.842240\\
+\nopagebreak
+\multirow{-3}{*}{\raggedleft\arraybackslash 5} & 6.0 & 1.622000 & 1.462560 & 1.462560 & 1.465520\\
+\cmidrule{1-6}\pagebreak[0]
+ & 2.0 & 4.002280 & 3.243800 & 3.246320 & 3.259040\\
+\nopagebreak
+ & 3.6 & 2.710680 & 2.307480 & 2.308680 & 2.317680\\
+\nopagebreak
+\multirow{-3}{*}{\raggedleft\arraybackslash 10} & 6.0 & 1.924080 & 1.731200 & 1.733320 & 1.736840\\
+\cmidrule{1-6}\pagebreak[0]
+ & 2.0 & 7.022060 & 5.333380 & 5.336680 & 5.361700\\
+\nopagebreak
+ & 3.6 & 4.207100 & 3.448120 & 3.451680 & 3.465240\\
+\nopagebreak
+\multirow{-3}{*}{\raggedleft\arraybackslash 20} & 6.0 & 2.787040 & 2.453000 & 2.454920 & 2.462440\\
+\cmidrule{1-6}\pagebreak[0]
+ & 2.0 & 11.830987 & 9.538733 & 9.547507 & 9.591387\\
+\nopagebreak
+ & 3.6 & 7.653613 & 5.802093 & 5.806080 & 5.833933\\
+\nopagebreak
+\multirow{-3}{*}{\raggedleft\arraybackslash 30} & 6.0 & 4.764387 & 3.778320 & 3.781573 & 3.797987\\
+\cmidrule{1-6}\pagebreak[0]
+ & 2.0 & 15.153140 & 12.100160 & 12.108990 & 12.160730\\
+\nopagebreak
+ & 3.6 & 10.392030 & 7.201310 & 7.205910 & 7.241320\\
+\nopagebreak
+\multirow{-3}{*}{\raggedleft\arraybackslash 40} & 6.0 & 6.508180 & 4.483520 & 4.485920 & 4.506070\\
+\cmidrule{1-6}\pagebreak[0]
+ & 2.0 & 20.446533 & 15.607796 & 15.614745 & 15.685914\\
+\nopagebreak
+ & 3.6 & 13.206918 & 9.098996 & 9.103490 & 9.143977\\
+\nopagebreak
+\multirow{-3}{*}{\raggedleft\arraybackslash 51} & 6.0 & 8.598722 & 5.786298 & 5.789153 & 5.814400\\*
+\end{longtable}
+
+As the correlation increases, the coverage of both independent and Bonferroni CIs exceed the nominal value while that of nonrank-based method remains close to it. This holds regardless of \(K\) and \(sd\). See Table \ref{tab:nonzerocorrel}.
+
+\begin{longtable}[t]{rrrrr}
+\caption{\label{tab:nonzerocorrel}Simulation results for coverage probabilities when correlation is nonzero.}\\
+\toprule
+\multicolumn{2}{c}{ } & \multicolumn{3}{c}{Coverage} \\
+\cmidrule(l{3pt}r{3pt}){3-5}
+corr & K & Non-rankbased & Independent & Bonferroni\\
+\midrule
+\endfirsthead
+\caption[]{\label{tab:nonzerocorrel}Simulation results for coverage probabilities when correlation is nonzero. \textit{(continued)}}\\
+\toprule
+corr & K & Non-rankbased & Independent & Bonferroni\\
+\midrule
+\endhead
+
+\endfoot
+\bottomrule
+\endlastfoot
+ & 5 & 0.8984 & 0.9008 & 0.9046\\
+\nopagebreak
+ & 10 & 0.8996 & 0.9016 & 0.9060\\
+\nopagebreak
+ & 20 & 0.8988 & 0.9026 & 0.9082\\
+\nopagebreak
+ & 30 & 0.9000 & 0.9036 & 0.9088\\
+\nopagebreak
+ & 40 & 0.8916 & 0.8968 & 0.9012\\
+\nopagebreak
+\multirow{-6}{*}{\raggedleft\arraybackslash 0.1} & 51 & 0.8944 & 0.8994 & 0.9048\\
+\cmidrule{1-5}\pagebreak[0]
+ & 5 & 0.9042 & 0.9218 & 0.9260\\
+\nopagebreak
+ & 10 & 0.9038 & 0.9322 & 0.9346\\
+\nopagebreak
+ & 20 & 0.9032 & 0.9378 & 0.9408\\
+\nopagebreak
+ & 30 & 0.8910 & 0.9312 & 0.9338\\
+\nopagebreak
+ & 40 & 0.8920 & 0.9328 & 0.9358\\
+\nopagebreak
+\multirow{-6}{*}{\raggedleft\arraybackslash 0.5} & 51 & 0.9086 & 0.9492 & 0.9516\\
+\cmidrule{1-5}\pagebreak[0]
+ & 5 & 0.9032 & 0.9574 & 0.9586\\
+\nopagebreak
+ & 10 & 0.8962 & 0.9682 & 0.9690\\
+\nopagebreak
+ & 20 & 0.8980 & 0.9758 & 0.9766\\
+\nopagebreak
+ & 30 & 0.8960 & 0.9802 & 0.9806\\
+\nopagebreak
+ & 40 & 0.8996 & 0.9862 & 0.9870\\
+\nopagebreak
+\multirow{-6}{*}{\raggedleft\arraybackslash 0.9} & 51 & 0.8928 & 0.9866 & 0.9868\\*
+\end{longtable}
+
+\section{Introduction}\label{introduction}
+
+\subsection{Background of the Study}\label{background-of-the-study}
+
+\subsection{Statement of the Problem}\label{statement-of-the-problem}
+
+\subsection{Objective of the Study}\label{objective-of-the-study}
+
+\subsection{Study Hypothesis}\label{study-hypothesis}
+
+\subsection{Significance of the Study}\label{significance-of-the-study}
+
+\subsection{Scope and Limitation}\label{scope-and-limitation}
+
+\subsection{Definition of Terms}\label{definition-of-terms}
+
+\section{Background}\label{background}
+
+THIS IS Rizzo (2008) and Klein et al. (2020)
+
+\section*{References}\label{references}
+\addcontentsline{toc}{section}{References}
+
+\phantomsection\label{refs}
+\begin{CSLReferences}{1}{0}
+\bibitem[\citeproctext]{ref-klein}
+Klein, M., Wright, T., \& Wieczorek, J. (2020). \emph{A joint confidence region for an overall ranking of populations}.
+
+\bibitem[\citeproctext]{ref-mariarizzo}
+Rizzo, M. (2008). \emph{Statistical computing with r}.
+
+\end{CSLReferences}
+
+\section*{Appendices}\label{appendices}
+\addcontentsline{toc}{section}{Appendices}
+
+\subsection*{Codes for algorithm 1}\label{codes-for-algorithm-1}
+\addcontentsline{toc}{subsection}{Codes for algorithm 1}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{ get\_independent\_ci }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(theta\_hat,}
+\NormalTok{                               S,}
+\NormalTok{                               alpha)\{}
+\NormalTok{  K }\OtherTok{\textless{}{-}} \FunctionTok{length}\NormalTok{(theta\_hat)}
+\NormalTok{  gamma }\OtherTok{=} \DecValTok{1}\SpecialCharTok{{-}}\NormalTok{(}\DecValTok{1}\SpecialCharTok{{-}}\NormalTok{alpha)}\SpecialCharTok{\^{}}\NormalTok{(}\DecValTok{1}\SpecialCharTok{/}\NormalTok{K)}
+\NormalTok{  z }\OtherTok{=} \FunctionTok{qnorm}\NormalTok{(}\DecValTok{1}\SpecialCharTok{{-}}\NormalTok{gamma}\SpecialCharTok{/}\DecValTok{2}\NormalTok{)}
+\NormalTok{  ci\_lower }\OtherTok{\textless{}{-}}\NormalTok{ theta\_hat }\SpecialCharTok{{-}}\NormalTok{ z}\SpecialCharTok{*}\NormalTok{S}
+\NormalTok{  ci\_upper }\OtherTok{\textless{}{-}}\NormalTok{ theta\_hat }\SpecialCharTok{+}\NormalTok{ z}\SpecialCharTok{*}\NormalTok{S}
+  \FunctionTok{return}\NormalTok{(}\FunctionTok{list}\NormalTok{(}
+    \AttributeTok{ci\_lower =}\NormalTok{ ci\_lower,}
+    \AttributeTok{ci\_upper =}\NormalTok{ ci\_upper}
+\NormalTok{  ))}
+\NormalTok{\}}
+
+\NormalTok{get\_bonferroni\_ci }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(theta\_hat,}
+\NormalTok{                              S,}
+\NormalTok{                              alpha)\{}
+\NormalTok{  K }\OtherTok{\textless{}{-}} \FunctionTok{length}\NormalTok{(theta\_hat)}
+\NormalTok{  z }\OtherTok{=} \FunctionTok{qnorm}\NormalTok{(}\DecValTok{1}\SpecialCharTok{{-}}\NormalTok{(alpha}\SpecialCharTok{/}\NormalTok{K)}\SpecialCharTok{/}\DecValTok{2}\NormalTok{)}
+\NormalTok{  ci\_lower }\OtherTok{\textless{}{-}}\NormalTok{ theta\_hat }\SpecialCharTok{{-}}\NormalTok{ z}\SpecialCharTok{*}\NormalTok{S}
+\NormalTok{  ci\_upper }\OtherTok{\textless{}{-}}\NormalTok{ theta\_hat }\SpecialCharTok{+}\NormalTok{ z}\SpecialCharTok{*}\NormalTok{S}
+  \FunctionTok{return}\NormalTok{(}\FunctionTok{list}\NormalTok{(}
+    \AttributeTok{ci\_lower =}\NormalTok{ ci\_lower,}
+    \AttributeTok{ci\_upper =}\NormalTok{ ci\_upper}
+\NormalTok{  ))}
+\NormalTok{\}}
+
+\NormalTok{get\_parametric\_ci }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(B,}
+\NormalTok{                              theta\_hat,}
+\NormalTok{                              S,}
+\NormalTok{                              alpha) \{}
+\NormalTok{  K }\OtherTok{\textless{}{-}} \FunctionTok{length}\NormalTok{(theta\_hat)}
+  \CommentTok{\# step 1a ====================================}
+\NormalTok{  thetahat\_star }\OtherTok{\textless{}{-}} \FunctionTok{sapply}\NormalTok{(}\FunctionTok{seq\_len}\NormalTok{(K), }\ControlFlowTok{function}\NormalTok{(i) \{}
+    \FunctionTok{rnorm}\NormalTok{(B, }\AttributeTok{mean =}\NormalTok{ theta\_hat[i], }\AttributeTok{sd =}\NormalTok{ S[i])}
+\NormalTok{  \})}
+  \FunctionTok{colnames}\NormalTok{(thetahat\_star) }\OtherTok{\textless{}{-}} \FunctionTok{paste0}\NormalTok{(}\StringTok{"thetahat\_star"}\NormalTok{, }
+                                    \FunctionTok{sprintf}\NormalTok{(}\StringTok{"\%02d"}\NormalTok{, }\DecValTok{1}\SpecialCharTok{:}\NormalTok{K))}
+\NormalTok{  sorted\_thetahat\_star }\OtherTok{\textless{}{-}} \FunctionTok{t}\NormalTok{(}\FunctionTok{apply}\NormalTok{(thetahat\_star, }\DecValTok{1}\NormalTok{, sort))}
+  \FunctionTok{colnames}\NormalTok{(sorted\_thetahat\_star) }\OtherTok{\textless{}{-}} \FunctionTok{paste0}\NormalTok{(}\StringTok{"sorted\_thetahat\_star"}\NormalTok{, }
+                                           \FunctionTok{sprintf}\NormalTok{(}\StringTok{"\%02d"}\NormalTok{, }\DecValTok{1}\SpecialCharTok{:}\NormalTok{K))}
+  \CommentTok{\# step 1b ====================================}
+\NormalTok{  variance\_vector }\OtherTok{\textless{}{-}}\NormalTok{ S}\SpecialCharTok{\^{}}\DecValTok{2}
+\NormalTok{  minuend }\OtherTok{\textless{}{-}}\NormalTok{ thetahat\_star}\SpecialCharTok{\^{}}\DecValTok{2} \SpecialCharTok{+} \FunctionTok{rep}\NormalTok{(}
+\NormalTok{    variance\_vector, }\AttributeTok{each =} \FunctionTok{nrow}\NormalTok{(thetahat\_star))}
+\NormalTok{  sigma\_hat\_star }\OtherTok{\textless{}{-}} \FunctionTok{sqrt}\NormalTok{(}
+    \FunctionTok{t}\NormalTok{(}\FunctionTok{apply}\NormalTok{(minuend, }\DecValTok{1}\NormalTok{, sort)) }\SpecialCharTok{{-}}\NormalTok{ sorted\_thetahat\_star}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{)}
+  \CommentTok{\# step 1c ====================================}
+\NormalTok{  sorted\_theta\_hat }\OtherTok{\textless{}{-}} \FunctionTok{sort}\NormalTok{(theta\_hat)}
+\NormalTok{  t\_star }\OtherTok{\textless{}{-}} \FunctionTok{apply}\NormalTok{(}
+    \FunctionTok{abs}\NormalTok{(}
+\NormalTok{      (}
+\NormalTok{        sorted\_thetahat\_star }\SpecialCharTok{{-}} \FunctionTok{rep}\NormalTok{(}
+\NormalTok{          sorted\_theta\_hat,}
+          \AttributeTok{each =} \FunctionTok{nrow}\NormalTok{(sorted\_thetahat\_star)}
+\NormalTok{          )}
+\NormalTok{        )}\SpecialCharTok{/}\NormalTok{sigma\_hat\_star}
+\NormalTok{      ),}
+    \DecValTok{1}\NormalTok{, }
+\NormalTok{    max)}
+  \CommentTok{\# step 2 =====================================}
+\NormalTok{  t\_hat }\OtherTok{\textless{}{-}} \FunctionTok{quantile}\NormalTok{(t\_star, }\AttributeTok{probs =} \DecValTok{1} \SpecialCharTok{{-}}\NormalTok{ alpha)}
+  \CommentTok{\# step 3 =====================================}
+\NormalTok{  sigma\_hat }\OtherTok{\textless{}{-}} \FunctionTok{sqrt}\NormalTok{(}
+    \FunctionTok{sort}\NormalTok{(theta\_hat}\SpecialCharTok{\^{}}\DecValTok{2} \SpecialCharTok{+}\NormalTok{ variance\_vector) }\SpecialCharTok{{-}}\NormalTok{ sorted\_theta\_hat}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{)}
+  \CommentTok{\# step 6 =====================================}
+\NormalTok{  ci\_lower }\OtherTok{\textless{}{-}}\NormalTok{ sorted\_theta\_hat }\SpecialCharTok{{-}}\NormalTok{ t\_hat}\SpecialCharTok{*}\NormalTok{sigma\_hat}
+\NormalTok{  ci\_upper }\OtherTok{\textless{}{-}}\NormalTok{ sorted\_theta\_hat }\SpecialCharTok{+}\NormalTok{ t\_hat}\SpecialCharTok{*}\NormalTok{sigma\_hat}
+  \FunctionTok{return}\NormalTok{(}\FunctionTok{list}\NormalTok{(}
+    \AttributeTok{ci\_lower =}\NormalTok{ ci\_lower,}
+    \AttributeTok{ci\_upper =}\NormalTok{ ci\_upper}
+\NormalTok{  ))}
+\NormalTok{\}}
+
+\NormalTok{get\_nonrankbased\_ci }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(B, }
+\NormalTok{                                theta\_hat,}
+\NormalTok{                                alpha, }
+\NormalTok{                                varcovar\_matrix) \{}
+\NormalTok{  K }\OtherTok{\textless{}{-}} \FunctionTok{length}\NormalTok{(theta\_hat)}
+  \CommentTok{\# step 1a ===================================}
+\NormalTok{  generate\_data }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{()\{MASS}\SpecialCharTok{::}\FunctionTok{mvrnorm}\NormalTok{(}\AttributeTok{n =} \DecValTok{1}\NormalTok{,}
+                                      \AttributeTok{mu =}\NormalTok{ theta\_hat,}
+                                      \AttributeTok{Sigma =}\NormalTok{ varcovar\_matrix)\}}
+\NormalTok{  thetahat\_star }\OtherTok{\textless{}{-}} \FunctionTok{t}\NormalTok{(}\FunctionTok{replicate}\NormalTok{(B, }\FunctionTok{generate\_data}\NormalTok{()))}
+  \CommentTok{\# step 1b ===================================}
+\NormalTok{  t\_star }\OtherTok{\textless{}{-}} \FunctionTok{apply}\NormalTok{(thetahat\_star, }
+                  \DecValTok{1}\NormalTok{, }
+                  \ControlFlowTok{function}\NormalTok{(x) }\FunctionTok{max}\NormalTok{(}\FunctionTok{abs}\NormalTok{((x }\SpecialCharTok{{-}}\NormalTok{ theta\_hat) }\SpecialCharTok{/} \FunctionTok{sqrt}\NormalTok{(}
+                    \FunctionTok{diag}\NormalTok{(varcovar\_matrix)))))  }
+  \CommentTok{\# step 2 ====================================}
+\NormalTok{  t\_hat }\OtherTok{\textless{}{-}} \FunctionTok{quantile}\NormalTok{(t\_star, }\AttributeTok{probs =} \DecValTok{1} \SpecialCharTok{{-}}\NormalTok{ alpha)}
+  \CommentTok{\# step 3 ====================================}
+\NormalTok{  ci\_lower }\OtherTok{\textless{}{-}}\NormalTok{ theta\_hat }\SpecialCharTok{{-}}\NormalTok{ t\_hat}\SpecialCharTok{*}\FunctionTok{sqrt}\NormalTok{(}\FunctionTok{diag}\NormalTok{(varcovar\_matrix))}
+\NormalTok{  ci\_upper }\OtherTok{\textless{}{-}}\NormalTok{ theta\_hat }\SpecialCharTok{+}\NormalTok{ t\_hat}\SpecialCharTok{*}\FunctionTok{sqrt}\NormalTok{(}\FunctionTok{diag}\NormalTok{(varcovar\_matrix))}
+  \FunctionTok{return}\NormalTok{(}\FunctionTok{list}\NormalTok{(}
+    \AttributeTok{ci\_lower =}\NormalTok{ ci\_lower,}
+    \AttributeTok{ci\_upper =}\NormalTok{ ci\_upper}
+\NormalTok{  ))}
+\NormalTok{\} }
+\end{Highlighting}
+\end{Shaded}
+
+\subsection*{Codes for algorithm 2}\label{codes-for-algorithm-2}
+\addcontentsline{toc}{subsection}{Codes for algorithm 2}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+ \FunctionTok{source}\NormalTok{(}\StringTok{"../../R/compute\_ci.R"}\NormalTok{)}
+\FunctionTok{library}\NormalTok{(}\StringTok{"doRNG"}\NormalTok{)}
+
+\NormalTok{get\_ranks }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(k, tuple\_list)\{}
+\NormalTok{  Lambda\_lk }\OtherTok{\textless{}{-}} \FunctionTok{which}\NormalTok{(}
+\NormalTok{    tuple\_list[,}\DecValTok{2}\NormalTok{]}\SpecialCharTok{\textless{}=}\NormalTok{tuple\_list[k,}\DecValTok{1}\NormalTok{])}
+\NormalTok{  Lambda\_lk }\OtherTok{\textless{}{-}}\NormalTok{ Lambda\_lk[Lambda\_lk }\SpecialCharTok{!=}\NormalTok{ k]}
+\NormalTok{  Lambda\_Ok }\OtherTok{\textless{}{-}} \FunctionTok{which}\NormalTok{(}
+\NormalTok{    tuple\_list[,}\DecValTok{2}\NormalTok{]}\SpecialCharTok{\textgreater{}}\NormalTok{tuple\_list[k,}\DecValTok{1}\NormalTok{] }\SpecialCharTok{\&}\NormalTok{ tuple\_list[k,}\DecValTok{2}\NormalTok{] }\SpecialCharTok{\textgreater{}}\NormalTok{ tuple\_list[,}\DecValTok{1}\NormalTok{])}
+\NormalTok{  Lambda\_Ok }\OtherTok{\textless{}{-}}\NormalTok{ Lambda\_Ok[Lambda\_Ok }\SpecialCharTok{!=}\NormalTok{ k]}
+\NormalTok{  ranks }\OtherTok{\textless{}{-}} \FunctionTok{seq}\NormalTok{(}
+    \FunctionTok{length}\NormalTok{(}\FunctionTok{unique}\NormalTok{(Lambda\_lk)) }\SpecialCharTok{+} \DecValTok{1}\NormalTok{,}
+    \FunctionTok{length}\NormalTok{(}\FunctionTok{unique}\NormalTok{(Lambda\_lk)) }\SpecialCharTok{+} \FunctionTok{length}\NormalTok{(}\FunctionTok{unique}\NormalTok{(Lambda\_Ok)) }\SpecialCharTok{+} \DecValTok{1}\NormalTok{,}
+    \DecValTok{1}
+\NormalTok{  )}
+  \FunctionTok{return}\NormalTok{(}\FunctionTok{list}\NormalTok{(}
+    \AttributeTok{ranks =}\NormalTok{ ranks,}
+    \AttributeTok{Lambda\_Ok =}\NormalTok{ Lambda\_Ok}
+\NormalTok{  ))}
+\NormalTok{\}}
+
+\NormalTok{get\_t1 }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(v) }\FunctionTok{mean}\NormalTok{(v)}
+
+\NormalTok{get\_t2 }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(v) }\FunctionTok{prod}\NormalTok{(v)}\SpecialCharTok{\^{}}\NormalTok{(}\DecValTok{1}\SpecialCharTok{/}\FunctionTok{length}\NormalTok{(v))}
+
+\NormalTok{get\_t3 }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(v) \{}
+  \DecValTok{1} \SpecialCharTok{{-}}\NormalTok{ ((}\FunctionTok{length}\NormalTok{(v)}\SpecialCharTok{+}\FunctionTok{sum}\NormalTok{(v))}\SpecialCharTok{/}\NormalTok{(}\FunctionTok{length}\NormalTok{(v)}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{))}
+\NormalTok{\}}
+
+\NormalTok{get\_coverage }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(ci\_lower,}
+\NormalTok{                         ci\_upper,}
+\NormalTok{                         true\_theta) \{}
+  \FunctionTok{return}\NormalTok{(}\FunctionTok{all}\NormalTok{(ci\_lower}\SpecialCharTok{\textless{}=}\NormalTok{true\_theta) }\SpecialCharTok{\&} \FunctionTok{all}\NormalTok{(true\_theta}\SpecialCharTok{\textless{}=}\NormalTok{ci\_upper))}
+\NormalTok{\}}
+
+\NormalTok{algo2\_nonrankbased }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(}
+\NormalTok{    true\_theta,}
+\NormalTok{    K, }
+    \AttributeTok{reps =} \DecValTok{5}\NormalTok{, }\CommentTok{\# step 4}
+    \AttributeTok{B=}\DecValTok{100}\NormalTok{, }
+    \AttributeTok{alpha=} \FloatTok{0.10}\NormalTok{,}
+\NormalTok{    varcovar\_matrix)\{}
+  \FunctionTok{foreach}\NormalTok{(}\AttributeTok{iter =} \DecValTok{1}\SpecialCharTok{:}\NormalTok{reps, }
+          \AttributeTok{.combine =}\NormalTok{ rbind,}
+          \AttributeTok{.packages =} \FunctionTok{c}\NormalTok{(}\StringTok{"foreach"}\NormalTok{, }\StringTok{"arrow"}\NormalTok{, }\StringTok{"MASS"}\NormalTok{),}
+          \AttributeTok{.export =} \FunctionTok{c}\NormalTok{(}\StringTok{"get\_nonrankbased\_ci"}\NormalTok{, }\StringTok{"get\_independent\_ci"}\NormalTok{,}
+                      \StringTok{"get\_bonferroni\_ci"}\NormalTok{, }\StringTok{"get\_ranks"}\NormalTok{, }\StringTok{"get\_coverage"}\NormalTok{,}
+                      \StringTok{"get\_t1"}\NormalTok{, }\StringTok{"get\_t2"}\NormalTok{, }\StringTok{"get\_t3"}\NormalTok{)}
+\NormalTok{  ) }\SpecialCharTok{\%dorng\%}\NormalTok{ \{}
+    
+    \CommentTok{\# step 1 =======}
+\NormalTok{    theta\_hat }\OtherTok{\textless{}{-}} \FunctionTok{mvrnorm}\NormalTok{(}\AttributeTok{n =} \DecValTok{1}\NormalTok{, }
+                         \AttributeTok{mu =}\NormalTok{ true\_theta, }
+                         \AttributeTok{Sigma =}\NormalTok{ varcovar\_matrix)}
+    
+    \CommentTok{\# step 2 =======}
+\NormalTok{    S }\OtherTok{\textless{}{-}} \FunctionTok{sqrt}\NormalTok{(}\FunctionTok{diag}\NormalTok{(varcovar\_matrix))}
+    
+\NormalTok{    ci\_methods }\OtherTok{\textless{}{-}} \FunctionTok{list}\NormalTok{(}
+      \AttributeTok{nonrankbased =} \ControlFlowTok{function}\NormalTok{() }\FunctionTok{get\_nonrankbased\_ci}\NormalTok{(B, theta\_hat, alpha, }
+\NormalTok{                                                    varcovar\_matrix),}
+      \AttributeTok{independent  =} \ControlFlowTok{function}\NormalTok{() }\FunctionTok{get\_independent\_ci}\NormalTok{(theta\_hat, S, alpha),}
+      \AttributeTok{bonferroni   =} \ControlFlowTok{function}\NormalTok{() }\FunctionTok{get\_bonferroni\_ci}\NormalTok{(theta\_hat, S, alpha)}
+\NormalTok{    )}
+    
+\NormalTok{    ci\_results }\OtherTok{\textless{}{-}} \FunctionTok{lapply}\NormalTok{(ci\_methods, }\ControlFlowTok{function}\NormalTok{(f) }\FunctionTok{f}\NormalTok{())}
+    
+\NormalTok{    coverages }\OtherTok{\textless{}{-}} \FunctionTok{lapply}\NormalTok{(ci\_results, }\ControlFlowTok{function}\NormalTok{(res) \{}
+      \FunctionTok{get\_coverage}\NormalTok{(}
+        \AttributeTok{ci\_lower   =}\NormalTok{ res}\SpecialCharTok{$}\NormalTok{ci\_lower,}
+        \AttributeTok{ci\_upper   =}\NormalTok{ res}\SpecialCharTok{$}\NormalTok{ci\_upper,}
+        \AttributeTok{true\_theta =}\NormalTok{ true\_theta}
+\NormalTok{      )}
+\NormalTok{    \})}
+    
+\NormalTok{    process\_ci\_result }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(result, K) \{}
+\NormalTok{      tuple\_list }\OtherTok{\textless{}{-}} \FunctionTok{t}\NormalTok{(}\FunctionTok{apply}\NormalTok{(}
+        \FunctionTok{data.frame}\NormalTok{(}
+          \AttributeTok{ci\_lower =}\NormalTok{ result}\SpecialCharTok{$}\NormalTok{ci\_lower,}
+          \AttributeTok{ci\_upper =}\NormalTok{ result}\SpecialCharTok{$}\NormalTok{ci\_upper}
+\NormalTok{        ), }
+        \DecValTok{1}\NormalTok{, }
+        \ControlFlowTok{function}\NormalTok{(row) }\FunctionTok{as.numeric}\NormalTok{(row)}
+\NormalTok{      ))}
+      
+\NormalTok{      rank\_range\_length }\OtherTok{\textless{}{-}} \FunctionTok{sapply}\NormalTok{(}\DecValTok{1}\SpecialCharTok{:}\NormalTok{K, }\ControlFlowTok{function}\NormalTok{(x) }
+        \FunctionTok{length}\NormalTok{(}\FunctionTok{get\_ranks}\NormalTok{(x, tuple\_list)}\SpecialCharTok{$}\NormalTok{ranks)}
+\NormalTok{      )}
+      
+      \FunctionTok{list}\NormalTok{(}
+        \AttributeTok{t1 =} \FunctionTok{get\_t1}\NormalTok{(rank\_range\_length),}
+        \AttributeTok{t2 =} \FunctionTok{get\_t2}\NormalTok{(rank\_range\_length),}
+        \AttributeTok{t3 =} \FunctionTok{get\_t3}\NormalTok{(rank\_range\_length)}
+\NormalTok{      )}
+\NormalTok{    \}}
+    
+\NormalTok{    processed }\OtherTok{\textless{}{-}} \FunctionTok{lapply}\NormalTok{(ci\_results, process\_ci\_result, }\AttributeTok{K =}\NormalTok{ K)}
+
+    \FunctionTok{data.frame}\NormalTok{(}
+      \AttributeTok{t1\_nonrankbased =}\NormalTok{ processed}\SpecialCharTok{$}\NormalTok{nonrankbased}\SpecialCharTok{$}\NormalTok{t1,}
+      \AttributeTok{t2\_nonrankbased =}\NormalTok{ processed}\SpecialCharTok{$}\NormalTok{nonrankbased}\SpecialCharTok{$}\NormalTok{t2,}
+      \AttributeTok{t3\_nonrankbased =}\NormalTok{ processed}\SpecialCharTok{$}\NormalTok{nonrankbased}\SpecialCharTok{$}\NormalTok{t3,}
+      \AttributeTok{coverage\_nonrankbased =}\NormalTok{ coverages}\SpecialCharTok{$}\NormalTok{nonrankbased,}
+      \AttributeTok{t1\_independent =}\NormalTok{ processed}\SpecialCharTok{$}\NormalTok{independent}\SpecialCharTok{$}\NormalTok{t1,}
+      \AttributeTok{t2\_independent =}\NormalTok{ processed}\SpecialCharTok{$}\NormalTok{independent}\SpecialCharTok{$}\NormalTok{t2,}
+      \AttributeTok{t3\_independent =}\NormalTok{ processed}\SpecialCharTok{$}\NormalTok{independent}\SpecialCharTok{$}\NormalTok{t3,}
+      \AttributeTok{coverage\_independent =}\NormalTok{ coverages}\SpecialCharTok{$}\NormalTok{independent,}
+      \AttributeTok{t1\_bonferroni =}\NormalTok{ processed}\SpecialCharTok{$}\NormalTok{bonferroni}\SpecialCharTok{$}\NormalTok{t1,}
+      \AttributeTok{t2\_bonferroni =}\NormalTok{ processed}\SpecialCharTok{$}\NormalTok{bonferroni}\SpecialCharTok{$}\NormalTok{t2,}
+      \AttributeTok{t3\_bonferroni =}\NormalTok{ processed}\SpecialCharTok{$}\NormalTok{bonferroni}\SpecialCharTok{$}\NormalTok{t3,}
+      \AttributeTok{coverage\_bonferroni =}\NormalTok{ coverages}\SpecialCharTok{$}\NormalTok{bonferroni}
+\NormalTok{      )}
+\NormalTok{  \}}
+\NormalTok{\}}
+
+
+\NormalTok{algo2\_parametric }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(}
+\NormalTok{    true\_theta,}
+\NormalTok{    K, }
+    \AttributeTok{reps =} \DecValTok{5}\NormalTok{, }\CommentTok{\# step 4}
+    \AttributeTok{B=}\DecValTok{100}\NormalTok{, }
+    \AttributeTok{alpha=} \FloatTok{0.10}\NormalTok{,}
+\NormalTok{    S)\{}
+  \FunctionTok{foreach}\NormalTok{(}\AttributeTok{iter =} \DecValTok{1}\SpecialCharTok{:}\NormalTok{reps, }
+          \AttributeTok{.combine =}\NormalTok{ rbind,}
+          \AttributeTok{.packages =} \FunctionTok{c}\NormalTok{(}\StringTok{"foreach"}\NormalTok{, }\StringTok{"arrow"}\NormalTok{, }\StringTok{"MASS"}\NormalTok{),}
+          \AttributeTok{.export =} \FunctionTok{c}\NormalTok{(}\StringTok{"get\_parametric\_ci"}\NormalTok{,}\StringTok{"get\_ranks"}\NormalTok{, }\StringTok{"get\_coverage"}\NormalTok{,}
+                      \StringTok{"get\_t1"}\NormalTok{, }\StringTok{"get\_t2"}\NormalTok{, }\StringTok{"get\_t3"}\NormalTok{)}
+\NormalTok{  ) }\SpecialCharTok{\%dorng\%}\NormalTok{ \{}
+    
+    \CommentTok{\# step 1 =======}
+\NormalTok{    theta\_hat }\OtherTok{\textless{}{-}} \FunctionTok{rnorm}\NormalTok{(}
+      \AttributeTok{n    =}\NormalTok{ K,}
+      \AttributeTok{mean =}\NormalTok{ true\_theta,}
+      \AttributeTok{sd   =}\NormalTok{ S}
+\NormalTok{    )}
+    
+    \CommentTok{\# step 2 =======}
+\NormalTok{    result }\OtherTok{\textless{}{-}} \FunctionTok{get\_parametric\_ci}\NormalTok{(B,}
+\NormalTok{                                theta\_hat,}
+\NormalTok{                                S,}
+\NormalTok{                                alpha)}
+    
+    \CommentTok{\# step 3 =======}
+\NormalTok{    sorted\_true\_theta }\OtherTok{\textless{}{-}} \FunctionTok{sort}\NormalTok{(true\_theta)}
+\NormalTok{    coverage }\OtherTok{\textless{}{-}} \FunctionTok{get\_coverage}\NormalTok{(}\AttributeTok{ci\_lower =}\NormalTok{ result}\SpecialCharTok{$}\NormalTok{ci\_lower,}
+                             \AttributeTok{ci\_upper =}\NormalTok{ result}\SpecialCharTok{$}\NormalTok{ci\_upper,}
+                             \AttributeTok{true\_theta =}\NormalTok{ sorted\_true\_theta)}
+    
+\NormalTok{    tuple\_list }\OtherTok{\textless{}{-}} \FunctionTok{t}\NormalTok{(}\FunctionTok{apply}\NormalTok{(}
+      \FunctionTok{data.frame}\NormalTok{(}\AttributeTok{ci\_lower =}\NormalTok{ result}\SpecialCharTok{$}\NormalTok{ci\_lower,}
+                 \AttributeTok{ci\_upper =}\NormalTok{ result}\SpecialCharTok{$}\NormalTok{ci\_upper), }\DecValTok{1}\NormalTok{, }\ControlFlowTok{function}\NormalTok{(row) }\FunctionTok{as.numeric}\NormalTok{(row)))}
+\NormalTok{    rank\_range\_length }\OtherTok{\textless{}{-}} \FunctionTok{sapply}\NormalTok{(}\DecValTok{1}\SpecialCharTok{:}\NormalTok{K, }\ControlFlowTok{function}\NormalTok{(x) }\FunctionTok{length}\NormalTok{(}
+      \FunctionTok{get\_ranks}\NormalTok{(x, tuple\_list)}\SpecialCharTok{$}\NormalTok{ranks))}
+\NormalTok{    t1 }\OtherTok{\textless{}{-}} \FunctionTok{get\_t1}\NormalTok{(rank\_range\_length)}
+\NormalTok{    t2 }\OtherTok{\textless{}{-}} \FunctionTok{get\_t2}\NormalTok{(rank\_range\_length)}
+\NormalTok{    t3 }\OtherTok{\textless{}{-}} \FunctionTok{get\_t3}\NormalTok{(rank\_range\_length)}
+    
+    \FunctionTok{data.frame}\NormalTok{(}
+      \AttributeTok{t1\_parametric =}\NormalTok{ t1,}
+      \AttributeTok{t2\_parametric =}\NormalTok{ t2,}
+      \AttributeTok{t3\_parametric =}\NormalTok{ t3,}
+      \AttributeTok{coverage\_parametric =}\NormalTok{ coverage}
+\NormalTok{    )}
+\NormalTok{  \}}
+\NormalTok{\}}
+ 
+\end{Highlighting}
+\end{Shaded}
+
+\subsection*{Codes for simulation}\label{codes-for-simulation}
+\addcontentsline{toc}{subsection}{Codes for simulation}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+ \CommentTok{\#3:37PM}
+\FunctionTok{source}\NormalTok{(}\StringTok{"../../R/implement\_algo2.R"}\NormalTok{)}
+
+\NormalTok{mean }\OtherTok{\textless{}{-}} \FloatTok{23.8}
+\NormalTok{df }\OtherTok{\textless{}{-}} \FunctionTok{readRDS}\NormalTok{(}\StringTok{"../../data/mean\_travel\_time\_ranking\_2011.rds"}\NormalTok{)}
+\NormalTok{cl}\OtherTok{=}\NormalTok{parallel}\SpecialCharTok{::}\FunctionTok{makeCluster}\NormalTok{(}\DecValTok{15}\NormalTok{)}
+\FunctionTok{registerDoParallel}\NormalTok{(cl)}
+
+\NormalTok{sds }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\DecValTok{2}\NormalTok{, }\FloatTok{3.6}\NormalTok{, }\DecValTok{6}\NormalTok{)}
+\NormalTok{Ks }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\DecValTok{51}\NormalTok{, }\DecValTok{40}\NormalTok{, }\DecValTok{30}\NormalTok{, }\DecValTok{20}\NormalTok{, }\DecValTok{10}\NormalTok{, }\DecValTok{5}\NormalTok{)}
+\NormalTok{corrs }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\FloatTok{0.1}\NormalTok{,}\FloatTok{0.5}\NormalTok{,}\FloatTok{0.9}\NormalTok{)}
+\NormalTok{alphas }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\FloatTok{0.1}\NormalTok{)}\CommentTok{\#c(0.05, 0.1, 0.15, 0.2)}
+
+\ControlFlowTok{for}\NormalTok{ (sd }\ControlFlowTok{in}\NormalTok{ sds) \{}
+  \ControlFlowTok{for}\NormalTok{ (K }\ControlFlowTok{in}\NormalTok{ Ks) \{}
+    \FunctionTok{set.seed}\NormalTok{(}\DecValTok{123974}\NormalTok{)}
+\NormalTok{    true\_theta }\OtherTok{\textless{}{-}} \FunctionTok{rnorm}\NormalTok{(K, mean, sd)}
+\NormalTok{    true\_sds }\OtherTok{\textless{}{-}}\NormalTok{ df}\SpecialCharTok{$}\NormalTok{S[}\DecValTok{1}\SpecialCharTok{:}\NormalTok{K]}
+    
+    \ControlFlowTok{for}\NormalTok{ (alpha }\ControlFlowTok{in}\NormalTok{ alphas) \{}
+      
+      \FunctionTok{tic}\NormalTok{(}\StringTok{"Running parametric..."}\NormalTok{)}
+\NormalTok{      coverage\_parametric\_df }\OtherTok{\textless{}{-}} \FunctionTok{algo2\_parametric}\NormalTok{(true\_theta,}
+\NormalTok{                                                 K, }
+                                                 \AttributeTok{reps =} \DecValTok{5000}\NormalTok{,}
+                                                 \AttributeTok{B=}\DecValTok{500}\NormalTok{, }
+                                                 \AttributeTok{alpha=}\NormalTok{ alpha,}
+                                                 \AttributeTok{S=}\NormalTok{true\_sds)}
+      \FunctionTok{toc}\NormalTok{()}
+      \FunctionTok{saveRDS}\NormalTok{(coverage\_parametric\_df,  }\FunctionTok{paste0}\NormalTok{(}\StringTok{"output/coverage\_parametric\_"}\NormalTok{,}
+\NormalTok{                                              K,}\StringTok{"\_"}\NormalTok{, sd, }\StringTok{"\_"}\NormalTok{, alpha, }\StringTok{".rds"}\NormalTok{))}
+      \ControlFlowTok{for}\NormalTok{ (corr }\ControlFlowTok{in}\NormalTok{ corrs) \{}
+\NormalTok{        corr\_matrix }\OtherTok{\textless{}{-}}\NormalTok{ (}\DecValTok{1} \SpecialCharTok{{-}}\NormalTok{ corr) }\SpecialCharTok{*} \FunctionTok{diag}\NormalTok{(K) }\SpecialCharTok{+}\NormalTok{ corr }\SpecialCharTok{*} \FunctionTok{matrix}\NormalTok{(}\DecValTok{1}\NormalTok{, K, K)}
+\NormalTok{        variance\_vector }\OtherTok{\textless{}{-}}\NormalTok{ true\_sds}\SpecialCharTok{\^{}}\DecValTok{2}
+\NormalTok{        delta }\OtherTok{\textless{}{-}} \FunctionTok{diag}\NormalTok{(variance\_vector)}
+\NormalTok{        varcovar\_matrix }\OtherTok{\textless{}{-}}\NormalTok{ delta}\SpecialCharTok{\^{}}\NormalTok{(}\DecValTok{1}\SpecialCharTok{/}\DecValTok{2}\NormalTok{) }\SpecialCharTok{\%*\%}\NormalTok{ corr\_matrix }\SpecialCharTok{\%*\%}\NormalTok{ delta}\SpecialCharTok{\^{}}\NormalTok{(}\DecValTok{1}\SpecialCharTok{/}\DecValTok{2}\NormalTok{)}
+        
+        \FunctionTok{tic}\NormalTok{(}\StringTok{"Running nonrankbased..."}\NormalTok{)}
+\NormalTok{        coverage\_output\_df }\OtherTok{\textless{}{-}} \FunctionTok{algo2\_nonrankbased}\NormalTok{(}
+\NormalTok{          true\_theta,}
+\NormalTok{          K, }
+          \AttributeTok{reps =} \DecValTok{5000}\NormalTok{, }
+          \AttributeTok{B =} \DecValTok{500}\NormalTok{, }
+          \AttributeTok{alpha=}\NormalTok{alpha,}
+          \AttributeTok{varcovar\_matrix =}\NormalTok{ varcovar\_matrix)}
+        \FunctionTok{toc}\NormalTok{()}
+        
+        \FunctionTok{saveRDS}\NormalTok{(coverage\_output\_df,  }\FunctionTok{paste0}\NormalTok{(}\StringTok{"output/coverage\_probability\_"}\NormalTok{,}
+\NormalTok{                                            K,}\StringTok{"\_"}\NormalTok{, sd, }\StringTok{"\_"}\NormalTok{, corr, }\StringTok{"\_"}\NormalTok{, }
+\NormalTok{                                            alpha, }\StringTok{".rds"}\NormalTok{))}
+\NormalTok{      \}}
+\NormalTok{    \}}
+\NormalTok{  \}}
+\NormalTok{\}}
+
+\FunctionTok{stopCluster}\NormalTok{(cl)}
+
+\NormalTok{param\_grid }\OtherTok{\textless{}{-}} \FunctionTok{expand.grid}\NormalTok{(}\AttributeTok{K =}\NormalTok{ Ks, }\AttributeTok{sd =}\NormalTok{ sds, }\AttributeTok{corr =}\NormalTok{ corrs, }\AttributeTok{alpha =}\NormalTok{ alphas)}
+
+\NormalTok{results }\OtherTok{\textless{}{-}} \FunctionTok{do.call}\NormalTok{(rbind, }\FunctionTok{lapply}\NormalTok{(}\FunctionTok{seq\_len}\NormalTok{(}\FunctionTok{nrow}\NormalTok{(param\_grid)), }\ControlFlowTok{function}\NormalTok{(i) \{}
+\NormalTok{  K }\OtherTok{\textless{}{-}}\NormalTok{ param\_grid}\SpecialCharTok{$}\NormalTok{K[i]}
+\NormalTok{  sd }\OtherTok{\textless{}{-}}\NormalTok{ param\_grid}\SpecialCharTok{$}\NormalTok{sd[i]}
+\NormalTok{  corr }\OtherTok{\textless{}{-}}\NormalTok{ param\_grid}\SpecialCharTok{$}\NormalTok{corr[i]}
+\NormalTok{  alpha }\OtherTok{\textless{}{-}}\NormalTok{ param\_grid}\SpecialCharTok{$}\NormalTok{alpha[i]}
+  
+\NormalTok{  a }\OtherTok{\textless{}{-}} \FunctionTok{readRDS}\NormalTok{(}\FunctionTok{paste0}\NormalTok{(}\StringTok{"output/coverage\_probability\_"}\NormalTok{, }
+\NormalTok{                      K, }\StringTok{"\_"}\NormalTok{, sd, }\StringTok{"\_"}\NormalTok{, corr, }\StringTok{"\_"}\NormalTok{, alpha, }\StringTok{".rds"}\NormalTok{))}
+  
+  \FunctionTok{data.frame}\NormalTok{(}
+    \AttributeTok{K =}\NormalTok{ K,}\AttributeTok{sd =}\NormalTok{ sd,}\AttributeTok{corr =}\NormalTok{ corr,}\AttributeTok{alpha =}\NormalTok{ alpha,}
+    \AttributeTok{Cov\_nonrankbased =} \FunctionTok{mean}\NormalTok{(a}\SpecialCharTok{$}\NormalTok{coverage\_nonrankbased),}
+    \AttributeTok{Cov\_independent =} \FunctionTok{mean}\NormalTok{(a}\SpecialCharTok{$}\NormalTok{coverage\_independent),}
+    \AttributeTok{Cov\_bonferroni =} \FunctionTok{mean}\NormalTok{(a}\SpecialCharTok{$}\NormalTok{coverage\_bonferroni),}
+    \AttributeTok{T1\_nonrankbased =} \FunctionTok{mean}\NormalTok{(a}\SpecialCharTok{$}\NormalTok{t1\_nonrankbased),}
+    \AttributeTok{T1\_independent =} \FunctionTok{mean}\NormalTok{(a}\SpecialCharTok{$}\NormalTok{t1\_independent),}
+    \AttributeTok{T1\_bonferroni =} \FunctionTok{mean}\NormalTok{(a}\SpecialCharTok{$}\NormalTok{t1\_bonferroni),}
+    \AttributeTok{T2\_nonrank =} \FunctionTok{mean}\NormalTok{(a}\SpecialCharTok{$}\NormalTok{t2\_nonrankbased),}
+    \AttributeTok{T2\_independent =} \FunctionTok{mean}\NormalTok{(a}\SpecialCharTok{$}\NormalTok{t2\_independent),}
+    \AttributeTok{T2\_bonferroni =} \FunctionTok{mean}\NormalTok{(a}\SpecialCharTok{$}\NormalTok{t2\_bonferroni),}
+    \AttributeTok{T3\_independent =} \FunctionTok{mean}\NormalTok{(a}\SpecialCharTok{$}\NormalTok{t3\_independent),}
+    \AttributeTok{T3\_nonrankbased =} \FunctionTok{mean}\NormalTok{(a}\SpecialCharTok{$}\NormalTok{t3\_nonrankbased),}
+    \AttributeTok{T3\_bonferroni =} \FunctionTok{mean}\NormalTok{(a}\SpecialCharTok{$}\NormalTok{t3\_bonferroni)}
+\NormalTok{  )}
+\NormalTok{\}))}
+
+\NormalTok{param\_grid }\OtherTok{\textless{}{-}} \FunctionTok{expand.grid}\NormalTok{(}\AttributeTok{K =}\NormalTok{ Ks, }\AttributeTok{sd =}\NormalTok{ sds, }\AttributeTok{alpha =}\NormalTok{ alphas)}
+
+\NormalTok{results1 }\OtherTok{\textless{}{-}} \FunctionTok{do.call}\NormalTok{(rbind, }\FunctionTok{lapply}\NormalTok{(}\FunctionTok{seq\_len}\NormalTok{(}\FunctionTok{nrow}\NormalTok{(param\_grid)), }\ControlFlowTok{function}\NormalTok{(i) \{}
+\NormalTok{  K }\OtherTok{\textless{}{-}}\NormalTok{ param\_grid}\SpecialCharTok{$}\NormalTok{K[i]}
+\NormalTok{  sd }\OtherTok{\textless{}{-}}\NormalTok{ param\_grid}\SpecialCharTok{$}\NormalTok{sd[i]}
+\NormalTok{  alpha }\OtherTok{\textless{}{-}}\NormalTok{ param\_grid}\SpecialCharTok{$}\NormalTok{alpha[i]}
+  
+\NormalTok{  a }\OtherTok{\textless{}{-}} \FunctionTok{readRDS}\NormalTok{(}\FunctionTok{paste0}\NormalTok{(}\StringTok{"output/coverage\_parametric\_"}\NormalTok{, }
+\NormalTok{                      K, }\StringTok{"\_"}\NormalTok{, sd, }\StringTok{"\_"}\NormalTok{, alpha, }\StringTok{".rds"}\NormalTok{))}
+  
+  \FunctionTok{data.frame}\NormalTok{(}
+    \AttributeTok{K =}\NormalTok{ K,}
+    \AttributeTok{sd =}\NormalTok{ sd,}
+    \AttributeTok{alpha =}\NormalTok{ alpha,}
+    \AttributeTok{Cov\_parametric =} \FunctionTok{mean}\NormalTok{(a}\SpecialCharTok{$}\NormalTok{coverage\_parametric),}
+    \AttributeTok{T1\_parametric =} \FunctionTok{mean}\NormalTok{(a}\SpecialCharTok{$}\NormalTok{t1\_parametric),}
+    \AttributeTok{T2\_parametric =} \FunctionTok{mean}\NormalTok{(a}\SpecialCharTok{$}\NormalTok{t2\_parametric),}
+    \AttributeTok{T3\_parametric =} \FunctionTok{mean}\NormalTok{(a}\SpecialCharTok{$}\NormalTok{t3\_parametric)}
+\NormalTok{  )}
+\NormalTok{\}))}
+
+\FunctionTok{save}\NormalTok{(results, results1, }\AttributeTok{file =} \StringTok{"simulation\_results.RData"}\NormalTok{) }
+\end{Highlighting}
+\end{Shaded}
+
+
+\end{document}
