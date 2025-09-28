@@ -33,17 +33,17 @@ csl: /home/realiseshewon/PDev/kde-ranking/writeup/harvard-educational-review.csl
 \vspace*{95px}
 \begin{center}
 A Thesis Proposal Presented to\\
-The Faculty of the SS\\
+The Faculty of the School of Statistics\\
 univ\\
 \vspace*{100px}
 In Partial Fulfillment\\
 of the Requirements for the Degree of\\
-degree\\
+Master of Science in Statistics\\
 1st Semester A.Y. 2025-2026
 
 \vspace*{100px}
 by\\
-Nmae
+Shaine Rosewel Matala
 \end{center}
 
 
@@ -61,8 +61,6 @@ knitr::opts_chunk$set(
 
 # Abstract {-}
 
-
-
 ```{r, child = "child/abstract.Rmd"}
 
 ```
@@ -72,6 +70,13 @@ knitr::opts_chunk$set(
 \tableofcontents
 
 \newpage
+
+# Background
+
+
+```{r, child = "child/rrl.Rmd", echo = FALSE}
+
+```
 
 
 # Methodology
@@ -87,8 +92,6 @@ knitr::opts_chunk$set(
 
 ```
 
-
-# Background
 
 
 THIS IS @mariarizzo and @klein

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (TeX Live 2025) (preloaded format=pdflatex 2025.8.17)  28 SEP 2025 15:40
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (TeX Live 2025) (preloaded format=pdflatex 2025.8.17)  28 SEP 2025 16:04
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -703,11 +703,11 @@ al/texlive/2025/texmf-dist/fonts/enc/dvips/lm/lm-ec.enc}]
 
 [2] (./proposal.toc
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <12> on input line 3.
+(Font)              <12> on input line 4.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <8> on input line 3.
+(Font)              <8> on input line 4.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <6> on input line 3.
+(Font)              <6> on input line 4.
 )
 \tf@toc=\write4
 \openout4 = `proposal.toc'.
@@ -716,8 +716,8 @@ LaTeX Font Info:    External font `lmex10' loaded for size
 
 [3]
 Package hyperref Info: bookmark level for unknown algorithm defaults to 0 on in
-put line 222.
-LaTeX Font Info:    Trying to load font information for U+euf on input line 254
+put line 226.
+LaTeX Font Info:    Trying to load font information for U+euf on input line 258
 .
 (/usr/local/texlive/2025/texmf-dist/tex/latex/amsfonts/ueuf.fd
 File: ueuf.fd 2013/01/14 v3.01 Euler Fraktur
@@ -728,18 +728,17 @@ File: mt-euf.cfg 2006/07/03 v1.1 microtype config. file: AMS Euler Fraktur (RS)
 
 [4{/usr/local/texlive/2025/texmf-dist/fonts/enc/dvips/lm/lm-mathit.enc}{/usr/lo
 cal/texlive/2025/texmf-dist/fonts/enc/dvips/lm/lm-rm.enc}{/usr/local/texlive/20
-25/texmf-dist/fonts/enc/dvips/lm/lm-mathsy.enc}{/usr/local/texlive/2025/texmf-d
-ist/fonts/enc/dvips/lm/lm-mathex.enc}]
+25/texmf-dist/fonts/enc/dvips/lm/lm-mathsy.enc}]
 
-[5]
+[5{/usr/local/texlive/2025/texmf-dist/fonts/enc/dvips/lm/lm-mathex.enc}]
 
 [6]
+
+[7]
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
 
-
-[7]
 
 [8]
 
@@ -747,125 +746,127 @@ LaTeX Warning: `!h' float specifier changed to `!ht'.
 
 [10]
 
-[11
+[11]
+
+[12
 
 
 ]
-Underfull \vbox (badness 10000) detected at line 686
+Underfull \vbox (badness 10000) detected at line 688
  []
 
 
-Underfull \vbox (badness 10000) detected at line 686
- []
-
-
-
-[12]
-Underfull \vbox (badness 10000) detected at line 686
- []
-
-
-Underfull \vbox (badness 10000) detected at line 686
+Underfull \vbox (badness 10000) detected at line 688
  []
 
 
 
 [13]
-Underfull \vbox (badness 10000) detected at line 686
+Underfull \vbox (badness 10000) detected at line 688
  []
 
 
-Underfull \vbox (badness 10000) detected at line 686
+Underfull \vbox (badness 10000) detected at line 688
  []
 
 
 
 [14]
+Underfull \vbox (badness 10000) detected at line 688
+ []
+
+
+Underfull \vbox (badness 10000) detected at line 688
+ []
+
+
 
 [15]
-Underfull \vbox (badness 10000) detected at line 861
- []
-
-
-Underfull \vbox (badness 10000) detected at line 861
- []
-
-
 
 [16]
-Underfull \vbox (badness 10000) detected at line 861
+Underfull \vbox (badness 10000) detected at line 863
  []
 
 
-Underfull \vbox (badness 10000) detected at line 861
+Underfull \vbox (badness 10000) detected at line 863
  []
 
 
 
 [17]
-Underfull \vbox (badness 10000) detected at line 861
+Underfull \vbox (badness 10000) detected at line 863
  []
 
 
-Underfull \vbox (badness 10000) detected at line 861
+Underfull \vbox (badness 10000) detected at line 863
  []
 
 
 
 [18]
-Underfull \vbox (badness 10000) detected at line 861
+Underfull \vbox (badness 10000) detected at line 863
  []
 
 
-Underfull \vbox (badness 10000) detected at line 861
+Underfull \vbox (badness 10000) detected at line 863
  []
 
 
 
 [19]
-Underfull \vbox (badness 10000) detected at line 861
+Underfull \vbox (badness 10000) detected at line 863
  []
 
 
-Underfull \vbox (badness 10000) detected at line 861
+Underfull \vbox (badness 10000) detected at line 863
  []
 
 
 
 [20]
+Underfull \vbox (badness 10000) detected at line 863
+ []
+
+
+Underfull \vbox (badness 10000) detected at line 863
+ []
+
+
 
 [21]
-Underfull \vbox (badness 10000) detected at line 976
- []
-
-
-Underfull \vbox (badness 10000) detected at line 976
- []
-
-
 
 [22]
-Underfull \vbox (badness 10000) detected at line 976
+Underfull \vbox (badness 10000) detected at line 978
  []
 
 
-Underfull \vbox (badness 10000) detected at line 976
+Underfull \vbox (badness 10000) detected at line 978
  []
 
 
 
 [23]
+Underfull \vbox (badness 10000) detected at line 978
+ []
 
-[24] (./proposal.aux)
+
+Underfull \vbox (badness 10000) detected at line 978
+ []
+
+
+
+[24]
+
+[25] (./proposal.aux)
  ***********
 LaTeX2e <2025-06-01> patch level 1
 L3 programming layer <2025-08-13>
  ***********
  ) 
 Here is how much of TeX's memory you used:
- 16712 strings out of 467800
- 262978 string characters out of 5431888
- 742739 words of memory out of 5000000
+ 16713 strings out of 467800
+ 262985 string characters out of 5431888
+ 742302 words of memory out of 5000000
  44875 multiletter control sequences out of 15000+600000
  703077 words of font info for 152 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
@@ -885,10 +886,10 @@ public/lm/lmmib10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm
 e1/public/lm/lmsy10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/
 lm/lmsy6.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmsy8.pf
 b>
-Output written on proposal.pdf (24 pages, 247976 bytes).
+Output written on proposal.pdf (25 pages, 248353 bytes).
 PDF statistics:
- 335 PDF objects out of 1000 (max. 8388607)
- 272 compressed objects within 3 object streams
- 58 named destinations out of 1000 (max. 500000)
+ 340 PDF objects out of 1000 (max. 8388607)
+ 276 compressed objects within 3 object streams
+ 59 named destinations out of 1000 (max. 500000)
  41113 words of extra memory for PDF output out of 42996 (max. 10000000)
 
