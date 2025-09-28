@@ -352,18 +352,26 @@ display: none;
 </div>
 
 
+<p>Let <span class="math inline">\(\theta_1, \theta_2, \dots,
+\theta_K\)</span> be the true parameter values and <span class="math inline">\(\hat \theta_1, \hat \theta_2, \dots, \hat
+\theta_K\)</span> be the estimates obtained.</p>
 <div id="parametric-bootstrap" class="section level2">
 <h2>Parametric bootstrap</h2>
-<p>Let <span class="math inline">\(\theta_1, \theta_2, \dots,
-\theta_K\)</span> be the true values of the parameters and <span class="math inline">\(\hat \theta_1, \hat \theta_2, \dots, \hat
-\theta_K\)</span> be the corresponding estimates, with the ordered
-values denoted by <span class="math inline">\(\hat \theta_{(1)}, \hat
-\theta_{(2)}, \dots, \hat \theta_{(K)}\)</span>.</p>
+<p>Let <span class="math inline">\(\hat \theta_1, \hat \theta_2, \dots,
+\hat \theta_K\)</span> be independent but not identically distributed
+estimates. For this study, it is assumed that <span class="math inline">\(\hat{\theta}_k \sim N \left(\theta_k, \sigma_k^2
+\right)\)</span>, <span class="math inline">\(k = 1, 2, \dots,
+K\)</span>, where <span class="math inline">\(\sigma^2_k\)</span> is
+known. Denote the corresponding ordered values by <span class="math inline">\(\hat \theta_{(1)}, \hat \theta_{(2)}, \dots, \hat
+\theta_{(K)}\)</span>.</p>
 </div>
 <div id="nonrank-based-method" class="section level2">
 <h2>Nonrank-based method</h2>
-<p>The nonrank-based method accounts for potential correlation among
-items being ranked. For this case, an exchangeable correlation, <span class="math inline">\(\boldsymbol{\rho}\)</span> (See Equation <span class="math inline">\(\ref{eq:equicorrelation}\)</span>.), is assumed
+<p>The nonrank-based method assumes that <span class="math inline">\(\boldsymbol{\hat\theta} = \left(\hat\theta_1,
+\hat\theta_2, \dots, \hat\theta_K\right) \sim N \left(
+\boldsymbol{\theta}, \boldsymbol{\Sigma}\right)\)</span>. It accounts
+for potential correlation among items being ranked. For this case, an
+exchangeable correlation, <span class="math inline">\(\boldsymbol{\rho}\)</span> (See Equation <span class="math inline">\(\ref{eq:equicorrelation}\)</span>.), is assumed
 and used in the calculation of the variance covariance matrix (See
 Equation <span class="math inline">\(\ref{eq:sigma_matrix}\)</span>.).</p>
 <p><span class="math display">\[\begin{equation}
@@ -379,6 +387,115 @@ Equation <span class="math inline">\(\ref{eq:sigma_matrix}\)</span>.).</p>
 <p>where <span class="math inline">\(\boldsymbol{\Delta} = \text{diag}
 \left\{ \sigma^2_1, \sigma^2_2, \dots, \sigma^2_K \right\}\)</span>,
 with known <span class="math inline">\(\sigma_k\)</span>’s and <span class="math inline">\(\rho\)</span> is studied for <span class="math inline">\(0.1, 0.5, 0.9\)</span>.</p>
+</div>
+<div id="results" class="section level2">
+<h2>Results</h2>
+<p>For the simulation studies, <span class="math inline">\(\alpha\)</span> is fixed at <span class="math inline">\(0.1\)</span>, while the true standard deviations
+are varied (<span class="math inline">\(sd = 2.0, 3.6, 6.0\)</span>)
+along with the number of items to be ranked (<span class="math inline">\(K = 5, 10, 20, 30, 40, 51\)</span>). Table
+@ref(tab:coverage) shows that when the correlation is zero, the
+nonrank-based, independent, and Bonferroni CI methodology exhibit
+similar coverage values regardless of <span class="math inline">\(K\)</span> and <span class="math inline">\(sd\)</span>. In contrast, the parametric approach
+generally yields higher coverage for smaller <span class="math inline">\(sd\)</span> while showing comparable variability
+across different <span class="math inline">\(K\)</span>. It deviates the
+most from the nominal coverage level.</p>
+<pre class="r"><code>library(knitr)
+library(kableExtra)
+library(gt)
+library(dplyr)</code></pre>
+<pre><code>## 
+## Attaching package: &#39;dplyr&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:kableExtra&#39;:
+## 
+##     group_rows</code></pre>
+<pre><code>## The following objects are masked from &#39;package:stats&#39;:
+## 
+##     filter, lag</code></pre>
+<pre><code>## The following objects are masked from &#39;package:base&#39;:
+## 
+##     intersect, setdiff, setequal, union</code></pre>
+<pre class="r"><code>out &lt;- with0corr_nonrank %&gt;% left_join(parametric, by = c(&quot;K&quot;, &quot;sd&quot;))
+
+# out %&gt;% select(c(K, sd, Cov_parametric, Cov_nonrankbased, Cov_independent, Cov_bonferroni)) %&gt;% gt() |&gt;
+#   tab_options(latex.use_longtable = TRUE)
+
+
+out %&gt;%
+  select(K, sd, Cov_parametric, Cov_nonrankbased, Cov_independent, Cov_bonferroni) %&gt;%
+  arrange(K, sd) %&gt;%
+  kable(&quot;latex&quot;, booktabs = TRUE, longtable = FALSE,
+        col.names = c(&quot;K&quot;, &quot;sd&quot;, &quot;Parametric&quot;, &quot;Non-rankbased&quot;, &quot;Independent&quot;, &quot;Bonferroni&quot;),
+        caption = &quot;Simulation results for coverage probabilities when correlation is zero.&quot;) %&gt;%
+  kable_styling(latex_options = c(&quot;repeat_header&quot;)) %&gt;%
+  collapse_rows(columns = 1, latex_hline = &quot;major&quot;) %&gt;%   # &lt;-- merges K column
+  add_header_above(c(&quot; &quot; = 2, &quot;Coverage&quot; = 4))             # spanner over techniques</code></pre>
+<p>The case is different in terms of <span class="math inline">\(T_1\)</span> (See Table @ref(tab:T1).) as it
+increases with decreasing <span class="math inline">\(sd\)</span> and
+increasing <span class="math inline">\(K\)</span>. The CIs are wider for
+the parametric approach compared to the remaining approaches whose <span class="math inline">\(T_1\)</span> only vary by a small margin, with
+nonrank-based method having the smallest <span class="math inline">\(T_1\)</span> and Bonferroni, the largest one. The
+same behavior is observed for <span class="math inline">\(T_2\)</span>
+and <span class="math inline">\(T_3\)</span>.</p>
+<pre class="r"><code>out &lt;- with0corr_nonrank %&gt;% left_join(parametric, by = c(&quot;K&quot;, &quot;sd&quot;))
+
+out %&gt;%
+  select(K, sd, T1_parametric, T1_nonrankbased, T1_independent, T1_bonferroni) %&gt;%
+  arrange(K, sd) %&gt;%
+  kable(&quot;latex&quot;, booktabs = TRUE, longtable = FALSE,
+        col.names = c(&quot;K&quot;, &quot;sd&quot;, &quot;Parametric&quot;, &quot;Non-rankbased&quot;, &quot;Independent&quot;, &quot;Bonferroni&quot;),
+        caption = &quot;Simulation results for coverage probabilities.&quot;) %&gt;%
+  kable_styling(latex_options = &quot;repeat_header&quot;) %&gt;%
+  collapse_rows(columns = 1, latex_hline = &quot;major&quot;) %&gt;%
+  add_header_above(c(&quot; &quot; = 2, &quot;$T_1$&quot; = 4), escape = FALSE)</code></pre>
+<p>As the correlation increases, the coverage of both independent and
+Bonferroni CIs exceed the nominal value while that of nonrank-based
+method remains close to it. This holds regardless of <span class="math inline">\(K\)</span> and <span class="math inline">\(sd\)</span>. See Table @ref(tab:nonzerocorrel).
+This suggests that when items being ranked are correlated, the proposed
+method is preferable, as it maintains coverage close to the nominal
+level.</p>
+<pre class="r"><code>out &lt;- withcorr_nonrank %&gt;% filter(sd == 2.0)
+out %&gt;%
+  select(corr, K, Cov_nonrankbased, Cov_independent, Cov_bonferroni) %&gt;%
+  arrange(corr, K) %&gt;%
+  kable(&quot;latex&quot;, booktabs = TRUE, longtable = FALSE,
+        col.names = c(&quot;corr&quot;,&quot;K&quot;, &quot;Non-rankbased&quot;, &quot;Independent&quot;, &quot;Bonferroni&quot;),
+        caption = &quot;Simulation results for coverage probabilities when correlation is nonzero.&quot;) %&gt;%
+  kable_styling(latex_options = c(&quot;repeat_header&quot;)) %&gt;%
+  collapse_rows(columns = 1, latex_hline = &quot;major&quot;) %&gt;%   # &lt;-- merges K column
+  add_header_above(c(&quot; &quot; = 2, &quot;Coverage&quot; = 3))             # spanner over techniques</code></pre>
+<pre class="r"><code>out &lt;- withcorr_nonrank #%&gt;% filter(sd == 2.0)
+out %&gt;%
+  select(corr, K,sd, T1_nonrankbased, T1_independent, T1_bonferroni) %&gt;%
+  arrange(corr, K,sd) %&gt;%
+  kable(&quot;latex&quot;, booktabs = TRUE, longtable = FALSE,
+        col.names = c(&quot;corr&quot;,&quot;K&quot;, &quot;sd&quot;,&quot;Non-rankbased&quot;, &quot;Independent&quot;, &quot;Bonferroni&quot;),
+        caption = &quot;Simulation results for coverage probabilities when correlation is nonzero.&quot;) %&gt;%
+  kable_styling(latex_options = c(&quot;repeat_header&quot;)) %&gt;%
+  collapse_rows(columns = 2, latex_hline = &quot;major&quot;) %&gt;%   # &lt;-- merges K column
+  add_header_above(c(&quot; &quot; = 3, &quot;Coverage&quot; = 3))             # spanner over techniques</code></pre>
+<pre class="r"><code>df_wide &lt;- out %&gt;%
+  select(corr, K, sd, T1_nonrankbased, T1_independent, T1_bonferroni) %&gt;%
+  tidyr::pivot_wider(
+    names_from = corr,
+    values_from = c(T1_nonrankbased, T1_independent, T1_bonferroni),
+    names_glue = &quot;{corr}_{.value}&quot;
+  ) %&gt;%
+  arrange(K, sd)
+
+names(df_wide) &lt;- sub(&quot;_.*&quot;, &quot;&quot;, names(df_wide))
+
+# build table
+df_wide %&gt;%
+  kable(&quot;latex&quot;, booktabs = TRUE, longtable = FALSE,
+        caption = &quot;Simulation results for coverage probabilities when correlation is nonzero.&quot;) %&gt;%
+  kable_styling(latex_options = &quot;repeat_header&quot;) %&gt;%
+  collapse_rows(columns = 1:2, latex_hline = &quot;major&quot;) %&gt;%
+  add_header_above(c(&quot; &quot; = 2,
+                     &quot;nonrank&quot; = 3,
+                     &quot;independent&quot; = 3,
+                     &quot;Bonferroni&quot; = 3)) %&gt;%
+  add_header_above(c(&quot; &quot; = 2, &quot;Coverage&quot; = 9)) %&gt;%
+  landscape()</code></pre>
 </div>
 
 

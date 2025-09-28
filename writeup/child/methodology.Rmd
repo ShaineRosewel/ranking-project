@@ -139,7 +139,7 @@ parametric <- results1
 ```
 
 
-For the simulation studies, $\alpha$ is fixed at $0.1$, while the true standard deviations are varied ($sd = 2.0, 3.6, 6.0$) along with the number of items to be ranked ($K = 5, 10, 20, 30, 40, 51$). Table \@ref(tab:coverage) shows that when the correlation is zero, the nonrank-based, independent, and Bonferroni CI methodology exhibit similar coverage values regardless of $K$ and $sd$. In contrast, the parametric approach generally yields higher coverage for smaller $sd$ while showing comparable variability across different values of $K$.
+For the simulation studies, $\alpha$ is fixed at $0.1$, while the true standard deviations are varied ($sd = 2.0, 3.6, 6.0$) along with the number of items to be ranked ($K = 5, 10, 20, 30, 40, 51$). Table \@ref(tab:coverage) shows that when the correlation is zero, the nonrank-based, independent, and Bonferroni CI methodology exhibit similar coverage values regardless of $K$ and $sd$. In contrast, the parametric approach generally yields higher coverage for smaller $sd$ while showing comparable variability across different $K$. It deviates the most from the nominal coverage level.
 
 
 
@@ -158,7 +158,7 @@ out <- with0corr_nonrank %>% left_join(parametric, by = c("K", "sd"))
 out %>%
   select(K, sd, Cov_parametric, Cov_nonrankbased, Cov_independent, Cov_bonferroni) %>%
   arrange(K, sd) %>%
-  kable("latex", booktabs = TRUE, longtable = TRUE,
+  kable("latex", booktabs = TRUE, longtable = FALSE,
         col.names = c("K", "sd", "Parametric", "Non-rankbased", "Independent", "Bonferroni"),
         caption = "Simulation results for coverage probabilities when correlation is zero.") %>%
   kable_styling(latex_options = c("repeat_header")) %>%
@@ -176,7 +176,7 @@ out <- with0corr_nonrank %>% left_join(parametric, by = c("K", "sd"))
 out %>%
   select(K, sd, T1_parametric, T1_nonrankbased, T1_independent, T1_bonferroni) %>%
   arrange(K, sd) %>%
-  kable("latex", booktabs = TRUE, longtable = TRUE,
+  kable("latex", booktabs = TRUE, longtable = FALSE,
         col.names = c("K", "sd", "Parametric", "Non-rankbased", "Independent", "Bonferroni"),
         caption = "Simulation results for coverage probabilities.") %>%
   kable_styling(latex_options = "repeat_header") %>%
@@ -186,19 +186,51 @@ out %>%
 
 
 
-As the correlation increases, the coverage of both independent and Bonferroni CIs exceed the nominal value while that of nonrank-based method remains close to it. This holds regardless of $K$ and $sd$. See Table \@ref(tab:nonzerocorrel).
+As the correlation increases, the coverage of both independent and Bonferroni CIs exceed the nominal value while that of nonrank-based method remains close to it. This holds regardless of $K$ and $sd$. See Table \@ref(tab:nonzerocorrel). This suggests that when items being ranked are correlated, the proposed method is preferable, as it maintains coverage close to the nominal level.
 
 ```{r nonzerocorrel}
 out <- withcorr_nonrank %>% filter(sd == 2.0)
 out %>%
   select(corr, K, Cov_nonrankbased, Cov_independent, Cov_bonferroni) %>%
   arrange(corr, K) %>%
-  kable("latex", booktabs = TRUE, longtable = TRUE,
+  kable("latex", booktabs = TRUE, longtable = FALSE,
         col.names = c("corr","K", "Non-rankbased", "Independent", "Bonferroni"),
         caption = "Simulation results for coverage probabilities when correlation is nonzero.") %>%
   kable_styling(latex_options = c("repeat_header")) %>%
   collapse_rows(columns = 1, latex_hline = "major") %>%   # <-- merges K column
   add_header_above(c(" " = 2, "Coverage" = 3))             # spanner over techniques
 ```
+
+
+
+
+```{r}
+out <- withcorr_nonrank
+df_wide <- out %>%
+  select(corr, K, sd, T1_nonrankbased, T1_independent, T1_bonferroni) %>%
+  tidyr::pivot_wider(
+    names_from = corr,
+    values_from = c(T1_nonrankbased, T1_independent, T1_bonferroni),
+    names_glue = "{corr}_{.value}"
+  ) %>%
+  arrange(K, sd)
+
+names(df_wide) <- sub("_.*", "", names(df_wide))
+
+# build table
+df_wide %>%
+  kable("latex", booktabs = TRUE, longtable = FALSE,
+        caption = "Simulation results for $T_1$ probabilities when correlation is nonzero.") %>%
+  kable_styling(latex_options = "repeat_header") %>%
+  collapse_rows(columns = 1:2, latex_hline = "major") %>%
+  add_header_above(c(" " = 2,
+                     "nonrank" = 3,
+                     "independent" = 3,
+                     "Bonferroni" = 3)) %>%
+  add_header_above(c(" " = 2, "$T_1$" = 9), escape = FALSE) %>%
+  landscape()
+
+```
+
 
 
