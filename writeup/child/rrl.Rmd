@@ -1,0 +1,5 @@
+## Joint confidence intervals for $\theta_1, \dots, \theta_K$ by using Bonferroni correction
+
+## Joint confidence intervals for $\theta_1, \dots, \theta_K$ by using Independence
+
+## $T_1, T_2, T_3$ 

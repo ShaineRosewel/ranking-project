@@ -87,12 +87,6 @@ knitr::opts_chunk$set(
 
 ```
 
-
-
-
-
-THIS IS @mariarizzo and @klein
-
 # References {-}
 <div id="refs"></div>
 

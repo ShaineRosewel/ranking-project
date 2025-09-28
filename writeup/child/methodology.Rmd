@@ -2,12 +2,12 @@ The parametric bootstrap and nonrank-based method are introduced to calculate jo
 
 Let $\theta_1, \theta_2, \dots, \theta_K$ be the true parameter values and $\hat \theta_1, \hat \theta_2, \dots, \hat \theta_K$ be the estimates obtained.
 
-## Parametric bootstrap
+## Joint confidence intervals for $\theta_1, \dots, \theta_K$ by using Parametric Bootstrap
 
 Let $\hat \theta_1, \hat \theta_2, \dots, \hat \theta_K$ be independent but not identically distributed estimates. For this study, it is assumed that $\hat{\theta}_k \sim N \left(\theta_k, \sigma_k^2 \right)$, $k = 1, 2, \dots, K$, where $\sigma^2_k$ is known. Denote the corresponding ordered values by $\hat \theta_{(1)}, \hat \theta_{(2)}, \dots, \hat \theta_{(K)}$.
 
 \begin{algorithm}[H]
-	\caption{Computation of Joint Confidence Region via Parametric Bootstrap} 
+	\caption{Computation of Joint Confidence Region using Parametric Bootstrap} 
 	\label{alg:parametricbs_ci}
 	\begin{algorithmic}[1]
 		\For {$b = 1, 2, \dots, B$}
@@ -72,7 +72,7 @@ Algorithm \ref{alg:parametricbs_cov} is used to calculate the coverage which is 
 \end{algorithm}
 
 
-## Nonrank-based method
+## Joint confidence intervals for $\theta_1, \dots, \theta_K$ by using Nonrank-based method
 
 The nonrank-based method assumes that $\boldsymbol{\hat\theta} = \left(\hat\theta_1, \hat\theta_2, \dots, \hat\theta_K\right) \sim N \left( \boldsymbol{\theta}, \boldsymbol{\Sigma}\right)$. It accounts for potential correlation among items being ranked. For this case, an exchangeable correlation, $\boldsymbol{\rho}$ (See Equation \ref{eq:equicorrelation}.), is assumed and used in the calculation of the variance covariance matrix (See Equation \ref{eq:sigma_matrix}.).
 
@@ -90,7 +90,7 @@ The nonrank-based method assumes that $\boldsymbol{\hat\theta} = \left(\hat\thet
 where $\boldsymbol{\Delta} = \text{diag} \left\{ \sigma^2_1, \sigma^2_2, \dots, \sigma^2_K \right\}$, with known $\sigma_k$'s and $\rho$ is studied for $0.1, 0.5, 0.9$.
 
 \begin{algorithm}[H]
-	\caption{Computation of Joint Confidence Region via Nonrank-based Method} 
+	\caption{Computation of Joint Confidence Region using Nonrank-based Method} 
 	\label{alg:nonrank_ci}
 	Let the data consist of $\hat \theta_1, \dots, \hat \theta_K$ and suppose $\boldsymbol{\Sigma}$ is known
 	\begin{algorithmic}[1]
