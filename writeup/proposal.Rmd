@@ -50,19 +50,12 @@ Shaine Rosewel Matala
 \newpage
 
 
-```{r}
+```{r echo = FALSE}
 knitr::opts_chunk$set(
   echo    = FALSE,
   message = FALSE,
   warning = FALSE
 )
-```
-
-
-# Abstract {-}
-
-```{r, child = "child/abstract.Rmd"}
-
 ```
 
 \newpage
@@ -73,7 +66,7 @@ knitr::opts_chunk$set(
 
 # Introduction
 
-# Background
+# Related Literature
 
 
 ```{r, child = "child/rrl.Rmd", echo = FALSE}
@@ -87,12 +80,6 @@ knitr::opts_chunk$set(
 
 ```
 
-# References {-}
+# Bibliography {- .unnumbered .unlisted}
 <div id="refs"></div>
-
-# Appendices {-}
-
-```{r, child = "child/appendix.Rmd"}
-
-```
 
