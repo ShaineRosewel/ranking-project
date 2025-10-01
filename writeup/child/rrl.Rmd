@@ -1,5 +1,6 @@
-## Joint confidence intervals for $\theta_1, \dots, \theta_K$ by using Bonferroni correction
+## Joint confidence region for an overall ranking
 
-## Joint confidence intervals for $\theta_1, \dots, \theta_K$ by using Independence
+## Joint confidence region construction
+
 
 ## $T_1, T_2, T_3$ 

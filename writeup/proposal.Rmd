@@ -10,7 +10,7 @@ indent: true
 header-includes:
 - \usepackage{amsmath}
 - \numberwithin{equation}{section}
-- \usepackage{setspace}\doublespacing
+- \usepackage{setspace}\onehalfspacing
 - \usepackage{pdflscape}
 - \newcommand{\blandscape}{\begin{landscape}}
 - \newcommand{\elandscape}{\end{landscape}}
@@ -79,6 +79,9 @@ knitr::opts_chunk$set(
 ```{r, child = "child/methodology.Rmd"}
 
 ```
+
+@klein
+
 
 # Bibliography {- .unnumbered .unlisted}
 <div id="refs"></div>
