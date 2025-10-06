@@ -1,22 +1,18 @@
 ## Joint confidence region for an overall ranking
 
-@klein proposed an approach for quantifying overall rank uncertainty following the estimation of respondents' average travel time to work in each $K$ sampled geographical area.
-
-Rank for the $k$th population as 
+@klein proposed an approach for quantifying overall rank uncertainty following the estimation of respondents' average travel time to work in each $K$ sampled geographical area. In their paper, rank for the $k$th population is defined as 
 
 \begin{equation}
-  r_k = \sum^K_{j=1} I(\theta_j \leq \theta_k) = 1 + \sum_{j:j \neq k} I(\theta_j \leq \theta_k), \ \text{for} k = 1, \dots, K
+  r_k = \sum^K_{j=1} I(\theta_j \leq \theta_k) = 1 + \sum_{j:j \neq k} I(\theta_j \leq \theta_k), \qquad \text{for} \; k = 1, \dots, K
   \label{eq:rank}
 \end{equation}
 
-The estimated overall ranking, computed on the basis of the estimates $\hat{\theta}_1, \dots, \hat{\theta}_K$, is denoted by $\left(\hat{r}_1, \dots, \hat{r}_K\right)$, where
+As for the estimated overall ranking, it is computed from the estimates $\hat{\theta}_1, \dots, \hat{\theta}_K$, and expressed as $\left(\hat{r}_1, \dots, \hat{r}_K\right)$, where
 
 \begin{equation}
-  \hat r_k = 1 + \sum_{j:j \neq k} I(\hat \theta_j \leq \hat \theta_k), \ \text{for} k = 1, \dots, K
+  \hat r_k = 1 + \sum_{j:j \neq k} I(\hat \theta_j \leq \hat \theta_k), \qquad \text{for} \; k = 1, \dots, K
   \label{eq:estimatedrank}
 \end{equation}
-
-It follows that uncertainty in the estimators $\hat{\theta}_1, \dots, \hat{\theta}_k$ is carried over to the estimated ranking. As a result, a measure of this uncertainty should be reported alongside any resulting overall ranking.
 
 True values, $\theta_1, \dots, \theta_K$ are unknown. It is assumed that for each $k \in \left\{1, 2, \dots, K\right\}$, there exists $L_k$ and $U_k$ such that
 
@@ -26,7 +22,7 @@ True values, $\theta_1, \dots, \theta_K$ are unknown. It is assumed that for eac
   \label{eq:theta_in}
 \end{equation}
 
-For each $k \in \left\{1, 2, \dots, K\right\}$, define
+For each $k \in \left\{1, 2, \dots, K\right\}$, they defined
 
 \begin{equation}
     \left.
@@ -40,16 +36,15 @@ For each $k \in \left\{1, 2, \dots, K\right\}$, define
   \label{eq:conf_set}
 \end{equation}
 
-For each $k \in \left\{1, 2, \dots, K\right\}$, and $j \in I_k$:
+Equation \ref{eq:conf_set} is likewise expressed in words through the following statements:
 
 1. $j \in \Lambda_{Lk} \leftrightarrow \left(L_j, U_j\right) \cap \left(L_k, U_k\right) = \emptyset$ and $\left(L_j, U_j\right)$ lies to the left of $\left(L_k, U_k\right)$;
 2. $j \in \Lambda_{Rk} \leftrightarrow \left(L_j, U_j\right) \cap \left(L_k, U_k\right) = \emptyset$ and $\left(L_j, U_j\right)$ lies to the right of $\left(L_k, U_k\right)$;
 3. $j \in \Lambda_{Ok} \leftrightarrow \left(L_j, U_j\right) \cap \left(L_k, U_k\right) \neq \emptyset$
+4. $\Lambda_{Lk}, \Lambda_{Rk},$ and $\Lambda_{Ok}$ are mutually exclusive, and $\Lambda_{Lk} \cup \Lambda_{Rk} \cup \Lambda_{Ok} = I_k$
 
-$\Lambda_{Lk}, \Lambda_{Rk},$ and $\Lambda_{Ok}$ are mutually exclusive, and $\Lambda_{Lk} \cup \Lambda_{Rk} \cup \Lambda_{Ok} = I_k$
 
-
-Equation \ref{eq:conf_set} implies that for each $k \in \left\{1, 2, \dots, K\right\}$,
+and implies that for each $k \in \left\{1, 2, \dots, K\right\}$,
 
 \begin{equation}
   r_k \in 
@@ -63,7 +58,7 @@ Equation \ref{eq:conf_set} implies that for each $k \in \left\{1, 2, \dots, K\ri
   \label{eq:conf_set_rk}
 \end{equation}
 
-Equation \ref{eq:conf_set_rk} demonstrates that smaller $\lvert \Lambda_{Ok} \rvert$ results in smaller difference between $U_k$ and $L_k$. Collectively, these yield narrower confidence intervals for the overall ranks, which are desirable. Consequently, this results in a conservative confidence region whose joint coverage probability is at least as large as the nominal level, $1-\alpha$ (See Equation \ref{eq:joint_cov}).
+Equation \ref{eq:conf_set_rk} demonstrates that smaller $\lvert \Lambda_{Ok} \rvert$ results in smaller difference between $U_k$ and $L_k$. Collectively, these yield narrower confidence intervals for the overall ranks, which are desirable. Consequently, this results in a conservative confidence region whose joint coverage probability is at least as large as the nominal level, $1-\alpha$, as shown in Equation \ref{eq:joint_cov}.
 
 \begin{equation}
   P\left[ \bigcap^K_{k=1} \left\{ \theta_k \in \left(L_k, U_k\right) \right\} \right] \geq 1-\alpha
