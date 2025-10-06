@@ -46,7 +46,6 @@ For each $k \in \left\{1, 2, \dots, K\right\}$, and $j \in I_k$:
 2. $j \in \Lambda_{Rk} \leftrightarrow \left(L_j, U_j\right) \cap \left(L_k, U_k\right) = \emptyset$ and $\left(L_j, U_j\right)$ lies to the right of $\left(L_k, U_k\right)$;
 3. $j \in \Lambda_{Ok} \leftrightarrow \left(L_j, U_j\right) \cap \left(L_k, U_k\right) \neq \emptyset$
 
-
 $\Lambda_{Lk}, \Lambda_{Rk},$ and $\Lambda_{Ok}$ are mutually exclusive, and $\Lambda_{Lk} \cup \Lambda_{Rk} \cup \Lambda_{Ok} = I_k$
 
 
@@ -61,13 +60,16 @@ Equation \ref{eq:conf_set} implies that for each $k \in \left\{1, 2, \dots, K\ri
   \dots,
   \lvert \Lambda_{Lk} \rvert + \lvert \Lambda_{Ok} \rvert + 1
   \right\}
-  \label{eq:conf_set}
+  \label{eq:conf_set_rk}
 \end{equation}
 
+Equation \ref{eq:conf_set_rk} demonstrates that smaller $\lvert \Lambda_{Ok} \rvert$ results in smaller difference between $U_k$ and $L_k$. Collectively, these yield narrower confidence intervals for the overall ranks, which are desirable. Consequently, this results in a conservative confidence region whose joint coverage probability is at least as large as the nominal level, $1-\alpha$ (See Equation \ref{eq:joint_cov}).
 
+\begin{equation}
+  P\left[ \bigcap^K_{k=1} \left\{ \theta_k \in \left(L_k, U_k\right) \right\} \right] \geq 1-\alpha
+  \label{eq:joint_cov}
+\end{equation}
 
-
-## Joint confidence region construction
 
 ### Using Independence
 
