@@ -32,18 +32,16 @@ csl: /home/realiseshewon/PDev/kde-ranking/writeup/harvard-educational-review.csl
 \thispagestyle{empty} 
 \vspace*{95px}
 \begin{center}
-A Thesis Proposal Presented to\\
-The Faculty of the School of Statistics\\
-univ\\
-\vspace*{100px}
-In Partial Fulfillment\\
-of the Requirements for the Degree of\\
+Shaine Rosewel Paralis Matala\\
+\vspace*{85px}
+A Thesis proposal submitted to UP Diliman School of Statistics\\
+\vspace*{15px}
+In Partial Fulfillment of the Requirements for the Degree of\\
 Master of Science in Statistics\\
-1st Semester A.Y. 2025-2026
-
-\vspace*{100px}
-by\\
-Shaine Rosewel Matala
+\vspace*{200px}
+School of Statistics\\
+University of the Philippines\\
+Month Year
 \end{center}
 
 
