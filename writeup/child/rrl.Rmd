@@ -7,14 +7,14 @@
   \label{eq:rank}
 \end{equation}
 
-As for the estimated overall ranking, it is computed from the estimates $\hat{\theta}_1, \dots, \hat{\theta}_K$, and expressed as $\left(\hat{r}_1, \dots, \hat{r}_K\right)$, where
+Meanwhile, the estimated overall ranking is computed from the estimates $\hat{\theta}_1, \dots, \hat{\theta}_K$, and expressed as $\left(\hat{r}_1, \dots, \hat{r}_K\right)$, where
 
 \begin{equation}
   \hat r_k = 1 + \sum_{j:j \neq k} I(\hat \theta_j \leq \hat \theta_k), \qquad \text{for} \; k = 1, \dots, K
   \label{eq:estimatedrank}
 \end{equation}
 
-True values, $\theta_1, \dots, \theta_K$ are unknown; hence, it is assumed that for each $k \in \left\{1, 2, \dots, K\right\}$, there exists $L_k$ and $U_k$ such that
+The true values, $\theta_1, \dots, \theta_K$ are unknown. For this, they assumed that for each $k \in \left\{1, 2, \dots, K\right\}$, there exists $L_k$ and $U_k$ such that
 
 
 \begin{equation}
@@ -22,7 +22,7 @@ True values, $\theta_1, \dots, \theta_K$ are unknown; hence, it is assumed that 
   \label{eq:theta_in}
 \end{equation}
 
-For each $k \in \left\{1, 2, \dots, K\right\}$, they defined
+and defined the following:
 
 \begin{equation}
     \left.
@@ -44,7 +44,7 @@ Equation \ref{eq:conf_set} can likewise be expressed in words as follows:
 4. $\Lambda_{Lk}, \Lambda_{Rk},$ and $\Lambda_{Ok}$ are mutually exclusive, and $\Lambda_{Lk} \cup \Lambda_{Rk} \cup \Lambda_{Ok} = I_k$
 
 
-and implies that for each $k \in \left\{1, 2, \dots, K\right\}$,
+The above implies that for each $k \in \left\{1, 2, \dots, K\right\}$,
 
 \begin{equation}
   r_k \in 
@@ -67,7 +67,7 @@ They also assumed a conservative confidence region whose joint coverage probabil
   \label{eq:joint_cov}
 \end{equation}
 
-As a result, their joint confidence set, as presented in Equation \ref{eq:klein_jcs}, for the overall ranking $\left(r_1, \dots, r_K \right)$ has a joint probability of at least $1-\alpha$.
+This yields the joint confidence set for the overall ranking, as defined in Equation \ref{eq:klein_jcs}, which they showed to have a joint probability of at least $1-\alpha$.
 
 \begin{equation}
   \left\{ 
