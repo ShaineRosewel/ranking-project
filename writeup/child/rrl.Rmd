@@ -14,7 +14,7 @@ As for the estimated overall ranking, it is computed from the estimates $\hat{\t
   \label{eq:estimatedrank}
 \end{equation}
 
-True values, $\theta_1, \dots, \theta_K$ are unknown. It is assumed that for each $k \in \left\{1, 2, \dots, K\right\}$, there exists $L_k$ and $U_k$ such that
+True values, $\theta_1, \dots, \theta_K$ are unknown; hence, it is assumed that for each $k \in \left\{1, 2, \dots, K\right\}$, there exists $L_k$ and $U_k$ such that
 
 
 \begin{equation}
@@ -36,7 +36,7 @@ For each $k \in \left\{1, 2, \dots, K\right\}$, they defined
   \label{eq:conf_set}
 \end{equation}
 
-Equation \ref{eq:conf_set} is likewise expressed in words through the following statements:
+Equation \ref{eq:conf_set} can likewise be expressed in words as follows:
 
 1. $j \in \Lambda_{Lk} \leftrightarrow \left(L_j, U_j\right) \cap \left(L_k, U_k\right) = \emptyset$ and $\left(L_j, U_j\right)$ lies to the left of $\left(L_k, U_k\right)$;
 2. $j \in \Lambda_{Rk} \leftrightarrow \left(L_j, U_j\right) \cap \left(L_k, U_k\right) = \emptyset$ and $\left(L_j, U_j\right)$ lies to the right of $\left(L_k, U_k\right)$;
@@ -58,13 +58,40 @@ and implies that for each $k \in \left\{1, 2, \dots, K\right\}$,
   \label{eq:conf_set_rk}
 \end{equation}
 
-Equation \ref{eq:conf_set_rk} demonstrates that smaller $\lvert \Lambda_{Ok} \rvert$ results in smaller difference between $U_k$ and $L_k$. Collectively, these yield narrower confidence intervals for the overall ranks, which are desirable. Consequently, this results in a conservative confidence region whose joint coverage probability is at least as large as the nominal level, $1-\alpha$, as shown in Equation \ref{eq:joint_cov}.
+Equation \ref{eq:conf_set_rk} demonstrates that a smaller $\lvert \Lambda_{Ok} \rvert$ results in smaller difference between $U_k$ and $L_k$. Collectively, for all $k$, this yields narrower confidence intervals for the overall ranks, which is desirable.
+
+They also assumed a conservative confidence region whose joint coverage probability is at least as large as the nominal level, $1-\alpha$, as shown in Equation \ref{eq:joint_cov}.
 
 \begin{equation}
   P\left[ \bigcap^K_{k=1} \left\{ \theta_k \in \left(L_k, U_k\right) \right\} \right] \geq 1-\alpha
   \label{eq:joint_cov}
 \end{equation}
 
+As a result, their joint confidence set, as presented in Equation \ref{eq:klein_jcs}, for the overall ranking $\left(r_1, \dots, r_K \right)$ has a joint probability of at least $1-\alpha$.
+
+\begin{equation}
+  \left\{ 
+  \left( r_1, \dots, r_K\right):
+  r_k \in 
+  \left\{ 
+    \lvert \Lambda_{Lk} \rvert + 1,  
+    \lvert \Lambda_{Lk} \rvert + 2,
+    \lvert \Lambda_{Lk} \rvert + 3,
+    \dots,
+    \lvert \Lambda_{Lk} \rvert + \lvert
+    \;
+    \text{for}
+    \;
+    k = 1, 2, \dots, K
+  \right\}
+  \right\}
+  \label{eq:klein_jcs}
+\end{equation}
+
+In line with this, they presented a proof demonstrating that if $(L_1,U_1),\dots,(L_K,U_K)$ are constructed such that the estimator $\hat{\theta} \in (L_k, U_k) \; \forall k \in \{1, 2, \dots, K\}$, then the estimated ranking $(\hat r_1, \hat r_2, \dots,\hat r_K)$ lies within the joint confidence region defined in Equation \ref{eq:klein_jcs} with probability 1.
+
+They also noted that the joint confidence region in Equation \ref{eq:klein_jcs} contains more than one possible
+overall ranking unless the values of $\theta_k$ differ from each other such that $(L_k, U_k) \cap (L_{k'}, U_{k'}) = \emptyset, \; \forall \; k\neq k'$. This implies that the unique overall ranking arises only from the narrowest attainable joint confidence region and it is the estimated ranking, $(\hat r_1, \hat r_2, \dots,\hat r_K)$.
 
 ### Using Independence
 
