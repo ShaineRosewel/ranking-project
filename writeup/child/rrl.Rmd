@@ -93,10 +93,39 @@ In line with this, they presented a proof demonstrating that if $(L_1,U_1),\dots
 They also noted that the joint confidence region in Equation \ref{eq:klein_jcs} contains more than one possible
 overall ranking unless the values of $\theta_k$ differ from each other such that $(L_k, U_k) \cap (L_{k'}, U_{k'}) = \emptyset, \; \forall \; k\neq k'$. This implies that the unique overall ranking arises only from the narrowest attainable joint confidence region and it is the estimated ranking, $(\hat r_1, \hat r_2, \dots,\hat r_K)$.
 
-### Using Independence
+@klein used a set familiar individual confidence intervals of the form $\hat \theta_k \pm z_{\alpha/2} SE_k$. They assumed that $\hat \theta_1, \hat \theta_1, \dots, \hat \theta_K$ are independently distributed, with $\hat \theta_k \sim N(\theta_k, SE_k)$ for $k = 1, 2, \dots, K$, where $\theta_1, \theta_2, \dots \theta_k$ are unknown and $SE_1, SE_2, \dots, SE_k$ are known. It was noted that $SE_k = \frac{MOE_k}{z_{\alpha/2}}$. Two approaches were considered for constructing the joint confidence intervals: the Bonferroni correction and the independence assumption.
+
+The Bonferroni correction results in a conservative joint coverage for $\theta_1, \theta_1, \dots, \theta_K$ of at least $1-\alpha$. Intervals are as defined in Equation \ref{eq:bonf}.
+
+\begin{equation}
+  \left(
+  \hat \theta_k - z_{(\theta/K)/2}SE_k,
+  \;
+  \hat \theta_k + z_{(\theta/K)/2}SE_k
+  \right),
+  \qquad
+  \text{for}\;k=1,2,\dots,K
+  \label{eq:bonf}
+\end{equation}
+
+In contrast, for the independence assumption, intervals that simultaneously yield a coverage equal to $1-\alpha$ is given by Equation \ref{eq:ind},
 
 
-### Using Bonferroni Correction
+\begin{equation}
+  \left(
+  \hat \theta_k - z_{\gamma/2}SE_k,
+  \;
+  \hat \theta_k + z_{\gamma/2}SE_k
+  \right),
+  \qquad
+  \text{for}\;k=1,2,\dots,K
+  \label{eq:ind}
+\end{equation}
+
+where $\gamma = 1 - (1-\alpha)^{\frac{1}{K}}$.
+
+
+
 
 
 ## $T_1, T_2, T_3$ 
