@@ -118,11 +118,12 @@ In contrast, for the independence assumption, intervals that simultaneously yiel
 \end{equation}
 where $\gamma = 1 - (1-\alpha)^{\frac{1}{K}}$.
 
+*(literature on importance for accounting for correlation)*
 
 
+## Performance Evaluation
 
-
-## $T_1, T_2, T_3$ 
+### $T_1, T_2, T_3$ 
 
 
 https://mgimond.github.io/Spatial/spatial-autocorrelation.html
