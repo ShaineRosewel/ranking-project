@@ -1,4 +1,4 @@
-This section introduces the proposed methodologies to obtain confidence regions for the unknown overall true ranking. The following cases are tackled: case when items ranked are assumed to have zero and nonzero correlation. Both approaches are based on parametric bootstrap. Sections \@ref(sec:parametricbs) and \@ref(sec:nonrankbased) discuss the algorithms for the cases mentioned. Section \@ref(sec:evaluation) shows the algorithms used to assess the performance of the proposed approaches. This makes use of coverage and metrics to measure the tightness of the estimated confidence regions.
+This section introduces the proposed methodologies to obtain confidence regions for the unknown overall true ranking. It extends approaches from @klein: the Bonferroni correction and the independence assumption. The following cases are tackled: case when items ranked are assumed to have zero and nonzero correlation. Both approaches are based on parametric bootstrap. Sections \@ref(sec:parametricbs) and \@ref(sec:nonrankbased) discuss the algorithms for the cases mentioned. Section \@ref(sec:evaluation) shows the algorithms used to assess the performance of the proposed approaches. This makes use of coverage and metrics to measure the tightness of the estimated confidence regions.
 
 For sections \@ref(sec:parametricbs) and \@ref(sec:nonrankbased), let $\theta_1, \theta_2, \dots, \theta_K$ be the true parameter values and $\hat \theta_1, \hat \theta_2, \dots, \hat \theta_K$ be the corresponding estimates.
 
@@ -87,7 +87,23 @@ $\mathfrak{R} = \left[ \hat\theta_1 \pm \hat t \times \sigma_1  \right] \times \
 
 ## Evaluation {#sec:evaluation}
 
-Algorithm \ref{alg:parametricbs_cov} is used to calculate the coverage which is defined as the proportion of times that the true parameter values fall within the confidence interval for all $K$ simultaneously. Ideally, this should be equal to $0.90$ since $\alpha = 0.1$. It also calculates the average $T_1, T_2,$ and $T_3$. Higher values of $T_1$ and $T_2$ indicate wider confidence intervals and are therefore less desirable, whereas higher values of $T_3$ are preferable.
+Algorithm \ref{alg:parametricbs_cov} is employed to estimate the coverage, which corresponds to the proportion of replications in which the true parameter values are contained within the confidence intervals for all $K$ simultaneously. Likewise,the tightness of the joint confidence region is is assessed using three summary measures: the arithmetic mean ($T_1$), geometric mean ($T_2$), and the metric $T_3$ introduced by @wright, as presented in Equations \ref{eq:t1}–\ref{eq:t3}.
+
+\begin{equation}
+  T_1 = \frac{1}{K} \sum^K_{k=1} \Big | \Lambda_{Ok} \Big|
+  \label{eq:t1}
+\end{equation}
+
+\begin{equation}
+  T_2 = \prod^K_{k=1} \Big | \Lambda_{Ok} \Big|
+  \label{eq:t2}
+\end{equation}
+
+\begin{equation}
+  T_3 = 1 - \frac{K + \sum^K_{k=1} \big | \Lambda_{Ok} \big|}{K^2}
+  \label{eq:t3}
+\end{equation}
+Higher values of $T_1$ and $T_2$ indicate wider confidence intervals and are therefore less desirable, whereas higher values of $T_3$ are preferable.
 
 \begin{algorithm}[H]
 	\caption{Computation of Coverage Probability for Parametric Bootstrap} 
@@ -97,13 +113,7 @@ Algorithm \ref{alg:parametricbs_cov} is used to calculate the coverage which is 
 			\For {$\text{replications} = 1, 2, \dots, 5000$}
     		\State Generate $\hat\theta_k \sim N(\theta_k, \sigma^2_k)$, for $k = 1, 2, \dots, K$
     		\State Compute the rectangular confidence region $\mathfrak{R}$ using Algorithm \ref{alg:parametricbs_ci}.
-    		\State Check if $\left( \theta_{(1)}, \theta_{(2)}, \dots, \theta_{(K)}\right) \in \mathfrak{R}$ and compute 
-    		\Statex \begin{minipage}{\linewidth}
-        \centering
-    		$T_1 = \frac{1}{K} \sum^K_{k=1} \Big | \Lambda_{Ok} \Big|$\\
-    		$T_2 = \prod^K_{k=1} \Big | \Lambda_{Ok} \Big|$\\
-    		$T_3 = 1 - \frac{K + \sum^K_{k=1} \big | \Lambda_{Ok} \big|}{K^2}$\\
-    		\end{minipage}
+    		\State Check if $\left( \theta_{(1)}, \theta_{(2)}, \dots, \theta_{(K)}\right) \in \mathfrak{R}$ and compute $T_1$, $T_2$, and $T_3$
     	\EndFor
     \State Compute the proportion of times that the condition in step 4 is satisfied and the average of $T_1, T_2$, and $T_3$.
 	\end{algorithmic} % End algorithmic block

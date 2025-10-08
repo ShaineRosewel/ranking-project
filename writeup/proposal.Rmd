@@ -83,7 +83,6 @@ knitr::opts_chunk$set(
 
 ```
 
-@klein
 
 
 # Bibliography {- .unnumbered .unlisted}
