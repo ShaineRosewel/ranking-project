@@ -64,6 +64,8 @@ knitr::opts_chunk$set(
 
 # Introduction
 
+Rankings of government units derived from sample survey data are typically published without accompanying statistical statements that quantify uncertainty in estimated overall rankings *(add here uncertainty is just expressed for each element being ranked)*. While the literature on quantifying overall uncertainty remains limited, existing methods overlook the potential correlation among ranks *(Literature that this is possible)*. The objective of this study is to introduce a methodology that constructs joint confidence region for the true but unknown overall ranking while accounting for the correlation among them. In line with this, we also present ways to estimate correlation in a specific application—such as estimating the dependence structure among senatorial candidates' rankings.
+
 ```{r, child = "child/introduction.Rmd", echo = FALSE}
 
 ```

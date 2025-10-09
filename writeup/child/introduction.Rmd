@@ -1,6 +1,10 @@
 ## Objective
 
-Rankings of government units derived from sample survey data are typically published without accompanying statistical statements that quantify uncertainty in estimated overall rankings *(add here uncertainty is just expressed for each element being ranked)*. While the literature on quantifying overall uncertainty remains limited, existing methods overlook the potential correlation among ranks *(Literature that this is possible)*. The objective of this study is to introduce a methodology that constructs joint confidence region for the true but unknown overall ranking while accounting for the correlation among them. In line with this, we also present ways to estimate correlation in a specific application—such as estimating the dependence structure among senatorial candidates' rankings.
+This research builds upon @klein's methodology by extending the set of joint confidence intervals used to capture uncertainty in overall rankings. In particular, it intends to:
+
+- Construct joint confidence intervals that utilize parametric bootstrap to obtain a tighter overall uncertainty for ranks.
+- Establish joint confidence intervals for cases when ranks are assumed to be correlated.
+- Evaluate the performance of the proposed approaches under different standard deviations, correlation structures, and dimensionalities.
 
 ## Significance
 
