@@ -120,7 +120,7 @@ In contrast, for the independence assumption, intervals that simultaneously yiel
 \end{equation}
 where $\gamma = 1 - (1-\alpha)^{\frac{1}{K}}$.
 
-## Correlation structures
+## Use case
 
 *(literature on importance for accounting for correlation)*
 
