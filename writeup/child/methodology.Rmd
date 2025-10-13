@@ -52,20 +52,14 @@ $\hat\sigma_{(k)} = \sqrt{\text{kth ordered value among} \ \left\{ \hat{\theta}^
 
 ## Joint confidence intervals for $\theta_1, \dots, \theta_K$ by using Nonrank-based method {#sec:nonrankbased}
 
-The nonrank-based method assumes that $\boldsymbol{\hat\theta} = \left(\hat\theta_1, \hat\theta_2, \dots, \hat\theta_K\right) \sim N \left( \boldsymbol{\theta}, \boldsymbol{\Sigma}\right)$. It accounts for potential correlation among items being ranked. For this case, an exchangeable correlation, $\boldsymbol{\rho}$ (See Equation \ref{eq:equicorrelation}.), is assumed and used in the calculation of the variance covariance matrix (See Equation \ref{eq:sigma_matrix}.).
-
-\begin{equation}
-  \boldsymbol{\rho} = \left( 1-\rho \right) \mathbf{I}_K + \rho \boldsymbol{1}_K \boldsymbol{1}'_K
-  \label{eq:equicorrelation}
-\end{equation}
-
+The nonrank-based method assumes that $\boldsymbol{\hat\theta} = \left(\hat\theta_1, \hat\theta_2, \dots, \hat\theta_K\right) \sim N \left( \boldsymbol{\theta}, \boldsymbol{\Sigma}\right)$. It accounts for potential correlation among items being ranked. For this, various correlation structures $\boldsymbol{\rho}$ are examined (Refer to section \ref{sec:corrstructures}) and used in the calculation of the variance covariance matrix (See Equation \ref{eq:sigma_matrix}.).
 
 \begin{equation}
   \boldsymbol{\Sigma} = \boldsymbol{\Delta}^{1/2} \boldsymbol{\rho} \boldsymbol{\Delta}^{1/2}
   \label{eq:sigma_matrix}
 \end{equation}
 
-where $\boldsymbol{\Delta} = \text{diag} \left\{ \sigma^2_1, \sigma^2_2, \dots, \sigma^2_K \right\}$, with known $\sigma_k$'s and $\rho$ is studied for $0.1, 0.5, 0.9$.
+where $\boldsymbol{\Delta} = \text{diag} \left\{ \sigma^2_1, \sigma^2_2, \dots, \sigma^2_K \right\}$, with known $\sigma_k$'s and $\boldsymbol{\rho}$.
 
 \begin{algorithm}[H]
 	\caption{Computation of Joint Confidence Region using Nonrank-based Method} 
@@ -84,6 +78,26 @@ $\mathfrak{R} = \left[ \hat\theta_1 \pm \hat t \times \sigma_1  \right] \times \
     \end{minipage}
 	\end{algorithmic} 
 \end{algorithm}
+
+### Correlation structures {#sec:corrstructures}
+
+#### Equicorrelated structure
+
+\begin{equation}
+  \boldsymbol{\rho} = \left( 1-\rho \right) \mathbf{I}_K + \rho \boldsymbol{1}_K \boldsymbol{1}'_K
+  \label{eq:equicorrelation}
+\end{equation}
+
+#### Block diagonal structure
+\begin{equation}
+  \boldsymbol{\rho_g} = \left( 1-\rho_g \right) \mathbf{I}_{K_g} + \rho_g \boldsymbol{1}_{K_g} \boldsymbol{1}'_{K_g}
+  \label{eq:equicorrelation}
+\end{equation}
+
+#### AR-1 structure
+
+
+
 
 ## Evaluation {#sec:evaluation}
 
