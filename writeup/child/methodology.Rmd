@@ -45,38 +45,38 @@ The rank-based parametric bootstrap approach assumes $\hat \theta_1, \hat \theta
     \label{alg:parametricbs_ci}
     Let the data consist of $\boldsymbol{\hat{\theta}} = \left( {\hat\theta_1, \hat\theta_2, \dots, \hat\theta_K} \right)$ and suppose $\boldsymbol{\Sigma}$
     \begin{algorithmic}[1]
-        \For {$b = 1, 2, \dots, B$}
-                \State Generate $\boldsymbol{\hat\theta}^*_b = \left( \hat{\theta}^*_{b1}, \hat{\theta}^*_{b2}, \dots, \hat{\theta}^*_{bK} \right)' \sim N_K \left( \boldsymbol{\hat \theta}, \boldsymbol {\Sigma} \right)$ and let $\hat{\theta}_{b(1)}, \hat{\theta}_{b(2)}, \dots, \hat{\theta}_{b(K)}$ be the corresponding ordered values
-            \Statex \begin{minipage}{\linewidth}
-          \centering
-          \begin{tabular}{|c|c|c|c|c|}
-            \hline
-             & $k = 1$ & $k = 2$ & $\dots$ & $k = K$ \\
-            \hline
-            $b = 1$ & $\hat{\theta}^*_{1(1)}$ & $\hat{\theta}^*_{1(2)}$ & \dots & $\hat{\theta}^*_{1(K)}$ \\
-            \hline
-            $b = 2$ & $\hat{\theta}^*_{2(1)}$ & $\hat{\theta}^*_{2(2)}$ & \dots & $\hat{\theta}^*_{2(K)}$ \\
-            \hline
-            $\vdots$ & \vdots & \vdots & \dots & \vdots\\
-            \hline
-            $b = B$ & $\hat{\theta}^*_{B(1)}$ & $\hat{\theta}^*_{B(2)}$ & \dots & $\hat{\theta}^*_{B(K)}$ \\
-            \hline
-          \end{tabular}
+    \For {$b = 1, 2, \dots, B$}
+        \State \begin{minipage}[t]{\dimexpr\linewidth-\algorithmicindent}
+            Generate $\boldsymbol{\hat\theta}^*_b = \left( \hat{\theta}^*_{b1}, \hat{\theta}^*_{b2}, \dots, \hat{\theta}^*_{bK} \right)' \sim N_K \left( \boldsymbol{\hat \theta}, \boldsymbol {\Sigma} \right)$ and let $\hat{\theta}_{b(1)}, \hat{\theta}_{b(2)}, \dots, \hat{\theta}_{b(K)}$ be the corresponding ordered values 
         \end{minipage}
-        \State Compute 
         \Statex \begin{minipage}{\linewidth}
         \centering
-$\hat\sigma^*_{b(k)} = \sqrt{\text{kth ordered value among} \ \left\{ \hat{\theta}^{*2}_{b1} + \sigma_1^2, \hat{\theta}^{*2}_{b2} + \sigma_2^2, \dots, \hat{\theta}^{*2}_{bK} + \sigma_K^2 \right\} - \hat {\theta}^{*2}_{(k)}}$
+            \begin{tabular}{|c|c|c|c|c|}
+              \hline
+               & $k = 1$ & $k = 2$ & $\dots$ & $k = K$ \\
+              \hline
+              $b = 1$ & $\hat{\theta}^*_{1(1)}$ & $\hat{\theta}^*_{1(2)}$ & \dots & $\hat{\theta}^*_{1(K)}$ \\
+              \hline
+              $b = 2$ & $\hat{\theta}^*_{2(1)}$ & $\hat{\theta}^*_{2(2)}$ & \dots & $\hat{\theta}^*_{2(K)}$ \\
+              \hline
+              $\vdots$ & \vdots & \vdots & \dots & \vdots\\
+              \hline
+              $b = B$ & $\hat{\theta}^*_{B(1)}$ & $\hat{\theta}^*_{B(2)}$ & \dots & $\hat{\theta}^*_{B(K)}$ \\
+              \hline
+            \end{tabular}
         \end{minipage}
-                \State Compute $t^*_b = \underset{1 \leq k \leq K}{\max} \Bigg| \frac{\hat\theta^*_{b(k)} - \hat\theta^*_{k}}{\sigma^*_{b(k)}} \Bigg|$
-        \EndFor
-        \State Compute the $\left(1-\alpha\right)$-sample quantile of $t^*_1, t^*_2, \dots, t^*_B$, call this $\hat{t}$.
-        \State The joint confidence region of $\theta_{(1)}, \theta_{(2)}, \dots, \theta_{(K)}$ is given by 
+        \State \begin{minipage}[t]{\dimexpr\linewidth-\algorithmicindent}
+            Compute $\hat\sigma^*_{b(k)} = \sqrt{\text{kth ordered value among} \ \left\{ \hat{\theta}^{*2}_{b1} + \sigma_1^2, \hat{\theta}^{*2}_{b2} + \sigma_2^2, \dots, \hat{\theta}^{*2}_{bK} + \sigma_K^2 \right\} - \hat {\theta}^{*2}_{(k)}}$
+        \end{minipage}
+        \State Compute $t^*_b = \underset{1 \leq k \leq K}{\max} \Bigg| \frac{\hat\theta^*_{b(k)} - \hat\theta^*_{k}}{\sigma^*_{b(k)}} \Bigg|$
+    \EndFor
+    \State Compute the $\left(1-\alpha\right)$-sample quantile of $t^*_1, t^*_2, \dots, t^*_B$, call this $\hat{t}$.
+    \State The joint confidence region of $\theta_{(1)}, \theta_{(2)}, \dots, \theta_{(K)}$ is given by 
         \Statex \begin{minipage}{\linewidth}
-    \centering
-$\mathfrak{R} = \left[ \hat\theta_{(1)} \pm \hat t \times \hat\sigma_{(1)}  \right] \times \left[ \hat\theta_{(2)} \pm \hat t \times \hat\sigma_{(2)}  \right] \times \dots \times \left[ \hat\theta_{(K)} \pm \hat t \times \hat\sigma_{(K)}  \right]$
-    \end{minipage}
-         where $\hat \sigma_{(k)}$ is computed as
+        \centering
+        $\mathfrak{R} = \left[ \hat\theta_{(1)} \pm \hat t \times \hat\sigma_{(1)}  \right] \times \left[ \hat\theta_{(2)} \pm \hat t \times \hat\sigma_{(2)}  \right] \times \dots \times \left[ \hat\theta_{(K)} \pm \hat t \times \hat\sigma_{(K)}  \right]$
+        \end{minipage}
+        where $\hat \sigma_{(k)}$ is computed as
         \Statex \begin{minipage}{\linewidth}
     \centering
 $\hat\sigma_{(k)} = \sqrt{\text{kth ordered value among} \ \left\{ \hat{\theta}^{2}_{1} + \sigma_1^2, \hat{\theta}^{2}_{2} + \sigma_2^2, \dots, \hat{\theta}^{2}_{K} + \sigma_K^2 \right\} - \hat {\theta}^{2}_{(k)}}$
@@ -85,6 +85,27 @@ $\hat\sigma_{(k)} = \sqrt{\text{kth ordered value among} \ \left\{ \hat{\theta}^
 \end{algorithm}
 
 #### Variance from second-level bootstrap
+
+\begin{algorithm}[H]
+    \caption{Computation of Joint Confidence Region} 
+    \label{alg:secondlevelbs}
+    \begin{algorithmic}[1]
+        \For {$b = 1, 2, \dots, B$}
+            \State \begin{minipage}[t]{\dimexpr\linewidth-\algorithmicindent} 
+                Generate $\hat{\boldsymbol{\theta}}^*_b = \left( \hat{\theta}^*_{b1}, \hat{\theta}^*_{b2}, \dots, \hat{\theta}^*_{bK} \right)' \sim N_K \left( \hat{\boldsymbol{\theta}}, \boldsymbol {\Sigma} \right)$ and let $\hat{\theta}_{b(1)}^*, \hat{\theta}_{b(2)}^*, \dots, \hat{\theta}_{b(K)}^*$ be the corresponding ordered values of $\hat{\theta}_{b1}^*, \hat{\theta}_{b2}^*, \dots, \hat{\theta}_{bK}^*$
+            \end{minipage}
+            \For {$c = 1, 2, \dots, C$}
+                \State \begin{minipage}[t]{\dimexpr\linewidth-\algorithmicindent} Generate $\hat{\boldsymbol{\theta}}^{**}_{bc} = \left( \hat{\theta}^{**}_{bc1}, \hat{\theta}^{**}_{bc2}, \dots, \hat{\theta}^{**}_{bcK} \right)' \sim N_K \left( \hat{\boldsymbol{\theta}}_b^*, \boldsymbol {\Sigma} \right)$ and let $\hat{\theta}^{**}_{bc(1)}, \hat{\theta}^{**}_{bc(2)}, \dots, \hat{\theta}^{**}_{bc(K)}$ be the corresponding ordered values of $\hat{\theta}_{b1}^*, \hat{\theta}_{b2}^*, \dots, \hat{\theta}_{bK}^*$
+                \end{minipage}
+                \State Compute
+                    $\hat{\sigma}^*_{b(i)} = \frac{\sum^C_{c=1} \left( \hat \theta^{**}_{bc(i)} - \bar {\hat\theta}^{**}_{b(i)} \right)^2}{C-1}; \quad \bar {\hat\theta}^{**}_{b(i)} = \frac{1}{C} \sum^C_{c=1} {\hat\theta}^{**}_{bc(i)}$
+                \EndFor
+        \EndFor
+    \end{algorithmic} 
+\end{algorithm}
+
+
+
 
 
 
