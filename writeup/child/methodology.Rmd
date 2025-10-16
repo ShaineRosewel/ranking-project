@@ -1,19 +1,17 @@
-This section introduces the proposed methodologies to obtain confidence regions for the unknown overall true ranking. It extends approaches from @klein: the Bonferroni correction and the independence assumption. The following cases are tackled: case when items ranked are assumed to have zero and nonzero correlation. Both approaches are based on parametric bootstrap. Sections \@ref(sec:parametricbs) and \@ref(sec:nonrankbased) discuss the algorithms for the cases mentioned. Section \@ref(sec:evaluation) shows the algorithms used to assess the performance of the proposed approaches. This makes use of coverage and metrics to measure the tightness of the estimated confidence regions.
+This section introduces the proposed methodologies to obtain confidence regions for the unknown overall true ranking. It extends approaches from @klein: the Bonferroni correction and the independence assumption. The case when items ranked are assumed to have nonzero correlation is addressed. Approaches introduced are based on parametric bootstrap. Sections \@ref(sec:confregionalgo) discusses the algorithms employed to compute for the joint confidence regions. This includes a non-rank and rank-based methods. Calculated joint confidence regions are then assessed on the basis of coverage and metrics that measure the tightness of estimated confidence regions. These are tackled in section \@ref(sec:evaluation).
 
-For sections \@ref(sec:parametricbs) and \@ref(sec:nonrankbased), let $\theta_1, \theta_2, \dots, \theta_K$ be the true parameter values and $\hat \theta_1, \hat \theta_2, \dots, \hat \theta_K$ be the corresponding estimates.
+## Parametric bootstrap approaches for constructing joint confidence intervals for correlated $\theta_1, \dots, \theta_K$ {#sec:confregionalgo}
 
-## Parametric bootstrap approaches for constructing joint confidence intervals for correlated $\theta_1, \dots, \theta_K$
-
-### Nonrank-based method {#sec:nonrankbased}
-
-The nonrank-based method assumes that $\boldsymbol{\hat\theta} = \left(\hat\theta_1, \hat\theta_2, \dots, \hat\theta_K\right) \sim N \left( \boldsymbol{\theta}, \boldsymbol{\Sigma}\right)$. It accounts for potential correlation among items being ranked. For this, various correlation structures $\boldsymbol{\rho}$ are examined (Refer to section \ref{sec:corrstructures}) and used in the calculation of the variance covariance matrix (See Equation \ref{eq:sigma_matrix}.).
+The proposed approaches are constructed to account for assumed correlation among items being ranked. For this, various correlation structures $\boldsymbol{\rho}$ are examined (Refer to section \ref{sec:corrstructures}) and used in the calculation of the variance covariance matrix (See Equation \ref{eq:sigma_matrix}.).
 
 \begin{equation}
   \boldsymbol{\Sigma} = \boldsymbol{\Delta}^{1/2} \boldsymbol{\rho} \boldsymbol{\Delta}^{1/2}
   \label{eq:sigma_matrix}
 \end{equation}
 
-where $\boldsymbol{\Delta} = \text{diag} \left\{ \sigma^2_1, \sigma^2_2, \dots, \sigma^2_K \right\}$, with known $\sigma_k$'s and $\boldsymbol{\rho}$.
+where $\boldsymbol{\Delta} = \text{diag} \left\{ \sigma^2_1, \sigma^2_2, \dots, \sigma^2_K \right\}$, with known $\sigma_k$'s and $\boldsymbol{\rho}$. This form of $\boldsymbol{\Sigma}$ is will be used in sections \@ref(sec:nonrankbased) and \@ref(sec:rankbased)
+
+### Nonrank-based method {#sec:nonrankbased}
 
 \begin{algorithm}[H]
     \caption{Computation of Joint Confidence Region} 
@@ -34,11 +32,9 @@ $\mathfrak{R} = \left[ \hat\theta_1 \pm \hat t \times \sigma_1  \right] \times \
 \end{algorithm}
 
 
-### Rank-based methods  {#sec:parametricbs}
+### Rank-based methods  {#sec:rankbased}
 
 #### Asymptotic variance
-
-The rank-based parametric bootstrap approach assumes $\hat \theta_1, \hat \theta_2, \dots, \hat \theta_K$ to be independent but not identically distributed estimates, where $\hat{\theta}_k \sim N \left(\theta_k, \sigma_k^2 \right)$, $k = 1, 2, \dots, K$. $\sigma^2_k$ is assumed known. Denote the corresponding ordered values by $\hat \theta_{(1)}, \hat \theta_{(2)}, \dots, \hat \theta_{(K)}$.
 
 \begin{algorithm}[H]
     \caption{Computation of Joint Confidence Region} 
@@ -65,13 +61,14 @@ The rank-based parametric bootstrap approach assumes $\hat \theta_1, \hat \theta
               \hline
             \end{tabular}
         \end{minipage}
+        \Statex{}
         \State \begin{minipage}[t]{\dimexpr\linewidth-\algorithmicindent}
             Compute $\hat\sigma^*_{b(k)} = \sqrt{\text{kth ordered value among} \ \left\{ \hat{\theta}^{*2}_{b1} + \sigma_1^2, \hat{\theta}^{*2}_{b2} + \sigma_2^2, \dots, \hat{\theta}^{*2}_{bK} + \sigma_K^2 \right\} - \hat {\theta}^{*2}_{(k)}}$
         \end{minipage}
         \State Compute $t^*_b = \underset{1 \leq k \leq K}{\max} \Bigg| \frac{\hat\theta^*_{b(k)} - \hat\theta^*_{k}}{\sigma^*_{b(k)}} \Bigg|$
     \EndFor
     \State Compute the $\left(1-\alpha\right)$-sample quantile of $t^*_1, t^*_2, \dots, t^*_B$, call this $\hat{t}$.
-    \State The joint confidence region of $\theta_{(1)}, \theta_{(2)}, \dots, \theta_{(K)}$ is given by 
+    \State The joint confidence region of $\theta_{(1)}, \theta_{(2)}, \dots, \theta_{(K)}$ is given by
         \Statex \begin{minipage}{\linewidth}
         \centering
         $\mathfrak{R} = \left[ \hat\theta_{(1)} \pm \hat t \times \hat\sigma_{(1)}  \right] \times \left[ \hat\theta_{(2)} \pm \hat t \times \hat\sigma_{(2)}  \right] \times \dots \times \left[ \hat\theta_{(K)} \pm \hat t \times \hat\sigma_{(K)}  \right]$
@@ -95,12 +92,56 @@ $\hat\sigma_{(k)} = \sqrt{\text{kth ordered value among} \ \left\{ \hat{\theta}^
                 Generate $\hat{\boldsymbol{\theta}}^*_b = \left( \hat{\theta}^*_{b1}, \hat{\theta}^*_{b2}, \dots, \hat{\theta}^*_{bK} \right)' \sim N_K \left( \hat{\boldsymbol{\theta}}, \boldsymbol {\Sigma} \right)$ and let $\hat{\theta}_{b(1)}^*, \hat{\theta}_{b(2)}^*, \dots, \hat{\theta}_{b(K)}^*$ be the corresponding ordered values of $\hat{\theta}_{b1}^*, \hat{\theta}_{b2}^*, \dots, \hat{\theta}_{bK}^*$
             \end{minipage}
             \For {$c = 1, 2, \dots, C$}
-                \State \begin{minipage}[t]{\dimexpr\linewidth-\algorithmicindent} Generate $\hat{\boldsymbol{\theta}}^{**}_{bc} = \left( \hat{\theta}^{**}_{bc1}, \hat{\theta}^{**}_{bc2}, \dots, \hat{\theta}^{**}_{bcK} \right)' \sim N_K \left( \hat{\boldsymbol{\theta}}_b^*, \boldsymbol {\Sigma} \right)$ and let $\hat{\theta}^{**}_{bc(1)}, \hat{\theta}^{**}_{bc(2)}, \dots, \hat{\theta}^{**}_{bc(K)}$ be the corresponding ordered values of $\hat{\theta}_{b1}^*, \hat{\theta}_{b2}^*, \dots, \hat{\theta}_{bK}^*$
+                \State \begin{minipage}[t]{\dimexpr\linewidth-\algorithmicindent} Generate $\hat{\boldsymbol{\theta}}^{**}_{bc} = \left( \hat{\theta}^{**}_{bc1}, \hat{\theta}^{**}_{bc2}, \dots, \hat{\theta}^{**}_{bcK} \right) \sim N_K \left( \hat{\boldsymbol{\theta}}_b^*, \boldsymbol {\Sigma} \right)$ and let $\hat{\theta}^{**}_{bc(1)}, \hat{\theta}^{**}_{bc(2)}, \dots, \hat{\theta}^{**}_{bc(K)}$ be the corresponding ordered values of $\hat{\theta}_{b1}^*, \hat{\theta}_{b2}^*, \dots, \hat{\theta}_{bK}^*$
                 \end{minipage}
                 \State Compute
-                    $\hat{\sigma}^*_{b(i)} = \frac{\sum^C_{c=1} \left( \hat \theta^{**}_{bc(i)} - \bar {\hat\theta}^{**}_{b(i)} \right)^2}{C-1}; \quad \bar {\hat\theta}^{**}_{b(i)} = \frac{1}{C} \sum^C_{c=1} {\hat\theta}^{**}_{bc(i)}$
+                    $\displaystyle \hat{\sigma}^*_{b(k)} = \frac{\sum^C_{c=1} \left( \hat \theta^{**}_{bc(k)} - \bar {\hat\theta}^{**}_{b \cdot (k)} \right)^2}{C-1}; \quad \bar {\hat\theta}^{**}_{b\cdot(k)} = \frac{1}{C} \sum^C_{c=1} {\hat\theta}^{**}_{bc(k)}$
                 \EndFor
         \EndFor
+        \State Compute
+                    $t_b^* = \underset{1 \leq k <K}{\max} \Bigg \lvert \frac{\hat{\theta}^*_{b(k)}-\hat{\theta}_{(k)}}{\hat \sigma ^* _{b(k)}} \Bigg \rvert$
+          \Statex \begin{minipage}{\linewidth}
+          \centering
+              \begin{tabular}{|c|c|c|c|c|}
+                \hline
+                 & $c = 1$ & $c = 2$ & $\dots$ & $c = C$ \\
+                \hline
+                $k=1$ & $\hat{\theta}^{**}_{b11}$ & $\hat{\theta}^{**}_{b21}$ & \dots & $\hat{\theta}^{**}_{bC1}$ \\
+                \hline
+                $k=2$ & $\hat{\theta}^{**}_{b12}$ & $\hat{\theta}^{**}_{b22}$ & \dots & $\hat{\theta}^{**}_{bC2}$ \\
+                \hline
+                 \vdots & \vdots & \vdots & \dots & \vdots\\
+                \hline
+                 $k=K$ & $\hat{\theta}^{**}_{b1K}$ & $\hat{\theta}^{**}_{b2K}$ & \dots & $\hat{\theta}^{**}_{bCK}$ \\
+                \hline
+              \end{tabular}
+              $\Longrightarrow$
+              \begin{tabular}{|c|c|c|c|c|}
+                \hline
+                 & $c = 1$ & $c = 2$ & $\dots$ & $c = C$ \\
+                \hline
+                $k=1$ & $\hat{\theta}^{**}_{b1(1)}$ & $\hat{\theta}^{**}_{b2(1)}$ & \dots & $\hat{\theta}^{**}_{bC(1)}$ \\
+                \hline
+                $k=2$ & $\hat{\theta}^{**}_{b1(2)}$ & $\hat{\theta}^{**}_{b2(2)}$ & \dots & $\hat{\theta}^{**}_{bC(2)}$ \\
+                \hline
+                 \vdots & \vdots & \vdots & \dots & \vdots\\
+                \hline
+                 $k=K$ & $\hat{\theta}^{**}_{b1(K)}$ & $\hat{\theta}^{**}_{b2(K)}$ & \dots & $\hat{\theta}^{**}_{bC(K)}$ \\
+                \hline
+              \end{tabular}
+          \end{minipage}
+        \Statex{}
+        \State Compute the $\left( 1-\alpha \right)$-sample quantile of $t^*_1, t^*_1, \dots, t^*_B$, call this $\hat t$.
+        \State The joint confidence region of $\theta_{(1)}, \theta_{(2)}, \dots, \theta_{(K)}$ is
+            \Statex \begin{minipage}{\linewidth}
+            \centering
+            $\mathfrak{R} = \left[ \hat\theta_{(1)} \pm \hat t \times \hat\sigma_{(1)}  \right] \times \left[ \hat\theta_{(2)} \pm \hat t \times \hat\sigma_{(2)}  \right] \times \dots \times \left[ \hat\theta_{(K)} \pm \hat t \times \hat\sigma_{(K)}  \right]$
+        \end{minipage}
+        where $\hat \sigma_{(k)}$ is computed as
+        \Statex \begin{minipage}{\linewidth}
+    \centering
+$\displaystyle \hat \sigma_{(k)} = \frac{\sum^B_{b=1} \left( \hat \theta^*_{b(k)} - \bar {\hat\theta}^*_{\cdot (k)} \right)^2}{B-1}; \quad \bar {\hat\theta}^*_{\cdot(k)} = \frac{1}{B} \sum^B_{b=1} {\hat\theta}^*_{b(k)}$
+\end{minipage}
     \end{algorithmic} 
 \end{algorithm}
 
