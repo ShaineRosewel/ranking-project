@@ -1,22 +1,21 @@
-This section introduces the proposed methodologies to obtain confidence regions for the unknown overall true ranking. It extends approaches from @klein: the Bonferroni correction and the independence assumption. The case when items ranked are assumed to have nonzero correlation is addressed. Approaches introduced are based on parametric bootstrap. Sections \@ref(sec:confregionalgo) discusses the algorithms employed to compute for the joint confidence regions. This includes a non-rank and rank-based methods. Calculated joint confidence regions are then assessed on the basis of coverage and metrics that measure the tightness of estimated confidence regions. These are tackled in section \@ref(sec:evaluation).
+This section introduces the proposed methodologies to obtain confidence regions for the unknown overall true ranking. It extends approaches from @klein: the Bonferroni correction and the independence assumption by addressing the case when items ranked are assumed to be correlated to certain degrees. Section \@ref(sec:confregionalgo) discusses the algorithms employed to compute the joint confidence regions. This includes a non-rank and rank-based methods. It also has a subsection that lists correlation structures suitable to the intended use cases. The calculated joint confidence regions are then assessed on the basis of coverage and metrics that measure the tightness of estimated confidence regions. These are tackled in section \@ref(sec:evaluation).
 
 ## Parametric bootstrap approaches for constructing joint confidence intervals for correlated $\theta_1, \dots, \theta_K$ {#sec:confregionalgo}
 
-The proposed approaches are constructed to account for assumed correlation among items being ranked. For this, various correlation structures $\boldsymbol{\rho}$ are examined (Refer to section \ref{sec:corrstructures}) and used in the calculation of the variance covariance matrix (See Equation \ref{eq:sigma_matrix}.).
+The proposed approaches primarily use parametric bootstrap and are constructed to account for assumed correlation among items being ranked. For this, various correlation structures $\boldsymbol{\rho}$ are listed in section \ref{sec:corrstructures}, to be later examined in a simulation study. The correlation matrix is used in the calculation of the covariance matrix as show in Equation \ref{eq:sigma_matrix}.).
 
 \begin{equation}
-  \boldsymbol{\Sigma} = \boldsymbol{\Delta}^{1/2} \boldsymbol{\rho} \boldsymbol{\Delta}^{1/2}
+  \boldsymbol{\Sigma} = \boldsymbol{\Delta}^{1/2} \boldsymbol{\rho} \boldsymbol{\Delta}^{1/2}; \quad \boldsymbol{\Delta} = \text{diag} \left\{ \sigma^2_1, \sigma^2_2, \dots, \sigma^2_K \right\}
   \label{eq:sigma_matrix}
 \end{equation}
-
-where $\boldsymbol{\Delta} = \text{diag} \left\{ \sigma^2_1, \sigma^2_2, \dots, \sigma^2_K \right\}$, with known $\sigma_k$'s and $\boldsymbol{\rho}$. This form of $\boldsymbol{\Sigma}$ is will be used in sections \@ref(sec:nonrankbased) and \@ref(sec:rankbased)
+with known $\sigma_k$'s and $\boldsymbol{\rho}$. This form of $\boldsymbol{\Sigma}$ will be used in sections \@ref(sec:nonrankbased) and \@ref(sec:rankbased).
 
 ### Nonrank-based method {#sec:nonrankbased}
 
 \begin{algorithm}[H]
     \caption{Computation of Joint Confidence Region} 
     \label{alg:nonrank_ci}
-    Let the data consist of $\boldsymbol{\hat \theta} = \left( \hat \theta_1, \hat \theta_2, \dots, \hat \theta_K \right)'$ and suppose $\boldsymbol{\Sigma}$ is known
+    Let the data be represented by $\boldsymbol{\hat \theta} = \left( \hat \theta_1, \hat \theta_2, \dots, \hat \theta_K \right)'$ and suppose that $\boldsymbol{\Sigma}$ is known
     \begin{algorithmic}[1]
         \For {$b = 1, 2, \dots, B$}
                 \State Generate $\boldsymbol{\hat\theta}^*_b \sim N_K \left( \boldsymbol{\hat\theta}, \boldsymbol{\Sigma}\right)$ and write $\boldsymbol{\hat\theta}^*_b = \left( \hat\theta^*_{b1}, \hat\theta^*_{b2}, \dots, \hat\theta^*_{bK} \right)' $
@@ -97,7 +96,6 @@ $\hat\sigma_{(k)} = \sqrt{\text{kth ordered value among} \ \left\{ \hat{\theta}^
                 \State Compute
                     $\displaystyle \hat{\sigma}^*_{b(k)} = \frac{\sum^C_{c=1} \left( \hat \theta^{**}_{bc(k)} - \bar {\hat\theta}^{**}_{b \cdot (k)} \right)^2}{C-1}; \quad \bar {\hat\theta}^{**}_{b\cdot(k)} = \frac{1}{C} \sum^C_{c=1} {\hat\theta}^{**}_{bc(k)}$
                 \EndFor
-        \EndFor
         \State Compute
                     $t_b^* = \underset{1 \leq k <K}{\max} \Bigg \lvert \frac{\hat{\theta}^*_{b(k)}-\hat{\theta}_{(k)}}{\hat \sigma ^* _{b(k)}} \Bigg \rvert$
           \Statex \begin{minipage}{\linewidth}
@@ -131,6 +129,7 @@ $\hat\sigma_{(k)} = \sqrt{\text{kth ordered value among} \ \left\{ \hat{\theta}^
               \end{tabular}
           \end{minipage}
         \Statex{}
+        \EndFor
         \State Compute the $\left( 1-\alpha \right)$-sample quantile of $t^*_1, t^*_1, \dots, t^*_B$, call this $\hat t$.
         \State The joint confidence region of $\theta_{(1)}, \theta_{(2)}, \dots, \theta_{(K)}$ is
             \Statex \begin{minipage}{\linewidth}
