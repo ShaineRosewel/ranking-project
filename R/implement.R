@@ -38,16 +38,19 @@ for (sd in sds) {
         delta <- diag(variance_vector)
         varcovar_matrix <- delta^(1/2) %*% corr_matrix %*% delta^(1/2)
         
+        print("CASE")
+        cat("corr:", corr)
+        
         print("SORTED TRUE THETA")
         print(sort(true_theta))
         tic()
         coverage_output_df <- implement_algorithm2(
           true_theta,
           K, 
-          reps = 2, 
-          B = 5, 
+          reps = 500, 
+          B = 1000, 
           alpha=alpha,
-          C = 2,
+          C = 200,
           varcovar_matrix = varcovar_matrix)
         toc()
         

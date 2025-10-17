@@ -58,7 +58,7 @@ implement_algorithm2 <- function(
                       "get_ci_bonferroni", 
                       "get_ranks", "get_coverage",
                       "get_t1", "get_t2", "get_t3")
-  ) %do% {
+  ) %dorng% {
     
     # step 1 =======
     theta_hat <- mvrnorm(n = 1, 
