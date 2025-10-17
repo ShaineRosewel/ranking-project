@@ -11,7 +11,7 @@ registerDoParallel(cl)
 
 sds <- c(2)#, 3.6, 6)
 Ks <- c(5)#(51, 40, 30, 20, 10, 5)
-corrs <- c(0.1)#,0.5,0.9)
+corrs <- c(0.1,0.5,0.9)
 alphas <- c(0.1)#c(0.05, 0.1, 0.15, 0.2)
 
 for (sd in sds) {
@@ -60,66 +60,66 @@ for (sd in sds) {
 }
 
 stopCluster(cl)
-
-param_grid <- expand.grid(K = Ks, sd = sds, corr = corrs, alpha = alphas)
-
-results <- do.call(rbind, lapply(seq_len(nrow(param_grid)), function(i) {
-  K <- param_grid$K[i]
-  sd <- param_grid$sd[i]
-  corr <- param_grid$corr[i]
-  alpha <- param_grid$alpha[i]
-  
-  a <- readRDS(paste0("output/TEST_coverage_", 
-                      K, "_", sd, "_", corr, "_", alpha, ".rds"))
-  
-  data.frame(
-    K = K,sd = sd,corr = corr,alpha = alpha,
-    
-    Cov_nonrankbased = mean(a$coverage_nonrankbased), 
-    Cov_rankbased_asymptotic = mean(a$coverage_rankbased_asymptotic),
-    Cov_rankbased_level2bs = mean(a$coverage_rankbased_level2bs),    
-    Cov_independent = mean(a$coverage_independent),
-    Cov_bonferroni = mean(a$coverage_bonferroni),
-
-    T1_nonrankbased = mean(a$t1_nonrankbased),
-    T1_rankbased_asymptotic = mean(a$t1_rankbased_asymptotic),
-    T1_rankbased_level2bs = mean(a$t1_rankbased_level2bs),
-    T1_independent = mean(a$t1_independent),
-    T1_bonferroni = mean(a$t1_bonferroni),
-
-    T2_nonrankbased = mean(a$t2_nonrankbased),
-    T2_rankbased_asymptotic = mean(a$t2_rankbased_asymptotic),
-    T2_rankbased_level2bs = mean(a$t2_rankbased_level2bs),
-    T2_independent = mean(a$t2_independent),
-    T2_bonferroni = mean(a$t2_bonferroni),
-
-    T3_nonrankbased = mean(a$t3_nonrankbased),
-    T3_rankbased_asymptotic = mean(a$t3_rankbased_asymptotic),
-    T3_rankbased_level2bs = mean(a$t3_rankbased_level2bs),
-    T3_independent = mean(a$t3_independent),
-    T3_bonferroni = mean(a$t3_bonferroni)
-  )
-}))
-
-# param_grid <- expand.grid(K = Ks, sd = sds, alpha = alphas)
 # 
-# results1 <- do.call(rbind, lapply(seq_len(nrow(param_grid)), function(i) {
+# param_grid <- expand.grid(K = Ks, sd = sds, corr = corrs, alpha = alphas)
+# 
+# results <- do.call(rbind, lapply(seq_len(nrow(param_grid)), function(i) {
 #   K <- param_grid$K[i]
 #   sd <- param_grid$sd[i]
+#   corr <- param_grid$corr[i]
 #   alpha <- param_grid$alpha[i]
 #   
-#   a <- readRDS(paste0("output/coverage_parametric_", 
-#                       K, "_", sd, "_", alpha, ".rds"))
+#   a <- readRDS(paste0("output/TEST_coverage_", 
+#                       K, "_", sd, "_", corr, "_", alpha, ".rds"))
 #   
 #   data.frame(
-#     K = K,
-#     sd = sd,
-#     alpha = alpha,
-#     Cov_parametric = mean(a$coverage_parametric),
-#     T1_parametric = mean(a$t1_parametric),
-#     T2_parametric = mean(a$t2_parametric),
-#     T3_parametric = mean(a$t3_parametric)
+#     K = K,sd = sd,corr = corr,alpha = alpha,
+#     
+#     Cov_nonrankbased = mean(a$coverage_nonrankbased), 
+#     Cov_rankbased_asymptotic = mean(a$coverage_rankbased_asymptotic),
+#     Cov_rankbased_level2bs = mean(a$coverage_rankbased_level2bs),    
+#     Cov_independent = mean(a$coverage_independent),
+#     Cov_bonferroni = mean(a$coverage_bonferroni),
+# 
+#     T1_nonrankbased = mean(a$t1_nonrankbased),
+#     T1_rankbased_asymptotic = mean(a$t1_rankbased_asymptotic),
+#     T1_rankbased_level2bs = mean(a$t1_rankbased_level2bs),
+#     T1_independent = mean(a$t1_independent),
+#     T1_bonferroni = mean(a$t1_bonferroni),
+# 
+#     T2_nonrankbased = mean(a$t2_nonrankbased),
+#     T2_rankbased_asymptotic = mean(a$t2_rankbased_asymptotic),
+#     T2_rankbased_level2bs = mean(a$t2_rankbased_level2bs),
+#     T2_independent = mean(a$t2_independent),
+#     T2_bonferroni = mean(a$t2_bonferroni),
+# 
+#     T3_nonrankbased = mean(a$t3_nonrankbased),
+#     T3_rankbased_asymptotic = mean(a$t3_rankbased_asymptotic),
+#     T3_rankbased_level2bs = mean(a$t3_rankbased_level2bs),
+#     T3_independent = mean(a$t3_independent),
+#     T3_bonferroni = mean(a$t3_bonferroni)
 #   )
 # }))
 # 
-# save(results, results1, file = "simulation_results.RData")
+# # param_grid <- expand.grid(K = Ks, sd = sds, alpha = alphas)
+# # 
+# # results1 <- do.call(rbind, lapply(seq_len(nrow(param_grid)), function(i) {
+# #   K <- param_grid$K[i]
+# #   sd <- param_grid$sd[i]
+# #   alpha <- param_grid$alpha[i]
+# #   
+# #   a <- readRDS(paste0("output/coverage_parametric_", 
+# #                       K, "_", sd, "_", alpha, ".rds"))
+# #   
+# #   data.frame(
+# #     K = K,
+# #     sd = sd,
+# #     alpha = alpha,
+# #     Cov_parametric = mean(a$coverage_parametric),
+# #     T1_parametric = mean(a$t1_parametric),
+# #     T2_parametric = mean(a$t2_parametric),
+# #     T3_parametric = mean(a$t3_parametric)
+# #   )
+# # }))
+# # 
+# # save(results, results1, file = "simulation_results.RData")
