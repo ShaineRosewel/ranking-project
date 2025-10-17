@@ -39,7 +39,7 @@ for (sd in sds) {
         varcovar_matrix <- delta^(1/2) %*% corr_matrix %*% delta^(1/2)
         
         print("CASE")
-        cat("corr:", corr)
+        cat("corr:", corr, "\n")
         
         print("SORTED TRUE THETA")
         print(sort(true_theta))
@@ -50,7 +50,7 @@ for (sd in sds) {
           reps = 500, 
           B = 1000, 
           alpha=alpha,
-          C = 200,
+          C = 300,
           varcovar_matrix = varcovar_matrix)
         toc()
         
