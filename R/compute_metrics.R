@@ -65,14 +65,14 @@ implement_algorithm2 <- function(
                          mu = true_theta, 
                          Sigma = varcovar_matrix)
     
-    print("true theta")
-    print(true_theta)
+    # print("true theta")
+    # print(true_theta)
+    # 
+    # print("sample theta")
+    # print(theta_hat)
     
-    print("sample theta")
-    print(theta_hat)
     
-    
-    print(varcovar_matrix)
+    # print(varcovar_matrix)
     
     # step 2 =======
     S <- sqrt(diag(varcovar_matrix))
@@ -94,9 +94,9 @@ implement_algorithm2 <- function(
       independent  = function() get_ci_independent(theta_hat, S, alpha),
       bonferroni   = function() get_ci_bonferroni(theta_hat, S, alpha)
     )
-    print("REACHED 0 ===================================")
+    # print("REACHED 0 ===================================")
     ci_results <- lapply(ci_methods, function(f) f())
-    print("REACHED 1 ===================================")
+    # print("REACHED 1 ===================================")
     
     coverages <- list(
         nonrankbased = get_coverage(
@@ -131,7 +131,7 @@ implement_algorithm2 <- function(
         )
     )
     
-    print(coverages)
+    # print(coverages)
     
     # coverages <- lapply(ci_results, function(res) {
     #   get_coverage(
@@ -141,7 +141,7 @@ implement_algorithm2 <- function(
     #   )
     # })
     
-    print("REACHED 2 ===================================")
+    # print("REACHED 2 ===================================")
     
     process_ci_result <- function(result, K) {
       tuple_list <- t(apply(
@@ -165,9 +165,9 @@ implement_algorithm2 <- function(
       )
     }
     
-    print("REACHED 3 ===================================")
+    # print("REACHED 3 ===================================")
     processed <- lapply(ci_results, process_ci_result, K = K)
-    print("REACHED 4 ===================================")
+    # print("REACHED 4 ===================================")
     data.frame(
       t1_nonrankbased = processed$nonrankbased$t1,
       t2_nonrankbased = processed$nonrankbased$t2,
@@ -190,7 +190,7 @@ implement_algorithm2 <- function(
       t3_bonferroni = processed$bonferroni$t3,
       coverage_bonferroni = coverages$bonferroni
       )
-    print("REACHED 5 ===================================")
+    # print("REACHED 5 ===================================")
   }
 }
 
