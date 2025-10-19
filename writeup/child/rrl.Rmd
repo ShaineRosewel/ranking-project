@@ -129,7 +129,7 @@ With the same assumptions, @jelle used Tukey's pairwise comparison procedure to 
 \end{equation}
 where $\gamma = 1 - (1-\alpha)^{\frac{1}{K}}$.
 
-
+@zhang, in their analysis of US age-adjusted cancer incidence rates and mortality rates in states and counties in states, demonstrated how to account for dependence in ranks in the calculation of individual and overall simultaneous confidence intervals by using age-adjusted rates health index and Monte Carlo method. They extended their method to accommodate the case when only the rates and confidence intervals are available - making it closer to approaches by @klein and @jelle.
 
 ## Use case
 
