@@ -1,4 +1,4 @@
-The objective of this study is to introduce a methodology that constructs joint confidence region for the true but unknown overall ranking while accounting for the correlation among them. In line with this, structures to represent correlation in applications—such as dependence structure among senatorial candidates' rankings are also listed.
+Ranks are typically based on estimates obtained along with their measure of uncertainty, expressed as confidence intervals. Individually, these intervals provide information on the possible range of each rank. However, in most applications, the primary interest lies in comparing all ranks simultaneously rather than reporting them in isolation.
 
 ## Objective
 
