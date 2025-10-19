@@ -1,3 +1,5 @@
+The objective of this study is to introduce a methodology that constructs joint confidence region for the true but unknown overall ranking while accounting for the correlation among them. In line with this, structures to represent correlation in applications—such as dependence structure among senatorial candidates' rankings are also listed.
+
 ## Objective
 
 This research builds upon @klein's methodology by extending the set of joint confidence intervals used to capture uncertainty in overall rankings. In particular, it intends to:
