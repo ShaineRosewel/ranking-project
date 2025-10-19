@@ -2,7 +2,7 @@ This section introduces the proposed methodologies to obtain confidence regions 
 
 ## Parametric bootstrap approaches for constructing joint confidence intervals for correlated $\theta_1, \dots, \theta_K$ {#sec:confregionalgo}
 
-The proposed approaches primarily use parametric bootstrap and are constructed to account for assumed correlation among items being ranked. For this, various correlation structures $\boldsymbol{\rho}$ are listed in section \ref{sec:corrstructures}, to be later examined in a simulation study. The correlation matrix is used in the calculation of the covariance matrix as show in Equation \ref{eq:sigma_matrix}.).
+The proposed approaches follow those of @klein and @jelle, which do not require knowledge of the sampling design and estimation methodology for each population. We primarily use parametric bootstrap to approximate the quantile used to calculate the confidence region. This is constructed to account for assumed correlation among items being ranked. In line with this, various correlation structures $\boldsymbol{\rho}$ are listed in section \ref{sec:corrstructures}, to be later examined in a simulation study. The correlation matrix is used in the calculation of the covariance matrix as show in Equation \ref{eq:sigma_matrix}.).
 
 \begin{equation}
   \boldsymbol{\Sigma} = \boldsymbol{\Delta}^{1/2} \boldsymbol{\rho} \boldsymbol{\Delta}^{1/2}; \quad \boldsymbol{\Delta} = \text{diag} \left\{ \sigma^2_1, \sigma^2_2, \dots, \sigma^2_K \right\}

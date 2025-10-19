@@ -90,9 +90,7 @@ overall ranking unless the values of $\theta_k$ differ from each other such that
 
 ## Joint confidence intervals for $\theta_k$s
 
-@klein used a set familiar individual confidence intervals of the form $\hat \theta_k \pm z_{\alpha/2} SE_k$. They assumed that $\hat \theta_1, \hat \theta_1, \dots, \hat \theta_K$ are independently distributed, with $\hat \theta_k \sim N(\theta_k, SE_k)$ for $k = 1, 2, \dots, K$, where $\theta_1, \theta_2, \dots \theta_k$ are unknown and $SE_1, SE_2, \dots, SE_k$ are known. It was noted that $SE_k = \frac{MOE_k}{z_{\alpha/2}}$. Two approaches were considered for constructing the joint confidence intervals: the Bonferroni correction and the independence assumption.
-
-The Bonferroni correction results in a conservative joint coverage for $\theta_1, \theta_1, \dots, \theta_K$ of at least $1-\alpha$. Intervals are as defined in Equation \ref{eq:bonf}.
+@klein used individual confidence intervals of the form $\hat \theta_k \pm z_{\alpha/2} SE_k$. They assumed that $\hat \theta_1, \hat \theta_1, \dots, \hat \theta_K$ are independently distributed, with $\hat \theta_k \sim N(\theta_k, SE_k)$ for $k = 1, 2, \dots, K$, where $\theta_1, \theta_2, \dots \theta_k$ are unknown and $SE_1, SE_2, \dots, SE_k$ are known. It was noted that $SE_k = \frac{MOE_k}{z_{\alpha/2}}$. Two approaches were considered for constructing the joint confidence intervals: the Bonferroni correction and the independence assumption. The Bonferroni correction results in a conservative joint coverage for $\theta_1, \theta_1, \dots, \theta_K$ of at least $1-\alpha$. Intervals are as defined in Equation \ref{eq:bonf}.
 
 \begin{equation}
   \left(
@@ -104,9 +102,7 @@ The Bonferroni correction results in a conservative joint coverage for $\theta_1
   \text{for}\;k=1,2,\dots,K
   \label{eq:bonf}
 \end{equation}
-
 In contrast, for the independence assumption, intervals that simultaneously yield a coverage equal to $1-\alpha$ is given by Equation \ref{eq:ind},
-
 
 \begin{equation}
   \left(
@@ -119,6 +115,21 @@ In contrast, for the independence assumption, intervals that simultaneously yiel
   \label{eq:ind}
 \end{equation}
 where $\gamma = 1 - (1-\alpha)^{\frac{1}{K}}$.
+
+With the same assumptions, @jelle used Tukey's pairwise comparison procedure to come up with their $\left( 1-\alpha \right)$ joint confidence intervals for ranks defined in Equation \ref{eq:jelle}. They showed this to yield uniformly narrower intervals than that of Klein's approach, for the case when $SE$s are equal.
+
+
+\begin{equation}
+  \left(
+  1 + \#\left\{ j: y_i - y_j - q_{1-\alpha}\sqrt{SE^2_i + \sigma^2_j} > 0 \right\},
+  \;
+  n - \#\left\{ j: y_i - y_j + q_{1-\alpha}\sqrt{SE^2_i + \sigma^2_j} < 0 \right\}
+  \right),
+  \label{eq:jelle}
+\end{equation}
+where $\gamma = 1 - (1-\alpha)^{\frac{1}{K}}$.
+
+
 
 ## Use case
 
