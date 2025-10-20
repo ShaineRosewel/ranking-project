@@ -9,10 +9,10 @@ df <- readRDS("data/mean_travel_time_ranking_2011.rds")
 cl=parallel::makeCluster(15)
 registerDoParallel(cl)
 
-sds <- c(2)#, 3.6, 6)
-Ks <- c(5)#(51, 40, 30, 20, 10, 5)
+sds <- c(2, 3.6, 6)
+Ks <- c(10)
 corrs <- c(0.1,0.5,0.9)
-alphas <- c(0.1)#c(0.05, 0.1, 0.15, 0.2)
+alphas <- c(0.05)#c(0.05, 0.1, 0.15, 0.2)
 
 for (sd in sds) {
   for (K in Ks) {
@@ -22,41 +22,39 @@ for (sd in sds) {
     
     for (alpha in alphas) {
       
-      # tic("Running parametric...")
-      # coverage_parametric_df <- algo2_parametric(true_theta,
-      #                                            K, 
-      #                                            reps = 5000,
-      #                                            B=500, 
-      #                                            alpha= alpha,
-      #                                            S=true_sds)
-      # toc()
-      # saveRDS(coverage_parametric_df,  paste0("output/coverage_parametric_",
-      #                                         K,"_", sd, "_", alpha, ".rds"))
+      tic()
       for (corr in corrs) {
         corr_matrix <- (1 - corr) * diag(K) + corr * matrix(1, K, K)
         variance_vector <- true_sds^2
         delta <- diag(variance_vector)
         varcovar_matrix <- delta^(1/2) %*% corr_matrix %*% delta^(1/2)
         
-        print("CASE")
-        cat("corr:", corr, "\n")
+        cat("==========================================\n\n")
+        cat("SIMULATION SETTINGS ~ K:", K,"corr:", corr,"sd:", sd, "corr:", corr, "alpha:", alpha)
+        cat("\n")
+        cat("SORTED TRUE THETA", sort(true_theta))
+        cat("\n")
+        case_start <- Sys.time()
         
-        print("SORTED TRUE THETA")
-        print(sort(true_theta))
         tic()
         coverage_output_df <- implement_algorithm2(
           true_theta,
           K, 
-          reps = 500, 
-          B = 1000, 
+          reps = 5000, 
+          B = 600, 
           alpha=alpha,
           C = 300,
           varcovar_matrix = varcovar_matrix)
         toc()
         
-        saveRDS(coverage_output_df,  paste0("output/TEST_coverage_",
+        saveRDS(coverage_output_df,  paste0("output/final_coverage_",
                                             K,"_", sd, "_", corr, "_", 
                                             alpha, ".rds"))
+        case_end <- Sys.time()
+        case_runtime <- as.numeric(difftime(case_end, case_start, units = "mins"))
+        cat("Finished at:", format(case_end, "%I:%M %p"), "\n")
+        cat("Runtime for this case:", round(case_runtime, 2), "minutes\n")
+        cat("==========================================\n\n")
       }
     }
   }
