@@ -33,12 +33,15 @@ Show in New Window
     │   │   ├── result.Rmd
     │   │   └── rrl.Rmd
     │   ├── results
-    │   │   └── alpha0p05_k10.csv
+    │   │   ├── alpha0p05_k10.csv
+    │   │   ├── simulation_results_ocorr.RData
+    │   │   └── simulation_results.RData
     │   ├── harvard-educational-review.csl
     │   ├── proposal.log
     │   ├── proposal.pdf
     │   ├── proposal.Rmd
     │   └── references.bib
+    ├── README.html
     ├── README.md
     ├── README.Rmd
     └── renv.lock
