@@ -129,7 +129,7 @@ With the same assumptions, @jelle used Tukey's pairwise comparison procedure to 
 \end{equation}
 where $\gamma = 1 - (1-\alpha)^{\frac{1}{K}}$.
 
-@zhang, in their analysis of US age-adjusted cancer incidence rates and mortality rates in states and counties in states, demonstrated how to account for dependence in ranks in the calculation of individual and overall simultaneous confidence intervals for age-adjusted rates health index using  Monte Carlo method. They extended their method to accommodate the case when only the rates and confidence intervals are available - making it closer to approaches by @klein and @jelle. To account for dependence, they used conditioning (*expand further and refer to page 33*). 
+@zhang, in their analysis of US age-adjusted cancer incidence rates and mortality rates in states and counties in states, calculated individual and overall simultaneous confidence intervals for age-adjusted rates health index using Monte Carlo method. Since the occurrence of many health conditions is related to age, they used age-adjusted rates to account for the dependence by minimizing its confounding effect. The age-adjusted rates provide a standard way of comparing rates for different population groups, allowing comparisons independent of their age structure. They extended their method to accommodate the case when only the rates and confidence intervals are available - making it closer to approaches by @klein and @jelle. 
 
 ## Use case
 
