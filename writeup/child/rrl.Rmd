@@ -39,8 +39,7 @@ Equation \ref{eq:conf_set} can likewise be expressed in words as follows:
 1. $j \in \Lambda_{Lk} \leftrightarrow \left(L_j, U_j\right) \cap \left(L_k, U_k\right) = \emptyset$ and $\left(L_j, U_j\right)$ lies to the left of $\left(L_k, U_k\right)$;
 2. $j \in \Lambda_{Rk} \leftrightarrow \left(L_j, U_j\right) \cap \left(L_k, U_k\right) = \emptyset$ and $\left(L_j, U_j\right)$ lies to the right of $\left(L_k, U_k\right)$;
 3. $j \in \Lambda_{Ok} \leftrightarrow \left(L_j, U_j\right) \cap \left(L_k, U_k\right) \neq \emptyset$
-4. $\Lambda_{Lk}, \Lambda_{Rk},$ and $\Lambda_{Ok}$ are mutually exclusive, and $\Lambda_{Lk} \cup \Lambda_{Rk} \cup \Lambda_{Ok} = I_k$  
-
+4. $\Lambda_{Lk}, \Lambda_{Rk},$ and $\Lambda_{Ok}$ are mutually exclusive, and $\Lambda_{Lk} \cup \Lambda_{Rk} \cup \Lambda_{Ok} = I_k$    
 The above implies that for each $k \in \left\{1, 2, \dots, K\right\}$,
 
 \begin{equation}
@@ -62,7 +61,7 @@ They also assumed a conservative confidence region whose joint coverage probabil
   P\left[ \bigcap^K_{k=1} \left\{ \theta_k \in \left(L_k, U_k\right) \right\} \right] \geq 1-\alpha
   \label{eq:joint_cov}
 \end{equation}
-This yields the joint confidence set for the overall ranking, as defined in Equation \ref{eq:klein_jcs}, which they showed to have a joint probability of at least $1-\alpha$.
+This yields the joint confidence set for the overall ranking, as defined in Equation \ref{eq:klein_jcs}, which they showed to also have a joint probability of at least $1-\alpha$.
 
 \begin{equation}
   \left\{ 
@@ -83,16 +82,16 @@ This yields the joint confidence set for the overall ranking, as defined in Equa
   \label{eq:klein_jcs}
 \end{equation}
 
-In line with this, they presented a proof demonstrating that if $(L_1,U_1),\dots,(L_K,U_K)$ are constructed such that the estimator $\hat{\theta} \in (L_k, U_k) \; \forall k \in \{1, 2, \dots, K\}$, then the estimated ranking $(\hat r_1, \hat r_2, \dots,\hat r_K)$ lies within the joint confidence region defined in Equation \ref{eq:klein_jcs} with probability 1.
+In line with this, they presented a proof demonstrating that if $(L_1,U_1),\dots,(L_K,U_K)$ are constructed such that the estimator $\hat{\theta}_k \in (L_k, U_k) \; \forall k \in \{1, 2, \dots, K\}$, then the estimated ranking $(\hat r_1, \hat r_2, \dots,\hat r_K)$ lies within the joint confidence region defined in Equation \ref{eq:klein_jcs} with probability 1.
 
-They also noted that the joint confidence region in Equation \ref{eq:klein_jcs} contains more than one possible
+They also noted that the joint confidence region in \ref{eq:klein_jcs} contains more than one possible
 overall ranking unless the values of $\theta_k$ differ from each other such that $(L_k, U_k) \cap (L_{k'}, U_{k'}) = \emptyset, \; \forall \; k\neq k'$. This implies that the unique overall ranking arises only from the narrowest attainable joint confidence region and it is the estimated ranking, $(\hat r_1, \hat r_2, \dots,\hat r_K)$.
 
 ## Joint confidence intervals for $\theta_k$s
 
-@klein used individual confidence intervals of the form $\hat \theta_k \pm z_{\alpha/2} SE_k^2$, with $\hat \theta_k \sim N(\theta_k, SE_k)$ for $k = 1, 2, \dots, K$, where $\theta_1, \theta_2, \dots \theta_k$ are unknown and $SE_1, SE_2, \dots, SE_k$ are known. It was noted that ${MOE_k} = {z_{\alpha/2} \times SE_k}$ where $SE_k = \frac{\sigma_k}{\sqrt{n}}$.
+@klein used individual confidence intervals of the form $\hat \theta_k \pm z_{\alpha/2} SE_k^2$, with $\hat \theta_k \sim N(\theta_k, SE_k)$ for $k \in \left\{1, 2, \dots, K\right\}$, where $\theta_1, \theta_2, \dots \theta_k$ are unknown and $SE_1, SE_2, \dots, SE_k$ are known. It was noted that ${MOE_k} = {z_{\alpha/2} \times SE_k}$ where $SE_k = \frac{\sigma_k}{\sqrt{n}}$.
 
-The first one can be traced from Theorem 1 of @sidak which states that for a vector of random variables of dimension $K$ $\mathbf{X} = (X_1, X_2, \dots, X_K)$ with $X_k \sim N\left(0, \sigma_k \right)$ for $x = 1, \dots, K$ and having an arbitrary correlation matrix $R = \left\{ \rho_{ik} \right\}$,
+The first one can be traced from Theorem 1 of @sidak which states that for a vector of random variables of dimension $K$, $\mathbf{X} = (X_1, X_2, \dots, X_K)$, with $\mathbf{X} \sim N_K\!\left(\mathbf{0}, \Sigma \right)$ and having an arbitrary correlation matrix $\mathbf{R} = \left\{ \rho_{kk'} \right\}_{k, k' =1}^K$,
 
 \begin{align}
 P(\lvert X_1\rvert \leq c_1, \; 
@@ -110,7 +109,7 @@ P(\lvert X_1\rvert \leq c_1, \;
 \prod^K_{k=1} P\left( \lvert X_k \rvert \leq c_k\right)
 \label{eq:corollary1}
 \end{equation}
-Now, for the simultaneous confidence intervals used by @klein, @sidak considered a random sample of $n$ vectors of $\mathbf{Y}_i = \left( Y_{i1}, Y_{i2}, \dots, Y_{iK}\right)',\; i=1, \dots, n$ where $Y_{ik} \sim N(\mu_k, \sigma_k^2)$ with known $\mu_k$ and unknown $\sigma_k^2$ and stated that
+For the simultaneous confidence intervals used by Klein, @sidak considered a random sample of $n$ vectors of $\mathbf{Y}_i = \left( Y_{i1}, Y_{i2}, \dots, Y_{iK}\right)',\; i=1, \dots, n$ where $Y_{ik} \sim N(\mu_k, \sigma_k^2)$ with known $\mu_k$ and unknown $\sigma_k^2$ and stated that
 
 \begin{equation}
 X_k = \frac{\left( \hat{\theta}_k - \mu_k\right)}{\sigma_k \; \diagup \sqrt{n}}, \quad k =1, \dots, K
@@ -121,7 +120,7 @@ where
 \begin{equation}
 \hat{\theta}_k = \bar {Y}_k = n^{-1} \sum^n_{i=1} Y_{ik}
 \end{equation}
-satisfies the requirements of Theorem 1 with $\sigma_1= \dots= \sigma_k = 1$. Hence, when constructing a simultaneous confidence interval for $\theta_k = \mu_k$ for $k=1, \dots, K$ with $(1-\alpha)$ confidence level, it follows from Equations \ref{eq:corollary1} and \ref{eq:standardized} that, 
+satisfies the requirements of Theorem 1 with $\sigma_1= \dots= \sigma_k = 1$. Hence, when constructing a simultaneous confidence interval for $\theta_k = \mu_k,\; \forall k \in \{1, 2, \dots, K\}$ with $(1-\alpha)$ confidence level, it follows from \ref{eq:corollary1} and \ref{eq:standardized} that, 
 
 \begin{align}
 \prod^K_{k=1} P\left( \lvert X_k \rvert \leq c_k\right) &=
@@ -129,7 +128,7 @@ satisfies the requirements of Theorem 1 with $\sigma_1= \dots= \sigma_k = 1$. He
 &=\prod^K_{k=1} P\left( \hat{\theta}_k-c_k \cdot SE_k \leq  \theta_k \leq  \hat{\theta}_k + c_k \cdot SE_k \right) \notag \\
 &=1-\alpha \notag
 \end{align}
-and assuming independence despite the presence of dependence, will always result in a confidence level at least at large as $1-\alpha$. $c_k$ can be selected so that $c_1 = \dots = c_K$ and $(1 - \gamma)^K = 1 - \alpha$, where $\gamma$ is the individual confidence level, are satisfied. Under this, a two-sided $100(1-\gamma) \%$ confidence interval for the parameter $\theta_k = \mu_k$ is given by
+and assuming independence, even when dependence is actually present, will always result in a confidence level at least as large as $1-\alpha$. $c_k$ can be selected so that $c_1 = \dots = c_K$ and $(1 - \gamma)^K = 1 - \alpha$, where $\gamma$ is the individual confidence level, are satisfied. Under these conditions, a two-sided $100(1-\gamma) \%$ confidence interval for the parameter $\theta_k = \mu_k$ is given by
 
 \begin{equation}
   I_{k(ind)} =
@@ -139,7 +138,7 @@ and assuming independence despite the presence of dependence, will always result
   \hat \theta_k + z_{\gamma/2}SE_k
   \right),
   \qquad
-  \text{for}\;k=1,2,\dots,K
+  \text{for}\;k \in \{1, 2, \dots, K\}
   \label{eq:ind}
 \end{equation}
 where 
