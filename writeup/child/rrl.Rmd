@@ -90,7 +90,65 @@ overall ranking unless the values of $\theta_k$ differ from each other such that
 
 ## Joint confidence intervals for $\theta_k$s
 
-@klein used individual confidence intervals of the form $\hat \theta_k \pm z_{\alpha/2} SE_k$. They assumed that $\hat \theta_1, \hat \theta_1, \dots, \hat \theta_K$ are independently distributed, with $\hat \theta_k \sim N(\theta_k, SE_k)$ for $k = 1, 2, \dots, K$, where $\theta_1, \theta_2, \dots \theta_k$ are unknown and $SE_1, SE_2, \dots, SE_k$ are known. It was noted that $SE_k = \frac{MOE_k}{z_{\alpha/2}}$. Two approaches were considered for constructing the joint confidence intervals: the Bonferroni correction and the independence assumption. The Bonferroni correction results in a conservative joint coverage for $\theta_1, \theta_1, \dots, \theta_K$ of at least $1-\alpha$. Intervals are as defined in Equation \ref{eq:bonf}.
+@klein used individual confidence intervals of the form $\hat \theta_k \pm z_{\alpha/2} SE_k^2$, with $\hat \theta_k \sim N(\theta_k, SE_k)$ for $k = 1, 2, \dots, K$, where $\theta_1, \theta_2, \dots \theta_k$ are unknown and $SE_1, SE_2, \dots, SE_k$ are known. It was noted that ${MOE_k} = {z_{\alpha/2} \times SE_k}$ where $SE_k = \frac{\sigma_k}{\sqrt{n}}$.
+
+The first one is adapted from Theorem 1 of @sidak which states that for a vector of random variables of dimension $K$ $\mathbf{X} = (X_1, X_2, \dots, X_K)$ with $X_k \sim N\left(0, \sigma_k \right)$ for $x = 1, \dots, K$ and having an arbitrary correlation matrix $R = \left\{ \rho_{ik} \right\}$,
+
+\begin{align}
+P(\lvert X_1\rvert \leq c_1, \; 
+\dots,
+\lvert X_K\rvert \leq c_K) &\geq \notag \\
+&P(\lvert X_1\rvert \leq c_1) \times
+P(\lvert X_2 \rvert \leq c_2, \dots, \lvert X_K \rvert \leq c_K), \notag \\ &\text{for any positive numbers}\; c_1, c_2, \dots, c_K 
+\end{align}
+He also showed by induction that under the assumptions of Theorem 1,
+
+\begin{equation}
+P(\lvert X_1\rvert \leq c_1, \; 
+\dots,
+\lvert X_K\rvert \leq c_K) \geq 
+\prod^K_{k=1} P\left( \lvert X_k \rvert \leq c_k\right)
+\label{eq:corollary1}
+\end{equation}
+Now, for the simultaneous confidence intervals used by @klein, @sidak considered a random sample of $n$ vectors of $\mathbf{Y}_i = \left( Y_{i1}, Y_{i2}, \dots, Y_{iK}\right)',\; i=1, \dots, n$ where $Y_{ik} \sim N(\mu_k, \sigma_k^2)$ with known $\mu_k$ and unknown $\sigma_k^2$ and stated that
+
+\begin{equation}
+X_k = \frac{\left( \hat{\theta}_k - \mu_k\right)}{\sigma_k \; \diagup \sqrt{n}}, \quad k =1, \dots, K
+\label{eq:standardized}
+\end{equation}
+where
+
+\begin{equation}
+\hat{\theta}_k = \bar {Y}_k = n^{-1} \sum^n_{i=1} Y_{ik}
+\end{equation}
+satisfies the requirements of Theorem 1 with $\sigma_1= \dots= \sigma_k = 1$. Hence, when constructing a simultaneous confidence interval for $\theta_k = \mu_k$ for $k=1, \dots, K$ with $(1-\alpha)$ confidence level, it follows from Equations \ref{eq:corollary1} and \ref{eq:standardized} that, 
+
+\begin{align}
+\prod^K_{k=1} P\left( \lvert X_k \rvert \leq c_k\right) &=
+\prod^K_{k=1} P\left( \hat{\theta}_k-c_k \cdot \frac{\sigma}{\sqrt{n}} \leq  \theta_k \leq  \hat{\theta}_k + c_k \cdot \frac{\sigma}{\sqrt{n}} \right) \\
+&=\prod^K_{k=1} P\left( \hat{\theta}_k-c_k \cdot SE_k \leq  \theta_k \leq  \hat{\theta}_k + c_k \cdot SE_k \right) \notag \\
+&=1-\alpha \notag
+\end{align}
+and assuming independence despite the presence of dependence, will always result in a confidence level at least at large as $1-\alpha$. $c_k$ can be selected so that $c_1 = \dots = c_K$ and $(1 - \gamma)^K = 1 - \alpha$, where $\gamma$ is the individual confidence level, are satisfied. Under this, a two-sided $100(1-\gamma) \%$ confidence interval for the parameter $\theta_k = \mu_k$ is given by
+
+\begin{equation}
+  I_{k(ind)} =
+  \left(
+  \hat \theta_k - z_{\gamma/2}SE_k,
+  \;
+  \hat \theta_k + z_{\gamma/2}SE_k
+  \right),
+  \qquad
+  \text{for}\;k=1,2,\dots,K
+  \label{eq:ind}
+\end{equation}
+where 
+\begin{equation}
+z_{\gamma/2} = \Phi^{-1}\left(1-\frac{\gamma}{2}\right) = \Phi^{-1}\left(1-\frac{1 - (1 - \alpha)^{1/K}}{2}\right)
+\end{equation}
+
+
+The Bonferroni correction results in a conservative joint coverage for $\theta_1, \theta_1, \dots, \theta_K$ of at least $1-\alpha$. Intervals are as defined in Equation  \ref{eq:bonf}.
 
 \begin{equation}
   \left(
@@ -102,19 +160,9 @@ overall ranking unless the values of $\theta_k$ differ from each other such that
   \text{for}\;k=1,2,\dots,K
   \label{eq:bonf}
 \end{equation}
-In contrast, for the independence assumption, intervals that simultaneously yield a coverage equal to $1-\alpha$ is given by Equation \ref{eq:ind},
 
-\begin{equation}
-  \left(
-  \hat \theta_k - z_{\gamma/2}SE_k,
-  \;
-  \hat \theta_k + z_{\gamma/2}SE_k
-  \right),
-  \qquad
-  \text{for}\;k=1,2,\dots,K
-  \label{eq:ind}
-\end{equation}
-where $\gamma = 1 - (1-\alpha)^{\frac{1}{K}}$.
+
+
 
 With the same assumptions, @jelle used Tukey's pairwise comparison procedure to come up with their $\left( 1-\alpha \right)$ joint confidence intervals for ranks defined in Equation \ref{eq:jelle}. They showed this to yield uniformly narrower intervals than that of Klein's approach, for the case when $SE$s are equal.
 
@@ -129,7 +177,12 @@ With the same assumptions, @jelle used Tukey's pairwise comparison procedure to 
 \end{equation}
 where $\gamma = 1 - (1-\alpha)^{\frac{1}{K}}$.
 
-@zhang, in their analysis of US age-adjusted cancer incidence rates and mortality rates in states and counties in states, calculated individual and overall simultaneous confidence intervals for age-adjusted rates health index using Monte Carlo method. Since the occurrence of many health conditions is related to age, they used age-adjusted rates to account for the dependence by minimizing its confounding effect. The age-adjusted rates provide a standard way of comparing rates for different population groups, allowing comparisons independent of their age structure. They extended their method to accommodate the case when only the rates and confidence intervals are available - making it closer to approaches by @klein and @jelle. 
+@zhang analyzed U.S. age-adjusted cancer incidence and mortality rates across states and counties by computing individual and overall simultaneous confidence intervals for age-adjusted health index using the Monte Carlo method. Because many health conditions are age-dependent, they used age-adjusted rates to minimize the confounding effect of age differences when comparing different population groups. They also extended their method to handle cases where only the rates and confidence intervals are available, aligning it more closely with the approaches of @klein and @jelle.
+
+$$
+
+$$
+
 
 ## Use case
 
