@@ -92,7 +92,7 @@ overall ranking unless the values of $\theta_k$ differ from each other such that
 
 @klein used individual confidence intervals of the form $\hat \theta_k \pm z_{\alpha/2} SE_k^2$, with $\hat \theta_k \sim N(\theta_k, SE_k)$ for $k = 1, 2, \dots, K$, where $\theta_1, \theta_2, \dots \theta_k$ are unknown and $SE_1, SE_2, \dots, SE_k$ are known. It was noted that ${MOE_k} = {z_{\alpha/2} \times SE_k}$ where $SE_k = \frac{\sigma_k}{\sqrt{n}}$.
 
-The first one is adapted from Theorem 1 of @sidak which states that for a vector of random variables of dimension $K$ $\mathbf{X} = (X_1, X_2, \dots, X_K)$ with $X_k \sim N\left(0, \sigma_k \right)$ for $x = 1, \dots, K$ and having an arbitrary correlation matrix $R = \left\{ \rho_{ik} \right\}$,
+The first one can be traced from Theorem 1 of @sidak which states that for a vector of random variables of dimension $K$ $\mathbf{X} = (X_1, X_2, \dots, X_K)$ with $X_k \sim N\left(0, \sigma_k \right)$ for $x = 1, \dots, K$ and having an arbitrary correlation matrix $R = \left\{ \rho_{ik} \right\}$,
 
 \begin{align}
 P(\lvert X_1\rvert \leq c_1, \; 
