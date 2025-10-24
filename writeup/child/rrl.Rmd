@@ -151,9 +151,9 @@ The Bonferroni correction results in a conservative joint coverage for $\theta_1
 
 \begin{equation}
   \left(
-  \hat \theta_k - z_{(\theta/K)/2}SE_k,
+  \hat \theta_k - z_{(\alpha/K)/2}SE_k,
   \;
-  \hat \theta_k + z_{(\theta/K)/2}SE_k
+  \hat \theta_k + z_{(\alpha/K)/2}SE_k
   \right),
   \qquad
   \text{for}\;k=1,2,\dots,K
@@ -178,9 +178,6 @@ where $\gamma = 1 - (1-\alpha)^{\frac{1}{K}}$.
 
 @zhang analyzed U.S. age-adjusted cancer incidence and mortality rates across states and counties by computing individual and overall simultaneous confidence intervals for age-adjusted health index using the Monte Carlo method. Because many health conditions are age-dependent, they used age-adjusted rates to minimize the confounding effect of age differences when comparing different population groups. They also extended their method to handle cases where only the rates and confidence intervals are available, aligning it more closely with the approaches of @klein and @jelle.
 
-$$
-
-$$
 
 
 ## Use case
