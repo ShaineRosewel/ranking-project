@@ -100,7 +100,7 @@ P(\lvert X_1\rvert \leq c_1, \;
 &P(\lvert X_1\rvert \leq c_1) \times
 P(\lvert X_2 \rvert \leq c_2, \dots, \lvert X_K \rvert \leq c_K), \notag \\ &\text{for any positive numbers}\; c_1, c_2, \dots, c_K 
 \end{align}
-He also showed by induction that under the assumptions of Theorem 1,
+He showed by induction that under the assumptions of Theorem 1,
 
 \begin{equation}
 P(\lvert X_1\rvert \leq c_1, \; 
@@ -109,10 +109,10 @@ P(\lvert X_1\rvert \leq c_1, \;
 \prod^K_{k=1} P\left( \lvert X_k \rvert \leq c_k\right)
 \label{eq:corollary1}
 \end{equation}
-For the simultaneous confidence intervals used by Klein, @sidak considered a random sample of $n$ vectors of $\mathbf{Y}_i = \left( Y_{i1}, Y_{i2}, \dots, Y_{iK}\right)',\; i=1, \dots, n$ where $Y_{ik} \sim N(\mu_k, \sigma_k^2)$ with known $\mu_k$ and unknown $\sigma_k^2$ and stated that
+For the simultaneous confidence intervals used by Klein, @sidak considered a random sample of $n$ vectors of $\mathbf{Y}_i = \left( Y_{i1}, Y_{i2}, \dots, Y_{iK}\right)',\; i=1, \dots, n$ where $Y_{ik} \sim N(\mu_k, \sigma_k^2)$ with unknown $\mu_k$ and known $\sigma_k^2$ and stated that
 
 \begin{equation}
-X_k = \frac{\left( \hat{\theta}_k - \mu_k\right)}{\sigma_k \; \diagup \sqrt{n}}, \quad k =1, \dots, K
+X_k = \frac{\left( \hat{\theta}_k - \mu_k\right)}{\sigma_k \; \diagup \sqrt{n}} \sim N\!(0, 1), \quad k =1, \dots, K
 \label{eq:standardized}
 \end{equation}
 where
@@ -120,7 +120,7 @@ where
 \begin{equation}
 \hat{\theta}_k = \bar {Y}_k = n^{-1} \sum^n_{i=1} Y_{ik}
 \end{equation}
-satisfies the requirements of Theorem 1 with $\sigma_1= \dots= \sigma_k = 1$. Hence, when constructing a simultaneous confidence interval for $\theta_k = \mu_k,\; \forall k \in \{1, 2, \dots, K\}$ with $(1-\alpha)$ confidence level, it follows from \ref{eq:corollary1} and \ref{eq:standardized} that, 
+satisfies the requirements of Theorem 1. Hence, when constructing a simultaneous confidence interval for $\theta_k = \mu_k,\; \forall k \in \{1, 2, \dots, K\}$ with $(1-\alpha)$ confidence level, it follows from \ref{eq:corollary1} and \ref{eq:standardized} that, 
 
 \begin{align}
 \prod^K_{k=1} P\left( \lvert X_k \rvert \leq c_k\right) &=
@@ -159,8 +159,6 @@ The Bonferroni correction results in a conservative joint coverage for $\theta_1
   \text{for}\;k=1,2,\dots,K
   \label{eq:bonf}
 \end{equation}
-
-
 
 
 With the same assumptions, @jelle used Tukey's pairwise comparison procedure to come up with their $\left( 1-\alpha \right)$ joint confidence intervals for ranks defined in Equation \ref{eq:jelle}. They showed this to yield uniformly narrower intervals than that of Klein's approach, for the case when $SE$s are equal.
