@@ -109,6 +109,8 @@ P(\lvert X_1\rvert \leq c_1, \;
 \prod^K_{k=1} P\left( \lvert X_k \rvert \leq c_k\right)
 \label{eq:corollary1}
 \end{equation}
+In words, this means that the smallest confidence level that can be attained will always be $1-\alpha$ and that in cases of presence of dependence when independence is assumed, coverage will always be more than $1-\alpha$.
+
 For the simultaneous confidence intervals used by Klein, @sidak considered a random sample of $n$ vectors of $\mathbf{Y}_i = \left( Y_{i1}, Y_{i2}, \dots, Y_{iK}\right)',\; i=1, \dots, n$ where $Y_{ik} \sim N(\mu_k, \sigma_k^2)$ with unknown $\mu_k$ and known $\sigma_k^2$ and stated that
 
 \begin{equation}
@@ -128,7 +130,14 @@ satisfies the requirements of Theorem 1. Hence, when constructing a simultaneous
 &=\prod^K_{k=1} P\left( \hat{\theta}_k-c_k \cdot SE_k \leq  \theta_k \leq  \hat{\theta}_k + c_k \cdot SE_k \right) \notag \\
 &=1-\alpha \notag
 \end{align}
-and assuming independence, even when dependence is actually present, will always result in a confidence level at least as large as $1-\alpha$. $c_k$ can be selected so that $c_1 = \dots = c_K$ and $(1 - \gamma)^K = 1 - \alpha$, where $\gamma$ is the individual confidence level, are satisfied. Under these conditions, a two-sided $100(1-\gamma) \%$ confidence interval for the parameter $\theta_k = \mu_k$ is given by
+As a result, this will always yield a confidence level for $\left( \hat{\theta}_k-c_k \cdot SE_k, \hat{\theta}_k + c_k \cdot SE_k \right)$ that is least as large as $1-\alpha$ - being equal  when independence holds and larger than $1-\alpha$ when dependence is actually present.
+
+For the choice of $c_k$, Dunn advised to assume independence with $c_1 = \dots = c_K = c_\gamma$ where $\gamma$ is the individual confidence level so that
+$$
+\prod^K_{k=1} P\left( \lvert X_k \rvert \leq c_k\right) = 
+\prod^K_{k=1} \left( 1-\gamma \right) = (1-\gamma)^K = 1-\alpha
+$$
+and deriving $\gamma$ returns $1-{(1-\alpha)}^{1/k}$. Under this condition, a two-sided $100(1-\gamma) \%$ confidence interval for the parameter $\theta_k = \mu_k$ is given by
 
 \begin{equation}
   I_{k(ind)} =
