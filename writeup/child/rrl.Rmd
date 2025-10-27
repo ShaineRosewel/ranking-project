@@ -132,12 +132,12 @@ satisfies the requirements of Theorem 1. Hence, when constructing a simultaneous
 \end{align}
 As a result, this will always yield a confidence level for $\left( \hat{\theta}_k-c_k \cdot SE_k, \hat{\theta}_k + c_k \cdot SE_k \right)$ that is least as large as $1-\alpha$ - being equal  when independence holds and larger than $1-\alpha$ when dependence is actually present.
 
-For the choice of $c_k$, Dunn advised to assume independence with $c_1 = \dots = c_K = c_\gamma$ where $\gamma$ is the individual confidence level so that
+For the choice of $c_k$, Šidák advised to assume independence with $c_1 = \dots = c_K = c_{\gamma}$ where $\gamma$ is the individual significance level so that
 $$
 \prod^K_{k=1} P\left( \lvert X_k \rvert \leq c_k\right) = 
 \prod^K_{k=1} \left( 1-\gamma \right) = (1-\gamma)^K = 1-\alpha
 $$
-and deriving $\gamma$ returns $1-{(1-\alpha)}^{1/k}$. Under this condition, a two-sided $100(1-\gamma) \%$ confidence interval for the parameter $\theta_k = \mu_k$ is given by
+and deriving $\gamma$ returns $1-{(1-\alpha)}^{1/K}$. Under this condition, the two-sided $100(1-\alpha) \%$ confidence interval for the parameter $\theta_k = \mu_k$ is simultaneously given for each $k\in \{1,\dots,K \}$ by
 
 \begin{equation}
   I_{k(ind)} =
@@ -155,10 +155,18 @@ where
 z_{\gamma/2} = \Phi^{-1}\left(1-\frac{\gamma}{2}\right) = \Phi^{-1}\left(1-\frac{1 - (1 - \alpha)^{1/K}}{2}\right)
 \end{equation}
 
-
-The Bonferroni correction results in a conservative joint coverage for $\theta_1, \theta_1, \dots, \theta_K$ of at least $1-\alpha$. Intervals are as defined in Equation  \ref{eq:bonf}.
+Šidák also suggested the use of Bonferroni inqeuality for the case when variances are unknown and unequal.This was demonstrated by @dunn as follows:
 
 \begin{equation}
+P(\lvert X_1\rvert \leq c_1, \; 
+\dots,
+\lvert X_K\rvert \leq c_K) \geq 
+1-2K\left[1-\Phi(c_\alpha)\right]=1-\alpha
+\end{equation}
+where solving for $c_\alpha=z_{\frac{\alpha}{2K}}$ gives $\Phi^{-1}\left(1-\frac{\alpha}{2K}\right)$ resulting in a conservative joint coverage for $\theta_1, \theta_2, \dots, \theta_K$ of at least $1-\alpha$. The corresponding two-sided $100(1-\alpha) \%$ confidence intervals are as defined in \ref{eq:bonf}.
+
+\begin{equation}
+  I_{k(bonf)} =
   \left(
   \hat \theta_k - z_{(\alpha/K)/2}SE_k,
   \;
