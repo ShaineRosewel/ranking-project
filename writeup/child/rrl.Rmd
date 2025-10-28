@@ -178,7 +178,7 @@ where solving for $c_\alpha=z_{\frac{\alpha}{2K}}$ gives $\Phi^{-1}\left(1-\frac
 \end{equation}
 
 
-With the same assumptions, @jelle used Tukey's pairwise comparison procedure to come up with their $\left( 1-\alpha \right)$ joint confidence intervals for ranks defined in Equation \ref{eq:jelle}. They showed this to yield uniformly narrower intervals than that of Klein's approach, for the case when $SE$s are equal.
+Other studies with similar concern include that of @jelle where using the same assumptions, Tukey's pairwise comparison procedure is used to come up with their $\left( 1-\alpha \right)$ joint confidence intervals for ranks defined in Equation \ref{eq:jelle}. They showed this to yield uniformly narrower intervals than that of Klein's approach, for the case when $SE$s are equal.
 
 
 \begin{equation}
@@ -193,14 +193,4 @@ where $\gamma = 1 - (1-\alpha)^{\frac{1}{K}}$.
 
 @zhang analyzed U.S. age-adjusted cancer incidence and mortality rates across states and counties by computing individual and overall simultaneous confidence intervals for age-adjusted health index using the Monte Carlo method. Because many health conditions are age-dependent, they used age-adjusted rates to minimize the confounding effect of age differences when comparing different population groups. They also extended their method to handle cases where only the rates and confidence intervals are available, aligning it more closely with the approaches of @klein and @jelle.
 
-
-
-## Use case
-
-*(literature on importance for accounting for correlation)*
-
-
-https://mgimond.github.io/Spatial/spatial-autocorrelation.html
-
-https://cran.r-project.org/web/packages/simstudy/vignettes/corelationmat.html
 
