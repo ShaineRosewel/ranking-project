@@ -1,4 +1,4 @@
-This section introduces the proposed methodologies to obtain confidence regions for the unknown overall true ranking. It extends approaches from @klein: the Bonferroni correction and the independence assumption by addressing the case when items ranked are assumed to be correlated to certain degrees. Section \@ref(sec:confregionalgo) discusses the algorithms employed to compute the joint confidence regions. This includes a non-rank and rank-based methods. It also has a subsection that lists correlation structures suitable to the intended use cases. The calculated joint confidence regions are then assessed on the basis of coverage and metrics that measure the tightness of estimated confidence regions. These are tackled in section \@ref(sec:evaluation).
+This section introduces the proposed methodologies to obtain confidence regions for the unknown overall true ranking. It adds to the list of approaches from @klein which uses the Bonferroni correction and the independence assumption, by addressing the case when items ranked are assumed correlated to certain degrees. Section \@ref(sec:confregionalgo) lists the algorithms employed to compute the joint confidence regions. This includes a non-rank and rank-based methods. It also has a subsection that discusses correlation structures suitable to the intended use cases. The calculated joint confidence regions are then assessed on the basis of coverage and metrics that measure the tightness of estimated confidence regions. These are tackled in section \@ref(sec:evaluation).
 
 ## Parametric bootstrap approaches for constructing joint confidence intervals for correlated $\theta_1, \dots, \theta_K$ {#sec:confregionalgo}
 
@@ -37,30 +37,13 @@ $\mathfrak{R} = \left[ \hat\theta_1 \pm \hat t \times \sigma_1  \right] \times \
 
 \begin{algorithm}[H]
     \caption{Computation of Joint Confidence Region} 
-    \label{alg:parametricbs_ci}
+    \label{alg:rank_asymp}
     Let the data consist of $\boldsymbol{\hat{\theta}} = \left( {\hat\theta_1, \hat\theta_2, \dots, \hat\theta_K} \right)$ and suppose $\boldsymbol{\Sigma}$
     \begin{algorithmic}[1]
     \For {$b = 1, 2, \dots, B$}
         \State \begin{minipage}[t]{\dimexpr\linewidth-\algorithmicindent}
             Generate $\boldsymbol{\hat\theta}^*_b = \left( \hat{\theta}^*_{b1}, \hat{\theta}^*_{b2}, \dots, \hat{\theta}^*_{bK} \right)' \sim N_K \left( \boldsymbol{\hat \theta}, \boldsymbol {\Sigma} \right)$ and let $\hat{\theta}_{b(1)}, \hat{\theta}_{b(2)}, \dots, \hat{\theta}_{b(K)}$ be the corresponding ordered values 
         \end{minipage}
-        \Statex \begin{minipage}{\linewidth}
-        \centering
-            \begin{tabular}{|c|c|c|c|c|}
-              \hline
-               & $k = 1$ & $k = 2$ & $\dots$ & $k = K$ \\
-              \hline
-              $b = 1$ & $\hat{\theta}^*_{1(1)}$ & $\hat{\theta}^*_{1(2)}$ & \dots & $\hat{\theta}^*_{1(K)}$ \\
-              \hline
-              $b = 2$ & $\hat{\theta}^*_{2(1)}$ & $\hat{\theta}^*_{2(2)}$ & \dots & $\hat{\theta}^*_{2(K)}$ \\
-              \hline
-              $\vdots$ & \vdots & \vdots & \dots & \vdots\\
-              \hline
-              $b = B$ & $\hat{\theta}^*_{B(1)}$ & $\hat{\theta}^*_{B(2)}$ & \dots & $\hat{\theta}^*_{B(K)}$ \\
-              \hline
-            \end{tabular}
-        \end{minipage}
-        \Statex{}
         \State \begin{minipage}[t]{\dimexpr\linewidth-\algorithmicindent}
             Compute $\hat\sigma^*_{b(k)} = \sqrt{\text{kth ordered value among} \ \left\{ \hat{\theta}^{*2}_{b1} + \sigma_1^2, \hat{\theta}^{*2}_{b2} + \sigma_2^2, \dots, \hat{\theta}^{*2}_{bK} + \sigma_K^2 \right\} - \hat {\theta}^{*2}_{(k)}}$
         \end{minipage}
@@ -84,7 +67,7 @@ $\hat\sigma_{(k)} = \sqrt{\text{kth ordered value among} \ \left\{ \hat{\theta}^
 
 \begin{algorithm}[H]
     \caption{Computation of Joint Confidence Region} 
-    \label{alg:secondlevelbs}
+    \label{alg:rank_secondlevelbs}
     \begin{algorithmic}[1]
         \For {$b = 1, 2, \dots, B$}
             \State \begin{minipage}[t]{\dimexpr\linewidth-\algorithmicindent} 
@@ -98,37 +81,6 @@ $\hat\sigma_{(k)} = \sqrt{\text{kth ordered value among} \ \left\{ \hat{\theta}^
                 \EndFor
         \State Compute
                     $t_b^* = \underset{1 \leq k <K}{\max} \Bigg \lvert \frac{\hat{\theta}^*_{b(k)}-\hat{\theta}_{(k)}}{\hat \sigma ^* _{b(k)}} \Bigg \rvert$
-          \Statex \begin{minipage}{\linewidth}
-          \centering
-              \begin{tabular}{|c|c|c|c|c|}
-                \hline
-                 & $c = 1$ & $c = 2$ & $\dots$ & $c = C$ \\
-                \hline
-                $k=1$ & $\hat{\theta}^{**}_{b11}$ & $\hat{\theta}^{**}_{b21}$ & \dots & $\hat{\theta}^{**}_{bC1}$ \\
-                \hline
-                $k=2$ & $\hat{\theta}^{**}_{b12}$ & $\hat{\theta}^{**}_{b22}$ & \dots & $\hat{\theta}^{**}_{bC2}$ \\
-                \hline
-                 \vdots & \vdots & \vdots & \dots & \vdots\\
-                \hline
-                 $k=K$ & $\hat{\theta}^{**}_{b1K}$ & $\hat{\theta}^{**}_{b2K}$ & \dots & $\hat{\theta}^{**}_{bCK}$ \\
-                \hline
-              \end{tabular}
-              $\Longrightarrow$
-              \begin{tabular}{|c|c|c|c|c|}
-                \hline
-                 & $c = 1$ & $c = 2$ & $\dots$ & $c = C$ \\
-                \hline
-                $k=1$ & $\hat{\theta}^{**}_{b1(1)}$ & $\hat{\theta}^{**}_{b2(1)}$ & \dots & $\hat{\theta}^{**}_{bC(1)}$ \\
-                \hline
-                $k=2$ & $\hat{\theta}^{**}_{b1(2)}$ & $\hat{\theta}^{**}_{b2(2)}$ & \dots & $\hat{\theta}^{**}_{bC(2)}$ \\
-                \hline
-                 \vdots & \vdots & \vdots & \dots & \vdots\\
-                \hline
-                 $k=K$ & $\hat{\theta}^{**}_{b1(K)}$ & $\hat{\theta}^{**}_{b2(K)}$ & \dots & $\hat{\theta}^{**}_{bC(K)}$ \\
-                \hline
-              \end{tabular}
-          \end{minipage}
-        \Statex{}
         \EndFor
         \State Compute the $\left( 1-\alpha \right)$-sample quantile of $t^*_1, t^*_1, \dots, t^*_B$, call this $\hat t$.
         \State The joint confidence region of $\theta_{(1)}, \theta_{(2)}, \dots, \theta_{(K)}$ is
@@ -145,11 +97,8 @@ $\displaystyle \hat \sigma_{(k)} = \frac{\sum^B_{b=1} \left( \hat \theta^*_{b(k)
 \end{algorithm}
 
 
-
-
-
-
 ### Correlation structures {#sec:corrstructures}
+
 
 #### Equicorrelated structure
 
@@ -165,11 +114,25 @@ $\displaystyle \hat \sigma_{(k)} = \frac{\sum^B_{b=1} \left( \hat \theta^*_{b(k)
   \label{eq:equicorrelation}
 \end{equation}
 
-#### AR-1 structure
-
 ## Evaluation {#sec:evaluation}
 
 Algorithm \ref{alg:parametricbs_cov} is employed to estimate the coverage, which corresponds to the proportion of replications in which the true parameter values are contained within the confidence intervals for all $K$ simultaneously. Likewise,the tightness of the joint confidence region is is assessed using three summary measures: the arithmetic mean ($T_1$), geometric mean ($T_2$), and the metric $T_3$ introduced by @wright, as presented in Equations \ref{eq:t1}–\ref{eq:t3}.
+
+Algorithm \ref{alg:nonrank_cov} is similar to Algorithm \ref{alg:parametricbs_cov} but computes for the coverage and average $T_1, T_2,$ and $T_3$ for the nonrank-based method.
+
+\begin{algorithm}[H]
+    \caption{Computation of Coverage Probability for Nonrank-based Method} 
+    \label{alg:nonrank_cov}
+    For given values of $\theta_1, \theta_2, \dots, \theta_K$ and $\boldsymbol{\Sigma}$
+    \begin{algorithmic}[1] % Start algorithmic block
+            \For {$\text{replications} = 1, 2, \dots, 5000$}
+            \State Generate $\boldsymbol{\hat\theta} \sim N_K(\boldsymbol{\theta}, \boldsymbol{\Sigma})$
+            \State Compute the rectangular confidence region $\mathfrak{R}$ using Algorithm \ref{alg:nonrank_ci}.
+            \State Check if $\left( \theta_1, \theta_2, \dots, \theta_K\right) \in \mathfrak{R}$ and compute $T_1, T_2$, and $T_3$.
+        \EndFor
+    \State Compute the proportion of times that the condition in step 4 is satisfied and the average of $T_1, T_2$, and $T_3$.
+    \end{algorithmic} % End algorithmic block
+\end{algorithm}
 
 \begin{equation}
   T_1 = \frac{1}{K} \sum^K_{k=1} \Big | \Lambda_{Ok} \Big|
@@ -188,29 +151,14 @@ Algorithm \ref{alg:parametricbs_cov} is employed to estimate the coverage, which
 \begin{algorithm}[H]
     \caption{Computation of Coverage Probability for Parametric Bootstrap} 
     \label{alg:parametricbs_cov}
-    For given values of $\theta_1, \theta_2, \dots, \theta_K$ and thus $\theta_{(1)}, \theta_{(2)}, \dots, \theta_{(K)}$
+    For given values of $\boldsymbol{\Sigma}$ and $\theta_1, \theta_2, \dots, \theta_K$ with corresponding $\theta_{(1)}, \theta_{(2)}, \dots, \theta_{(K)}$
     \begin{algorithmic}[1] % Start algorithmic block
             \For {$\text{replications} = 1, 2, \dots, 5000$}
-            \State Generate $\hat\theta_k \sim N(\theta_k, \sigma^2_k)$, for $k = 1, 2, \dots, K$
-            \State Compute the rectangular confidence region $\mathfrak{R}$ using Algorithm \ref{alg:parametricbs_ci}.
+            \State Generate $\boldsymbol{\hat\theta} \sim N_K(\boldsymbol{\theta}, \boldsymbol{\Sigma})$
+            \State Compute the rectangular confidence region $\mathfrak{R}$ using Algorithm \ref{alg:rank_asymp} and \ref{alg:rank_secondlevelbs}.
             \State Check if $\left( \theta_{(1)}, \theta_{(2)}, \dots, \theta_{(K)}\right) \in \mathfrak{R}$ and compute $T_1$, $T_2$, and $T_3$
         \EndFor
     \State Compute the proportion of times that the condition in step 4 is satisfied and the average of $T_1, T_2$, and $T_3$.
     \end{algorithmic} % End algorithmic block
 \end{algorithm}
 
-Algorithm \ref{alg:nonrank_cov} is similar to Algorithm \ref{alg:parametricbs_cov} but computes for the coverage and average $T_1, T_2,$ and $T_3$ for the nonrank-based method.
-
-\begin{algorithm}[H]
-    \caption{Computation of Coverage Probability for Nonrank-based Method} 
-    \label{alg:nonrank_cov}
-    For given values of $\theta_1, \theta_2, \dots, \theta_K$ and $\boldsymbol{\Sigma}$
-    \begin{algorithmic}[1] % Start algorithmic block
-            \For {$\text{replications} = 1, 2, \dots, 5000$}
-            \State Generate $\boldsymbol{\hat\theta} \sim N_K(\boldsymbol{\theta}, \boldsymbol{\Sigma})$
-            \State Compute the rectangular confidence region $\mathfrak{R}$ using Algorithm \ref{alg:nonrank_ci}.
-            \State Check if $\left( \theta_1, \theta_2, \dots, \theta_K\right) \in \mathfrak{R}$ and compute $T_1, T_2$, and $T_3$.
-        \EndFor
-    \State Compute the proportion of times that the condition in step 4 is satisfied and the average of $T_1, T_2$, and $T_3$.
-    \end{algorithmic} % End algorithmic block
-\end{algorithm}
