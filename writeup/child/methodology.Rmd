@@ -7,8 +7,7 @@ The proposed approaches follow those of @klein and @jelle, which do not require 
 \begin{equation}
   \boldsymbol{\Sigma} = \boldsymbol{\Delta}^{1/2} \boldsymbol{\rho} \boldsymbol{\Delta}^{1/2}; \quad \boldsymbol{\Delta} = \text{diag} \left\{ \sigma^2_1, \sigma^2_2, \dots, \sigma^2_K \right\}
   \label{eq:sigma_matrix}
-\end{equation}
-with known $\sigma_k$'s and $\boldsymbol{\rho}$. This form of $\boldsymbol{\Sigma}$ will be used in sections \@ref(sec:nonrankbased) and \@ref(sec:rankbased).
+\end{equation} with known $\sigma_k$'s and $\boldsymbol{\rho}$. This form of $\boldsymbol{\Sigma}$ will be used in sections \@ref(sec:nonrankbased) and \@ref(sec:rankbased).
 
 ### Nonrank-based method {#sec:nonrankbased}
 
@@ -30,8 +29,9 @@ $\mathfrak{R} = \left[ \hat\theta_1 \pm \hat t \times \sigma_1  \right] \times \
     \end{algorithmic} 
 \end{algorithm}
 
+### Rank-based methods {#sec:rankbased}
 
-### Rank-based methods  {#sec:rankbased}
+\FloatBarrier
 
 #### Asymptotic variance
 
@@ -62,6 +62,8 @@ $\hat\sigma_{(k)} = \sqrt{\text{kth ordered value among} \ \left\{ \hat{\theta}^
 \end{minipage}
     \end{algorithmic} 
 \end{algorithm}
+
+\FloatBarrier
 
 #### Variance from second-level bootstrap
 
@@ -96,22 +98,32 @@ $\displaystyle \hat \sigma_{(k)} = \frac{\sum^B_{b=1} \left( \hat \theta^*_{b(k)
     \end{algorithmic} 
 \end{algorithm}
 
-
 ### Correlation structures {#sec:corrstructures}
 
-
-#### Equicorrelated structure
+This section discusses the correlation structures considered in the simulation. For simplicity, an equicorrelation matrix is included. This assumes that the $k$ variables are equally correlated, such that $\rho_{kk'}=r$ where $r \in [-1,1]$. In matrix form,
 
 \begin{equation}
-  \boldsymbol{\rho} = \left( 1-\rho \right) \mathbf{I}_K + \rho \boldsymbol{1}_K \boldsymbol{1}'_K
+  \mathbf{R}_{eq} = \left( 1-r \right) \mathbf{I}_K + r \boldsymbol{1}_K \boldsymbol{1}'_K = 
+\begin{bmatrix}
+1 & r & \cdots & r \\
+r & 1 & \cdots & r \\
+\vdots & \vdots & \ddots & \vdots \\
+r & r & \cdots & 1
+\end{bmatrix}_{K \times K}
   \label{eq:equicorrelation}
 \end{equation}
 
-#### Block diagonal structure
+In a block correlation matrix, the correlation between any two variables is solely determined by the block to which the two variables belong. This results in a matrix with a common correlation coefficient within each block. It can be thought of as 
 
 \begin{equation}
-  \boldsymbol{\rho_g} = \left( 1-\rho_g \right) \mathbf{I}_{K_g} + \rho_g \boldsymbol{1}_{K_g} \boldsymbol{1}'_{K_g}
-  \label{eq:equicorrelation}
+  \mathbf{R}_{block} = 
+\begin{bmatrix}
+\mathbf{R}_{eq,\rho_{11}} & \rho_{12}\mathbf{1}_{n_1 \times n_2} & \cdots & \rho_{1G}\mathbf{1}_{n_1 \times n_G} \\
+\rho_{12}\mathbf{1}_{n_1 \times n_2} & \mathbf{R}_{eq,\rho_{22}} & \cdots & \rho_{2G}\mathbf{1}_{n_2 \times n_G} \\
+\vdots & \vdots & \ddots & \vdots \\
+\rho_{1G}\mathbf{1}_{n_1 \times n_G} & \rho_{2G}\mathbf{1}_{n_2 \times n_G} & \cdots & \mathbf{R}_{eq,\rho_{GG}}
+\end{bmatrix}_{K \times K}
+  \label{eq:blockcorrelation}
 \end{equation}
 
 ## Evaluation {#sec:evaluation}
@@ -137,8 +149,7 @@ Algorithm \ref{alg:nonrank_cov} is similar to Algorithm \ref{alg:parametricbs_co
 \begin{equation}
   T_1 = \frac{1}{K} \sum^K_{k=1} \Big | \Lambda_{Ok} \Big|
   \label{eq:t1}
-\end{equation}
-\begin{equation}
+\end{equation} \begin{equation}
   T_2 = \prod^K_{k=1} \Big | \Lambda_{Ok} \Big|
   \label{eq:t2}
 \end{equation}
@@ -161,4 +172,3 @@ Algorithm \ref{alg:nonrank_cov} is similar to Algorithm \ref{alg:parametricbs_co
     \State Compute the proportion of times that the condition in step 4 is satisfied and the average of $T_1, T_2$, and $T_3$.
     \end{algorithmic} % End algorithmic block
 \end{algorithm}
-
