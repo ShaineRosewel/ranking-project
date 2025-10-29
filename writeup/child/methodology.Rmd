@@ -100,28 +100,35 @@ $\displaystyle \hat \sigma_{(k)} = \frac{\sum^B_{b=1} \left( \hat \theta^*_{b(k)
 
 ### Correlation structures {#sec:corrstructures}
 
-This section discusses the correlation structures considered in the simulation. For simplicity, an equicorrelation matrix is included. This assumes that the $k$ variables are equally correlated, such that $\rho_{kk'}=r$ where $r \in [-1,1]$. In matrix form,
+This section discusses the correlation structures considered in the simulation. Since the estimation of correlation matrices is beyond the scope of this study, it is imperative to assure that any assumed matrix of correlation is indeed valid a correlation matrix $\mathbf{R}$ satisfying the following: 
+
+- $\mathbf{R}$ is nonnegative definite (or positive semidefinite)
+- $0 \leq \lvert\mathbf{R}\rvert \leq 1$
+- If $\lvert\mathbf{R}\rvert = 1$ then $\mathbf{R} = \mathbf{I}$
+
+
+For simplicity, an equicorrelation matrix is included. This assumes that the $k$ variables are equally correlated, such that $\rho_{kk'}=\rho$ where $\rho \in [-1,1]$. In matrix form,
 
 \begin{equation}
-  \mathbf{R}_{eq} = \left( 1-r \right) \mathbf{I}_K + r \boldsymbol{1}_K \boldsymbol{1}'_K = 
+  \mathbf{R}_{eq} = \left( 1-\rho \right) \mathbf{I}_K + \rho \boldsymbol{1}_K \boldsymbol{1}'_K = 
 \begin{bmatrix}
-1 & r & \cdots & r \\
-r & 1 & \cdots & r \\
+1 & \rho & \cdots & \rho \\
+\rho & 1 & \cdots & \rho \\
 \vdots & \vdots & \ddots & \vdots \\
-r & r & \cdots & 1
+\rho & \rho & \cdots & 1
 \end{bmatrix}_{K \times K}
   \label{eq:equicorrelation}
 \end{equation}
 
-In a block correlation matrix, the correlation between any two variables is solely determined by the block to which the two variables belong. This results in a matrix with a common correlation coefficient within each block. It can be thought of as 
+In a block correlation matrix $\mathbf{R}_{block}$ with $G$ blocks, the correlation between any two variables is determined by the block to which the two variables belong. This is represented by equicorrelation matrices or within block correlations, $\mathbf{R}_{eq, \rho_{gg}}$ with $\rho=\rho_{gg}$ for $g\in\{1, \dots, G\}$ along the diagonal and the rest in the off-diagonals are between block correlations represented by $\mathbf{C}_{g'g} = \mathbf{C}_{gg'} = \rho_{gg'}\mathbf{1}_{n_g \times n_{g'}}$ where $g\neq g'$ for $g,g'\in\{1, \dots, G\}$ and $\sum_{g=1}^G n_g = K$ (@canonical). 
 
 \begin{equation}
   \mathbf{R}_{block} = 
 \begin{bmatrix}
-\mathbf{R}_{eq,\rho_{11}} & \rho_{12}\mathbf{1}_{n_1 \times n_2} & \cdots & \rho_{1G}\mathbf{1}_{n_1 \times n_G} \\
-\rho_{12}\mathbf{1}_{n_1 \times n_2} & \mathbf{R}_{eq,\rho_{22}} & \cdots & \rho_{2G}\mathbf{1}_{n_2 \times n_G} \\
+\mathbf{R}_{eq,\rho_{11}} & \mathbf{C}_{12} & \cdots & \mathbf{C}_{1G} \\
+\mathbf{C}_{11} & \mathbf{R}_{eq,\rho_{22}} & \cdots & \mathbf{C}_{2G} \\
 \vdots & \vdots & \ddots & \vdots \\
-\rho_{1G}\mathbf{1}_{n_1 \times n_G} & \rho_{2G}\mathbf{1}_{n_2 \times n_G} & \cdots & \mathbf{R}_{eq,\rho_{GG}}
+\mathbf{C}_{G1} & \mathbf{C}_{G2} & \cdots & \mathbf{R}_{eq,\rho_{GG}}
 \end{bmatrix}_{K \times K}
   \label{eq:blockcorrelation}
 \end{equation}
