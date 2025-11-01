@@ -1,4 +1,14 @@
-Ranks are typically based on estimates obtained along with their measure of uncertainty, expressed as confidence intervals. Individually, these intervals provide information on the possible range of each rank. However, in most applications, the primary interest lies in comparing all ranks simultaneously rather than reporting them in isolation. 
+Ranks are commonly of interest because they allow readers to compare populations based on estimates of interest. For example, top  universities across the globe may be identified based on their institutional performance indicator; states may receive appropriate intervention according to their relative rank based on average travel times to work, and senatorial candidates who are likely to be granted a seat in the office can be reported by public opinion polling bodies prior to elections. Since ranks are computed from estimates rather than from their true, unknown values, it is implicit that uncertainty—expressed through confidence intervals—should also be quantified. Individually, these intervals provide information on the possible range of each rank while collectively, they facilitate comparing all ranks simultaneously rather than reporting them in isolation. 
+
+current works from independent to dependent
+
+why it makes sense to account for correlation
+
+what happens to existing approaches when we use the despite correlation presence (conservative vs liberal).
+
+with that in mind, we try to address this case.
+
+Hence the topic title.
 
 ## Objective
 

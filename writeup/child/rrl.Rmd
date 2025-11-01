@@ -1,6 +1,12 @@
-## Joint confidence region for an overall ranking
+## Rank Uncertainty and Joint Confidence Regions
 
-@klein proposed an approach for quantifying overall rank uncertainty following the estimation of respondents' average travel time to work in each $K$ sampled geographical area. In their paper, rank for the $k$th population is defined as 
+In the problem of estimating ranks of several unknown real-valued parameters $\theta_1,\dots, \theta_K$, $\mathbf{r} \left(\hat{\theta}_1, \dots, \hat{\theta}_K\right)$ is a point estimate of $\mathbf{r} \left(\theta_1, \dots, \theta_K\right)$. Naturally, this should be accompanied by a measure of uncertainty. Different approaches to quantify such uncertainty have been proposed in the literature. Some of them begin with the estimated values at hand while others employed techniques to first obtain estimates, then quantify uncertainty. Among the various approaches, the work of @klein is discussed in greater detail, as it closely relates to the present study. 
+
+## Klein’s Joint Confidence Region for Overall Ranking Uncertainty
+
+### Calculation of Overall Rank Uncertainty
+
+@klein proposed an approach for quantifying overall rank uncertainty using estimates of respondents’ average travel time to work in each of $K$ sampled geographical areas. In their paper, rank for the $k$th population is defined as 
 
 \begin{equation}
   r_k = \sum^K_{j=1} I(\theta_j \leq \theta_k) = 1 + \sum_{j:j \neq k} I(\theta_j \leq \theta_k), \qquad \text{for} \; k = 1, \dots, K
@@ -87,7 +93,7 @@ In line with this, they presented a proof demonstrating that if $(L_1,U_1),\dots
 They also noted that the joint confidence region in \ref{eq:klein_jcs} contains more than one possible
 overall ranking unless the values of $\theta_k$ differ from each other such that $(L_k, U_k) \cap (L_{k'}, U_{k'}) = \emptyset, \; \forall \; k\neq k'$. This implies that the unique overall ranking arises only from the narrowest attainable joint confidence region and it is the estimated ranking, $(\hat r_1, \hat r_2, \dots,\hat r_K)$.
 
-## Joint confidence intervals for $\theta_k$s
+### Construction of Joint Confidence Intervals for Parameters
 
 @klein used individual confidence intervals of the form $\hat \theta_k \pm z_{\alpha/2} SE_k^2$, with $\hat \theta_k \sim N(\theta_k, SE_k)$ for $k \in \left\{1, 2, \dots, K\right\}$, where $\theta_1, \theta_2, \dots \theta_k$ are unknown and $SE_1, SE_2, \dots, SE_k$ are known. It was noted that ${MOE_k} = {z_{\alpha/2} \times SE_k}$ where $SE_k = \frac{\sigma_k}{\sqrt{n}}$.
 
@@ -177,8 +183,11 @@ where solving for $c_\alpha=z_{\frac{\alpha}{2K}}$ gives $\Phi^{-1}\left(1-\frac
   \label{eq:bonf}
 \end{equation}
 
+While Klein’s approach focuses on constructing a conservative joint confidence region, several alternative methods have been developed to quantify rank uncertainty under similar assumptions.
 
-Other studies with similar concern include that of @jelle where using the same assumptions, Tukey's pairwise comparison procedure is used to come up with their $\left( 1-\alpha \right)$ joint confidence intervals for ranks defined in Equation \ref{eq:jelle}. They showed this to yield uniformly narrower intervals than that of Klein's approach, for the case when $SE$s are equal.
+## Alternative Approaches for Ranking Uncertainty
+
+Other studies with similar concern include that of @jelle where using the same assumptions, Tukey's pairwise comparison procedure is used to come up with their $\left( 1-\alpha \right)$ joint confidence intervals for ranks in  \ref{eq:jelle}. They showed this to yield uniformly narrower intervals than that of Klein's approach, for the case when $SE$s are equal.
 
 
 \begin{equation}
@@ -191,6 +200,12 @@ Other studies with similar concern include that of @jelle where using the same a
 \end{equation}
 where $\gamma = 1 - (1-\alpha)^{\frac{1}{K}}$.
 
-@zhang analyzed U.S. age-adjusted cancer incidence and mortality rates across states and counties by computing individual and overall simultaneous confidence intervals for age-adjusted health index using the Monte Carlo method. Because many health conditions are age-dependent, they used age-adjusted rates to minimize the confounding effect of age differences when comparing different population groups. They also extended their method to handle cases where only the rates and confidence intervals are available, aligning it more closely with the approaches of @klein and @jelle.
+Some approaches explicitly accounted for dependencies in the data. @spiegel used multilevel models, in the context of ranking education and health institutions (e.g., schools, hospitals, medical practitioners, etc.), to address the hierarchical nature of data structures associated with institutional performance. Rank uncertainty was presented through a visualization in which non-overlap of confidence intervals conveyed a significant difference between compared institutions (@healy). In an alternative approach, along with institution effect estimation through Gibbs sampling, the rank was obtained for each iteration. Their example illustrated that while the multilevel model made individual estimates more accurate, it also had the effect of making the ranks even more uncertain.
+
+@zhang analyzed U.S. age-adjusted cancer incidence and mortality rates across states and counties by computing individual and overall simultaneous confidence intervals for age-adjusted health index using the Monte Carlo method. Because many health conditions are age-dependent, they used age-adjusted rates to minimize the confounding effect of age differences when comparing different population groups. They also extended their method to handle cases where only the rates and confidence intervals are available, aligning it more closely with the approach of @klein.
+
+@miller addressed the idea that dependence might arise from some cases similar to 
+
+
 
 
