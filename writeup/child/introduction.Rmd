@@ -1,20 +1,16 @@
-Ranks are commonly of interest because they allow readers to compare populations based on estimates of interest. For example, top  universities across the globe may be identified based on their institutional performance indicator; states may receive appropriate intervention according to their relative rank based on average travel times to work, and senatorial candidates who are likely to be granted a seat in the office can be reported by public opinion polling bodies prior to elections. Since ranks are computed from estimates rather than from their true, unknown values, it is implicit that uncertainty—expressed through confidence intervals—should also be quantified. Individually, these intervals provide information on the possible range of each rank while collectively, they facilitate comparing all ranks simultaneously rather than reporting them in isolation. 
+Ranks are commonly of interest because they allow readers to compare populations based on estimates of interest. For example, top  universities across the globe may be identified based on their institutional performance indicator; states may receive appropriate intervention according to their relative rank based on average travel times to work, and senatorial candidates who are likely to be granted a seat in the office can be reported by public opinion polling bodies prior to elections. Since ranks are computed from estimates rather than from their true, unknown values, it is implicit that their overall uncertainty—expressed through joint confidence intervals—should also be quantified. Individually, these intervals provide information on the possible range of each rank while collectively, they facilitate comparing all ranks simultaneously rather than reporting them in isolation. 
 
-current works from independent to dependent
+Several studies have addressed this concern through different techniques. Some approaches use only the estimates and their standard errors (e.g., @klein, @jelle, @romano, @carling, @johan), constructing joint confidence intervals either for the estimated quantities or for the ranks themselves. Others incorporate model-based uncertainty to account for dependencies inherent in the data structure. This includes the works of @spiegel, who utilized conditioning through multilevel models where the ranked quantities are treated as residual effects. @miller, on the other hand, developed a bootstrap algorithm that allows for the assumption of independence despite its potential violation. 
 
-why it makes sense to account for correlation
+Assuming independence when constructing joint confidence regions for estimators that are, in fact, correlated may lead to overly conservative and thus wider intervals, implying greater uncertainty—contrary to what is desired. It is therefore important to account for potential dependencies, as demonstrated by @spiegel. However, in their case, the estimators were treated as latent variables. In contrast, the present work focuses on estimators that are observable or directly measurable from the data.
 
-what happens to existing approaches when we use the despite correlation presence (conservative vs liberal).
-
-with that in mind, we try to address this case.
-
-Hence the topic title.
+A potential alternative approach, which to our knowledge has not yet been explored, is to allow for a certain degree of correlation and develop an algorithm capable of handling such dependencies while maintaining coverage close to the nominal level and producing relatively narrow joint confidence intervals. This method relies solely on the estimators and their corresponding standard errors. Although it also employs a parametric bootstrap—commonly used to estimate overall rank uncertainties (e.g., @romano, @carling, @johan)—our implementation differs from these existing approaches.
 
 ## Objective
 
 This research builds upon @klein's methodology by extending the set of joint confidence intervals used to capture uncertainty in overall rankings. In particular, it intends to:
 
-- Construct joint confidence intervals that utilize parametric bootstrap to obtain a tighter overall uncertainty for ranks.
+- Construct joint confidence intervals that utilize parametric bootstrap to obtain a narrow overall uncertainty for ranks.
 - Establish joint confidence intervals for cases when ranks are assumed to be correlated.
 - Evaluate the performance of the proposed approaches under different standard deviations, correlation structures, and dimensionalities.
 

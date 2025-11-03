@@ -215,7 +215,7 @@ C &= \prod_{(k,k')\in S}
 \end{split}
 \label{eq:romano_ci}
 \end{equation}
-They added that if the estimators $\hat{\theta}_1, \dots, \hat{\theta}_K$ are jointly asymptotically normally distributed, then the quantiles $L^{-1}_{kk'}$, can be computed from the limiting distributions of the max-statistics shown in \ref{eq:romano_quantile}, through resampling methods like the bootstrap.
+They added that if the estimators $\hat{\theta}_1, \dots, \hat{\theta}_K$ are jointly asymptotically normally distributed, then the quantiles $L^{-1}_{kk'}$, can be computed from the limiting distributions of the max-statistics shown in \ref{eq:romano_quantile}, through resampling methods. In particular, they obtained the critical value by repeatedly drawing $K$ standard normal variates, recording the maximum for each draw, and taking the relevant quantile of these maxima.
 
 \begin{equation}
   L(x) = P\left\{ \underset{(k,k')\in S}{\max}
@@ -225,7 +225,7 @@ They added that if the estimators $\hat{\theta}_1, \dots, \hat{\theta}_K$ are jo
   \right\}
   \label{eq:romano_quantile}
 \end{equation}
-It was mentioned that their approach does not require $\hat{\theta}_1, \dots, \hat{\theta}_K$ to be independent. Moreover, when the population $\mathbf{P}$ is a set of distributions on $\mathbb{R}^p$ satisfying uniform integrability, the bootstrap leads to confidence sets that satisfy \ref{eq:romano_coverage} when $\boldsymbol{\theta}$ is the population mean and $\hat{\boldsymbol{\theta}}$ is the sample mean.
+It was mentioned that their approach does not require $\hat{\theta}_1, \dots, \hat{\theta}_K$ to be independent. Moreover, when the population $\mathbf{P}$ is a set of distributions on $\mathbb{R}^p$ satisfying uniform integrability, using bootstrap leads to confidence sets that satisfy \ref{eq:romano_coverage} when $\boldsymbol{\theta}$ is the population mean and $\hat{\boldsymbol{\theta}}$ is the sample mean.
 
 \begin{equation}
 \underset{n \rightarrow \infty}{\lim \inf}\; \underset{P \in \mathbf{P}}{\inf}
