@@ -1,33 +1,34 @@
-## Rank Uncertainty and Joint Confidence Regions
+## Rank Uncertainty
 
-In the problem of estimating ranks of several unknown real-valued parameters $\theta_1,\dots, \theta_K$, $\mathbf{r} \left(\hat{\theta}_1, \dots, \hat{\theta}_K\right)$ is a point estimate of $\mathbf{r} \left(\theta_1, \dots, \theta_K\right)$. Naturally, this should be accompanied by a measure of uncertainty. Different approaches to quantify such uncertainty have been proposed in the literature. Some of them begin with the estimated values at hand while others employed techniques to first obtain estimates, then quantify uncertainty. Among the various approaches, the work of @klein is discussed in greater detail, as it closely relates to the present study. 
+In the problem of estimating ranks of several unknown real-valued parameters $\theta_1,\dots, \theta_K$, $\hat {\mathbf{r}} = \mathbf{r} (\hat{\theta}_1, \dots, \hat{\theta}_K)$ is a point estimate of $\mathbf{r} \left(\theta_1, \dots, \theta_K\right)$. Naturally, this should be accompanied by a measure of uncertainty. Different approaches to quantify such uncertainty have been proposed in the literature. Some of them begin with the estimated values at hand while others employed techniques to first obtain estimates, then quantify uncertainty. Among the various approaches, the work of @klein is discussed in greater detail, as it closely relates to the present study. 
+
+## Joint Confidence Regions
 
 ## Klein’s Joint Confidence Region for Overall Ranking Uncertainty
 
+@klein does not require knowledge of the sampling design or estimation procedure for each population. Instead, they used the estimates and their standard errors to construct joint confidence regions from which rank uncertainty is derived. This uses the idea that uncertainty in the ranks is determined by uncertainty in the parameters.
+
 ### Calculation of Overall Rank Uncertainty
 
-@klein proposed an approach for quantifying overall rank uncertainty using estimates of respondents’ average travel time to work in each of $K$ sampled geographical areas. In their paper, rank for the $k$th population is defined as 
+@klein quantified overall rank uncertainty using estimates of respondents’ average travel time to work in each of $K$ sampled geographical areas. They defined rank for the $k$th population as 
 
 \begin{equation}
   r_k = \sum^K_{j=1} I(\theta_j \leq \theta_k) = 1 + \sum_{j:j \neq k} I(\theta_j \leq \theta_k), \qquad \text{for} \; k = 1, \dots, K
   \label{eq:rank}
 \end{equation}
-
-Meanwhile, the estimated overall ranking is computed from the estimates $\hat{\theta}_1, \dots, \hat{\theta}_K$, and expressed as $\left(\hat{r}_1, \dots, \hat{r}_K\right)$, where
-
-\begin{equation}
-  \hat r_k = 1 + \sum_{j:j \neq k} I(\hat \theta_j \leq \hat \theta_k), \qquad \text{for} \; k = 1, \dots, K
-  \label{eq:estimatedrank}
-\end{equation}
-
-The true values, $\theta_1, \dots, \theta_K$ are unknown. For this, they assumed that for each $k \in \left\{1, 2, \dots, K\right\}$, there exists $L_k$ and $U_k$ such that
-
+Since true values, $\theta_1, \dots, \theta_K$ are unknown, they assumed that for each $k \in \left\{1, 2, \dots, K\right\}$, there exists $L_k$ and $U_k$ such that
 
 \begin{equation}
   \theta_k \in \left( L_k, U_k \right)
   \label{eq:theta_in}
 \end{equation}
-and defined the following:
+That is, they constructed the joint confidence region of the estimates $\hat{\theta}_1, \dots, \hat{\theta}_K$ using their corresponding standard errors to estimate $\hat {\mathbf{r}} = \left(\hat{r}_1, \dots, \hat{r}_K\right)$, where
+
+\begin{equation}
+  \hat r_k = 1 + \sum_{j:j \neq k} I(\hat \theta_j \leq \hat \theta_k), \qquad \text{for} \; k = 1, \dots, K
+  \label{eq:estimatedrank}
+\end{equation}
+The estimated overall ranking is then computed from this joint confidence region using the definitions in \ref{eq:conf_set}.
 
 \begin{equation}
     \left.
@@ -40,7 +41,7 @@ and defined the following:
     \right\}
   \label{eq:conf_set}
 \end{equation}
-Equation \ref{eq:conf_set} can likewise be expressed in words as follows:
+\ref{eq:conf_set} can likewise be expressed in words as follows:
 
 1. $j \in \Lambda_{Lk} \leftrightarrow \left(L_j, U_j\right) \cap \left(L_k, U_k\right) = \emptyset$ and $\left(L_j, U_j\right)$ lies to the left of $\left(L_k, U_k\right)$;
 2. $j \in \Lambda_{Rk} \leftrightarrow \left(L_j, U_j\right) \cap \left(L_k, U_k\right) = \emptyset$ and $\left(L_j, U_j\right)$ lies to the right of $\left(L_k, U_k\right)$;
@@ -61,7 +62,7 @@ The above implies that for each $k \in \left\{1, 2, \dots, K\right\}$,
 \end{equation}
 Equation \ref{eq:conf_set_rk} demonstrates that a smaller $\lvert \Lambda_{Ok} \rvert$ results in smaller difference between $U_k$ and $L_k$. Collectively, for all $k$, this yields narrower confidence intervals for the overall ranks, which is desirable.
 
-They also assumed a conservative confidence region whose joint coverage probability is at least as large as the nominal level, $1-\alpha$, as shown in Equation \ref{eq:joint_cov}.
+They assumed a conservative confidence region whose joint coverage probability is at least as large as the nominal level, $1-\alpha$, as shown in Equation \ref{eq:joint_cov}.
 
 \begin{equation}
   P\left[ \bigcap^K_{k=1} \left\{ \theta_k \in \left(L_k, U_k\right) \right\} \right] \geq 1-\alpha
@@ -90,8 +91,7 @@ This yields the joint confidence set for the overall ranking, as defined in Equa
 
 In line with this, they presented a proof demonstrating that if $(L_1,U_1),\dots,(L_K,U_K)$ are constructed such that the estimator $\hat{\theta}_k \in (L_k, U_k) \; \forall k \in \{1, 2, \dots, K\}$, then the estimated ranking $(\hat r_1, \hat r_2, \dots,\hat r_K)$ lies within the joint confidence region defined in Equation \ref{eq:klein_jcs} with probability 1.
 
-They also noted that the joint confidence region in \ref{eq:klein_jcs} contains more than one possible
-overall ranking unless the values of $\theta_k$ differ from each other such that $(L_k, U_k) \cap (L_{k'}, U_{k'}) = \emptyset, \; \forall \; k\neq k'$. This implies that the unique overall ranking arises only from the narrowest attainable joint confidence region and it is the estimated ranking, $(\hat r_1, \hat r_2, \dots,\hat r_K)$.
+They also noted that the joint confidence region in \ref{eq:klein_jcs} contains more than one possible overall ranking unless the values of $\theta_k$ differ from each other such that $(L_k, U_k) \cap (L_{k'}, U_{k'}) = \emptyset, \; \forall \; k\neq k'$. This implies that the unique overall ranking arises only from the narrowest attainable joint confidence region and it is the estimated ranking, $(\hat r_1, \hat r_2, \dots,\hat r_K)$.
 
 ### Construction of Joint Confidence Intervals for Parameters
 
@@ -187,8 +187,9 @@ While Klein’s approach focuses on constructing a conservative joint confidence
 
 ## Alternative Approaches for Ranking Uncertainty
 
-Other studies with similar concern include that of @jelle where using the same assumptions, Tukey's pairwise comparison procedure is used to come up with their $\left( 1-\alpha \right)$ joint confidence intervals for ranks in  \ref{eq:jelle}. They showed this to yield uniformly narrower intervals than that of Klein's approach, for the case when $SE$s are equal.
+### Using Pairwise Difference
 
+Other studies with similar concern include that of @jelle where using the same assumptions, Tukey's pairwise comparison procedure is apllied to come up with their $\left( 1-\alpha \right)$ joint confidence intervals for ranks expressed in \ref{eq:jelle}. They showed this to yield uniformly narrower intervals than that of Klein's approach, for the case when $SE$s are equal.
 
 \begin{equation}
   \left(
@@ -200,11 +201,46 @@ Other studies with similar concern include that of @jelle where using the same a
 \end{equation}
 where $\gamma = 1 - (1-\alpha)^{\frac{1}{K}}$.
 
+@romano constructed the rectangular confidence set in \ref{eq:romano_ci}, from the pairwise differences of estimators $\hat{\theta}_1, \dots, \hat{\theta}_K$ and an estimator of the variance of $\hat{\theta}_{k'}-\hat{\theta}_k$, $\widehat{SE}^2_{kk'}$. 
+
+\begin{equation}
+\begin{split}
+C &= \prod_{(k,k')\in S}
+\bigl[\,
+\hat{\theta}_k - \hat{\theta}_{k'} - \widehat{SE_{kk'}}\,L^{-1}_{kk'},
+\;\;
+\hat{\theta}_k - \hat{\theta}_{k'} + \widehat{SE_{kk'}}\,L^{-1}_{kk'}
+\,\bigr], \\
+&\qquad\qquad\qquad\text{for } k\neq k',\; (k,k')\in S \subseteq K\times K.
+\end{split}
+\label{eq:romano_ci}
+\end{equation}
+They added that if the estimators $\hat{\theta}_1, \dots, \hat{\theta}_K$ are jointly asymptotically normally distributed, then the quantiles $L^{-1}_{kk'}$, can be computed from the limiting distributions of the max-statistics shown in \ref{eq:romano_quantile}, through resampling methods like the bootstrap.
+
+\begin{equation}
+  L(x) = P\left\{ \underset{(k,k')\in S}{\max}
+  \frac{\lvert
+  \hat{\theta}_k - \hat{\theta}_{k'} -\Delta_{k,k'}
+  \rvert}{\widehat{SE}_{kk'}} \leq x, \quad \Delta_{k,k'}=\theta_k - \theta_{k'}
+  \right\}
+  \label{eq:romano_quantile}
+\end{equation}
+It was mentioned that their approach does not require $\hat{\theta}_1, \dots, \hat{\theta}_K$ to be independent. Moreover, when the population $\mathbf{P}$ is a set of distributions on $\mathbb{R}^p$ satisfying uniform integrability, the bootstrap leads to confidence sets that satisfy \ref{eq:romano_coverage} when $\boldsymbol{\theta}$ is the population mean and $\hat{\boldsymbol{\theta}}$ is the sample mean.
+
+\begin{equation}
+\underset{n \rightarrow \infty}{\lim \inf}\; \underset{P \in \mathbf{P}}{\inf}
+P \left\{ \Delta_S(P) \in C \right\} \geq 1-\alpha 
+  \label{eq:romano_coverage}
+\end{equation}
+
+
+### Accounting for Data Dependencies
+
 Some approaches explicitly accounted for dependencies in the data. @spiegel used multilevel models, in the context of ranking education and health institutions (e.g., schools, hospitals, medical practitioners, etc.), to address the hierarchical nature of data structures associated with institutional performance. Rank uncertainty was presented through a visualization in which non-overlap of confidence intervals conveyed a significant difference between compared institutions (@healy). In an alternative approach, along with institution effect estimation through Gibbs sampling, the rank was obtained for each iteration. Their example illustrated that while the multilevel model made individual estimates more accurate, it also had the effect of making the ranks even more uncertain.
 
-@zhang analyzed U.S. age-adjusted cancer incidence and mortality rates across states and counties by computing individual and overall simultaneous confidence intervals for age-adjusted health index using the Monte Carlo method. Because many health conditions are age-dependent, they used age-adjusted rates to minimize the confounding effect of age differences when comparing different population groups. They also extended their method to handle cases where only the rates and confidence intervals are available, aligning it more closely with the approach of @klein.
+@zhang analyzed U.S. age-adjusted cancer incidence and mortality rates across states and counties by computing individual and overall simultaneous confidence intervals for age-adjusted health index using the Monte Carlo method. Because many health conditions are age-dependent, they used age-adjusted rates to minimize the confounding effect of age differences when comparing different population groups. They also extended their method to handle cases where only the adjusted rates and confidence intervals are available, aligning it more closely with the approach of @klein.
 
-@miller addressed the idea that dependence might arise from some cases similar to 
+@miller mentioned that in some use cases such as institutions ranking, dependencies can be accommodated through conditioning, similar to the above approaches. However, in genomics where data on expression levels of different genes from the same individual are generally not independent, they suggested using an "independent component" version of the bootstrap on the sample, where m-out-of-n bootstrap (m < n) is applied as though the ranked variables were statistically independent. They showed this to perform at its best when a reasonable level of correlation is present among the variables.
 
 
 
