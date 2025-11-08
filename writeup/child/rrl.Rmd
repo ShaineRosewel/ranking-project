@@ -2,16 +2,13 @@
 
 In the problem of estimating ranks of several unknown real-valued parameters $\theta_1,\dots, \theta_K$, $\hat {\mathbf{r}} = \mathbf{r} (\hat{\theta}_1, \dots, \hat{\theta}_K)$ is a point estimate of $\mathbf{r} \left(\theta_1, \dots, \theta_K\right)$. Naturally, this should be accompanied by a measure of uncertainty. Different approaches to quantify such uncertainty have been proposed in the literature. Some of them begin with the estimated values at hand while others employed techniques to first obtain estimates, then quantify uncertainty. Among the various approaches, the work of @klein is discussed in greater detail, as it closely relates to the present study. 
 
-## Joint Confidence Regions
-
 ## Klein’s Joint Confidence Region for Overall Ranking Uncertainty
 
-@klein does not require knowledge of the sampling design or estimation procedure for each population. Instead, they used the estimates and their standard errors to construct joint confidence regions from which rank uncertainty is derived. This uses the idea that uncertainty in the ranks is determined by uncertainty in the parameters.
+@klein does not require knowledge of the sampling design or estimation procedure for each population. Instead, they used the estimates and their standard errors to construct joint confidence regions from which rank uncertainty is derived. This uses the idea that uncertainty in the ranks is determined by uncertainty in the parameters (@mogstadt23).
 
-### Calculation of Overall Rank Uncertainty
+### Calculation of Overall Rank Uncertainty {#sec:kleinRank}
 
 @klein quantified overall rank uncertainty using estimates of respondents’ average travel time to work in each of $K$ sampled geographical areas. They defined rank for the $k$th population as 
-
 \begin{equation}
   r_k = \sum^K_{j=1} I(\theta_j \leq \theta_k) = 1 + \sum_{j:j \neq k} I(\theta_j \leq \theta_k), \qquad \text{for} \; k = 1, \dots, K
   \label{eq:rank}
@@ -93,7 +90,7 @@ In line with this, they presented a proof demonstrating that if $(L_1,U_1),\dots
 
 They also noted that the joint confidence region in \ref{eq:klein_jcs} contains more than one possible overall ranking unless the values of $\theta_k$ differ from each other such that $(L_k, U_k) \cap (L_{k'}, U_{k'}) = \emptyset, \; \forall \; k\neq k'$. This implies that the unique overall ranking arises only from the narrowest attainable joint confidence region and it is the estimated ranking, $(\hat r_1, \hat r_2, \dots,\hat r_K)$.
 
-### Construction of Joint Confidence Intervals for Parameters
+### Construction of Joint Confidence Intervals for Parameters {#sec:kleinCI}
 
 @klein used individual confidence intervals of the form $\hat \theta_k \pm z_{\alpha/2} SE_k^2$, with $\hat \theta_k \sim N(\theta_k, SE_k)$ for $k \in \left\{1, 2, \dots, K\right\}$, where $\theta_1, \theta_2, \dots \theta_k$ are unknown and $SE_1, SE_2, \dots, SE_k$ are known. It was noted that ${MOE_k} = {z_{\alpha/2} \times SE_k}$ where $SE_k = \frac{\sigma_k}{\sqrt{n}}$.
 
@@ -183,13 +180,24 @@ where solving for $c_\alpha=z_{\frac{\alpha}{2K}}$ gives $\Phi^{-1}\left(1-\frac
   \label{eq:bonf}
 \end{equation}
 
-While Klein’s approach focuses on constructing a conservative joint confidence region, several alternative methods have been developed to quantify rank uncertainty under similar assumptions.
-
 ## Alternative Approaches for Ranking Uncertainty
 
-### Using Pairwise Difference
+While Klein’s approach provides one framework for constructing joint confidence regions for ranks, several other studies have explored related problems using different formulations or assumptions. These alternative methods vary in whether they account for dependence structures, rely on model-based estimation, or use resampling techniques such as the bootstrap.
 
-Other studies with similar concern include that of @jelle where using the same assumptions, Tukey's pairwise comparison procedure is apllied to come up with their $\left( 1-\alpha \right)$ joint confidence intervals for ranks expressed in \ref{eq:jelle}. They showed this to yield uniformly narrower intervals than that of Klein's approach, for the case when $SE$s are equal.
+### Calculated Measure
+
+Other studies with similar concern include that of @carling who suggested the use of a statistic $C$ which quantifies the number of positions ranked entities would on average change their order due to random variation. They calculated the measure using a bootstrap approach. Since they worked on risk ratios $p_k$ of $K$ units, they drew $B$ new proportions $p^*_k$ from (\ref{eq:carling_bs}).
+
+\begin{equation}
+\hat{p}^*_{bk} \sim  N \left(\hat{p}_k, \frac{\hat{p}_k(1-\hat{p}_k)}{n_k} \right), \quad k = 1, \dots, K,\, b = 1, \dots, B
+  \label{eq:carling_bs}
+\end{equation}
+
+For each bootstrap iteration $b$, they sorted $\hat{p}^*_{bk}$ to get the corresponding rank $r^*_{bk}$ and calculated the difference between the original and bootstrap rank as $\lvert \hat{r}_k - \hat{r}^*_{bk}\rvert = d_{bk}$ to obtain the expected change in the ranking for unit $k$, calculated as the average $d_{bk}$ across the bootstrap samples and denoted $\bar{d}_k$. Finally, the overall measure $C$ is calculated as the average of $\bar{d}_k$ across all $K$ units.
+
+### Pairwise Difference {#sec:pairwise}
+
+@jelle applied Tukey's honest significant difference (HSD) test to come up with a joint confidence set for ranks expressed in (\ref{eq:jelle}). They showed this to yield uniformly narrower intervals than that of Klein's, for the case when $SE$s are equal.
 
 \begin{equation}
   \left(
@@ -199,9 +207,9 @@ Other studies with similar concern include that of @jelle where using the same a
   \right),
   \label{eq:jelle}
 \end{equation}
-where $\gamma = 1 - (1-\alpha)^{\frac{1}{K}}$.
+where $\gamma = 1 - (1-\alpha)^{\frac{1}{K}}$. This has a simultaneous coverage of at least $1-\alpha$ and exactly $1-\alpha$ when all true performances are equal. However, their approach tends to be overly conservative, showing coverage levels between 0.996 and 1.0 at a 0.90 nominal level in simulations, when performances differ. They also demonstrated that as the true performance differences increase from 0 to 0.5, the coverage quickly increases from the nominal level to 1. As a remedy, they proposed a rescaling technique that brings coverage closer to the nominal level, though it remains conservative (e.g., from 1.0 to 0.978, or from 0.998 to 0.961).
 
-@romano constructed the rectangular confidence set in \ref{eq:romano_ci}, from the pairwise differences of estimators $\hat{\theta}_1, \dots, \hat{\theta}_K$ and an estimator of the variance of $\hat{\theta}_{k'}-\hat{\theta}_k$, $\widehat{SE}^2_{kk'}$. 
+@mogstadt23 closely resembles the procedure by Klein since they also constructed the confidence region for ranks basing from the simultaneous confidence region of estimates. However, they constructed the rectangular confidence region in \ref{eq:mogstadt23_ci}, from the pairwise differences of estimators $\hat{\theta}_1, \dots, \hat{\theta}_K$ and an estimator of the variance of $\hat{\theta}_{k'}-\hat{\theta}_k$, $\widehat{SE}^2_{kk'}$. 
 
 \begin{equation}
 \begin{split}
@@ -213,32 +221,43 @@ C &= \prod_{(k,k')\in S}
 \,\bigr], \\
 &\qquad\qquad\qquad\text{for } k\neq k',\; (k,k')\in S \subseteq K\times K.
 \end{split}
-\label{eq:romano_ci}
+\label{eq:mogstadt23_ci}
 \end{equation}
-They added that if the estimators $\hat{\theta}_1, \dots, \hat{\theta}_K$ are jointly asymptotically normally distributed, then the quantiles $L^{-1}_{kk'}$, can be computed from the limiting distributions of the max-statistics shown in \ref{eq:romano_quantile}, through resampling methods. In particular, they obtained the critical value by repeatedly drawing $K$ standard normal variates, recording the maximum for each draw, and taking the relevant quantile of these maxima.
+They added that if the estimators $\hat{\theta}_1, \dots, \hat{\theta}_K$ are jointly asymptotically normally distributed, then the quantiles $L^{-1}_{kk'}$, can be computed from the limiting distributions of the max-statistics shown in \ref{eq:mogstadt23_quantile}, through resampling methods. In particular, they obtained their approximate pivot by repeatedly drawing $K$ standard normal variates, recording the maximum for each draw, and taking the relevant quantile of these maxima.
 
 \begin{equation}
   L(x) = P\left\{ \underset{(k,k')\in S}{\max}
   \frac{\lvert
   \hat{\theta}_k - \hat{\theta}_{k'} -\Delta_{k,k'}
-  \rvert}{\widehat{SE}_{kk'}} \leq x, \quad \Delta_{k,k'}=\theta_k - \theta_{k'}
+  \rvert}{\widehat{SE}_{kk'}} \leq x
   \right\}
-  \label{eq:romano_quantile}
+  , \quad \Delta_{k,k'}=\theta_k - \theta_{k'}
+  \label{eq:mogstadt23_quantile}
 \end{equation}
-It was mentioned that their approach does not require $\hat{\theta}_1, \dots, \hat{\theta}_K$ to be independent. Moreover, when the population $\mathbf{P}$ is a set of distributions on $\mathbb{R}^p$ satisfying uniform integrability, using bootstrap leads to confidence sets that satisfy \ref{eq:romano_coverage} when $\boldsymbol{\theta}$ is the population mean and $\hat{\boldsymbol{\theta}}$ is the sample mean.
+It was mentioned that their approach does not require $\hat{\theta}_1, \dots, \hat{\theta}_K$ to be independent. Moreover, when the population $\mathbf{P}$ is a set of distributions on $\mathbb{R}^p$ satisfying uniform integrability, using bootstrap leads to confidence sets that satisfy \ref{eq:mogstadt23_coverage} when $\boldsymbol{\theta}$ is the population mean and $\hat{\boldsymbol{\theta}}$ is the sample mean.
 
 \begin{equation}
 \underset{n \rightarrow \infty}{\lim \inf}\; \underset{P \in \mathbf{P}}{\inf}
 P \left\{ \Delta_S(P) \in C \right\} \geq 1-\alpha 
-  \label{eq:romano_coverage}
+  \label{eq:mogstadt23_coverage}
 \end{equation}
-
+Their process of constructing the simultaneous confidence region using bootstrap may be replaced and as long as it is valid, it can be used to produce the overall uncertainty for ranks, which they defined as 
+\begin{equation}
+R^{joint}_n = \prod_{j \in J} \left\{ \lvert N^-_{j, \text{all}} \rvert +1, \dots, K -\lvert N^+_{j, \text{all}} \rvert \right\}
+  \label{eq:mogstadt23_ranks}
+\end{equation}
+where
+\begin{align}
+N^-_{j, \text{all}} &= \left\{ k \in J - {j}: C_n(1-\alpha, S_{\text{all}}, (j,k)) \subseteq (-\infty, 0) \right\} \\
+N^+_{j, \text{all}} &= \left\{ k \in J - {j}: C_n(1-\alpha, S_{\text{all}}, (j,k)) \subseteq (0, \infty) \right\}
+\end{align}
+On top of that, they added a stepwise improvement that accounts for type 3 error or the potential to commit incorrect direction of difference, to come up with the final overall rank uncertainty. They claimed that their approach generally leads to a confidence set that is narrower than that of Klein.
 
 ### Accounting for Data Dependencies
 
 Some approaches explicitly accounted for dependencies in the data. @spiegel used multilevel models, in the context of ranking education and health institutions (e.g., schools, hospitals, medical practitioners, etc.), to address the hierarchical nature of data structures associated with institutional performance. Rank uncertainty was presented through a visualization in which non-overlap of confidence intervals conveyed a significant difference between compared institutions (@healy). In an alternative approach, along with institution effect estimation through Gibbs sampling, the rank was obtained for each iteration. Their example illustrated that while the multilevel model made individual estimates more accurate, it also had the effect of making the ranks even more uncertain.
 
-@zhang analyzed U.S. age-adjusted cancer incidence and mortality rates across states and counties by computing individual and overall simultaneous confidence intervals for age-adjusted health index using the Monte Carlo method. Because many health conditions are age-dependent, they used age-adjusted rates to minimize the confounding effect of age differences when comparing different population groups. They also extended their method to handle cases where only the adjusted rates and confidence intervals are available, aligning it more closely with the approach of @klein.
+@zhang analyzed U.S. age-adjusted cancer incidence and mortality rates across states and counties by computing individual and overall simultaneous confidence intervals for age-adjusted health index using the Monte Carlo method. Because many health conditions are age-dependent, they used age-adjusted rates to minimize the confounding effect of age differences when comparing different population groups. They also extended their method to handle cases where only the adjusted rates and confidence intervals are available, aligning it more closely with the approach of @klein. (add here critique by jelle - page4)
 
 @miller mentioned that in some use cases such as institutions ranking, dependencies can be accommodated through conditioning, similar to the above approaches. However, in genomics where data on expression levels of different genes from the same individual are generally not independent, they suggested using an "independent component" version of the bootstrap on the sample, where m-out-of-n bootstrap (m < n) is applied as though the ranked variables were statistically independent. They showed this to perform at its best when a reasonable level of correlation is present among the variables.
 
