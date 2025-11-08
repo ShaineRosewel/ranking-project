@@ -19,29 +19,37 @@ header-includes:
 - \usepackage{algorithm}
 - \usepackage{algpseudocode}
 - \usepackage{float}
+- \usepackage{placeins}
 - \renewcommand{\ttfamily}{\rmfamily}
+- \usepackage{etoolbox}
+- \AtBeginEnvironment{algorithmic}{\setstretch{1.5}} 
+- \renewcommand{\arraystretch}{0.75}                  
+
 papersize: a4
 bibliography: /home/realiseshewon/PDev/kde-ranking/writeup/references.bib
+nocite: | 
+  @elias
+  @mogstadt25
 csl: /home/realiseshewon/PDev/kde-ranking/writeup/harvard-educational-review.csl
 ---
 
-
-
-\title{\vspace{20mm}TITLE HERE}
+\title{%
+  \vspace{35mm}% <- reduce this from 45mm to something smaller
+  \textbf{Overall Rank Uncertainty\\for Correlated Populations}%
+}
 \maketitle
-\thispagestyle{empty} 
-\vspace*{95px}
+\thispagestyle{empty}
 \begin{center}
 Shaine Rosewel Paralis Matala\\
-\vspace*{85px}
+\vspace*{32px}
 A Thesis proposal submitted to UP Diliman School of Statistics\\
-\vspace*{15px}
+\vspace*{14px}
 In Partial Fulfillment of the Requirements for the Degree of\\
 Master of Science in Statistics\\
-\vspace*{200px}
+\vspace*{280px}
 School of Statistics\\
 University of the Philippines\\
-Month Year
+Month 2025
 \end{center}
 
 
@@ -59,34 +67,40 @@ knitr::opts_chunk$set(
 \newpage
 
 \tableofcontents
-
 \newpage
+\vspace*{1cm}
 
 # Introduction
-
-Rankings of government units derived from sample survey data are typically published without accompanying statistical statements that quantify uncertainty in estimated overall rankings *(add here uncertainty is just expressed for each element being ranked)*. While the literature on quantifying overall uncertainty remains limited, existing methods overlook the potential correlation among ranks *(Literature that this is possible)*. The objective of this study is to introduce a methodology that constructs joint confidence region for the true but unknown overall ranking while accounting for the correlation among them. In line with this, we also present ways to estimate correlation in a specific application—such as estimating the dependence structure among senatorial candidates' rankings.
+\vspace*{0.8cm}
 
 ```{r, child = "child/introduction.Rmd", echo = FALSE}
 
 ```
 
+\newpage
+\vspace*{1cm}
 
 # Related Literature
-
+\vspace*{0.8cm}
 
 ```{r, child = "child/rrl.Rmd", echo = FALSE}
 
 ```
 
+\newpage
+\vspace*{1cm}
 
 # Methodology
+\vspace*{0.8cm}
 
 ```{r, child = "child/methodology.Rmd"}
 
 ```
 
 
-
+\newpage
+\vspace*{1cm}
 # Bibliography {- .unnumbered .unlisted}
+\vspace*{0.8cm}
 <div id="refs"></div>
 
