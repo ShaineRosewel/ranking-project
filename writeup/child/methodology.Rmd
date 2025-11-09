@@ -1,24 +1,24 @@
-This section introduces the proposed methodologies to obtain joint confidence intervals that can later be used to quantify uncertainty for the unknown overall true ranking using Klein's main result in Section \@ref(sec:kleinRank). It adds approaches, on top of the Bonferroni correction and independence assumption in Section \@ref(sec:kleinCI), by addressing the case when estimates being ranked are assumed correlated to certain degrees. Section \@ref(sec:confregionalgo) lists the algorithms employed to compute the joint confidence regions. This includes a non-rank and rank-based methods. It also has a subsection that discusses correlation structures suitable to the intended use cases. The calculated joint confidence regions are then assessed on the basis of coverage and metrics that measure the tightness of estimated confidence regions. These are tackled in section \@ref(sec:evaluation).
+This section introduces the proposed methodologies to obtain joint confidence intervals that can later be used to quantify uncertainty for the unknown overall true ranking using Klein's main result in Section \@ref(sec:kleinRank). It adds approaches, on top of the Bonferroni correction and independence assumption in Section \@ref(sec:kleinCI), by addressing the case when estimates being ranked are assumed correlated to certain degrees. Section \@ref(sec:confregionalgo) lists the algorithms employed to compute the joint confidence regions. These include a non-rank and rank-based methods. It also has a subsection that discusses correlation structures suitable to the intended use cases. The calculated joint confidence regions are then assessed on the basis of coverage and metrics that measure the tightness of estimated confidence regions. These are tackled in Section \@ref(sec:evaluation).
 
 ## Parametric bootstrap approaches for constructing joint confidence intervals for correlated $\theta_1, \dots, \theta_K$ {#sec:confregionalgo}
 
-The proposed approaches do not require knowledge of the sampling design and estimation methodology for each population. These are constructed to account for assumed correlation among items being ranked. In line with this, various correlation structures $\boldsymbol{\rho}$ are listed in section \ref{sec:corrstructures}, to be later examined in a simulation study. The correlation matrix is used in the calculation of the covariance matrix as show in Equation \ref{eq:sigma_matrix}.).
+The proposed approaches only utilize $\hat{\theta}_1, \dots, \hat{\theta}_K$ and their corresponding standard errors, $\sigma_1, \dots, \sigma_K$; knowledge of the sampling design and estimation methodology for each population is not required. These are constructed to account for assumed correlation among items being ranked. Hence, various correlation structures $\mathbf{R}$ are listed in section \ref{sec:corrstructures}, to be later examined in a simulation study. The correlation matrix is used in the calculation of the covariance matrix as show in (\ref{eq:sigma_matrix}).
 
 \begin{equation}
-  \boldsymbol{\Sigma} = \boldsymbol{\Delta}^{1/2} \boldsymbol{\rho} \boldsymbol{\Delta}^{1/2}; \quad \boldsymbol{\Delta} = \text{diag} \left\{ \sigma^2_1, \sigma^2_2, \dots, \sigma^2_K \right\}
+  \boldsymbol{\Sigma} = \boldsymbol{\Delta}^{1/2} \mathbf{R} \boldsymbol{\Delta}^{1/2}; \quad \boldsymbol{\Delta} = \text{diag} \left\{ \sigma^2_1, \sigma^2_2, \dots, \sigma^2_K \right\}
   \label{eq:sigma_matrix}
-\end{equation} with known $\sigma_k$'s and $\boldsymbol{\rho}$. This form of $\boldsymbol{\Sigma}$ will be used in sections \@ref(sec:nonrankbased) and \@ref(sec:rankbased).
+\end{equation} with assumed $\mathbf{R}$. This form of $\boldsymbol{\Sigma}$ will be used in Sections \@ref(sec:nonrankbased) and \@ref(sec:rankbased).
 
-We primarily use parametric bootstrap to approximate the quantile that will be used to construct the confidence intervals while controlling the family-wise error rate to be around the nominal level. The design closely parallels that of @carling and Leyland & Langford (@spiegel), who generated bootstrap samples from a normal distribution by applying the plug-in principle (@efron) of using the observed estimator and its corresponding standard error as parameters. In our case however, correlation is assumed. Hence, we sample from the multivariate normal distribution, with the vector of estimates, $\hat{\boldsymbol{\theta}} = \left( \hat \theta_1, \hat \theta_2, \dots, \hat \theta_K \right)'$, as mean and $\boldsymbol{\Sigma}$ as defined in \ref{eq:sigma_matrix}. 
+We primarily use parametric bootstrap to approximate the quantile that will be used to construct the confidence intervals while controlling the FWER to be around the nominal level. The design closely parallels that of @carling and Leyland & Langford (@spiegel), who generated bootstrap samples from a normal distribution by applying the plug-in principle (@efron) of using the observed estimator and its corresponding standard error as parameters. In our case however, correlation is assumed. Hence, we sample from the multivariate normal distribution, with the vector of estimates, $\hat{\boldsymbol{\theta}} = \left( \hat \theta_1, \hat \theta_2, \dots, \hat \theta_K \right)'$, as mean and $\boldsymbol{\Sigma}$ as defined in (\ref{eq:sigma_matrix}). 
 
-Common across the proposed procedure is calculating the approximate pivot for each bootstrap sample, denoted $\frac{\hat{\theta}^*_{bk}-\hat{\theta}_k}{\sigma_k}$ and taking the maximum statistic across $k \in \{1, \dots, K\}$. This step keeps the coverage of the rectangular confidence region approximately equal to the nominal level. The idea is also conceptually similar to that of @mogstadt23 who used resampling to obtain the quantile as described in Section \@ref(sec:pairwise). 
+Common across the proposed procedure is calculating $\Big| \frac{\hat{\theta}^*_{bk}-\hat{\theta}_k}{\sigma_k} \Big|$ and taking its maximum across $k \in \{1, \dots, K\}$. This step keeps the coverage of the rectangular confidence region approximately equal to the nominal level. The idea is also conceptually similar to that of @mogstadt23 who used resampling to obtain the quantile as described in Section \@ref(sec:pairwise). 
 
 ### Nonrank-based method {#sec:nonrankbased}
 
 The nonrank-based method, as implied by its name, does not incorporate order statistics in the algorithm. It focuses on the minimum requirement of constructing a sampling distribution from which the $(1-\alpha)$-quantile that keeps the simultaneous coverage at the nominal level will be derived.
 
 \begin{algorithm}[H]
-    \caption{Computation of Joint Confidence Region (Nonrank)} 
+    \caption{Computating the joint confidence region (nonrank)} 
     \label{alg:nonrank_ci}
     Let the data be represented by $\hat{\boldsymbol{\theta}} = \left( \hat \theta_1, \hat \theta_2, \dots, \hat \theta_K \right)'$ and suppose that $\boldsymbol{\Sigma}$ is known
     \begin{algorithmic}[1]
@@ -41,7 +41,7 @@ $\mathfrak{R} = \left[ \hat\theta_1 \pm \hat t \times \sigma_1  \right] \times \
 
 ### Rank-based methods {#sec:rankbased}
 
-For the rank-based methods, order statistics are considered for the bootstrap sampled estimates. That is, for each bootstrap $b$, the estimates are sorted in increasing order.
+For the rank-based methods, order statistics are considered for the bootstrap sampled estimates. That is, for each bootstrap $b$, the estimates are sorted in increasing order. Similar to nonrank-based method, the data is consist of $\hat{\boldsymbol{\theta}} = \left( \hat \theta_1, \hat \theta_2, \dots, \hat \theta_K \right)'$ and a known $\boldsymbol{\Sigma}$.
 
 #### Asymptotic variance
 
@@ -52,23 +52,22 @@ The asymptotic definition of variance is employed in Algorithm \ref{alg:rank_asy
 As an alternative to using the asymptotic variance, a second-level (or double) bootstrap can be employed to estimate the variance, as illustrated in Algorithm \ref{alg:rank_secondlevelbs}. However, this approach is computationally intensive.
 
 \begin{algorithm}[H]
-    \caption{Computation of Joint Confidence Region (Asymptotic Variance)} 
+    \caption{Computing the joint confidence region (asymptotic variance)} 
     \label{alg:rank_asymp}
-    Let the data consist of $\boldsymbol{\hat{\theta}} = \left( {\hat\theta_1, \hat\theta_2, \dots, \hat\theta_K} \right)$ and suppose $\boldsymbol{\Sigma}$
     \begin{algorithmic}[1]
     \For {$b = 1, 2, \dots, B$}
         \State \begin{minipage}[t]{\dimexpr\linewidth-\algorithmicindent}
-            Generate $\boldsymbol{\hat\theta}^*_b = \left( \hat{\theta}^*_{b1}, \hat{\theta}^*_{b2}, \dots, \hat{\theta}^*_{bK} \right)' \sim N_K \left( \boldsymbol{\hat \theta}, \boldsymbol {\Sigma} \right)$ and let $\hat{\theta}_{b(1)}, \hat{\theta}_{b(2)}, \dots, \hat{\theta}_{b(K)}$ be the corresponding ordered values 
+            Generate $\hat{\boldsymbol{\theta}}^*_b = \left( \hat{\theta}^*_{b1}, \hat{\theta}^*_{b2}, \dots, \hat{\theta}^*_{bK} \right)' \sim N_K \left( \boldsymbol{\hat \theta}, \boldsymbol {\Sigma} \right)$ and let $\hat{\theta}^*_{b(1)}, \hat{\theta}^*_{b(2)}, \dots, \hat{\theta}^*_{b(K)}$ be the corresponding ordered values 
         \end{minipage}
         \State \begin{minipage}[t]{\dimexpr\linewidth-\algorithmicindent}
             Compute 
                 \Statex \begin{minipage}{\linewidth}
                 \centering
-                $\hat\sigma^*_{b(k)} = \sqrt{\text{kth ordered value among} \ \left\{ \hat{\theta}^{*2}_{b1} + \sigma_1^2, \hat{\theta}^{*2}_{b2} + \sigma_2^2, \dots, \hat{\theta}^{*2}_{bK} + \sigma_K^2 \right\} - \hat {\theta}^{*2}_{(k)}}$
+                $\hat\sigma^*_{b(k)} = \sqrt{\left[\text{kth ordered value among} \ \left\{ \hat{\theta}^{*2}_{b1} + \sigma_1^2, \hat{\theta}^{*2}_{b2} + \sigma_2^2, \dots, \hat{\theta}^{*2}_{bK} + \sigma_K^2 \right\}\right] - \hat {\theta}^{*2}_{(k)}}$
                 \end{minipage}
         \end{minipage}
         \State Compute 
-                $t^*_b = \underset{1 \leq k \leq K}{\max} \Bigg| \frac{\hat\theta^*_{b(k)} - \hat\theta^*_{k}}{\sigma^*_{b(k)}} \Bigg|$
+                $t^*_b = \underset{1 \leq k \leq K}{\max} \Bigg| \frac{\hat\theta^*_{b(k)} - \hat\theta^*_{k}}{\hat\sigma^*_{b(k)}} \Bigg|$
     \EndFor
     \State Compute the $\left(1-\alpha\right)$-sample quantile of $t^*_1, t^*_2, \dots, t^*_B$, call this $\hat{t}$.
     \State The joint confidence region of $\theta_{(1)}, \theta_{(2)}, \dots, \theta_{(K)}$ is given by
@@ -86,7 +85,7 @@ $\hat\sigma_{(k)} = \sqrt{\text{kth ordered value among} \ \left\{ \hat{\theta}^
 
 
 \begin{algorithm}[H]
-    \caption{Computation of Joint Confidence Region (Variance from Double Bootstrap)} 
+    \caption{Computing the joint confidence region (variance from double bootstrap)}
     \label{alg:rank_secondlevelbs}
     \begin{algorithmic}[1]
         \For {$b = 1, 2, \dots, B$}
@@ -94,16 +93,16 @@ $\hat\sigma_{(k)} = \sqrt{\text{kth ordered value among} \ \left\{ \hat{\theta}^
                 Generate $\hat{\boldsymbol{\theta}}^*_b = \left( \hat{\theta}^*_{b1}, \hat{\theta}^*_{b2}, \dots, \hat{\theta}^*_{bK} \right)' \sim N_K \left( \hat{\boldsymbol{\theta}}, \boldsymbol {\Sigma} \right)$ and let $\hat{\theta}_{b(1)}^*, \hat{\theta}_{b(2)}^*, \dots, \hat{\theta}_{b(K)}^*$ be the corresponding ordered values of $\hat{\theta}_{b1}^*, \hat{\theta}_{b2}^*, \dots, \hat{\theta}_{bK}^*$
             \end{minipage}
             \For {$c = 1, 2, \dots, C$}
-                \State \begin{minipage}[t]{\dimexpr\linewidth-\algorithmicindent} Generate $\hat{\boldsymbol{\theta}}^{**}_{bc} = \left( \hat{\theta}^{**}_{bc1}, \hat{\theta}^{**}_{bc2}, \dots, \hat{\theta}^{**}_{bcK} \right) \sim N_K \left( \hat{\boldsymbol{\theta}}_b^*, \boldsymbol {\Sigma} \right)$ and let $\hat{\theta}^{**}_{bc(1)}, \hat{\theta}^{**}_{bc(2)}, \dots, \hat{\theta}^{**}_{bc(K)}$ be the corresponding ordered values of $\hat{\theta}_{b1}^*, \hat{\theta}_{b2}^*, \dots, \hat{\theta}_{bK}^*$
+                \State \begin{minipage}[t]{\dimexpr\linewidth-\algorithmicindent} Generate $\hat{\boldsymbol{\theta}}^{**}_{bc} = \left( \hat{\theta}^{**}_{bc1}, \hat{\theta}^{**}_{bc2}, \dots, \hat{\theta}^{**}_{bcK} \right) \sim N_K \left( \hat{\boldsymbol{\theta}}_b^*, \boldsymbol {\Sigma} \right)$ and let $\hat{\theta}^{**}_{bc(1)}, \hat{\theta}^{**}_{bc(2)}, \dots, \hat{\theta}^{**}_{bc(K)}$ be the corresponding ordered values of $\hat{\theta}^{**}_{bc1}, \hat{\theta}^{**}_{bc2}, \dots, \hat{\theta}^{**}_{bcK}$
                 \end{minipage}
                 \State \begin{minipage}[t]{\dimexpr\linewidth-\algorithmicindent} Compute
-                $\displaystyle \hat{\sigma}^*_{b(k)} = \frac{\sum^C_{c=1} \left( \hat \theta^{**}_{bc(k)} - \bar {\hat\theta}^{**}_{b \cdot (k)} \right)^2}{C-1}; \quad \bar {\hat\theta}^{**}_{b\cdot(k)} = \frac{1}{C} \sum^C_{c=1} {\hat\theta}^{**}_{bc(k)}$
+                $\displaystyle \hat{\sigma}^*_{b(k)} = \frac{\sum^C_{c=1} \left( \hat \theta^{**}_{bc(k)} - \bar {\hat\theta}^{**}_{b \cdot (k)} \right)^2}{C-1}, \quad \bar {\hat\theta}^{**}_{b\cdot(k)} = \frac{1}{C} \sum^C_{c=1} {\hat\theta}^{**}_{bc(k)}$
                 \end{minipage}
                 \EndFor
         \State Compute
                 $t_b^* = \underset{1 \leq k <K}{\max} \Bigg \lvert \frac{\hat{\theta}^*_{b(k)}-\hat{\theta}_{(k)}}{\hat \sigma ^* _{b(k)}} \Bigg \rvert$
         \EndFor
-        \State Compute the $\left( 1-\alpha \right)$-sample quantile of $t^*_1, t^*_1, \dots, t^*_B$, call this $\hat t$.
+        \State Compute the $\left( 1-\alpha \right)$-sample quantile of $t^*_1, t^*_2, \dots, t^*_B$, call this $\hat t$.
         \State The joint confidence region of $\theta_{(1)}, \theta_{(2)}, \dots, \theta_{(K)}$ is
             \Statex \begin{minipage}{\linewidth}
             \centering
@@ -112,7 +111,7 @@ $\hat\sigma_{(k)} = \sqrt{\text{kth ordered value among} \ \left\{ \hat{\theta}^
         where $\hat \sigma_{(k)}$ is computed as
         \Statex \begin{minipage}{\linewidth}
     \centering
-$\displaystyle \hat \sigma_{(k)} = \frac{\sum^B_{b=1} \left( \hat \theta^*_{b(k)} - \bar {\hat\theta}^*_{\cdot (k)} \right)^2}{B-1}; \quad \bar {\hat\theta}^*_{\cdot(k)} = \frac{1}{B} \sum^B_{b=1} {\hat\theta}^*_{b(k)}$
+$\displaystyle \hat \sigma_{(k)} = \frac{\sum^B_{b=1} \left( \hat \theta^*_{b(k)} - \bar {\hat\theta}^*_{\cdot (k)} \right)^2}{B-1}, \quad \bar {\hat\theta}^*_{\cdot(k)} = \frac{1}{B} \sum^B_{b=1} {\hat\theta}^*_{b(k)}$
 \end{minipage}
     \end{algorithmic} 
 \end{algorithm}
@@ -125,7 +124,7 @@ This section discusses the correlation structures considered in the simulation. 
 - $0 \leq \lvert\mathbf{R}\rvert \leq 1$
 - If $\lvert\mathbf{R}\rvert = 1$ then $\mathbf{R} = \mathbf{I}$
 
-For simplicity, an equicorrelation matrix is included. This assumes that the $k$ variables are equally correlated, such that $\rho_{kk'}=\rho$ where $\rho \in [-1,1]$. In matrix form,
+For simplicity, an equicorrelation matrix in (\ref{eq:equicorrelation}) is included. This assumes that the $k$ variables are equally correlated, such that $\rho_{jk}=\rho$ where $\rho \in [-1,1]$ for $j \neq k \in \{1, \dots, K\}$.
 
 \begin{equation}
   \mathbf{R}_{\text{eq}} = \left( 1-\rho \right) \mathbf{I}_K + \rho \boldsymbol{1}_K \boldsymbol{1}'_K = 
@@ -138,20 +137,30 @@ For simplicity, an equicorrelation matrix is included. This assumes that the $k$
   \label{eq:equicorrelation}
 \end{equation}
 
-In a block correlation matrix $\mathbf{R}_{block}$ with $G$ blocks, the correlation between any two variables is determined by the block to which the two variables belong. This is represented by equicorrelation matrices or within block correlations, $\mathbf{R}_{eq, \rho_{gg}}$ with $\rho=\rho_{gg}$ for $g\in\{1, \dots, G\}$ along the diagonal and the rest in the off-diagonals are between block correlations represented by $\mathbf{C}_{g'g} = \mathbf{C}_{gg'} = \rho_{gg'}\mathbf{1}_{n_g \times n_{g'}}$ where $g\neq g'$ for $g,g'\in\{1, \dots, G\}$ and $\sum_{g=1}^G n_g = K$ (@canonical). We can assume that blocks represent correlation due to party or ticket membership in pre-elections surveys.
+In a block correlation matrix $\mathbf{R}_{block}$ with $G$ blocks, as represented by @canonical, the correlation between any two variables is determined by the block to which the two variables belong. Each diagonal block represents an equicorrelation structure within group $g$, denoted by
 
+\begin{equation}
+  \mathbf{R}_{\text{eq,g}} = \left( 1-\rho_{g} \right) \mathbf{I}_{n_g} + \rho_{g} \boldsymbol{1}_{n_g} \boldsymbol{1}'_{n_g} \notag
+\end{equation}
+where $\rho_{g}$ is the within-block correlation and $n_g$ is the number of variables in block $g$ such that $\sum_{g=1}^G n_g = K$. The off-diagonal blocks capture between-block correlations, represented by
+\begin{align}
+\mathbf{C}_{g'g} &= \mathbf{C}_{gg'} = \rho_{gg'}\boldsymbol{1}_{n_g} \boldsymbol{1}'_{n_g} \notag\\
+&\text{where}\; g\neq g' \in \{1, \dots, G\} \notag
+\end{align}
+Thus, the full block correlation matrix can be expressed as in (\ref{eq:blockcorrelation}).
 \begin{equation}
   \mathbf{R}_{\text{block}} = 
 \begin{bmatrix}
-\mathbf{R}_{eq,\rho_{11}} & \mathbf{C}_{12} & \cdots & \mathbf{C}_{1G} \\
-\mathbf{C}_{11} & \mathbf{R}_{eq,\rho_{22}} & \cdots & \mathbf{C}_{2G} \\
+\mathbf{R}_{eq,1} & \mathbf{C}_{12} & \cdots & \mathbf{C}_{1G} \\
+\mathbf{C}_{11} & \mathbf{R}_{eq,2} & \cdots & \mathbf{C}_{2G} \\
 \vdots & \vdots & \ddots & \vdots \\
-\mathbf{C}_{G1} & \mathbf{C}_{G2} & \cdots & \mathbf{R}_{eq,\rho_{GG}}
+\mathbf{C}_{G1} & \mathbf{C}_{G2} & \cdots & \mathbf{R}_{eq,G}
 \end{bmatrix}_{K \times K}
   \label{eq:blockcorrelation}
 \end{equation}
+In the context of pre-election surveys, each block may represent correlations induced by party or ticket membership, reflecting stronger associations within parties and weaker associations between them.
 
-Correlation structures that account for spatial proximity can be borrowed from geostatistics. This is particularly relevant in light of Klein’s observation that states located within certain regions exhibit similar travel time characteristics. In such cases, spatial dependence can be modeled using a stationary (i.e., no directional dependence) Matérn correlation function, which for two locations $\mathbf{s}_i$ and $\mathbf{s}_j$ is expressed as in (\ref{eq:romano_quantile}).
+Correlation structures that account for spatial proximity can be borrowed from geostatistics. This is particularly relevant in light of Klein’s observation that states located within certain regions exhibit similar travel time characteristics. In such cases, spatial dependence can be modeled using a stationary (i.e., no directional dependence) Matérn correlation function, which for two locations $\mathbf{s}_i$ and $\mathbf{s}_j$ is expressed as in (\ref{eq:matern}).
 
 \begin{equation}
 \rho_{\text{matern}} = \frac{2^{1-\nu}}{\Gamma(\nu)} (\kappa \;\Vert \;\mathbf{s}_i - \mathbf{s}_j \; \Vert)^\nu K_\nu  (\kappa \;\Vert \;\mathbf{s}_i - \mathbf{s}_j \; \Vert)
@@ -177,7 +186,7 @@ Algorithm \ref{alg:evaluation} is employed to estimate the coverage, which corre
 In equation \ref{eq:t3}, $OP = K + \sum^K_{k=1} \big | \Lambda_{Ok} \big|$ denotes the total number of occupied positions in a joint confidence region out of the total number of positions $K^2$; or the sum of the differences between the upper and lower bound of the simultaneous rank intervals added by 1, for each population $k$. Higher values of $T_1$ and $T_2$ indicate wider confidence intervals and are therefore less desirable, whereas higher values of $T_3$ are preferable. $T_3$ can range from 0, indicating no tightness, to $\frac{K-1}{K}$, implying the confidence region only contains the estimated ranking which is likely the true ranking.
 
 \begin{algorithm}[H]
-    \caption{Computation of Coverage Probability and Tightness Measures} 
+    \caption{Computing the coverage probability and tightness measures} 
     \label{alg:evaluation}
     For given values of $\boldsymbol{\Sigma}$ and $\theta_1, \theta_2, \dots, \theta_K$ (with corresponding $\theta_{(1)}, \theta_{(2)}, \dots, \theta_{(K)}$ for rank-based methods)
     \begin{algorithmic}[1] % Start algorithmic block

@@ -125,8 +125,6 @@ and deriving $\gamma$ returns $1-{(1-\alpha)}^{1/K}$. Under this condition, the 
   &\text{where}\; z_{\gamma/2} = \Phi^{-1}\left(1-\frac{\gamma}{2}\right) \notag
 \end{align}
 
-
-
 Šidák also suggested the use of Bonferroni inqeuality for the case when variances are unknown and unequal.This was demonstrated by @dunn as follows:
 
 \begin{equation}
@@ -188,7 +186,7 @@ In (\ref{eq:jelle}), $\#\{\cdot\}$ counts the number of pairwise hypotheses that
 
 They showed this to yield uniformly narrower intervals than that of Klein's, for the case when $\sigma$'s are equal. It also has a simultaneous coverage of at least $1-\alpha$ and exactly $1-\alpha$ when all true performances are equal. However, their approach tends to be overly conservative, showing coverage levels between 0.996 and 1.0 at a 0.90 nominal level in simulations, when performances differ (i.e., there are no ties). They also demonstrated that as the true performance differences increase from 0 to 0.5, the coverage quickly increases from the nominal level to 1. As a remedy, they proposed a rescaling technique that brings the coverage closer to the nominal level, though it remains conservative (e.g., from 1.0 to 0.978, from 0.998 to 0.961---at 0.90 confidence level).
 
-@mogstadt23 presented another technique that closely resembles the procedure by Klein and Mohamad. However, they defined ranks in the opposite way (larger rank value for lower estimate). They constructed the rectangular confidence region in (\ref{eq:mogstadt23_ci}), from the pairwise differences of estimators $\hat{\theta}_1, \dots, \hat{\theta}_K$ and an estimator of the variance of $\hat{\theta}_{j}-\hat{\theta}_{k}$, $\sqrt{\sigma_j + \sigma_k}$. $P_k$ is the distribution from which $\hat{\theta}_k$ is estimated; $\hat{P}_k$ denotes the estimate of $P_k$.
+@mogstadt23 presented another technique that closely resembles the procedure by Klein and Mohamad. However, they defined ranks in the opposite way (i.e., larger rank value for lower estimate). They constructed the rectangular confidence region in (\ref{eq:mogstadt23_ci}), from the pairwise differences of estimators $\hat{\theta}_1, \dots, \hat{\theta}_K$ and an estimator of the variance of $\hat{\theta}_{j}-\hat{\theta}_{k}$, $\sqrt{\sigma_j + \sigma_k}$. $\hat{\theta}_1, \dots, \hat{\theta}_K$ need not be independent. $P_k$ is the distribution from which $\hat{\theta}_k$ is estimated; $\hat{P}_k$ denotes the estimate of $P_k$.
 
 \begin{equation}
 \begin{split}
@@ -218,13 +216,19 @@ When the population distribution $P_k$ for $k \in \{1, \dots, K\}$ is a set of d
 P \left\{ \Delta_S(P) \in C(1-\alpha, S) \right\} \geq 1-\alpha 
   \label{eq:mogstadt23_coverage}
 \end{equation}
-Their process of constructing the simultaneous confidence region using bootstrap may be replaced and as long as the procedure is valid. It is then used to produce the overall uncertainty for ranks, which they further improved through a multiple hypothesis testing procedure that accounts for type 3 error or the potential to commit incorrect direction of difference. When certain conditions are followed (See Theorem 3.4 from @mogstadt23),
+(\ref{eq:mogstadt23_ci}) is used to produce the overall uncertainty for ranks. For each $k$, they counted the number of intervals strictly greater than zero ($\lvert N^+_k\rvert$) and strictly less than zero ($\lvert N_k^- \rvert$). By *strictly*, they meant that the entire confidence interval does not cover zero. Their initial joint confidence set for ranks with at least $(1-\alpha)$ coverage is given by
+
+\begin{equation}
+R^{\text{joint}}=\left\{ \lvert N^-_k\rvert + 1, \dots,  K-\lvert N^+_k\rvert \right\}, \qquad k \in \{1, \dots, K\}
+  \label{eq:mogstadt23_initialrankcoverage}
+\end{equation}
+They further refined their approach through a stepwise multiple hypothesis testing algorithm that controls the mixed directional family-wise error rate (mdFWER) by counting the number of rejections for the null hypothesis $\Delta_{j,k}(P) = 0$ in favor of it being strictly smaller or larger than zero, rather than merely not equal to zero. They used these counts in place of $\lvert N^-_k\rvert$ and $\lvert N^+_k\rvert$ in (\ref{eq:mogstadt23_initialrankcoverage}) (see Algorithm 3.2 in @mogstadt23). Under certain conditions (see Theorem 3.4 in @mogstadt23),
 \begin{equation}
 \underset{n \rightarrow \infty}{\lim \inf}\; \underset{P \in \mathbf{P}}{\inf}
 P \left\{ r(P) \in R^{\text{joint}} \right\} \geq 1-\alpha
   \label{eq:mogstadt23_rankcoverage}
 \end{equation}
-where $R^{\text{joint}} = \prod^K_{k=1} R^{\text{joint}}_k$. It was mentioned $\hat{\theta}_1, \dots, \hat{\theta}_K$ need not be independent. It should be noted that (\ref{eq:mogstadt23_coverage}) and (\ref{eq:mogstadt23_rankcoverage}), only asymptotically controls the coverage probability (@mogstadt25). They showed that their approach generally leads to a confidence set that is narrower than that of Klein. 
+It should be noted that (\ref{eq:mogstadt23_coverage}) and (\ref{eq:mogstadt23_rankcoverage}), only asymptotically controls the coverage probability (@mogstadt25). Through simulations, they studied the finite sample performance of their proposed method and showed that the presence of ties led to a coverage closer to nominal level but the confidence interval for a given $k$ contains all or almost all possible values of the rank. On the other hand, when there are no ties, the coverage frequency is close to one and the expected length is small. This is because in the absence of ties, the confidence sets for the differences all exclude zero and lie on the correct side of zero with probability approaching one as the sample size increases. Consequently, the resulting confidence sets for the ranks are small as they contain only the true rank with probability approaching one as the sample size increases. They also showed that their approach generally leads to a confidence set that is narrower than that of Klein's. 
 
 ### Accounting for Data Dependencies
 
