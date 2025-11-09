@@ -3,6 +3,7 @@ number_sections: true
 fig_caption: yes
 output:
   bookdown::pdf_document2:
+    keep_tex: true
     toc: false
     highlight: kate # monochrome
 fontsize: 12pt 
@@ -29,7 +30,6 @@ papersize: a4
 bibliography: /home/realiseshewon/PDev/kde-ranking/writeup/references.bib
 nocite: | 
   @elias
-  @mogstadt25
 csl: /home/realiseshewon/PDev/kde-ranking/writeup/harvard-educational-review.csl
 ---
 
