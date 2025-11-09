@@ -150,62 +150,68 @@ where solving for $c_\alpha=z_{\frac{\alpha}{2K}}$ gives $\Phi^{-1}\left(1-\frac
 
 Klein used (\ref{eq:ind}) and (\ref{eq:bonf}) to come up with the joint confidence region for $\hat{\theta}_1, \dots, \hat{\theta}_K$. These became his basis to form the joint confidence set for the ranks, as explained in Section \ref{sec:kleinRank}.
 
+Since the subsequent discussions rely on the sampling variability of the estimated means rather than the population dispersion, we use $\sigma_k$ (instead of $SE_k$) to denote the standard error of $\hat{\theta}_k$.
+
 ## Alternative Approaches for Ranking Uncertainty
 
 While Klein’s approach provides one framework for constructing joint confidence regions for ranks, several other studies have explored related problems using different formulations or assumptions. These alternative methods vary in whether they account for dependence structures, rely on model-based estimation, or use resampling techniques such as the bootstrap.
 
 ### Calculated Measure
 
-Other studies with similar concern include that of @carling who suggested the use of a statistic $C$ which quantifies the number of positions ranked entities would on average change their order due to random variation. They calculated the measure using a bootstrap approach. Since they worked on risk ratios $p_k$ of $K$ units, they drew $B$ new proportions $p^*_k$ from (\ref{eq:carling_bs}).
+Other studies with similar concern include that of @carling who suggested the use of a statistic $C$ which quantifies the number of positions ranked populations would on average change their order due to random variation. They calculated the measure using a bootstrap approach. Since they worked on risk ratios $p_k$ of $K$ units, they drew $B$ bootstrap proportions $\hat{p}^*_k$ from (\ref{eq:carling_bs}).
 
 \begin{equation}
-\hat{p}^*_{bk} \sim  N \left(\hat{p}_k, \frac{\hat{p}_k(1-\hat{p}_k)}{n_k} \right), \quad k = 1, \dots, K,\, b = 1, \dots, B
+\hat{p}^*_{bk} \sim  N \left(\hat{p}_k, \frac{\hat{p}_k(1-\hat{p}_k)}{n_k} \right), \quad k = 1, \dots, K; \; b = 1, \dots, B
   \label{eq:carling_bs}
 \end{equation}
 
-For each bootstrap iteration $b$, they sorted $\hat{p}^*_{bk}$ to get the corresponding rank $r^*_{bk}$ and calculated the difference between the original and bootstrap rank as $\lvert \hat{r}_k - \hat{r}^*_{bk}\rvert = d_{bk}$ to obtain the expected change in the ranking for unit $k$, calculated as the average $d_{bk}$ across the bootstrap samples and denoted $\bar{d}_k$. Finally, the overall measure $C$ is calculated as the average of $\bar{d}_k$ across all $K$ units.
+For each bootstrap iteration $b$, they sorted $\hat{p}^*_{bk}$ to get the corresponding rank $r^*_{bk}$ and calculated the difference $d_{bk}$ between the original and bootstrap rank as $\lvert \hat{r}_k - \hat{r}^*_{bk}\rvert$ to obtain the expected change $\bar{d}_k$ in the ranking for unit $k$. $\bar{d}_k$ is in turn obtained by taking the average of $d_{bk}$ across the bootstrap samples. Finally, the overall measure $C$ is calculated as the average of $\bar{d}_k$ across all $K$ units. 
 
 ### Pairwise Difference {#sec:pairwise}
 
-@jelle applied Tukey's honest significant difference (HSD) test all $H_{0;k,k'}: \theta_k \neq \theta_{k'}$ for all $k \neq k' \in {1, ..., K}$ at level $\alpha$ to come up with a joint confidence set for ranks expressed as
+@jelle, requiring only the mean estimates and their corresponding standard errors similar to Klein, applied Tukey's Honest Significant Difference (HSD) to test $H_0: \theta_j - \theta_{k} = 0$ for all $j \neq k \in {1, ..., K}$ at level $\alpha$. Tukey's HSD is typically used to provide simultaneous confidence statements about the differences between the means while controlling the family-wise error rate (FWER). This allowed them to come up with a joint confidence set for ranks expressed as
 
-\begin{equation}
+\begin{align}
   \left(
-  1 + \#\left\{ j: \frac{\hat{\theta}_k - \hat{\theta}_{k'}}{\sqrt{\sigma^2_k + \sigma^2_{k'}} }> q_{1-\alpha} \right\},
+  1 + \#\left\{ j: \frac{\hat{\theta}_j - \hat{\theta}_{k}}{\sqrt{\sigma^2_j + \sigma^2_{k}} }> q_{1-\alpha} \right\},
   \;
-  K - \#\left\{ j: \frac{\hat{\theta}_k - \hat{\theta}_{k'}}{\sqrt{\sigma^2_k + \sigma^2_{k'}} } < -q_{1-\alpha} \right\}
-  \right), \notag
-\end{equation}
+  K - \#\left\{ j: \frac{\hat{\theta}_j - \hat{\theta}_{k}}{\sqrt{\sigma^2_j + \sigma^2_{k}} } < -q_{1-\alpha} \right\}
+  \right), \label{eq:jelle} \\
+  \qquad
+  \text{for}\;k=1,2,\dots,K \notag
+\end{align}
 where $q_{1-\alpha}$ is the $(1-\alpha)$ quantile of of the distribution of the studentized range, 
 \begin{equation}
-\underset{k,k'=1, \dots n}{\max} \frac{\lvert \theta_k-\theta_{k'}\rvert}{\sqrt{\sigma^2_k + \sigma^2_{k'}}} \notag
+\underset{j,k=1, \dots K}{\max} \frac{\lvert \theta_j-\theta_{k}\rvert}{\sqrt{\sigma^2_j + \sigma^2_{k}}} \notag
 \end{equation}
-They showed this to yield uniformly narrower intervals than that of Klein's, for the case when $\sigma$s are equal. This has a simultaneous coverage of at least $1-\alpha$ and exactly $1-\alpha$ when all true performances are equal. However, their approach tends to be overly conservative, showing coverage levels between 0.996 and 1.0 at a 0.90 nominal level in simulations, when performances differ (i.e., there are no ties). They also demonstrated that as the true performance differences increase from 0 to 0.5, the coverage quickly increases from the nominal level to 1. As a remedy, they proposed a rescaling technique that brings coverage closer to the nominal level, though it remains conservative (e.g., from 1.0 to 0.978, from 0.998 to 0.961---at 0.90 confidence level).
+In (\ref{eq:jelle}), $\#\{\cdot\}$ counts the number of pairwise hypotheses that are rejected according to Tukey's HSD, which determines the lower and upper bounds of the confidence interval for the rank of $\hat{\theta}_k$. 
 
-@mogstadt23 closely resembles the procedure by Klein since they also constructed the confidence region for ranks basing from the simultaneous confidence region of estimates. However, they defined ranks in the opposite way (descending rather that ascending order) and constructed the rectangular confidence region in \ref{eq:mogstadt23_ci}, from the pairwise differences of estimators $\hat{\theta}_1, \dots, \hat{\theta}_K$ and an estimator of the variance of $\hat{\theta}_{k}-\hat{\theta}_{k'}$, $\widehat{SE}^2_{kk'}$. $P_k$ is the distribution from which $\hat{\theta}_k$ is estimated; $\hat{P}_k$ denotes the estimate of $P_k$.
+They showed this to yield uniformly narrower intervals than that of Klein's, for the case when $\sigma$'s are equal. It also has a simultaneous coverage of at least $1-\alpha$ and exactly $1-\alpha$ when all true performances are equal. However, their approach tends to be overly conservative, showing coverage levels between 0.996 and 1.0 at a 0.90 nominal level in simulations, when performances differ (i.e., there are no ties). They also demonstrated that as the true performance differences increase from 0 to 0.5, the coverage quickly increases from the nominal level to 1. As a remedy, they proposed a rescaling technique that brings the coverage closer to the nominal level, though it remains conservative (e.g., from 1.0 to 0.978, from 0.998 to 0.961---at 0.90 confidence level).
+
+@mogstadt23 presented another technique that closely resembles the procedure by Klein and Mohamad. However, they defined ranks in the opposite way (larger rank value for lower estimate). They constructed the rectangular confidence region in (\ref{eq:mogstadt23_ci}), from the pairwise differences of estimators $\hat{\theta}_1, \dots, \hat{\theta}_K$ and an estimator of the variance of $\hat{\theta}_{j}-\hat{\theta}_{k}$, $\sqrt{\sigma_j + \sigma_k}$. $P_k$ is the distribution from which $\hat{\theta}_k$ is estimated; $\hat{P}_k$ denotes the estimate of $P_k$.
 
 \begin{equation}
 \begin{split}
-C(1-\alpha, S) &= \prod_{(k,k') \in S} \left[ 
-\hat{\theta_k} - \hat{\theta}_{k'} \pm \widehat{SE}^2_{kk'} \;L^{-1}(1-\alpha, S, \hat{P})
+C(1-\alpha, S) &= \prod_{(j,k) \in S} \left[ 
+\hat{\theta}_j - \hat{\theta}_{k} \pm \sqrt{\sigma_j + \sigma_k} \;L^{-1}(1-\alpha, S, \hat{P})
 \right]
 , \\
-&\qquad\qquad\qquad\ S \subseteq \{(k,k') \in K\times K: k\neq k'\}
+&\qquad\qquad\qquad\ S \subseteq \{(j,k) \in K\times K: j\neq k\}
 \end{split}
 \label{eq:mogstadt23_ci}
 \end{equation}
-They added that if the estimators $\hat{\theta}_1, \dots, \hat{\theta}_K$ are jointly asymptotically normally distributed, then the quantiles $L^{-1}(1-\alpha, S, \hat{P})$, can be computed from the limiting distributions of the max-statistics shown in \ref{eq:mogstadt23_quantile}, through resampling methods. In particular, they obtained their $L^{-1}(1-\alpha, S, \hat{P})$ by repeatedly drawing $K$ standard normal variates, recording the maximum for each draw, and taking the relevant quantile of these maxima.
+They added that if the estimators $\hat{\theta}_1, \dots, \hat{\theta}_K$ are jointly asymptotically normally distributed, then the quantiles $L^{-1}(1-\alpha, S, \hat{P})$, can be computed from the limiting distributions of the max-statistics shown in (\ref{eq:mogstadt23_quantile}), through resampling methods. In particular, they obtained their $L^{-1}(1-\alpha, S, \hat{P})$ by repeatedly drawing $K$ standard normal variates, recording the maximum for each draw, and taking the relevant quantile of these maxima.
 
 \begin{equation}
-  L(x, S, P) = P\left\{ \underset{(k,k')\in S}{\max}
+  L(x, S, P) = P\left\{ \underset{(j,k)\in S}{\max}
   \frac{\lvert
-  \hat{\theta}_k - \hat{\theta}_{k'} -\Delta_{k,k'}(P)
-  \rvert}{\widehat{SE}_{kk'}} \leq x
+  \hat{\theta}_j - \hat{\theta}_{k} -\Delta_{j,k}(P)
+  \rvert}{\sqrt{\sigma_j + \sigma_k}} \leq x
   \right\}
-  , \quad \Delta_{k,k'}=\theta_k - \theta_{k'}
+  , \quad \Delta_{j,k}=\theta_j - \theta_{k}
   \label{eq:mogstadt23_quantile}
 \end{equation}
-When the population distribution $P_k$ for $k \in \{1, \dots, K\}$ is a set of distributions on $\mathbb{R}^K$ satisfying uniform integrability, using bootstrap leads to confidence sets that satisfy \ref{eq:mogstadt23_coverage} when $\boldsymbol{\theta}$ is the population mean and $\hat{\boldsymbol{\theta}}$ is the sample mean.
+When the population distribution $P_k$ for $k \in \{1, \dots, K\}$ is a set of distributions on $\mathbb{R}^K$ satisfying uniform integrability, using bootstrap leads to confidence sets that satisfy (\ref{eq:mogstadt23_coverage}) when $\boldsymbol{\theta}$ is the population mean and $\hat{\boldsymbol{\theta}}$ is the sample mean.
 
 \begin{equation}
 \underset{n \rightarrow \infty}{\lim \inf}\; \underset{P \in \mathbf{P}}{\inf}
