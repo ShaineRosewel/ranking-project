@@ -17,15 +17,15 @@ Since true values, $\theta_1, \dots, \theta_K$ are unknown, they assumed that fo
 
 \begin{equation}
   \theta_k \in \left( L_k, U_k \right)
-  \label{eq:theta_in}
+  \notag
 \end{equation}
 That is, they constructed the joint confidence region of the estimates $\hat{\theta}_1, \dots, \hat{\theta}_K$ using their corresponding standard errors to estimate $\hat {\mathbf{r}} = \left(\hat{r}_1, \dots, \hat{r}_K\right)$, where
 
 \begin{equation}
   \hat r_k = 1 + \sum_{j:j \neq k} I(\hat \theta_j \leq \hat \theta_k), \qquad \text{for} \; k = 1, \dots, K
-  \label{eq:estimatedrank}
+  \notag
 \end{equation}
-The estimated overall ranking is then computed from this joint confidence region using the definitions in \ref{eq:conf_set}.
+The estimated overall ranking is computed from the joint confidence region using
 
 \begin{equation}
     \left.
@@ -36,15 +36,16 @@ The estimated overall ranking is then computed from this joint confidence region
                 \Lambda_{Ok} = \left\{ j \in I_k:U_j > L_k \ \text{and} \ U_k > L_j \right\} = I_k - \left\{ \Lambda_{Lk} \cup \Lambda_{Rk} \right\}
     	\end{array}
     \right\}
-  \label{eq:conf_set}
+  \notag
 \end{equation}
-\ref{eq:conf_set} can likewise be expressed in words as follows:
+which implies the following:
 
 1. $j \in \Lambda_{Lk} \leftrightarrow \left(L_j, U_j\right) \cap \left(L_k, U_k\right) = \emptyset$ and $\left(L_j, U_j\right)$ lies to the left of $\left(L_k, U_k\right)$;
 2. $j \in \Lambda_{Rk} \leftrightarrow \left(L_j, U_j\right) \cap \left(L_k, U_k\right) = \emptyset$ and $\left(L_j, U_j\right)$ lies to the right of $\left(L_k, U_k\right)$;
 3. $j \in \Lambda_{Ok} \leftrightarrow \left(L_j, U_j\right) \cap \left(L_k, U_k\right) \neq \emptyset$
-4. $\Lambda_{Lk}, \Lambda_{Rk},$ and $\Lambda_{Ok}$ are mutually exclusive, and $\Lambda_{Lk} \cup \Lambda_{Rk} \cup \Lambda_{Ok} = I_k$    
-The above implies that for each $k \in \left\{1, 2, \dots, K\right\}$,
+4. $\Lambda_{Lk}, \Lambda_{Rk},$ and $\Lambda_{Ok}$ are mutually exclusive, and $\Lambda_{Lk} \cup \Lambda_{Rk} \cup \Lambda_{Ok} = I_k$  
+
+\noindent Hence, for each $k \in \left\{1, 2, \dots, K\right\}$, the joint confidence region for ranks is defined as
 
 \begin{equation}
   r_k \in 
@@ -55,55 +56,36 @@ The above implies that for each $k \in \left\{1, 2, \dots, K\right\}$,
   \dots,
   \lvert \Lambda_{Lk} \rvert + \lvert \Lambda_{Ok} \rvert + 1
   \right\}
-  \label{eq:conf_set_rk}
+  \label{eq:klein_jcs}
 \end{equation}
-Equation \ref{eq:conf_set_rk} demonstrates that a smaller $\lvert \Lambda_{Ok} \rvert$ results in smaller difference between $U_k$ and $L_k$. Collectively, for all $k$, this yields narrower confidence intervals for the overall ranks, which is desirable.
+It was noted that a smaller difference between $U_k$ and $L_k$ leads to a smaller $\lvert \Lambda_{Ok} \rvert$. Collectively, for all $k$, this yields narrower confidence intervals for the overall ranks, which is desirable.
 
-They assumed a conservative confidence region whose joint coverage probability is at least as large as the nominal level, $1-\alpha$, as shown in Equation \ref{eq:joint_cov}.
+They assumed a conservative confidence region whose joint coverage probability is at least as large as the nominal level, $1-\alpha$, as shown in (\ref{eq:joint_cov}).
 
 \begin{equation}
   P\left[ \bigcap^K_{k=1} \left\{ \theta_k \in \left(L_k, U_k\right) \right\} \right] \geq 1-\alpha
   \label{eq:joint_cov}
 \end{equation}
-This yields the joint confidence set for the overall ranking, as defined in Equation \ref{eq:klein_jcs}, which they showed to also have a joint probability of at least $1-\alpha$.
+They showed this to result in a joint confidence set for the overall ranking, shown in (\ref{eq:klein_jcs}), that also has a joint probability of at least $1-\alpha$.
 
-\begin{equation}
-  \left\{ 
-  \left( r_1, \dots, r_K\right):
-  r_k \in 
-  \left\{ 
-    \lvert \Lambda_{Lk} \rvert + 1,  
-    \lvert \Lambda_{Lk} \rvert + 2,
-    \lvert \Lambda_{Lk} \rvert + 3,
-    \dots,
-    \lvert \Lambda_{Lk} \rvert + \lvert
-    \;
-    \text{for}
-    \;
-    k = 1, 2, \dots, K
-  \right\}
-  \right\}
-  \label{eq:klein_jcs}
-\end{equation}
+In line with this, they presented a proof demonstrating that if $(L_1,U_1),\dots,(L_K,U_K)$ are constructed such that the estimator $\hat{\theta}_k \in (L_k, U_k) \; \forall k \in \{1, 2, \dots, K\}$, then the estimated ranking $(\hat r_1, \hat r_2, \dots,\hat r_K)$ lies within the joint confidence region  (\ref{eq:klein_jcs}) with probability 1.
 
-In line with this, they presented a proof demonstrating that if $(L_1,U_1),\dots,(L_K,U_K)$ are constructed such that the estimator $\hat{\theta}_k \in (L_k, U_k) \; \forall k \in \{1, 2, \dots, K\}$, then the estimated ranking $(\hat r_1, \hat r_2, \dots,\hat r_K)$ lies within the joint confidence region defined in Equation \ref{eq:klein_jcs} with probability 1.
-
-They also noted that the joint confidence region in \ref{eq:klein_jcs} contains more than one possible overall ranking unless the values of $\theta_k$ differ from each other such that $(L_k, U_k) \cap (L_{k'}, U_{k'}) = \emptyset, \; \forall \; k\neq k'$. This implies that the unique overall ranking arises only from the narrowest attainable joint confidence region and it is the estimated ranking, $(\hat r_1, \hat r_2, \dots,\hat r_K)$.
+Moreover, they explained that (\ref{eq:klein_jcs}) contains more than one possible overall ranking unless the values of $\theta_k$ differ from each other such that $(L_k, U_k) \cap (L_{k'}, U_{k'}) = \emptyset, \; \forall \; k\neq k'$. This implies that the unique overall ranking arises only from the narrowest attainable joint confidence region and it is the estimated ranking, $(\hat r_1, \hat r_2, \dots,\hat r_K)$.
 
 ### Construction of Joint Confidence Intervals for Parameters {#sec:kleinCI}
 
-@klein used individual confidence intervals of the form $\hat \theta_k \pm z_{\alpha/2} SE_k^2$, with $\hat \theta_k \sim N(\theta_k, SE_k)$ for $k \in \left\{1, 2, \dots, K\right\}$, where $\theta_1, \theta_2, \dots \theta_k$ are unknown and $SE_1, SE_2, \dots, SE_k$ are known. It was noted that ${MOE_k} = {z_{\alpha/2} \times SE_k}$ where $SE_k = \frac{\sigma_k}{\sqrt{n}}$.
+@klein used individual confidence intervals of the form $\hat \theta_k \pm z_{\alpha/2} SE_k^2$, with $\hat \theta_k \sim N(\theta_k, SE_k)$ for $k \in \left\{1, 2, \dots, K\right\}$, where $\theta_1, \theta_2, \dots \theta_k$ are unknown and $SE_1, \dots, SE_k$ are known.
 
-The first one can be traced from Theorem 1 of @sidak which states that for a vector of random variables of dimension $K$, $\mathbf{X} = (X_1, X_2, \dots, X_K)$, with $\mathbf{X} \sim N_K\!\left(\mathbf{0}, \Sigma \right)$ and having an arbitrary correlation matrix $\mathbf{R} = \left\{ \rho_{kk'} \right\}_{k, k' =1}^K$,
+The first one can be traced from Theorem 1 of @sidak which states that for a vector of random variables of dimension $K$, $\mathbf{X} = (X_1, X_2, \dots, X_K)$, with $\mathbf{X} \sim N_K\!\left(\mathbf{0}, \Sigma \right)$ and having an arbitrary correlation matrix $\mathbf{R} = \left\{ \rho_{jk} \right\}_{j, k =1}^K$,
 
 \begin{align}
 P(\lvert X_1\rvert \leq c_1, \; 
 \dots,
 \lvert X_K\rvert \leq c_K) &\geq \notag \\
 &P(\lvert X_1\rvert \leq c_1) \times
-P(\lvert X_2 \rvert \leq c_2, \dots, \lvert X_K \rvert \leq c_K), \notag \\ &\text{for any positive numbers}\; c_1, c_2, \dots, c_K 
+P(\lvert X_2 \rvert \leq c_2, \dots, \lvert X_K \rvert \leq c_K), \notag \\ &\text{for any positive numbers}\; c_1, c_2, \dots, c_K \notag
 \end{align}
-He showed by induction that under the assumptions of Theorem 1,
+Under Theorem 1 and by induction,
 
 \begin{equation}
 P(\lvert X_1\rvert \leq c_1, \; 
@@ -112,28 +94,23 @@ P(\lvert X_1\rvert \leq c_1, \;
 \prod^K_{k=1} P\left( \lvert X_k \rvert \leq c_k\right)
 \label{eq:corollary1}
 \end{equation}
-In words, this means that the smallest confidence level that can be attained will always be $1-\alpha$ and that in cases of presence of dependence when independence is assumed, coverage will always be more than $1-\alpha$.
+That is, the smallest confidence level that can be attained will always be $1-\alpha$ and in cases of presence of dependence when independence is assumed, coverage will always be more than $1-\alpha$.
 
 For the simultaneous confidence intervals used by Klein, @sidak considered a random sample of $n$ vectors of $\mathbf{Y}_i = \left( Y_{i1}, Y_{i2}, \dots, Y_{iK}\right)',\; i=1, \dots, n$ where $Y_{ik} \sim N(\mu_k, \sigma_k^2)$ with unknown $\mu_k$ and known $\sigma_k^2$ and stated that
 
-\begin{equation}
-X_k = \frac{\left( \hat{\theta}_k - \mu_k\right)}{\sigma_k \; \diagup \sqrt{n}} \sim N\!(0, 1), \quad k =1, \dots, K
-\label{eq:standardized}
-\end{equation}
-where
-
-\begin{equation}
-\hat{\theta}_k = \bar {Y}_k = n^{-1} \sum^n_{i=1} Y_{ik}
-\end{equation}
-satisfies the requirements of Theorem 1. Hence, when constructing a simultaneous confidence interval for $\theta_k = \mu_k,\; \forall k \in \{1, 2, \dots, K\}$ with $(1-\alpha)$ confidence level, it follows from \ref{eq:corollary1} and \ref{eq:standardized} that, 
+\begin{align}
+X_k = \frac{\left( \hat{\theta}_k - \mu_k\right)}{\sigma_k \; \diagup \sqrt{n}} &\sim N\!(0, 1), \quad k =1, \dots, K \label{eq:standardized} \\
+&\text{where}\; \hat{\theta}_k = \bar {Y}_k = n^{-1} \sum^n_{i=1} Y_{ik} \notag
+\end{align}
+satisfies the requirements of Theorem 1. Hence, when constructing a simultaneous confidence interval for $\theta_k = \mu_k,\; \forall k \in \{1, 2, \dots, K\}$ with $(1-\alpha)$ confidence level, it follows from (\ref{eq:corollary1}) and (\ref{eq:standardized}) that, 
 
 \begin{align}
 \prod^K_{k=1} P\left( \lvert X_k \rvert \leq c_k\right) &=
-\prod^K_{k=1} P\left( \hat{\theta}_k-c_k \cdot \frac{\sigma}{\sqrt{n}} \leq  \theta_k \leq  \hat{\theta}_k + c_k \cdot \frac{\sigma}{\sqrt{n}} \right) \\
+\prod^K_{k=1} P\left( \hat{\theta}_k-c_k \cdot \frac{\sigma}{\sqrt{n}} \leq  \theta_k \leq  \hat{\theta}_k + c_k \cdot \frac{\sigma}{\sqrt{n}} \right) \notag \\
 &=\prod^K_{k=1} P\left( \hat{\theta}_k-c_k \cdot SE_k \leq  \theta_k \leq  \hat{\theta}_k + c_k \cdot SE_k \right) \notag \\
 &=1-\alpha \notag
 \end{align}
-As a result, this will always yield a confidence level for $\left( \hat{\theta}_k-c_k \cdot SE_k, \hat{\theta}_k + c_k \cdot SE_k \right)$ that is least as large as $1-\alpha$ - being equal  when independence holds and larger than $1-\alpha$ when dependence is actually present.
+As a result, this will always simultaneously yield a confidence level for $\left( \hat{\theta}_k \pm c_k \cdot SE_k \right)$ that is least as large as $(1-\alpha)$---being equal  when independence holds and larger than $(1-\alpha)$ when dependence is actually present.
 
 For the choice of $c_k$, Šidák advised to assume independence with $c_1 = \dots = c_K = c_{\gamma}$ where $\gamma$ is the individual significance level so that
 $$
@@ -142,21 +119,13 @@ $$
 $$
 and deriving $\gamma$ returns $1-{(1-\alpha)}^{1/K}$. Under this condition, the two-sided $100(1-\alpha) \%$ confidence interval for the parameter $\theta_k = \mu_k$ is simultaneously given for each $k\in \{1,\dots,K \}$ by
 
-\begin{equation}
-  I_{k(ind)} =
-  \left(
-  \hat \theta_k - z_{\gamma/2}SE_k,
-  \;
-  \hat \theta_k + z_{\gamma/2}SE_k
-  \right),
-  \qquad
-  \text{for}\;k \in \{1, 2, \dots, K\}
-  \label{eq:ind}
-\end{equation}
-where 
-\begin{equation}
-z_{\gamma/2} = \Phi^{-1}\left(1-\frac{\gamma}{2}\right) = \Phi^{-1}\left(1-\frac{1 - (1 - \alpha)^{1/K}}{2}\right)
-\end{equation}
+\begin{align}
+  \left(\hat \theta_k - z_{\gamma/2}SE_k, \;\hat \theta_k + z_{\gamma/2}SE_k\right)&, \qquad \text{for}\;k \in \{1, 2, \dots, K\}
+  \label{eq:ind} \\
+  &\text{where}\; z_{\gamma/2} = \Phi^{-1}\left(1-\frac{\gamma}{2}\right) \notag
+\end{align}
+
+
 
 Šidák also suggested the use of Bonferroni inqeuality for the case when variances are unknown and unequal.This was demonstrated by @dunn as follows:
 
@@ -164,12 +133,11 @@ z_{\gamma/2} = \Phi^{-1}\left(1-\frac{\gamma}{2}\right) = \Phi^{-1}\left(1-\frac
 P(\lvert X_1\rvert \leq c_1, \; 
 \dots,
 \lvert X_K\rvert \leq c_K) \geq 
-1-2K\left[1-\Phi(c_\alpha)\right]=1-\alpha
+1-2K\left[1-\Phi(c_\alpha)\right]=1-\alpha \notag
 \end{equation}
-where solving for $c_\alpha=z_{\frac{\alpha}{2K}}$ gives $\Phi^{-1}\left(1-\frac{\alpha}{2K}\right)$ resulting in a conservative joint coverage for $\theta_1, \theta_2, \dots, \theta_K$ of at least $1-\alpha$. The corresponding two-sided $100(1-\alpha) \%$ confidence intervals are as defined in \ref{eq:bonf}.
+where solving for $c_\alpha=z_{\frac{\alpha}{2K}}$ gives $\Phi^{-1}\left(1-\frac{\alpha}{2K}\right)$ resulting in a conservative joint coverage for $\theta_1, \dots, \theta_K$ of at least $1-\alpha$. The corresponding two-sided $100(1-\alpha) \%$ confidence intervals are as defined in (\ref{eq:bonf}).
 
 \begin{equation}
-  I_{k(bonf)} =
   \left(
   \hat \theta_k - z_{(\alpha/K)/2}SE_k,
   \;
@@ -179,6 +147,8 @@ where solving for $c_\alpha=z_{\frac{\alpha}{2K}}$ gives $\Phi^{-1}\left(1-\frac
   \text{for}\;k=1,2,\dots,K
   \label{eq:bonf}
 \end{equation}
+
+Klein used (\ref{eq:ind}) and (\ref{eq:bonf}) to come up with the joint confidence region for $\hat{\theta}_1, \dots, \hat{\theta}_K$. These became his basis to form the joint confidence set for the ranks, as explained in Section \ref{sec:kleinRank}.
 
 ## Alternative Approaches for Ranking Uncertainty
 
@@ -197,69 +167,68 @@ For each bootstrap iteration $b$, they sorted $\hat{p}^*_{bk}$ to get the corres
 
 ### Pairwise Difference {#sec:pairwise}
 
-@jelle applied Tukey's honest significant difference (HSD) test to come up with a joint confidence set for ranks expressed in (\ref{eq:jelle}). They showed this to yield uniformly narrower intervals than that of Klein's, for the case when $SE$s are equal.
+@jelle applied Tukey's honest significant difference (HSD) test all $H_{0;k,k'}: \theta_k \neq \theta_{k'}$ for all $k \neq k' \in {1, ..., K}$ at level $\alpha$ to come up with a joint confidence set for ranks expressed as
 
 \begin{equation}
   \left(
-  1 + \#\left\{ j: y_i - y_j - q_{1-\alpha}\sqrt{SE^2_i + \sigma^2_j} > 0 \right\},
+  1 + \#\left\{ j: \frac{\hat{\theta}_k - \hat{\theta}_{k'}}{\sqrt{\sigma^2_k + \sigma^2_{k'}} }> q_{1-\alpha} \right\},
   \;
-  n - \#\left\{ j: y_i - y_j + q_{1-\alpha}\sqrt{SE^2_i + \sigma^2_j} < 0 \right\}
-  \right),
-  \label{eq:jelle}
+  K - \#\left\{ j: \frac{\hat{\theta}_k - \hat{\theta}_{k'}}{\sqrt{\sigma^2_k + \sigma^2_{k'}} } < -q_{1-\alpha} \right\}
+  \right), \notag
 \end{equation}
-where $\gamma = 1 - (1-\alpha)^{\frac{1}{K}}$. This has a simultaneous coverage of at least $1-\alpha$ and exactly $1-\alpha$ when all true performances are equal. However, their approach tends to be overly conservative, showing coverage levels between 0.996 and 1.0 at a 0.90 nominal level in simulations, when performances differ. They also demonstrated that as the true performance differences increase from 0 to 0.5, the coverage quickly increases from the nominal level to 1. As a remedy, they proposed a rescaling technique that brings coverage closer to the nominal level, though it remains conservative (e.g., from 1.0 to 0.978, or from 0.998 to 0.961).
+where $q_{1-\alpha}$ is the $(1-\alpha)$ quantile of of the distribution of the studentized range, 
+\begin{equation}
+\underset{k,k'=1, \dots n}{\max} \frac{\lvert \theta_k-\theta_{k'}\rvert}{\sqrt{\sigma^2_k + \sigma^2_{k'}}} \notag
+\end{equation}
+They showed this to yield uniformly narrower intervals than that of Klein's, for the case when $\sigma$s are equal. This has a simultaneous coverage of at least $1-\alpha$ and exactly $1-\alpha$ when all true performances are equal. However, their approach tends to be overly conservative, showing coverage levels between 0.996 and 1.0 at a 0.90 nominal level in simulations, when performances differ (i.e., there are no ties). They also demonstrated that as the true performance differences increase from 0 to 0.5, the coverage quickly increases from the nominal level to 1. As a remedy, they proposed a rescaling technique that brings coverage closer to the nominal level, though it remains conservative (e.g., from 1.0 to 0.978, from 0.998 to 0.961---at 0.90 confidence level).
 
-@mogstadt23 closely resembles the procedure by Klein since they also constructed the confidence region for ranks basing from the simultaneous confidence region of estimates. However, they constructed the rectangular confidence region in \ref{eq:mogstadt23_ci}, from the pairwise differences of estimators $\hat{\theta}_1, \dots, \hat{\theta}_K$ and an estimator of the variance of $\hat{\theta}_{k'}-\hat{\theta}_k$, $\widehat{SE}^2_{kk'}$. 
+@mogstadt23 closely resembles the procedure by Klein since they also constructed the confidence region for ranks basing from the simultaneous confidence region of estimates. However, they defined ranks in the opposite way (descending rather that ascending order) and constructed the rectangular confidence region in \ref{eq:mogstadt23_ci}, from the pairwise differences of estimators $\hat{\theta}_1, \dots, \hat{\theta}_K$ and an estimator of the variance of $\hat{\theta}_{k}-\hat{\theta}_{k'}$, $\widehat{SE}^2_{kk'}$. $P_k$ is the distribution from which $\hat{\theta}_k$ is estimated; $\hat{P}_k$ denotes the estimate of $P_k$.
 
 \begin{equation}
 \begin{split}
-C &= \prod_{(k,k')\in S}
-\bigl[\,
-\hat{\theta}_k - \hat{\theta}_{k'} - \widehat{SE_{kk'}}\,L^{-1}_{kk'},
-\;\;
-\hat{\theta}_k - \hat{\theta}_{k'} + \widehat{SE_{kk'}}\,L^{-1}_{kk'}
-\,\bigr], \\
-&\qquad\qquad\qquad\text{for } k\neq k',\; (k,k')\in S \subseteq K\times K.
+C(1-\alpha, S) &= \prod_{(k,k') \in S} \left[ 
+\hat{\theta_k} - \hat{\theta}_{k'} \pm \widehat{SE}^2_{kk'} \;L^{-1}(1-\alpha, S, \hat{P})
+\right]
+, \\
+&\qquad\qquad\qquad\ S \subseteq \{(k,k') \in K\times K: k\neq k'\}
 \end{split}
 \label{eq:mogstadt23_ci}
 \end{equation}
-They added that if the estimators $\hat{\theta}_1, \dots, \hat{\theta}_K$ are jointly asymptotically normally distributed, then the quantiles $L^{-1}_{kk'}$, can be computed from the limiting distributions of the max-statistics shown in \ref{eq:mogstadt23_quantile}, through resampling methods. In particular, they obtained their approximate pivot by repeatedly drawing $K$ standard normal variates, recording the maximum for each draw, and taking the relevant quantile of these maxima.
+They added that if the estimators $\hat{\theta}_1, \dots, \hat{\theta}_K$ are jointly asymptotically normally distributed, then the quantiles $L^{-1}(1-\alpha, S, \hat{P})$, can be computed from the limiting distributions of the max-statistics shown in \ref{eq:mogstadt23_quantile}, through resampling methods. In particular, they obtained their $L^{-1}(1-\alpha, S, \hat{P})$ by repeatedly drawing $K$ standard normal variates, recording the maximum for each draw, and taking the relevant quantile of these maxima.
 
 \begin{equation}
-  L(x) = P\left\{ \underset{(k,k')\in S}{\max}
+  L(x, S, P) = P\left\{ \underset{(k,k')\in S}{\max}
   \frac{\lvert
-  \hat{\theta}_k - \hat{\theta}_{k'} -\Delta_{k,k'}
+  \hat{\theta}_k - \hat{\theta}_{k'} -\Delta_{k,k'}(P)
   \rvert}{\widehat{SE}_{kk'}} \leq x
   \right\}
   , \quad \Delta_{k,k'}=\theta_k - \theta_{k'}
   \label{eq:mogstadt23_quantile}
 \end{equation}
-It was mentioned that their approach does not require $\hat{\theta}_1, \dots, \hat{\theta}_K$ to be independent. Moreover, when the population $\mathbf{P}$ is a set of distributions on $\mathbb{R}^p$ satisfying uniform integrability, using bootstrap leads to confidence sets that satisfy \ref{eq:mogstadt23_coverage} when $\boldsymbol{\theta}$ is the population mean and $\hat{\boldsymbol{\theta}}$ is the sample mean.
+When the population distribution $P_k$ for $k \in \{1, \dots, K\}$ is a set of distributions on $\mathbb{R}^K$ satisfying uniform integrability, using bootstrap leads to confidence sets that satisfy \ref{eq:mogstadt23_coverage} when $\boldsymbol{\theta}$ is the population mean and $\hat{\boldsymbol{\theta}}$ is the sample mean.
 
 \begin{equation}
 \underset{n \rightarrow \infty}{\lim \inf}\; \underset{P \in \mathbf{P}}{\inf}
-P \left\{ \Delta_S(P) \in C \right\} \geq 1-\alpha 
+P \left\{ \Delta_S(P) \in C(1-\alpha, S) \right\} \geq 1-\alpha 
   \label{eq:mogstadt23_coverage}
 \end{equation}
-Their process of constructing the simultaneous confidence region using bootstrap may be replaced and as long as it is valid, it can be used to produce the overall uncertainty for ranks, which they defined as 
+Their process of constructing the simultaneous confidence region using bootstrap may be replaced and as long as the procedure is valid. It is then used to produce the overall uncertainty for ranks, which they further improved through a multiple hypothesis testing procedure that accounts for type 3 error or the potential to commit incorrect direction of difference. When certain conditions are followed (See Theorem 3.4 from @mogstadt23),
 \begin{equation}
-R^{joint}_n = \prod_{j \in J} \left\{ \lvert N^-_{j, \text{all}} \rvert +1, \dots, K -\lvert N^+_{j, \text{all}} \rvert \right\}
-  \label{eq:mogstadt23_ranks}
+\underset{n \rightarrow \infty}{\lim \inf}\; \underset{P \in \mathbf{P}}{\inf}
+P \left\{ r(P) \in R^{\text{joint}} \right\} \geq 1-\alpha
+  \label{eq:mogstadt23_rankcoverage}
 \end{equation}
-where
-\begin{align}
-N^-_{j, \text{all}} &= \left\{ k \in J - {j}: C_n(1-\alpha, S_{\text{all}}, (j,k)) \subseteq (-\infty, 0) \right\} \\
-N^+_{j, \text{all}} &= \left\{ k \in J - {j}: C_n(1-\alpha, S_{\text{all}}, (j,k)) \subseteq (0, \infty) \right\}
-\end{align}
-On top of that, they added a stepwise improvement that accounts for type 3 error or the potential to commit incorrect direction of difference, to come up with the final overall rank uncertainty. They claimed that their approach generally leads to a confidence set that is narrower than that of Klein.
+where $R^{\text{joint}} = \prod^K_{k=1} R^{\text{joint}}_k$. It was mentioned $\hat{\theta}_1, \dots, \hat{\theta}_K$ need not be independent. It should be noted that (\ref{eq:mogstadt23_coverage}) and (\ref{eq:mogstadt23_rankcoverage}), only asymptotically controls the coverage probability (@mogstadt25). They showed that their approach generally leads to a confidence set that is narrower than that of Klein. 
 
 ### Accounting for Data Dependencies
 
 Some approaches explicitly accounted for dependencies in the data. @spiegel used multilevel models, in the context of ranking education and health institutions (e.g., schools, hospitals, medical practitioners, etc.), to address the hierarchical nature of data structures associated with institutional performance. Rank uncertainty was presented through a visualization in which non-overlap of confidence intervals conveyed a significant difference between compared institutions (@healy). In an alternative approach, along with institution effect estimation through Gibbs sampling, the rank was obtained for each iteration. Their example illustrated that while the multilevel model made individual estimates more accurate, it also had the effect of making the ranks even more uncertain.
 
-@zhang analyzed U.S. age-adjusted cancer incidence and mortality rates across states and counties by computing individual and overall simultaneous confidence intervals for age-adjusted health index using the Monte Carlo method. Because many health conditions are age-dependent, they used age-adjusted rates to minimize the confounding effect of age differences when comparing different population groups. They also extended their method to handle cases where only the adjusted rates and confidence intervals are available, aligning it more closely with the approach of @klein. (add here critique by jelle - page4)
+@zhang analyzed U.S. age-adjusted cancer incidence and mortality rates across states and counties by computing individual and overall simultaneous confidence intervals for age-adjusted health index using the Monte Carlo method. Because many health conditions are age-dependent, they used age-adjusted rates to minimize the confounding effect of age differences when comparing different population groups. They also extended their method to handle cases where only the adjusted rates and confidence intervals are available, aligning it more closely with the approach of @klein. @jelle showed their technique to result in joint confidence sets with very low coverage probabilities and which are only able to reach the nominal level when differences among the means are large enough.
 
 @miller mentioned that in some use cases such as institutions ranking, dependencies can be accommodated through conditioning, similar to the above approaches. However, in genomics where data on expression levels of different genes from the same individual are generally not independent, they suggested using an "independent component" version of the bootstrap on the sample, where m-out-of-n bootstrap (m < n) is applied as though the ranked variables were statistically independent. They showed this to perform at its best when a reasonable level of correlation is present among the variables.
+
+@mogstadt25, in their recent study, tackled the ranking of political candidates or parties using the estimated share of support each one receives in surveys. They used the multinomial distribution to develop confidence sets for finite samples and explored bootstrap in the case of approximately large samples. They addressed the dependence attributed to the success probabilities of different categories by using their proposed bootstrap algorithm. Their simulations showed that bootstrap-based confidence sets may have coverage probability below the nominal level despite them being excessively wide. In contrast, the finite-sample confidence sets have coverage probability at least as large as expected and may even be relatively shorter.
 
 
 

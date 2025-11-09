@@ -18,7 +18,7 @@ Common across the proposed procedure is calculating the approximate pivot for ea
 The nonrank-based method, as implied by its name, does not incorporate order statistics in the algorithm. It focuses on the minimum requirement of constructing a sampling distribution from which the $(1-\alpha)$-quantile that keeps the simultaneous coverage at the nominal level will be derived.
 
 \begin{algorithm}[H]
-    \caption{Computation of Joint Confidence Region} 
+    \caption{Computation of Joint Confidence Region (Nonrank)} 
     \label{alg:nonrank_ci}
     Let the data be represented by $\hat{\boldsymbol{\theta}} = \left( \hat \theta_1, \hat \theta_2, \dots, \hat \theta_K \right)'$ and suppose that $\boldsymbol{\Sigma}$ is known
     \begin{algorithmic}[1]
@@ -52,7 +52,7 @@ The asymptotic definition of variance is employed in Algorithm \ref{alg:rank_asy
 As an alternative to using the asymptotic variance, a second-level (or double) bootstrap can be employed to estimate the variance, as illustrated in Algorithm \ref{alg:rank_secondlevelbs}. However, this approach is computationally intensive.
 
 \begin{algorithm}[H]
-    \caption{Computation of Joint Confidence Region} 
+    \caption{Computation of Joint Confidence Region (Asymptotic Variance)} 
     \label{alg:rank_asymp}
     Let the data consist of $\boldsymbol{\hat{\theta}} = \left( {\hat\theta_1, \hat\theta_2, \dots, \hat\theta_K} \right)$ and suppose $\boldsymbol{\Sigma}$
     \begin{algorithmic}[1]
@@ -86,7 +86,7 @@ $\hat\sigma_{(k)} = \sqrt{\text{kth ordered value among} \ \left\{ \hat{\theta}^
 
 
 \begin{algorithm}[H]
-    \caption{Computation of Joint Confidence Region} 
+    \caption{Computation of Joint Confidence Region (Variance from Double Bootstrap)} 
     \label{alg:rank_secondlevelbs}
     \begin{algorithmic}[1]
         \For {$b = 1, 2, \dots, B$}
