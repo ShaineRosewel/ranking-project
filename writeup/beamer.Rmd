@@ -1,0 +1,107 @@
+---
+title: "Beamer from RMarkdown"
+subtitle: "A repreducible example"
+author: "Matala, Shaine"
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+institute: "University of the Philippines"
+fontsize: 9pt
+output:
+  beamer_presentation:
+    theme: "Madrid"
+    colortheme: "beaver"
+    fonttheme: "structurebold"
+    incremental: false
+    latex_engine: xelatex
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+# Two column layout
+
+
+\begin{columns}
+\column{0.50\textwidth}
+
+```{r out.width="100%"}
+hist(rnorm(1000,0,1))
+```
+
+
+\column{0.50\textwidth}
+This is a normal distribution.In Figure 2.2, the x-axis represents the distribution of possible
+batting averages, and the y-axis represents the probability density
+of the beta distribution: how likely the batting average is to fall at a
+particular point. The beta distribution is representing a probability
+distribution of probabilities.
+Here’s why the beta distribution is so appropriate for modeling
+the binomial. Imagine the player gets a single hit. His record for
+the season is now “1 hit; 1 at bat.” We have to then update our
+probabilities- we want to shift this entire curve over just a bit to
+reflect our new information. This is the Bayesian philosophy in a
+nutshell: we start with a prior distribution, see some evidence, then
+update to a posterior distribution.
+The math for proving this is a bit involved (it’s shown here), the
+result is very simple. The new beta distribution will be:
+\end{columns}
+
+
+# Code blocks
+
+\begin{alertblock}{Alert block}
+$$
+E = mc^2
+$$
+\end{alertblock}
+
+\begin{examples}
+Example blocks are automatically green in color
+\end{examples}
+
+### Blue block
+
+- happens with level 2, 3 headings
+- this is only true for 'Madrid' theme in R Markdown!!
+
+
+# This works, incremental bullets
+
+>- Bullet 1
+>- Bullet 2
+
+# This nests, but does not increment
+
+- Bullet 1
+- Bullet 2
+    + subbullet 1
+    + subbullet 2
+
+# This increments
+
+>- Bullet 1
+>- Bullet 2
+>    - subbullet 1
+>    - subbullet 2
+
+# This increments too
+
+>- Bullet 1
+>- Bullet 2
+>    + subbullet 1
+>    + subbullet 2
+
+
+# Text
+
+Today is going to be a great day
+
+## Today is...
+
+A new beginning.
+
+## Your Reference
+
+- [slideshare](https://www.slideshare.net/slideshow/create-beamer-slide-with-r-markdown/105158435)
+- [themes](https://mpetroff.net/files/beamer-theme-matrix/)
+- [incremental bullets](https://stackoverflow.com/questions/49367078/incremental-sub-bullets-in-rmarkdown-and-beamer)
