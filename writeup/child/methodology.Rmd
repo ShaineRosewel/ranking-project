@@ -1,24 +1,44 @@
-This section introduces the proposed methodologies to obtain joint confidence intervals that can later be used to quantify uncertainty for the unknown overall true ranking using Klein's main result in Section \@ref(sec:kleinRank). It adds approaches, on top of the Bonferroni correction and independence assumption in Section \@ref(sec:kleinCI), by addressing the case when estimates being ranked are assumed correlated to certain degrees. Section \@ref(sec:confregionalgo) lists the algorithms employed to compute the joint confidence regions. These include a non-rank and rank-based methods. It also has a subsection that discusses correlation structures suitable to the intended use cases. The calculated joint confidence regions are then assessed on the basis of coverage and metrics that measure the tightness of estimated confidence regions. These are tackled in Section \@ref(sec:evaluation).
+This section introduces the proposed methodologies to obtain joint confidence intervals that can be used to quantify uncertainty for the unknown overall true ranking. It addresses the scenario when the estimates of the parameters being ranked are correlated to certain degrees. Section \ref{sec:proposed-methodology-to-compute-simultaneous-confidence-intervals-for-the-unordered-parameters} lists the algorithms employed to compute the joint confidence regions. These include a non-rank and rank-based methods. It also has a subsection that discusses correlation structures suitable to the intended use cases. The calculated joint confidence regions are then assessed on the basis of coverage and metrics that measure the tightness of estimated confidence regions. These are tackled in Section \ref{sec:evaluation}.
 
-## Parametric bootstrap approaches for constructing joint confidence intervals for correlated $\theta_1, \dots, \theta_K$ {#sec:confregionalgo}
+## Proposed methodology to compute simultaneous confidence intervals for the unordered parameters {#sec:proposed-methodology-to-compute-simultaneous-confidence-intervals-for-the-unordered-parameters}
 
-The proposed approaches only utilize $\hat{\theta}_1, \dots, \hat{\theta}_K$ and their corresponding standard errors, $\sigma_1, \dots, \sigma_K$; knowledge of the sampling design and estimation methodology for each population is not required. These are constructed to account for assumed correlation among items being ranked. Hence, various correlation structures $\mathbf{R}$ are listed in section \ref{sec:corrstructures}, to be later examined in a simulation study. The correlation matrix is used in the calculation of the covariance matrix as show in (\ref{eq:sigma_matrix}).
+
+In this chapter, we use the notations defined in Section \ref{sec:ranking-problem} and \ref{sec:kleins-joint-confidence-region-for-overall-ranking-uncertainty}. Moreover, we define $\hat{\boldsymbol{\theta}}=(\hat{\theta}_1,\hat{\theta}_2,\ldots,\hat{\theta}_K)'$. We assume that $\hat{\boldsymbol{\theta}}\sim N(\boldsymbol{\theta},\boldsymbol{\Sigma})$ where $\boldsymbol{\theta}=(\theta_1,\theta_2,\ldots,\theta_K)'$ is unknown and $\boldsymbol{\Sigma}$ is a known $K \times K$ positive definite matrix. The diagonal elements of $\boldsymbol{\Sigma}$ are $\sigma^2_1,\ldots,\sigma^2_K$. We note that in the literature on inferences on the ranks, it is customary to assume that the variances are known. As previously mentioned, the setup in this thesis allows the estimates to be correlated, which is contrast with that of @klein which assumes independence among the estimates. In other words, in this thesis, the covariance matrix $\boldsymbol{\Sigma}$ need not be a diagonal matrix.  Similar to the study of @klein, we shall derive simultaneous confidence intervals for $\theta_1,\theta_2,\ldots,\theta_K$ of the form 
 
 \begin{equation}
-  \boldsymbol{\Sigma} = \boldsymbol{\Delta}^{1/2} \mathbf{R} \boldsymbol{\Delta}^{1/2}; \quad \boldsymbol{\Delta} = \text{diag} \left\{ \sigma^2_1, \sigma^2_2, \dots, \sigma^2_K \right\}
-  \label{eq:sigma_matrix}
-\end{equation} with assumed $\mathbf{R}$. This form of $\boldsymbol{\Sigma}$ will be used in Sections \@ref(sec:nonrankbased) and \@ref(sec:rankbased).
+\mathfrak{R}_1 = 
+[\hat{\theta}_1 \pm t \times \sigma_1] \times
+[\hat{\theta}_2 \pm t \times \sigma_2] \times
+\cdots \times
+[\hat{\theta}_K \pm t \times \sigma_K].
+  \label{eq:rev1}
+\end{equation}
 
-We primarily use parametric bootstrap to approximate the quantile that will be used to construct the confidence intervals while controlling the FWER to be around the nominal level. The design closely parallels that of @carling and Leyland & Langford (@spiegel), who generated bootstrap samples from a normal distribution by applying the plug-in principle (@efron) of using the observed estimator and its corresponding standard error as parameters. In our case however, correlation is assumed. Hence, we sample from the multivariate normal distribution, with the vector of estimates, $\hat{\boldsymbol{\theta}} = \left( \hat \theta_1, \hat \theta_2, \dots, \hat \theta_K \right)'$, as mean and $\boldsymbol{\Sigma}$ as defined in (\ref{eq:sigma_matrix}). 
+We want the simultaneous confidence intervals in (\ref{eq:rev1}) to satisfy:
 
-Common across the proposed procedure is calculating $\Big| \frac{\hat{\theta}^*_{bk}-\hat{\theta}_k}{\sigma_k} \Big|$ and taking its maximum across $k \in \{1, \dots, K\}$. This step keeps the coverage of the rectangular confidence region approximately equal to the nominal level. The idea is also conceptually similar to that of @mogstadt23 who used resampling to obtain the quantile as described in Section \@ref(sec:pairwise). 
+\begin{equation}
+ P\left( \hat{\theta}_k-t \cdot \sigma_k \leq  \theta_k \leq  \hat{\theta}_k + t \cdot \sigma_k, \,\, \forall k=1,2,\ldots,K \right)  =1-\alpha.
+\end{equation}
+
+Equivalently, we require
+
+\begin{equation}
+ P\left( \max_{k=1,2,\ldots,K} \left| \dfrac{\hat{\theta}_k-\theta_k}{\sigma_k} \right| \le t \right)  =1-\alpha. 
+\end{equation}
+
+
+We use the parametric bootstrap to estimate the quantile $t$ that will be used to construct the confidence intervals while controlling the coverage to be around the nominal level.  Hence, we sample from the multivariate normal distribution with $\hat{\boldsymbol{\theta}}$ and $\boldsymbol{\Sigma}$ as mean and variance, respectively. The idea is also conceptually similar to that of @mogstadt23 who use resampling to obtain the quantile in a different context. Algorithm \ref{alg:nonrank_ci} describes the procedure to compute the confidence intervals based on unordered estimates.
+
+Once the confidence intervals in (\ref{eq:rev1}) have been obtained, we can use the result of @klein in (\ref{eq:joint_cov2}) to get the lower and upper bounds on the ranks $r_k, k=1,2,\ldots,K$.
+
+
 
 ### Nonrank-based method {#sec:nonrankbased}
 
 The nonrank-based method, as implied by its name, does not incorporate order statistics in the algorithm. It focuses on the minimum requirement of constructing a sampling distribution from which the $(1-\alpha)$-quantile that keeps the simultaneous coverage at the nominal level will be derived.
 
 \begin{algorithm}[H]
-    \caption{Computating the joint confidence region (nonrank)} 
+    \caption{Computing the joint confidence region using standardized unordered estimates} 
     \label{alg:nonrank_ci}
     Let the data be represented by $\hat{\boldsymbol{\theta}} = \left( \hat \theta_1, \hat \theta_2, \dots, \hat \theta_K \right)'$ and suppose that $\boldsymbol{\Sigma}$ is known
     \begin{algorithmic}[1]
@@ -34,25 +54,56 @@ The nonrank-based method, as implied by its name, does not incorporate order sta
         \State The joint confidence region of $\theta_1, \theta_2, \dots, \theta_K$ is given by 
         \Statex \begin{minipage}{\linewidth}
     \centering
-$\mathfrak{R} = \left[ \hat\theta_1 \pm \hat t \times \sigma_1  \right] \times \left[ \hat\theta_2 \pm \hat t \times \sigma_2  \right] \times \dots \times \left[ \hat\theta_K \pm \hat t \times \sigma_K  \right]$
+$\mathfrak{R}_1 = \left[ \hat\theta_1 \pm \hat t \times \sigma_1  \right] \times \left[ \hat\theta_2 \pm \hat t \times \sigma_2  \right] \times \dots \times \left[ \hat\theta_K \pm \hat t \times \sigma_K  \right]$
     \end{minipage}
     \end{algorithmic} 
 \end{algorithm}
 
-### Rank-based methods {#sec:rankbased}
+### Proposed methodology to compute simultaneous confidence intervals for the ordered parameters {#sec:rankbased}
 
-For the rank-based methods, order statistics are considered for the bootstrap sampled estimates. That is, for each bootstrap $b$, the estimates are sorted in increasing order. Similar to nonrank-based method, the data is consist of $\hat{\boldsymbol{\theta}} = \left( \hat \theta_1, \hat \theta_2, \dots, \hat \theta_K \right)'$ and a known $\boldsymbol{\Sigma}$.
+We shall also be proposing an approach to compute simultaneous confidence intervals for the ordered parameters. Suppose that for the parameters $\theta_1,\ldots,\theta_K$, the corresponding ordered values are $\theta_{(1)},\ldots,\theta_{(K)}$. We find confidence intervals for these ordered values, and set these intervals to be of the following form:
 
-#### Asymptotic variance
 
-The asymptotic definition of variance is employed in Algorithm \ref{alg:rank_asymp} since it is unknown for $\hat\theta_{(k)}$.
+\begin{equation}
+\mathfrak{R}_2=
+[\hat{\theta}_{(1)} \pm t \times \sigma_{(1)}] \times
+[\hat{\theta}_{(2)} \pm t \times \sigma_{(2)}] \times
+\cdots \times
+[\hat{\theta}_{(K)} \pm t \times \sigma_{(K)}],
+\label{eq:rev2}
+\end{equation}
+where $\sigma_{(k)}=\sqrt{V\left(\hat{\theta}_{(k)}\right)}$. The confidence intervals in (\ref{eq:rev2}) are computed such that the following condition holds:
+
+\begin{equation}
+ P\left( \hat{\theta}_{(k)}-t \cdot \sigma_{(k)} \leq  \theta_{(k)} \leq  \hat{\theta}_{(k)} + t \cdot \sigma_{(k)}, \,\, \forall k=1,2,\ldots,K \right)  =1-\alpha,
+\label{eq:rev3}
+\end{equation}
+which is equivalent to
+
+\begin{equation}
+ P\left( \max_{k=1,2,\ldots,K} \left| \dfrac{\hat{\theta}_{(k)}-\theta_{(k)}}{\sigma_{(k)}} \right| \le t \right)  =1-\alpha,
+\label{eq:rev4}
+\end{equation}
+and we estimate $t$, which in (\ref{eq:rev4}) is the $(1-\alpha)$-quantile of the distribution of $\max_{k} \left| \dfrac{\hat{\theta}_{(k)}-\theta_{(k)}}{\sigma_{(k)}} \right|$, via a parametric bootstrap. We shall refer to this approach as confidence intervals based on ordered estimates. Since $\sigma_{(k)}$ is not known, we estimate its value. We present two approaches to estimate $\sigma_{(k)}$. The first uses results from @chen and @dudewicz to obtain an expression of the asymptotic variance of $\hat{\theta}_{(k)}$ as follows:
+\begin{equation}
+V(\hat{\theta}_{(k)})= \text{kth ordered value among} \ \left\{ \theta^{2}_{1} + \sigma_1^2, \theta^{2}_{2} + \sigma_2^2, \dots, \theta^{2}_{K} + \sigma_K^2 \right\} - \theta^{2}_{(k)}.
+\label{eq:rev5}
+\end{equation}
+Consequently, we get an estimate of the asymptotic variance of $\hat{\theta}_{(k)}$, given by:
+\begin{equation}
+\widehat{V(\hat{\theta}_{(k)})}= \text{kth ordered value among} \ \left\{ \hat{\theta}^{2}_{1} + \sigma_1^2, \hat{\theta}^{2}_{2} + \sigma_2^2, \dots, \hat{\theta}^{2}_{K} + \sigma_K^2 \right\} - \hat {\theta}^{2}_{(k)}.
+\label{eq:rev6}
+\end{equation}
+
+Algorithm \ref{alg:rank_asymp} describes the procedure to compute the simultaneous confidence intervals in (\ref{eq:rev1}) using this approach.
+
 
 #### Variance from second-level bootstrap
 
 As an alternative to using the asymptotic variance, a second-level (or double) bootstrap can be employed to estimate the variance, as illustrated in Algorithm \ref{alg:rank_secondlevelbs}. However, this approach is computationally intensive.
 
 \begin{algorithm}[H]
-    \caption{Computing the joint confidence region (asymptotic variance)} 
+    \caption{Computing the joint confidence region based on ordered estimates and the estimated asymptotic variance} 
     \label{alg:rank_asymp}
     \begin{algorithmic}[1]
     \For {$b = 1, 2, \dots, B$}
@@ -73,7 +124,7 @@ As an alternative to using the asymptotic variance, a second-level (or double) b
     \State The joint confidence region of $\theta_{(1)}, \theta_{(2)}, \dots, \theta_{(K)}$ is given by
         \Statex \begin{minipage}{\linewidth}
         \centering
-        $\mathfrak{R} = \left[ \hat\theta_{(1)} \pm \hat t \times \hat\sigma_{(1)}  \right] \times \left[ \hat\theta_{(2)} \pm \hat t \times \hat\sigma_{(2)}  \right] \times \dots \times \left[ \hat\theta_{(K)} \pm \hat t \times \hat\sigma_{(K)}  \right]$
+        $\mathfrak{R}_2 = \left[ \hat\theta_{(1)} \pm \hat t \times \hat\sigma_{(1)}  \right] \times \left[ \hat\theta_{(2)} \pm \hat t \times \hat\sigma_{(2)}  \right] \times \dots \times \left[ \hat\theta_{(K)} \pm \hat t \times \hat\sigma_{(K)}  \right]$
         \end{minipage}
         where $\hat \sigma_{(k)}$ is computed as
         \Statex \begin{minipage}{\linewidth}
@@ -83,9 +134,11 @@ $\hat\sigma_{(k)} = \sqrt{\text{kth ordered value among} \ \left\{ \hat{\theta}^
     \end{algorithmic} 
 \end{algorithm}
 
+The expression for the asymptotic variance of $\hat{\theta}_{(k)}$ has actually been derived in a setting where the $\hat{\theta}_1,\hat{\theta}_2,\ldots,\hat{\theta}_K$ are independent. It is not clear if the expression in (\ref{eq:rev5}) holds whenever $\hat{\theta}_1,\hat{\theta}_2,\ldots,\hat{\theta}_K$ are correlated. Since this thesis allows for the $\hat{\theta}_k$s to be correlated, it is possible that the expression in (\ref{eq:rev6}) for the estimate of the variance of $\hat{\theta}_{(k)}$ lacks optimality.  As an alternative to using the asymptotic variance, we shall also consider using the bootstrap to estimate the variance of $\hat{\theta}_{(k)}$. To this end, a second-level bootstrap can be employed to estimate the variance. Algorithm  \ref{alg:rank_secondlevelbs} illustrates the procedure to compute the simultaneous confidence intervals based on the ordered estimates and using the bootstrap to estimate the variance of the ordered estimates. As may be expected, this approach is computationally intensive.
+
 
 \begin{algorithm}[H]
-    \caption{Computing the joint confidence region (variance from double bootstrap)}
+    \caption{Computing the joint confidence region based on ordered estimates and the bootstrap estimate of the variance}
     \label{alg:rank_secondlevelbs}
     \begin{algorithmic}[1]
         \For {$b = 1, 2, \dots, B$}
@@ -106,7 +159,7 @@ $\hat\sigma_{(k)} = \sqrt{\text{kth ordered value among} \ \left\{ \hat{\theta}^
         \State The joint confidence region of $\theta_{(1)}, \theta_{(2)}, \dots, \theta_{(K)}$ is
             \Statex \begin{minipage}{\linewidth}
             \centering
-            $\mathfrak{R} = \left[ \hat\theta_{(1)} \pm \hat t \times \hat\sigma_{(1)}  \right] \times \left[ \hat\theta_{(2)} \pm \hat t \times \hat\sigma_{(2)}  \right] \times \dots \times \left[ \hat\theta_{(K)} \pm \hat t \times \hat\sigma_{(K)}  \right]$
+            $\mathfrak{R}_2 = \left[ \hat\theta_{(1)} \pm \hat t \times \hat\sigma_{(1)}  \right] \times \left[ \hat\theta_{(2)} \pm \hat t \times \hat\sigma_{(2)}  \right] \times \dots \times \left[ \hat\theta_{(K)} \pm \hat t \times \hat\sigma_{(K)}  \right]$
         \end{minipage}
         where $\hat \sigma_{(k)}$ is computed as
         \Statex \begin{minipage}{\linewidth}
@@ -118,13 +171,15 @@ $\displaystyle \hat \sigma_{(k)} = \frac{\sum^B_{b=1} \left( \hat \theta^*_{b(k)
 
 ### Correlation structures {#sec:corrstructures}
 
-This section discusses the correlation structures considered in the simulation. Since the estimation of correlation matrices is beyond the scope of this study, it is enough to assure that any assumed matrix of correlation is indeed valid a correlation matrix $\mathbf{R}$ satisfying the following: 
+The proposed methodologies assume that $V(\hat{\boldsymbol{\theta}})=\boldsymbol{\Sigma}$ is known. Note that we can express $\boldsymbol{\Sigma}$ as in (3.9), where $\mathbf{R}$ is the population correlation matrix.
 
-- $\mathbf{R}$ is nonnegative definite (or positive semidefinite)
-- $0 \leq \lvert\mathbf{R}\rvert \leq 1$
-- If $\lvert\mathbf{R}\rvert = 1$ then $\mathbf{R} = \mathbf{I}$
+\begin{equation}
+  \boldsymbol{\Sigma} = \boldsymbol{\Delta}^{1/2} \mathbf{R} \boldsymbol{\Delta}^{1/2}; \quad \boldsymbol{\Delta} = \text{diag} \left\{ \sigma^2_1, \sigma^2_2, \dots, \sigma^2_K \right\}
+  \label{eq:sigma_matrix}
+\end{equation}
+The diagonal elements of $\boldsymbol{\Sigma}$, which are $\sigma^2_k=V(\hat{\theta}_k)$ for $k =1,2, \ldots,K$, are treated as known quantities in practice. With large sample sizes, the variance estimates are stable enough that they are treated as the actual values. However, there is limited information to use as basis for the correlations among the stimates. In this thesis, we shall be  assuming certain correlation structures among the $\hat{\theta}$s.  
 
-For simplicity, an equicorrelation matrix in (\ref{eq:equicorrelation}) is included. This assumes that the $k$ variables are equally correlated, such that $\rho_{jk}=\rho$ where $\rho \in [-1,1]$ for $j \neq k \in \{1, \dots, K\}$.
+One structure thay may be used is an equicorrelation matrix shown in (\ref{eq:equicorrelation}). This assumes that the $k$ variables are equally correlated, such that $\rho_{jk}=\rho$ where $\rho \in [-1,1]$ for $j \neq k \in \{1, \dots, K\}$.
 
 \begin{equation}
   \mathbf{R}_{\text{eq}} = \left( 1-\rho \right) \mathbf{I}_K + \rho \boldsymbol{1}_K \boldsymbol{1}'_K = 
@@ -170,7 +225,8 @@ where $\Vert \cdot \Vert$ denotes the Euclidean distance and $K_\nu$ is the seco
 
 ## Evaluation {#sec:evaluation}
 
-Algorithm \ref{alg:evaluation} is employed to estimate the coverage, which corresponds to the proportion of replications in which the true parameter values are contained within the confidence intervals for all $K$ simultaneously. Likewise,the tightness of the joint confidence region is is assessed using three summary measures: the arithmetic mean ($T_1$), geometric mean ($T_2$), and the metric $T_3$ introduced by @wright, as presented in Equations \ref{eq:t1}–\ref{eq:t3}.
+Algorithm \ref{alg:evaluation} estimates the coverage probabilities associated with the proposed methodologies. The coverage probabilities correspond to the proportion of replications in which the true parameter values are contained within the confidence intervals for all $K$ simultaneously. Moreover, the tightness of the joint confidence region that results from Algorithm \ref{alg:nonrank_ci} is assessed using three summary measures: the arithmetic mean (\(T_1\)), geometric mean (\(T_2\)), and the metric \(T_3\) introduced by Wright (2025), as presented in Equations \ref{eq:t1}--\ref{eq:t3}.
+
 \begin{equation}
   T_1 = \frac{1}{K} \sum^K_{k=1} \Big | \Lambda_{Ok} \Big|
   \label{eq:t1}
@@ -192,18 +248,14 @@ In equation \ref{eq:t3}, $OP = K + \sum^K_{k=1} \big | \Lambda_{Ok} \big|$ denot
     \begin{algorithmic}[1] % Start algorithmic block
             \For {$\text{replications} = 1, 2, \dots, 5000$}
             \State Generate $\hat{\boldsymbol{\theta}} \sim N_K(\boldsymbol{\theta}, \boldsymbol{\Sigma})$
-            \State Compute the rectangular confidence region $\mathfrak{R}$ using Algorithm \ref{alg:nonrank_ci} (using Algorithm \ref{alg:rank_asymp} and \ref{alg:rank_secondlevelbs} for rank-based methods).
-            \State Check if $\left( \theta_1, \theta_2, \dots, \theta_K\right) \in \mathfrak{R}$ and compute $T_1, T_2$, and $T_3$.
+            \State Compute the confidence region $\mathfrak{R}_1$ for the unordered parameters using Algorithm \ref{alg:nonrank_ci} and the confidence region for the ordered parameters $\mathfrak{R}_2$ using Algorithms \ref{alg:rank_asymp} and \ref{alg:rank_secondlevelbs}.
+            \State For the unordered parameters, check if $\left( \theta_1, \theta_2, \dots, \theta_K\right) \in \mathfrak{R}_1$ and compute $T_1, T_2$, and $T_3$. For the ordered parameters, check if $\left( \theta_{(1)}, \theta_{(2)}, \dots, \theta_{(K)}\right) \in \mathfrak{R}_2$
         \EndFor
     \State Compute the proportion of times that the condition in line 4 is satisfied and the average of $T_1, T_2$, and $T_3$.
     \end{algorithmic} % End algorithmic block
 \end{algorithm}
 
-## Simulation study
+## Simulation settings
 
-The resulting joint confidence intervals in Section \ref{sec:confregionalgo} are used as basis in constructing the joint confidence intervals for overall rank uncertainty according to Klein's main result in Section \ref{sec:kleinRank}. These are compared with the outcomes of joint confidence intervals in Section \ref{sec:kleinCI} in terms of coverage and overall measures of tightness resulting from Section \ref{sec:evaluation}.
-
-In each simulation scenario, the components of the mean vector for the multivariate normal distribution were drawn from a normal distribution with mean 23.8--corresponding to the average of the mean travel time estimates across 51 states in Klein's study---and standard deviation $sd \in \left\{2, 3.6, 6\right\}$. These settings are selected to represent varying degrees of separation among the true parameter values, thereby influencing the difficulty of maintaining simultaneously narrow confidence intervals. By intuition, wider spread among true means facilitates clearer differentiation between estimates. 
-
-The number of populations being ranked was varied as $K \in \left\{ 5,10,20,30,40,50 \right\}$), to examine how dimensionality affects the uncertainty of the estimated rankings. Correlation among the parameters was imposed according to the structures outlined in Section \ref{sec:corrstructures}, enabling comparison across distinct dependency patterns and among different joint confidence region constructions. Each case is carried out with $\alpha = 0.05$.
+For the simulation settings to be used in evaluating the performance of the proposed methodologies, we shall be varying the settings for the population mean $\boldsymbol{\theta}$, population variances $\sigma^2_1,\ldots,\sigma^2_K$, population correlation matrix $\mathbf{R}$, and number of populations being ranked $K$. In carrying out the simulations, a nominal level of $1-\alpha=0.95$ will be used. The table below summarizes the simulations settings.
 
