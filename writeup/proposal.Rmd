@@ -35,7 +35,7 @@ csl: /home/realiseshewon/PDev/kde-ranking/writeup/harvard-educational-review.csl
 
 \title{%
   \vspace{35mm}% <- reduce this from 45mm to something smaller
-  \textbf{Overall Rank Uncertainty\\for Correlated Populations}%
+  \textbf{Joint Confidence Regions for Rankings based on Correlated Estimates}%
 }
 \maketitle
 \thispagestyle{empty}
