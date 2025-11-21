@@ -1,0 +1,936 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+  a4paper,
+]{article}
+\usepackage{amsmath,amssymb}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\usepackage{xcolor}
+\usepackage[margin=1in]{geometry}
+\usepackage{longtable,booktabs,array}
+\usepackage{calc} % for calculating minipage widths
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{5}
+% definitions for citeproc citations
+\NewDocumentCommand\citeproctext{}{}
+\NewDocumentCommand\citeproc{mm}{%
+  \begingroup\def\citeproctext{#2}\cite{#1}\endgroup}
+\makeatletter
+ % allow citations to break across lines
+ \let\@cite@ofmt\@firstofone
+ % avoid brackets around text for \cite:
+ \def\@biblabel#1{}
+ \def\@cite#1#2{{#1\if@tempswa , #2\fi}}
+\makeatother
+\newlength{\cslhangindent}
+\setlength{\cslhangindent}{1.5em}
+\newlength{\csllabelwidth}
+\setlength{\csllabelwidth}{3em}
+\newenvironment{CSLReferences}[2] % #1 hanging-indent, #2 entry-spacing
+ {\begin{list}{}{%
+  \setlength{\itemindent}{0pt}
+  \setlength{\leftmargin}{0pt}
+  \setlength{\parsep}{0pt}
+  % turn on hanging indent if param 1 is 1
+  \ifodd #1
+   \setlength{\leftmargin}{\cslhangindent}
+   \setlength{\itemindent}{-1\cslhangindent}
+  \fi
+  % set entry spacing
+  \setlength{\itemsep}{#2\baselineskip}}}
+ {\end{list}}
+\usepackage{calc}
+\newcommand{\CSLBlock}[1]{\hfill\break\parbox[t]{\linewidth}{\strut\ignorespaces#1\strut}}
+\newcommand{\CSLLeftMargin}[1]{\parbox[t]{\csllabelwidth}{\strut#1\strut}}
+\newcommand{\CSLRightInline}[1]{\parbox[t]{\linewidth - \csllabelwidth}{\strut#1\strut}}
+\newcommand{\CSLIndent}[1]{\hspace{\cslhangindent}#1}
+\usepackage{amsmath}
+\numberwithin{equation}{section}
+\usepackage{setspace}\onehalfspacing
+\usepackage{pdflscape}
+\newcommand{\blandscape}{\begin{landscape}}
+\newcommand{\elandscape}{\end{landscape}}
+\usepackage{indentfirst}
+\usepackage{xparse}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{float}
+\usepackage{placeins}
+\renewcommand{\ttfamily}{\rmfamily}
+\usepackage{etoolbox}
+\usepackage{multirow}
+\usepackage{makecell}
+\usepackage{booktabs}
+\AtBeginEnvironment{algorithmic}{\setstretch{1.5}}
+\renewcommand{\arraystretch}{0.75}
+\renewcommand{\multirowsetup}{\raggedright}
+\usepackage{anyfontsize}
+\newcommand{\thesisfont}{\fontsize{20pt}{19pt}\selectfont}
+\thesisfont
+\usepackage{titlesec}
+\titleformat{\section}{\fontsize{20pt}{22pt}\bfseries}{\thesection}{1em}{}
+\titleformat{\subsection}{\fontsize{18pt}{20pt}\bfseries}{\thesubsection}{1em}{}
+\titleformat{\subsubsection}{\fontsize{16pt}{19pt}\bfseries}{\thesubsubsection}{1em}{}
+\usepackage{caption}
+\newcommand{\algfont}{\fontsize{15pt}{18pt}\selectfont}
+\DeclareCaptionFont{thesisalg}{\algfont\bfseries}
+\captionsetup[algorithm]{font=thesisalg}
+\AtBeginEnvironment{algorithm}{\algfont}
+\AtBeginEnvironment{algorithmic}{\algfont}
+\ifLuaTeX
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+\usepackage{bookmark}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+\hypersetup{
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+
+\author{}
+\date{\vspace{-2.5em}}
+
+\begin{document}
+
+\fontsize{15pt}{18pt}\selectfont
+
+\title{%
+  \vspace{35mm}% <- reduce this from 45mm to something smaller
+  \textbf{Joint Confidence Regions for Rankings based on Correlated Estimates}%
+}
+\maketitle
+\thispagestyle{empty}
+\begin{center}
+Shaine Rosewel Paralis Matala\\
+\vspace*{32px}
+A Thesis proposal submitted to UP Diliman School of Statistics\\
+\vspace*{14px}
+In Partial Fulfillment of the Requirements for the Degree of\\
+Master of Science in Statistics\\
+\vspace*{250px}
+School of Statistics\\
+University of the Philippines\\
+November 2025
+\end{center}
+
+\newpage
+
+\newpage
+
+\tableofcontents
+\newpage
+\vspace*{1cm}
+
+\section{Introduction}\label{introduction}
+
+\vspace*{0.8cm}
+
+Ranked data are commonly of interest because they allow readers to compare populations based on ranked quantities. For example, top universities across the globe may be identified based on their institutional performance indicator; states may receive appropriate intervention according to their relative rank based on average travel times to work; and senatorial candidates who are likely to be granted a seat in the office can be reported by public opinion polling bodies prior to elections. Whenever data on the entire population are unavailable, the ranks are based on estimates rather than the unknown parameters. Consequently, their overall uncertainty---expressed through joint confidence intervals---should also be quantified. Marginally, these intervals provide information on the possible range of each rank while jointly, they facilitate comparing all ranks simultaneously rather than reporting them in isolation.
+
+Several studies have addressed this concern through different techniques. Some approaches like those by Klein et al. (2020), Mohamad et al. (2019), Mogstad et al. (2024), Andersson et al. (1998), and Lyhagen \& Ahlgren (2020), relied solely on the estimates and their standard errors, constructing joint confidence intervals either for the estimated quantities or directly for the ranks themselves. Others incorporate model-based uncertainty to account for dependencies inherent in the data structure. These include the works of Goldstein \& Spiegelhalter (1996), who utilized conditioning through multilevel models where the ranked quantities are treated as residual effects. Hall \& Miller (2009), on the other hand, developed a bootstrap algorithm that allows for the assumption of independence despite its potential violation.
+
+Assuming independence when constructing joint confidence regions for estimators that are, in fact, correlated may lead to overly conservative and thus wider intervals, implying greater uncertainty---contrary to what is desired. It is therefore important to account for potential dependencies, as demonstrated by Goldstein \& Spiegelhalter (1996). However, in their case, the estimators were treated as latent variables. In contrast, the present work focuses on estimators that are observable or directly measurable from the data.
+
+The more general setting, which to our knowledge has not yet been explored, allows for a certain degree of correlation among the estimates to be ranked. This thesis develops a procedure capable of handling such dependencies while maintaining coverage close to the nominal level and producing relatively narrow joint confidence intervals. The proposed methodology uses only the observed estimators and their corresponding standard errors. Although it also employs a parametric bootstrap---commonly used to estimate overall rank uncertainties (e.g., Mohamad et al. (2019), Mogstad et al. (2024), Andersson et al. (1998), Lyhagen \& Ahlgren (2020))---our implementation differs from these existing approaches.
+
+\subsection{Objective}\label{objective}
+
+This research builds upon Klein et al. (2020)'s methodology by extending the set of joint confidence intervals used to capture uncertainty in overall rankings. In particular, it intends to:
+
+\begin{itemize}
+\tightlist
+\item
+  Develop a procedure to construct joint confidence intervals for the ranks and the ranked parameters when the estimates to be ranked may be correlated.
+\item
+  Evaluate the performance of the proposed approaches under various parameter settings.
+\item
+  Apply the proposed approaches to a real-life example.
+\end{itemize}
+
+\subsection{Significance}\label{significance}
+
+In order to obtain joint confidence sets for overall ranks, Klein et al. (2020) estimates confidence intervals for the unknown parameters, with a joint coverage probability of at least \(1-\alpha\). Their goal is to produce confidence intervals that collectively produce a small difference between the upper and the lower bound to yield tighter joint uncertainty for ranks. In the same study, they used individual confidence intervals of the form \(\hat{\theta}_k \pm z_{\alpha/2}\times \sigma_k\) for the population parameters \(\theta_1, \theta_2,\ldots,\theta_K\), assuming that the estimates of these parameters \(\hat{\theta}_1, \hat{\theta}_2, \dots, \hat{\theta}_K\) are independently distributed. This approach, while simple, is no longer applicable to the case where \(\hat\theta_k\)s may be correlated. In many cases, assuming independence in the presence of correlated quantities leads to conservative confidence intervals resulting in wider intervals which imply a higher uncertainty in overall ranks.
+
+An example for which the estimates of the parameters are likely to be correlated is the case of ranking senatorial candidates in the Philippines. In such a context, the assumption of independence is limiting as it treats vote shares as statistically independent across contenders. Although senators are elected using Multiple Non-transferable Vote system (MNTV)---where candidates are voted for individually regardless of partisan membership and alliances (Ravanilla \& Hicken, 2023)---David \& Legara (2015) demonstrated that candidates with a name-recall advantage, such as media celebrities, incumbents, and members of dynastic families, received majority of the votes in the 2010 senatorial elections. In that year, media personalities Bong Revilla and Jinggoy Estrada secured the top spots. A similar pattern was observed in 2019, when Cynthia Villar and Grace Poe, both with prominent surnames, garnered the most votes; and again in 2022, when media figures Robin Padilla and Ramon Tulfo ranked among the top three. They also added that in weak-party systems, candidates who belong to the same political alliance or ticket commonly co-occur in ballots and hence perform with similarity.
+
+Klein et al. (2020) also noted that although it is difficult to make generalizations about strong relationships between travel times to work, certain patterns are apparent. States with large unpopulated land areas and relatively few high-density population centers tend to report shorter travel times. In contrast, longer travel times are typically observed in highly urbanized states with large populations and high population densities. Geographic location also appears to play a role---for instance, many states with shorter travel times are located in the Mountain and Central regions, whereas majority of those with longer travel times are concentrated along the East Coast. These observations suggest the presence of potential spatial structures. Accounting for these patterns allows for a more realistic assessment of uncertainty in the estimated ranks for similar use cases.
+
+\subsection{Scope and Limitations}\label{scope-and-limitations}
+
+This study proposes methodologies to construct joint confidence regions to quantify uncertainty in overall ranks, building upon the main results of Klein et al. (2020). Unlike the study of Klein et al. (2020), however, this thesis addresses the case where the parameter estimates may be correlated. Moreover, this study also proposes a methodologies to construct joint confidence regions for the ordered parameters. It applies the parametric bootstrap in implementing the procedures, with a strong emphasis on maintaining the desired coverage. However, several limitations must be acknowledged. First, the framework assumes that the data are generated from a multivariate normal distribution. Second, a limited set of correlation structures is examined to illustrate how different dependence assumptions may affect the resulting joint confidence sets.
+
+\newpage
+\vspace*{1cm}
+
+\section{Related Literature}\label{related-literature}
+
+\vspace*{0.8cm}
+
+\subsection{Ranking Problem}\label{sec:ranking-problem}
+
+In the problem of estimating ranks of several unknown real-valued parameters \(\theta_1,\theta_2,\ldots, \theta_K\), it is desired to rank these \(K\) parameters from smallest to largest, \(\theta_{(1)}<\theta_{(2)}<\ldots<\theta_{(K)}\). Let \(r_1,r_2,\ldots,r_K\) be the true unknown ranks of \(\theta_1,\theta_2,\ldots, \theta_K\). For example, if \(\theta_{(2)}=\theta_4\), then \(r_4=2\). Our first goal is to derive a joint confidence region for \(\theta_1,\theta_2,\ldots, \theta_K\) and, using the derived confidence region, obtain joint confidence intervals for the \(r_1,r_2,\ldots,r_K\) using a result from Klein et al. (2020). In deriving a joint confidence region for \(\theta_1,\theta_2,\ldots,\theta_K\), we will make use of the corresponding point estimates \(\hat{\theta}_1,\hat{\theta}_2,\ldots,\hat{\theta}_K\).
+
+There are several real-life applications of this problem. For example, the study of Klein et al. (2020) illustrates the problem of ranking the US states in terms of travel time to work. In this context, \(\theta_k\) is the true mean travel time to work for state \(k\), and we wish to find a joint confidence statement about \(r_1,r_2,\ldots,r_K\). Our second goal is to derive a joint confidence region for the ordered parameters \(\theta_{(1)},\theta_{(2)},\ldots,\theta_{(K)}\). In the context of senatorial elections where \(\theta_k\) denotes the proportion of votes earned by a candidate, confidence intervals on ordered parameters help determine if one candidate's lead is statistically significant. If the confidence intervals for two candidates' support levels do not overlap, it is highly likely (at the specified confidence level) that the candidate with the higher point estimate is the true winner. Overall uncertainty also highlights that in election polls, reported candidate rankings that seem decisive may in fact be much less stable once uncertainty is considered, and hence it is possible that these rankings do not align with the actual election outcomes. This is particularly important when discussing the potential influence of such polls on voter behavior---commonly referred to as the bandwagon effect---because apparent leads may encourage support for candidates who are not actually ahead, underscoring the value of clearly communicating the uncertainty in poll-based rankings. As to Andersson et al. (1998), in institutions like hospitals that are ranked according to mortality rates for a particular ailment, failure to report uncertainties may create a misleading impression, potentially causing fear among patients and casting a negative light on hospitals that appear at the bottom of the ranking.
+
+A mathematical definition of \(r_k\) is as follows:
+
+\begin{equation}
+  r_k = \sum^K_{j=1} I(\theta_j \leq \theta_k) = 1 + \sum_{j:j \neq k} I(\theta_j \leq \theta_k), \qquad \text{for} \; k = 1, 2, \dots, K.
+  \label{eq:rank1}
+\end{equation}
+
+Let \(\hat{r}_k\) denote the estimated rank of the \(k\)th observation. This can be computed determined based on
+
+\begin{equation}
+  \hat{r}_k = 1 + \sum_{j:j \neq k} I(\hat{\theta}_j \leq \hat{\theta}_k), \qquad \text{for} \; k = 1, 2, \dots, K.
+  \label{eq:rank2}
+\end{equation}
+
+In this chapter, we review the various approaches to solve this problem of finding a joint confidence region for \(r_1, r_2,\ldots,r_K\).
+
+\subsection{Klein's Joint Confidence Region for Overall Ranking Uncertainty}\label{sec:kleins-joint-confidence-region-for-overall-ranking-uncertainty}
+
+The study of Klein et al. (2020) assumes that \(\hat{\theta}_k\sim N(\theta_k,\sigma^2_k), k=1,2,\ldots,K\) where \(\theta_k\) is unknown but \(\sigma^2_k\) is known. Their solution hinges on the fact that the uncertainty in the ranks is determined by the uncertainty in the parameters (Mogstad et al. (2024)). We now describe their methodology.
+
+Suppose that for each \(k \in \left\{1, 2, \dots, K\right\}\) there exists values \(L_k\) and \(U_k\) such that
+
+\begin{equation}
+  \theta_k \in \left( L_k, U_k \right), k=1,2,\ldots,K.
+  \label{eq:theta_int}
+\end{equation}
+Moreover, define the quantities \(I_k\), \(\Lambda_{Lk}\), \(\Lambda_{Rk}\), \(\Lambda_{Ok}\) as follows:
+
+\begin{equation}
+    \left.
+        \begin{array}{cc}
+                I_k = \left\{ 1, 2, \dots, K \right\} - \left\{k \right\}, \\
+                \Lambda_{Lk} = \left\{ j \in I_k : U_j \leq L_k \right\}, \\
+                \Lambda_{Rk} = \left\{ j \in I_k : U_k \leq L_j \right\}, \\
+                \Lambda_{Ok} = \left\{ j \in I_k:U_j > L_k \ \text{and} \ U_k > L_j \right\} = I_k - \left\{ \Lambda_{Lk} \cup \Lambda_{Rk} \right\}
+        \end{array}
+    \right\}
+  \notag
+\end{equation}
+which implies the following:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \(j \in \Lambda_{Lk} \leftrightarrow \left(L_j, U_j\right) \cap \left(L_k, U_k\right) = \emptyset\) and \(\left(L_j, U_j\right)\) lies to the left of \(\left(L_k, U_k\right)\);
+\item
+  \(j \in \Lambda_{Rk} \leftrightarrow \left(L_j, U_j\right) \cap \left(L_k, U_k\right) = \emptyset\) and \(\left(L_j, U_j\right)\) lies to the right of \(\left(L_k, U_k\right)\);
+\item
+  \(j \in \Lambda_{Ok} \leftrightarrow \left(L_j, U_j\right) \cap \left(L_k, U_k\right) \neq \emptyset\)
+\item
+  \(\Lambda_{Lk}, \Lambda_{Rk},\) and \(\Lambda_{Ok}\) are mutually exclusive, and \(\Lambda_{Lk} \cup \Lambda_{Rk} \cup \Lambda_{Ok} = I_k\)
+\end{enumerate}
+
+Let \(\lvert A \rvert\) denote the number of elements in a set \(A\). If the condition in (\ref{eq:theta_int}) holds, the main result from Klein et al. (2020) gives a range for the value of \(r_k\) for each \(k \in \left\{1, 2, \dots, K\right\}\) as follows:
+
+\begin{equation}
+  r_k \in 
+  \left\{ 
+  \lvert \Lambda_{Lk} \rvert + 1,  
+  \lvert \Lambda_{Lk} \rvert + 2,
+  \lvert \Lambda_{Lk} \rvert + 3,
+  \dots,
+  \lvert \Lambda_{Lk} \rvert + \lvert \Lambda_{Ok} \rvert + 1
+  \right\}
+  \label{eq:klein_jcs}
+\end{equation}
+Note that the number of elements in the range given in (\ref{eq:klein_jcs}) is \(|\Lambda_{Ok}|+1\). Since the smaller difference between \(U_k\) and \(L_k\) leads to a smaller \(\lvert \Lambda_{Ok} \rvert\), narrower confidence intervals for \(\theta_1,\theta_2,\ldots,\theta_K\) are desirable.
+
+Suppose that for random quantities \(L_k\) and \(U_k\) the event defined in (\ref{eq:theta_int}) satisfies the following probability condition:
+
+\begin{equation}
+  P\left[ \bigcap^K_{k=1} \left\{ \theta_k \in \left(L_k, U_k\right) \right\} \right] \geq 1-\alpha,
+  \label{eq:joint_cov1}
+\end{equation}
+then, by the result of Klein et al. (2020), it also follows that
+
+\begin{equation}
+  P\left[
+  \bigcap^K_{k=1}
+  \left\{
+  r_k \in 
+  \left\{ 
+  \lvert \Lambda_{Lk} \rvert + 1,  
+  \lvert \Lambda_{Lk} \rvert + 2,
+  \lvert \Lambda_{Lk} \rvert + 3,
+  \dots,
+  \lvert \Lambda_{Lk} \rvert + \lvert \Lambda_{Ok} \rvert + 1
+  \right\}
+  \right\}
+  \right] \geq 1-\alpha.
+  \label{eq:joint_cov2}
+\end{equation}
+
+Due to the assumption of normality on \(\hat{\theta}_k\) as well as the fact that \(\sigma_k\) is assumed known, Klein et al. (2020) set the confidence intervals \((L_k,U_k)\) for \(\theta_k\) to be of the form \(\hat \theta_k \pm t \times \sigma_k\) for \(k \in \left\{1, 2, \dots, K\right\}\). One may use the Bonferroni approach to choose \(t\). If such an approach is used, the choice of \(t\) that would satisfy (\ref{eq:joint_cov1}) is \(t = z_{\alpha/2K}\). Another choice of \(t\) is one that exploits the independence assumption on \(\hat{\theta}_k\). Such a choice is given by \(z_{\gamma/2}\) where \(\gamma=1-(1-\alpha)^{1/K}\). To see why this is the case, note that if we define \(Y_k\) as follows:
+
+\begin{align}
+Y_k = \frac{\left( \hat{\theta}_k - \theta_k\right)}{\sigma_k} &\sim N\!(0, 1), \quad k =1,2, \dots, K \label{eq:standardized} 
+\end{align}
+then we get
+
+\begin{align}
+\prod^K_{k=1} P\left( \lvert Y_k \rvert \leq t\right) &=
+\prod^K_{k=1} P\left( \hat{\theta}_k-t \cdot \sigma_k \leq  \theta_k \leq  \hat{\theta}_k + t \cdot \sigma_k \right) \notag \\
+&=\prod^K_{k=1} 1-[1-(1-\alpha)^{1/K}] \\
+&=1-\alpha. \notag
+\end{align}
+
+\subsection{Alternative Approaches for Ranking Uncertainty}\label{alternative-approaches-for-ranking-uncertainty}
+
+While Klein's approach provides one framework for constructing joint confidence regions for ranks, several other studies have explored related problems using different formulations or assumptions. These alternative methods vary in whether they account for dependence structures, rely on model-based estimation, or use resampling techniques such as the bootstrap.
+
+\subsubsection{Calculated Measure}\label{calculated-measure}
+
+Other studies with similar concern include that of Andersson et al. (1998) who suggest the use of a statistic \(C\) which quantifies the number of positions ranked populations would on average change their order due to random variation. They calculate the measure using a bootstrap approach. Working on risk ratios \(p_k\) of \(K\) units, Andersson et al. (1998) draw \(B\) bootstrap proportions \(\hat{p}^*_k\) from (\ref{eq:carling_bs}):
+
+\begin{equation}
+\hat{p}^*_{bk} \sim  N \left(\hat{p}_k, \frac{\hat{p}_k(1-\hat{p}_k)}{n_k} \right), \quad k = 1,2, \dots, K; \; b = 1,2, \dots, B
+  \label{eq:carling_bs}
+\end{equation}
+and \(\hat{p}_k\) and \(n_k\) are the sample proportion and sample size, respectively, corresponding to the \(k\)th unit. For each bootstrap iteration \(b\), they sort the set \(\hat{p}^*_{b1},\ldots,\hat{p}^*_{bK}\) to get the corresponding ranks \(r^*_{bk}, k=1,2,\ldots,K\). The difference \(d_{bk}\) between the original and bootstrap rank is then calculated as \(d_{bk} =\) \(\lvert \hat{r}_k - \hat{r}^*_{bk}\rvert\), where \(\hat{r}_k\) is the rank of \(\hat{p}_k\) in the set \(\{\hat{p}_1,\hat{p}_2,\ldots,\hat{p}_K\}\). In turn, \(\bar{d}_k\) is obtained by taking the average of \(d_{bk}\) across the bootstrap samples. Finally, the overall measure \(C\) is calculated as the average of \(\bar{d}_k\) across all \(K\) units.
+
+\subsubsection{Pairwise Difference}\label{sec:pairwise}
+
+Mohamad et al. (2019), requiring only the mean estimates and their corresponding standard errors similar to Klein et al. (2020), apply Tukey's Honest Significant Difference (HSD) to test \(H_0: \theta_j - \theta_{k} = 0\) for all \(j \neq k \in {1, ..., K}\) at level \(\alpha\). Tukey's HSD is typically used to provide simultaneous confidence statements about the differences between the means while controlling the family-wise error rate (FWER). Mohamad et al. (2019) come up with a joint confidence set for ranks expressed as
+
+\begin{align}
+  \left(
+  1 + \#\left\{ j: \frac{\hat{\theta}_j - \hat{\theta}_{k}}{\sqrt{\sigma^2_j + \sigma^2_{k}} }> q_{1-\alpha} \right\},
+  \;
+  K - \#\left\{ j: \frac{\hat{\theta}_j - \hat{\theta}_{k}}{\sqrt{\sigma^2_j + \sigma^2_{k}} } < -q_{1-\alpha} \right\}
+  \right), \label{eq:jelle} \\
+  \qquad
+  \text{for}\;k=1,2,\dots,K \notag
+\end{align}
+where \(q_{1-\alpha}\) is the \((1-\alpha)\) quantile of the distribution of the studentized range,
+\begin{equation}
+\underset{j,k=1, \dots K}{\max} \frac{\lvert \theta_j-\theta_{k}\rvert}{\sqrt{\sigma^2_j + \sigma^2_{k}}}. \notag
+\end{equation}
+In (\ref{eq:jelle}), the notation \(\#\{\cdot\}\) counts the number of pairwise hypotheses that are rejected according to Tukey's HSD, which determines the lower and upper bounds of the confidence interval for the rank of \(\hat{\theta}_k\). Their method has simultaneous coverage of at least \(1-\alpha\) and exactly \(1-\alpha\) when \(\theta_1=\theta_2=\cdots=\theta_K\). However, their approach tends to be overly conservative, showing coverage levels between 0.996 and 1.0 at a 0.90 nominal level in simulations, when the \(\theta\)s differ. They also demonstrated that as the true differences increase from 0 to 0.5, the coverage quickly increases from the nominal level to 1. As a remedy, they proposed a rescaling technique that brings the coverage closer to the nominal level, though it remains conservative (e.g., from 1.0 to 0.978, from 0.998 to 0.961---at 0.90 confidence level).
+
+Mogstad et al. (2024) presents another technique that closely resembles the procedure by Klein et al. (2020) and Mohamad et al. (2019). However, they define ranks in the opposite way (i.e., larger rank value for lower estimate). They construct the rectangular confidence region in (\ref{eq:mogstadt23_ci}), from the pairwise differences of the estimators \(\hat{\theta}_1, \dots, \hat{\theta}_K\) and an estimator of the variance of \(\hat{\theta}_{j}-\hat{\theta}_{k}\). The quantities \(\hat{\theta}_1, \dots, \hat{\theta}_K\) need not be independent. Let \(P_k\) be the distribution from which \(\hat{\theta}_k\) is estimated; and let \(\hat{P}_k\) denote the estimate of \(P_k\). The joint confidence intervals for \(r_1,\dots,r_K\) are obtained from the joint confidence intervals of the pairwise difference:
+
+\begin{equation}
+\begin{split}
+C(1-\alpha, S) &= \prod_{(j,k) \in S} \left[ 
+\hat{\theta}_j - \hat{\theta}_{k} \pm \sqrt{\sigma_j + \sigma_k} \;L^{-1}(1-\alpha, S, \hat{P})
+\right]
+, \\
+&\qquad\qquad\qquad\ S \subseteq \{(j,k) \in K\times K: j\neq k\}
+\end{split}
+\label{eq:mogstadt23_ci}
+\end{equation}
+where \(L^{-1}(1-\alpha,S,P)\) is the \((1-\alpha)\)-quantile corresponding to the CDF:
+
+\begin{equation}
+  L(x, S, P) = P\left\{ \underset{(j,k)\in S}{\max}
+  \frac{\lvert
+  \hat{\theta}_j - \hat{\theta}_{k} - (\theta_j-\theta_k)
+  \rvert}{\sqrt{\sigma^2_j + \sigma^2_k}} \leq x
+  \right\}.
+  \label{eq:mogstadt23_quantile}
+\end{equation}
+
+They added that if the estimators \(\hat{\theta}_1, \dots, \hat{\theta}_K\) are jointly asymptotically normally distributed, then the quantiles \(L^{-1}(1-\alpha, S, \hat{P})\), can be computed from the limiting distributions of the max-statistics shown in (\ref{eq:mogstadt23_quantile}), through resampling methods. Mogstad et al. (2024) show that their approach generally leads to a confidence set that is narrower than that of Klein et al. (2020).
+
+\subsubsection{Accounting for Data Dependencies}\label{accounting-for-data-dependencies}
+
+Some approaches explicitly account for dependencies in the data. Goldstein \& Spiegelhalter (1996) use multilevel models, in the context of ranking education and health institutions (e.g., schools, hospitals, medical practitioners, etc.), to address the hierarchical nature of data structures associated with institutional performance. Rank uncertainty is presented through a visualization in which non-overlap of confidence intervals conveyed a significant difference between compared institutions (Goldstein \& Healy, 1995). In an alternative approach, along with institution effect estimation through Gibbs sampling, the rank is obtained for each iteration. Their example illustrates that while the multilevel model made individual estimates more accurate, it also had the effect of making the ranks even more uncertain.
+
+Zhang et al. (2013) analyze U.S. age-adjusted cancer incidence and mortality rates across states and counties by computing individual and overall simultaneous confidence intervals for age-adjusted health index using the Monte Carlo method. Because many health conditions are age-dependent, they use age-adjusted rates to minimize the confounding effect of age differences when comparing different population groups. They also extend their method to handle cases where only the adjusted rates and confidence intervals are available, aligning it more closely with the approach of Klein et al. (2020). Mohamad et al. (2019) show their technique to result in joint confidence sets with very low coverage probabilities and which are only able to reach the nominal level when differences among the means are large enough.
+
+Hall \& Miller (2009) mention that in some use cases such as institutions ranking, dependencies can be accommodated through conditioning, similar to the above approaches. However, in genomics where data on expression levels of different genes from the same individual are generally not independent, they suggest using an ``independent component'' version of the bootstrap on the sample, where m-out-of-n bootstrap (m \textless{} n) is applied as though the ranked variables were statistically independent. They show this to perform at its best when a reasonable level of correlation is present among the variables.
+
+Bazylik et al. (2025), in their recent study, tackle the ranking of political candidates or parties using the estimated share of support each one receives in surveys. They use the multinomial distribution to develop confidence sets for finite samples and explore the use of the bootstrap in the case of approximately large samples. They address the dependence attributed to the success probabilities of different categories by using their proposed bootstrap algorithm. Their simulations show that bootstrap-based confidence sets may have coverage probability below the nominal level despite their being excessively wide. In contrast, the finite-sample confidence sets have coverage probability at least as large as expected and may even be relatively shorter.
+
+\newpage
+\vspace*{1cm}
+
+\section{Methodology}\label{methodology}
+
+\vspace*{0.8cm}
+
+This section introduces the proposed methodologies to obtain joint confidence intervals that can be used to quantify uncertainty for the unknown overall true ranking. It addresses the scenario when the estimates of the parameters being ranked are correlated to certain degrees. Section \ref{sec:proposed-methodology-to-compute-simultaneous-confidence-intervals-for-the-unordered-parameters} develops the procedure used to compute the joint confidence region for \(\theta_1, \theta_2, \dots, \theta_K\). These include a non-rank and rank-based methods. Section \ref{sec:rankbased}, on the other hand, develops the procedure to compute the joint confidence region for \(\theta_{(1)},\theta_{(2)},\ldots,\theta_{(K)}\). Section 3.3 discusses some possible correlation structures to be considered for the estimates. Sections \ref{sec:evaluation} and \ref{sec:simulation-settings} discuss how to evaluate the proposed methodology and the simulation settings to be used.
+
+\subsection{Proposed methodology to compute the joint confidence region for the unordered parameters}\label{sec:proposed-methodology-to-compute-simultaneous-confidence-intervals-for-the-unordered-parameters}
+
+In this section, we adopt the notations defined in Section \ref{sec:ranking-problem} and \ref{sec:kleins-joint-confidence-region-for-overall-ranking-uncertainty}. Moreover, we define \(\hat{\boldsymbol{\theta}}=(\hat{\theta}_1,\hat{\theta}_2,\ldots,\hat{\theta}_K)'\) and assume that \(\hat{\boldsymbol{\theta}}\sim N(\boldsymbol{\theta},\boldsymbol{\Sigma})\) where \(\boldsymbol{\theta}=(\theta_1,\theta_2,\ldots,\theta_K)'\) is unknown and \(\boldsymbol{\Sigma}\) is a known \(K \times K\) positive definite matrix. The diagonal elements of \(\boldsymbol{\Sigma}\) are \(\sigma^2_1,\ldots,\sigma^2_K\). We note that in the literature on inferences on the ranks, it is customary to assume that the variances are known. As previously mentioned, the setup in this thesis allows the estimates to be correlated, which is in contrast with that of Klein et al. (2020), which assumes independence among the estimates. In other words, in this thesis, the covariance matrix \(\boldsymbol{\Sigma}\) need not be a diagonal matrix. Similar to the study of Klein et al. (2020), we shall first derive simultaneous confidence intervals for \(\theta_1,\theta_2,\ldots,\theta_K\) of the form
+
+\begin{equation}
+\mathfrak{R}_1 = 
+[\hat{\theta}_1 \pm t \times \sigma_1] \times
+[\hat{\theta}_2 \pm t \times \sigma_2] \times
+\cdots \times
+[\hat{\theta}_K \pm t \times \sigma_K].
+  \label{eq:rev1}
+\end{equation}
+
+We want the joint confidence region in (\ref{eq:rev1}) to satisfy the following probability condition:
+
+\begin{equation}
+ P\left( \hat{\theta}_k-t \cdot \sigma_k \leq  \theta_k \leq  \hat{\theta}_k + t \cdot \sigma_k, \,\, \forall\; k=1,2,\ldots,K \right)  =1-\alpha.
+\end{equation}
+
+Equivalently, we require
+
+\begin{equation}
+ P\left( \max_{k=1,2,\ldots,K} \left| \dfrac{\hat{\theta}_k-\theta_k}{\sigma_k} \right| \le t \right)  =1-\alpha. 
+\end{equation}
+
+We use the parametric bootstrap to estimate the quantile \(t\) that will be used to construct the confidence intervals while controlling the coverage to be around the nominal level. In implementing the parametric bootstrap, we sample from the multivariate normal distribution with \(\hat{\boldsymbol{\theta}}\) and \(\boldsymbol{\Sigma}\) as mean and variance, respectively. The idea is also conceptually similar to that of Mogstad et al. (2024) who use resampling to obtain the quantile in a different context. Algorithm \ref{alg:nonrank_ci} describes the procedure to compute the joint confidence region based on unordered estimates.
+
+Once the confidence intervals in (\ref{eq:rev1}) have been obtained, we can then use the result of Klein et al. (2020) in (\ref{eq:joint_cov2}) to get the lower and upper bounds on the ranks \(r_k, k=1,2,\ldots,K\). That is, we also get ajoint confidence region for \(r_1, r_2, . . . , r_K\).
+
+\begin{algorithm}[H]
+\fontsize{15pt}{18pt}\selectfont
+    \caption{Computing the joint confidence region for the unordered parameters} 
+    \label{alg:nonrank_ci}
+    Let the data be represented by $\hat{\boldsymbol{\theta}} = \left( \hat \theta_1, \hat \theta_2, \dots, \hat \theta_K \right)'$ and suppose that $\boldsymbol{\Sigma}$ is known
+    \begin{algorithmic}[1]
+        \For {$b = 1, 2, \dots, B$}
+                \State Generate $\hat{\boldsymbol{\theta}}^*_b \sim N_K \left( \hat{\boldsymbol{\theta}}, \boldsymbol{\Sigma}\right)$ and write $\hat{\boldsymbol{\theta}}^*_b = \left( \hat\theta^*_{b1}, \hat\theta^*_{b2}, \dots, \hat\theta^*_{bK} \right)' $
+                \State Compute 
+                \Statex \begin{minipage}{\linewidth}
+                \centering
+                $t^*_b = \underset{1 \leq k \leq K}{\max} \Bigg| \frac{\hat\theta^*_{bk} - \hat\theta_{k}}{\sigma_k} \Bigg|$
+                \end{minipage}
+        \EndFor
+        \State Compute the $\left(1-\alpha\right)$-sample quantile of $t^*_1, t^*_2, \dots, t^*_B$, call this $\hat{t}$.
+        \State The joint confidence region for $\boldsymbol{\theta} = (\theta_1, \theta_2, \dots, \theta_K)'$ is given by 
+        \Statex \begin{minipage}{\linewidth}
+    \centering
+$\mathfrak{R}_1 = \left[ \hat\theta_1 \pm \hat t \times \sigma_1  \right] \times \left[ \hat\theta_2 \pm \hat t \times \sigma_2  \right] \times \dots \times \left[ \hat\theta_K \pm \hat t \times \sigma_K  \right]$.
+    \end{minipage}
+    \end{algorithmic} 
+\end{algorithm}
+
+\subsection{Proposed methodology to compute a joint confidence region for the ordered parameters}\label{sec:rankbased}
+
+We shall also be proposing an approach to compute simultaneous confidence intervals for the ordered parameters. Suppose that for the parameters \(\theta_1,\ldots,\theta_K\), the corresponding ordered values are \(\theta_{(1)},\ldots,\theta_{(K)}\). Similarly, let \(\hat{\theta}_{(1)},\ldots,\hat{\theta}_{(K)}\) be the ordered estimates. We now derive a joint confidence region for these ordered values, and set the region to be of the following form:
+
+\begin{equation}
+\mathfrak{R}_2=
+[\hat{\theta}_{(1)} \pm t \times \sigma_{(1)}] \times
+[\hat{\theta}_{(2)} \pm t \times \sigma_{(2)}] \times
+\cdots \times
+[\hat{\theta}_{(K)} \pm t \times \sigma_{(K)}],
+\label{eq:rev2}
+\end{equation}
+where \(\sigma_{(k)}=\sqrt{V\left(\hat{\theta}_{(k)}\right)}\). The confidence region in (\ref{eq:rev2}) is computed such that the following condition holds:
+
+\begin{equation}
+ P\left( \hat{\theta}_{(k)}-t \cdot \sigma_{(k)} \leq  \theta_{(k)} \leq  \hat{\theta}_{(k)} + t \cdot \sigma_{(k)}, \,\, \forall k=1,2,\ldots,K \right)  =1-\alpha,
+\label{eq:rev3}
+\end{equation}
+which is equivalent to
+
+\begin{equation}
+ P\left( \max_{k=1,2,\ldots,K} \left| \dfrac{\hat{\theta}_{(k)}-\theta_{(k)}}{\sigma_{(k)}} \right| \le t \right)  =1-\alpha,
+\label{eq:rev4}
+\end{equation}
+and we estimate \(t\), which in (\ref{eq:rev4}) is the \((1-\alpha)\)-quantile of the distribution of \(\max_{k} \left| \dfrac{\hat{\theta}_{(k)}-\theta_{(k)}}{\sigma_{(k)}} \right|\), via a suitable parametric bootstrap. Since \(\sigma_{(k)}\) is not known, we estimate its value. We present two approaches to estimate \(\sigma_{(k)}\). The first uses results from Chen (1976) and Dudewicz (1972) to obtain an expression of the asymptotic variance of \(\hat{\theta}_{(k)}\) as follows:
+\begin{equation}
+V(\hat{\theta}_{(k)})= \text{kth ordered value among} \ \left\{ \theta^{2}_{1} + \sigma_1^2, \theta^{2}_{2} + \sigma_2^2, \dots, \theta^{2}_{K} + \sigma_K^2 \right\} - \theta^{2}_{(k)}.
+\label{eq:rev5}
+\end{equation}
+Consequently, we get an estimate of the asymptotic variance of \(\hat{\theta}_{(k)}\), given by:
+\begin{equation}
+\widehat{V(\hat{\theta}_{(k)})}= \text{kth ordered value among} \ \left\{ \hat{\theta}^{2}_{1} + \sigma_1^2, \hat{\theta}^{2}_{2} + \sigma_2^2, \dots, \hat{\theta}^{2}_{K} + \sigma_K^2 \right\} - \hat {\theta}^{2}_{(k)}.
+\label{eq:rev6}
+\end{equation}
+
+Algorithm \ref{alg:rank_asymp} describes the procedure to compute the joint confidence region in (\ref{eq:rev2}) using this approach.
+
+\begin{algorithm}[H]
+    \caption{Computing the joint confidence region for the ordered parameters using the estimated asymptotic variance} 
+    \label{alg:rank_asymp}
+    \begin{algorithmic}[1]
+    \For {$b = 1, 2, \dots, B$}
+        \State \begin{minipage}[t]{\dimexpr\linewidth-\algorithmicindent}
+            Generate $\hat{\boldsymbol{\theta}}^*_b = \left( \hat{\theta}^*_{b1}, \hat{\theta}^*_{b2}, \dots, \hat{\theta}^*_{bK} \right)' \sim N_K \left( \boldsymbol{\hat \theta}, \boldsymbol {\Sigma} \right)$ and let $\hat{\theta}^*_{b(1)}, \hat{\theta}^*_{b(2)}, \dots, \hat{\theta}^*_{b(K)}$ be the corresponding ordered values 
+        \end{minipage}
+        \State \begin{minipage}[t]{\dimexpr\linewidth-\algorithmicindent}
+            Compute 
+                \Statex \begin{minipage}{\linewidth}
+                \centering
+                $\hat\sigma^*_{b(k)} = \sqrt{\left[\text{kth ordered value among} \ \left\{ \hat{\theta}^{*2}_{b1} + \sigma_1^2, \hat{\theta}^{*2}_{b2} + \sigma_2^2, \dots, \hat{\theta}^{*2}_{bK} + \sigma_K^2 \right\}\right] - \hat {\theta}^{*2}_{(k)}}$
+                \end{minipage}
+        \end{minipage}
+        \State Compute 
+                $t^*_b = \underset{1 \leq k \leq K}{\max} \Bigg| \frac{\hat\theta^*_{b(k)} - \hat\theta^*_{k}}{\hat\sigma^*_{b(k)}} \Bigg|$
+    \EndFor
+    \State Compute the $\left(1-\alpha\right)$-sample quantile of $t^*_1, t^*_2, \dots, t^*_B$, call this $\hat{t}$.
+    \State The joint confidence region of $\theta_{(1)}, \theta_{(2)}, \dots, \theta_{(K)}$ is given by
+        \Statex \begin{minipage}{\linewidth}
+        \centering
+        $\mathfrak{R}_2 = \left[ \hat\theta_{(1)} \pm \hat t \times \hat\sigma_{(1)}  \right] \times \left[ \hat\theta_{(2)} \pm \hat t \times \hat\sigma_{(2)}  \right] \times \dots \times \left[ \hat\theta_{(K)} \pm \hat t \times \hat\sigma_{(K)}  \right]$
+        \end{minipage}
+        where $\hat \sigma_{(k)}$ is computed as
+        \Statex \begin{minipage}{\linewidth}
+    \centering
+$\hat\sigma_{(k)} = \sqrt{\text{kth ordered value among} \ \left\{ \hat{\theta}^{2}_{1} + \sigma_1^2, \hat{\theta}^{2}_{2} + \sigma_2^2, \dots, \hat{\theta}^{2}_{K} + \sigma_K^2 \right\} - \hat {\theta}^{2}_{(k)}}$
+\end{minipage}
+    \end{algorithmic} 
+\end{algorithm}
+
+The expression for the asymptotic variance of \(\hat{\theta}_{(k)}\) has actually been derived in a setting where the \(\hat{\theta}_1,\hat{\theta}_2,\ldots,\hat{\theta}_K\) are independent. It is not clear if the expression in (\ref{eq:rev5}) holds whenever \(\hat{\theta}_1,\hat{\theta}_2,\ldots,\hat{\theta}_K\) are correlated. Since this thesis allows for the \(\hat{\theta}_k\)s to be correlated, it is possible that the expression in (\ref{eq:rev6}) for the estimate of the variance of \(\hat{\theta}_{(k)}\) lacks optimality. As an alternative to using the asymptotic variance, we shall also consider using the bootstrap to estimate the variance of \(\hat{\theta}_{(k)}\). To this end, a second-level bootstrap can be employed to estimate the variance. Algorithm \ref{alg:rank_secondlevelbs} illustrates the procedure to compute the joint confidence region for the ordered parameters with the use of the bootstrap to estimate the variance of the ordered estimates. As may be expected, this approach is computationally intensive.
+
+\begin{algorithm}[H]
+    \caption{Computing the joint confidence region for the ordered parameters using the bootstrap estimate of the variance}
+    \label{alg:rank_secondlevelbs}
+    \begin{algorithmic}[1]
+        \For {$b = 1, 2, \dots, B$}
+            \State \begin{minipage}[t]{\dimexpr\linewidth-\algorithmicindent} 
+                Generate $\hat{\boldsymbol{\theta}}^*_b = \left( \hat{\theta}^*_{b1}, \hat{\theta}^*_{b2}, \dots, \hat{\theta}^*_{bK} \right)' \sim N_K \left( \hat{\boldsymbol{\theta}}, \boldsymbol {\Sigma} \right)$ and let $\hat{\theta}_{b(1)}^*, \hat{\theta}_{b(2)}^*, \dots, \hat{\theta}_{b(K)}^*$ be the corresponding ordered values of $\hat{\theta}_{b1}^*, \hat{\theta}_{b2}^*, \dots, \hat{\theta}_{bK}^*$
+            \end{minipage}
+            \For {$c = 1, 2, \dots, C$}
+                \State \begin{minipage}[t]{\dimexpr\linewidth-\algorithmicindent} Generate $\hat{\boldsymbol{\theta}}^{**}_{bc} = \left( \hat{\theta}^{**}_{bc1}, \hat{\theta}^{**}_{bc2}, \dots, \hat{\theta}^{**}_{bcK} \right) \sim N_K \left( \hat{\boldsymbol{\theta}}_b^*, \boldsymbol {\Sigma} \right)$ and let $\hat{\theta}^{**}_{bc(1)}, \hat{\theta}^{**}_{bc(2)}, \dots, \hat{\theta}^{**}_{bc(K)}$ be the corresponding ordered values of $\hat{\theta}^{**}_{bc1}, \hat{\theta}^{**}_{bc2}, \dots, \hat{\theta}^{**}_{bcK}$
+                \end{minipage}
+                \State \begin{minipage}[t]{\dimexpr\linewidth-\algorithmicindent} Compute
+                $\displaystyle \hat{\sigma}^*_{b(k)} = \frac{\sum^C_{c=1} \left( \hat \theta^{**}_{bc(k)} - \bar {\hat\theta}^{**}_{b \cdot (k)} \right)^2}{C-1}, \quad \bar {\hat\theta}^{**}_{b\cdot(k)} = \frac{1}{C} \sum^C_{c=1} {\hat\theta}^{**}_{bc(k)}$
+                \end{minipage}
+                \EndFor
+        \State Compute
+                $t_b^* = \underset{1 \leq k <K}{\max} \Bigg \lvert \frac{\hat{\theta}^*_{b(k)}-\hat{\theta}_{(k)}}{\hat \sigma ^* _{b(k)}} \Bigg \rvert$
+        \EndFor
+        \State Compute the $\left( 1-\alpha \right)$-sample quantile of $t^*_1, t^*_2, \dots, t^*_B$, call this $\hat t$.
+        \State The joint confidence region of $\theta_{(1)}, \theta_{(2)}, \dots, \theta_{(K)}$ is
+            \Statex \begin{minipage}{\linewidth}
+            \centering
+            $\mathfrak{R}_2 = \left[ \hat\theta_{(1)} \pm \hat t \times \hat\sigma_{(1)}  \right] \times \left[ \hat\theta_{(2)} \pm \hat t \times \hat\sigma_{(2)}  \right] \times \dots \times \left[ \hat\theta_{(K)} \pm \hat t \times \hat\sigma_{(K)}  \right]$
+        \end{minipage}
+        where $\hat \sigma_{(k)}$ is computed as
+        \Statex \begin{minipage}{\linewidth}
+    \centering
+$\displaystyle \hat \sigma_{(k)} = \frac{\sum^B_{b=1} \left( \hat \theta^*_{b(k)} - \bar {\hat\theta}^*_{\cdot (k)} \right)^2}{B-1}, \quad \bar {\hat\theta}^*_{\cdot(k)} = \frac{1}{B} \sum^B_{b=1} {\hat\theta}^*_{b(k)}$
+\end{minipage}
+    \end{algorithmic} 
+\end{algorithm}
+
+\subsection{Correlation structures}\label{sec:corrstructures}
+
+The proposed methodologies assume that \(V(\hat{\boldsymbol{\theta}})=\boldsymbol{\Sigma}\) is known. Note that we can express \(\boldsymbol{\Sigma}\) as in (3.9), where \(\mathbf{R}\) is the population correlation matrix.
+
+\begin{equation}
+  \boldsymbol{\Sigma} = \boldsymbol{\Delta}^{1/2} \mathbf{R} \boldsymbol{\Delta}^{1/2}; \quad \boldsymbol{\Delta} = \text{diag} \left\{ \sigma^2_1, \sigma^2_2, \dots, \sigma^2_K \right\}
+  \label{eq:sigma_matrix}
+\end{equation}
+The diagonal elements of \(\boldsymbol{\Sigma}\), which are \(\sigma^2_k=V(\hat{\theta}_k)\) for \(k =1,2, \ldots,K\), are treated as known quantities in practice. With large sample sizes, the variance estimates are stable enough that they are treated as the actual values. However, there is limited information to use as basis for the correlations among the stimates. In this thesis, we shall be assuming certain correlation structures among the \(\hat{\theta}\)s.
+
+One structure that may be used is an equicorrelation matrix shown in (\ref{eq:equicorrelation}). This assumes that the \(k\) variables are equally correlated, i.e., that \(\rho_{jk}=\rho\) where \(\rho \in [-1,1]\) for \(j \neq k \in \{1, \dots, K\}\).
+
+\begin{equation}
+  \mathbf{R}_{\text{eq}} = \left( 1-\rho \right) \mathbf{I}_K + \rho \boldsymbol{1}_K \boldsymbol{1}'_K = 
+\begin{bmatrix}
+1 & \rho & \cdots & \rho \\
+\rho & 1 & \cdots & \rho \\
+\vdots & \vdots & \ddots & \vdots \\
+\rho & \rho & \cdots & 1
+\end{bmatrix}_{K \times K}
+  \label{eq:equicorrelation}
+\end{equation}
+
+In a block correlation matrix \(\mathbf{R}_{block}\) with \(G\) blocks, as represented by Archakova \& Hansen (2020), the correlation between any two variables is determined by the block to which the two variables belong. Each diagonal block represents an equicorrelation structure within group \(g\), denoted by
+
+\begin{equation}
+  \mathbf{R}_{\text{eq,g}} = \left( 1-\rho_{g} \right) \mathbf{I}_{n_g} + \rho_{g} \boldsymbol{1}_{n_g} \boldsymbol{1}'_{n_g} \notag
+\end{equation}
+where \(\rho_{g}\) is the within-block correlation and \(n_g\) is the number of variables in block \(g\) such that \(\sum_{g=1}^G n_g = K\). The off-diagonal blocks capture between-block correlations, represented by
+\begin{align}
+\mathbf{C}_{g'g} &= \mathbf{C}_{gg'} = \rho_{gg'}\boldsymbol{1}_{n_g} \boldsymbol{1}'_{n_g} \notag\\
+&\text{where}\; g\neq g' \in \{1, \dots, G\} \notag
+\end{align}
+Thus, the full block correlation matrix can be expressed as in (\ref{eq:blockcorrelation}).
+\begin{equation}
+  \mathbf{R}_{\text{block}} = 
+\begin{bmatrix}
+\mathbf{R}_{eq,1} & \mathbf{C}_{12} & \cdots & \mathbf{C}_{1G} \\
+\mathbf{C}_{21} & \mathbf{R}_{eq,2} & \cdots & \mathbf{C}_{2G} \\
+\vdots & \vdots & \ddots & \vdots \\
+\mathbf{C}_{G1} & \mathbf{C}_{G2} & \cdots & \mathbf{R}_{eq,G}
+\end{bmatrix}_{K \times K}
+  \label{eq:blockcorrelation}
+\end{equation}
+In the context of pre-election surveys, each block may represent correlations induced by party or ticket membership, reflecting stronger associations within parties and weaker associations between them.
+
+Correlation structures that account for spatial proximity can be borrowed from geostatistics. This is particularly relevant in light of Klein's observation that states located within certain regions exhibit similar travel time characteristics. In such cases, spatial dependence can be modeled using a stationary (i.e., no directional dependence) Matérn correlation function, which for two locations \(\mathbf{s}_i\) and \(\mathbf{s}_j\) is expressed as in (\ref{eq:matern}).
+
+\begin{equation}
+\rho_{\text{matern}} = \frac{2^{1-\nu}}{\Gamma(\nu)} (\kappa \;\Vert \;\mathbf{s}_i - \mathbf{s}_j \; \Vert)^\nu K_\nu  (\kappa \;\Vert \;\mathbf{s}_i - \mathbf{s}_j \; \Vert)
+  \label{eq:matern}
+\end{equation}
+where \(\Vert \cdot \Vert\) denotes the Euclidean distance and \(K_\nu\) is the second kind of the modified Bessel function. It has a scale parameter \(\kappa > 0\) and a smoothness parameter \(\nu > 0\). \(\rho_{\text{matern}}\) reduces to the exponential correlation when \(\nu = 0.5\) and to Gaussian correlation function when \(\nu = \infty\). In this paper, the R package ``BayesNGSP'' (Turek \& Risser (2022)), is used to construct the \(\mathbf{R}_{\text{matern}}\).
+
+\subsection{Evaluation}\label{sec:evaluation}
+
+Algorithm \ref{alg:evaluation} estimates the coverage probabilities associated with the proposed methodologies. The coverage probabilities correspond to the proportion of replications in which the true parameter values are contained within the confidence intervals for all \(K\) simultaneously. Moreover, the tightness of the joint confidence region that results from Algorithm \ref{alg:nonrank_ci} is assessed using three summary measures: the arithmetic mean (\(T_1\)), geometric mean (\(T_2\)), and the metric \(T_3\) introduced by Wright (2025), as presented in Equations \ref{eq:t1}--\ref{eq:t3}.
+
+\begin{equation}
+  T_1 = \frac{1}{K} \sum^K_{k=1} \Big | \Lambda_{Ok} \Big|
+  \label{eq:t1}
+\end{equation} \begin{equation}
+  T_2 = \prod^K_{k=1} \Big | \Lambda_{Ok} \Big|
+  \label{eq:t2}
+\end{equation}
+
+\begin{equation}
+  T_3 = 1 - \frac{OP}{K^2}
+  \label{eq:t3}
+\end{equation}
+In equation \ref{eq:t3}, \(OP = K + \sum^K_{k=1} \big | \Lambda_{Ok} \big|\) denotes the total number of occupied positions in a joint confidence region out of the total number of positions \(K^2\); or the sum of the differences between the upper and lower bound of the simultaneous rank intervals added by 1, for each population \(k\). Higher values of \(T_1\) and \(T_2\) indicate wider confidence intervals and are therefore less desirable, whereas higher values of \(T_3\) are preferable. \(T_3\) can range from 0, indicating no tightness, to \(\frac{K-1}{K}\), implying the confidence region only contains the estimated ranking which is likely the true ranking.
+
+\begin{algorithm}[H]
+\fontsize{15pt}{18pt}\selectfont
+    \caption{Computing the coverage probability and tightness measures} 
+    \label{alg:evaluation}
+    For given values of $\boldsymbol{\Sigma}$ and $\theta_1, \theta_2, \dots, \theta_K$ (with corresponding $\theta_{(1)}, \theta_{(2)}, \dots, \theta_{(K)}$ for rank-based methods)
+    \begin{algorithmic}[1] % Start algorithmic block
+            \For {$\text{replications} = 1, 2, \dots, 5000$}
+            \State Generate $\hat{\boldsymbol{\theta}} \sim N_K(\boldsymbol{\theta}, \boldsymbol{\Sigma})$
+            \State Compute the confidence region $\mathfrak{R}_1$ for the unordered parameters using Algorithm \ref{alg:nonrank_ci} and the confidence region for the ordered parameters $\mathfrak{R}_2$ using Algorithms \ref{alg:rank_asymp} and \ref{alg:rank_secondlevelbs}.
+            \State For the unordered parameters, check if $\left( \theta_1, \theta_2, \dots, \theta_K\right) \in \mathfrak{R}_1$ and compute $T_1, T_2$, and $T_3$. For the ordered parameters, check if $\left( \theta_{(1)}, \theta_{(2)}, \dots, \theta_{(K)}\right) \in \mathfrak{R}_2$
+        \EndFor
+    \State Compute the proportion of times that the condition in line 4 is satisfied and the average of $T_1, T_2$, and $T_3$.
+    \end{algorithmic} % End algorithmic block
+\end{algorithm}
+
+\subsection{Simulation settings}\label{sec:simulation-settings}
+
+For the simulation settings to be used in evaluating the performance of the proposed methodologies, we shall be varying the settings for the population mean \(\boldsymbol{\theta}\), population variances \(\sigma^2_1, \sigma^2_2,\ldots,\sigma^2_K\), population correlation matrix \(\mathbf{R}\), and number of populations being ranked \(K\). In carrying out the simulations, a nominal level of \(1-\alpha=0.95\) will be used. The table below summarizes the simulations settings.
+
+\begin{table}[H]
+\centering
+{\fontsize{13pt}{15pt}\selectfont 
+\begin{tabular}{p{11cm} p{4cm}}
+\hline
+$\boldsymbol{\theta}$ & $\mathbf{R}$ \\
+\hline
+\hline
+\multicolumn{2}{c}{\textbf{K = 5}} \\
+\hline
+\multirow{3}{11cm}{(22.5, 24.9, 27.5, 24.3, 24.8)$'$} 
+& $\mathbf{R}_{\text{eq}}, \rho = 0.1, 0.5, 0.9$ \\
+& $\mathbf{R}_{\text{block}}$ \\
+\hline
+\multirow{3}{11cm}{(21.5, 25.7, 30.5, 24.7, 25.5)$'$} 
+& $\mathbf{R}_{\text{eq}}, \rho = 0.1, 0.5, 0.9$ \\
+& $\mathbf{R}_{\text{block}}$ \\
+\hline
+\multirow{3}{11cm}{(19.9, 27, 34.9, 25.3, 26.7)$'$} 
+& $\mathbf{R}_{\text{eq}}, \rho = 0.1, 0.5, 0.9$ \\
+& $\mathbf{R}_{\text{block}}$ \\
+\hline
+\multicolumn{2}{c}{\textbf{K = 10}} \\
+\hline
+\multirow{3}{11cm}{(22.5, 24.9, 27.5, 24.3, 24.8, 23.2, 23, 21.6, 25.1, 19)$'$} 
+& $\mathbf{R}_{\text{eq}}, \rho = 0.1, 0.5, 0.9$ \\
+& $\mathbf{R}_{\text{block,10}}$ \\
+\hline
+\multirow{3}{11cm}{(21.5, 25.7, 30.5, 24.7, 25.5, 22.6, 22.3, 19.9, 26.1, 15.2)$'$} 
+& $\mathbf{R}_{\text{eq}}, \rho = 0.1, 0.5, 0.9$ \\
+& $\mathbf{R}_{\text{block,10}}$ \\
+
+\hline
+\multirow{3}{11cm}{(19.9, 27, 34.9, 25.3, 26.7, 21.9, 21.3, 17.3, 27.7, 9.4)$'$} 
+& $\mathbf{R}_{\text{eq}}, \rho = 0.1, 0.5, 0.9$ \\
+& $\mathbf{R}_{\text{block,10}}$ \\
+\hline
+\multicolumn{2}{c}{\textbf{K = 20}} \\
+\hline
+\multirow{3}{11cm}{(22.5, 24.9, 27.5, 24.3, 24.8, 23.2, 23, 21.6, 25.1, 19, 21.3, 24.1, 26.5, 26.9, 23.2, 25.8, 21.8, 21.6, 25.6, 21.2)$'$} 
+& $\mathbf{R}_{\text{eq}}, \rho = 0.1, 0.5, 0.9$ \\
+& $\mathbf{R}_{\text{block}}$ \\
+& \\
+\hline
+\multirow{3}{11cm}{(21.5, 25.7, 30.5, 24.7, 25.5, 22.6, 22.3, 19.9, 26.1, 15.2, 19.3, 24.3, 28.7, 29.3, 22.7, 27.5, 20.1, 19.9, 27.1, 19.1)$'$} 
+& $\mathbf{R}_{\text{eq}}, \rho = 0.1, 0.5, 0.9$ \\
+& $\mathbf{R}_{\text{block}}$ \\
+& \\
+\hline
+\multirow{3}{11cm}{(19.9, 27, 34.9, 25.3, 26.7, 21.9, 21.3, 17.3, 27.7, 9.4, 16.2, 24.6, 31.9, 33, 21.9, 29.9, 17.7, 17.3, 29.3, 16)$'$} 
+& $\mathbf{R}_{\text{eq}}, \rho = 0.1, 0.5, 0.9$ \\
+& $\mathbf{R}_{\text{block}}$ \\
+& \\
+\hline
+\multicolumn{2}{c}{\textbf{K = 30}} \\
+\hline
+\multirow{4}{*}{%
+  \parbox{11cm}{%
+  \vspace{0.2cm}
+    (22.5, 24.9, 27.5, 24.3, 24.8, 23.2, 23, 21.6, 25.1, 19, 
+    21.3, 24.1, 26.5, 26.9, 23.2, 25.8, 21.8, 21.6, 25.6, 21.2, 
+    25.7, 22.2, 22.7, 22.6, 21.9, 24.2, 23.6, 22, 24.5, 25)$'$
+    \vspace{0.2cm}
+  }%
+} 
+& $\mathbf{R}_{\text{eq}}, \rho = 0.1, 0.5, 0.9$ \\
+& $\mathbf{R}_{\text{block}}$ \\
+& \\
+& \\
+\hline
+\multirow{4}{*}{%
+  \parbox{11cm}{%
+  \vspace{0.2cm}
+  (21.5, 25.7, 30.5, 24.7, 25.5, 22.6, 22.3, 19.9, 26.1, 15.2, 19.3, 24.3, 28.7, 29.3, 22.7, 27.5, 20.1, 19.9, 27.1, 19.1, 27.2, 20.9, 21.8, 21.7, 20.4, 24.5, 23.5, 20.5, 25.1, 26)$'$
+    \vspace{0.2cm}
+  }%
+} 
+& $\mathbf{R}_{\text{eq}}, \rho = 0.1, 0.5, 0.9$ \\
+& $\mathbf{R}_{\text{block}}$ \\
+& \\
+& \\
+\hline
+\end{tabular}
+}
+\end{table}
+
+\begin{table}[H]
+\centering
+{\fontsize{13pt}{15pt}\selectfont 
+\begin{tabular}{p{11cm} p{4cm}}
+\hline
+$\boldsymbol{\theta}$ & $\mathbf{R}$ \\
+\hline
+\hline
+\multicolumn{2}{c}{\textbf{K = 30}} \\
+\hline
+\multirow{4}{*}{%
+  \parbox{11cm}{%
+  \vspace{0.2cm}
+  (19.9, 27, 34.9, 25.3, 26.7, 21.9, 21.3, 17.3, 27.7, 9.4, 16.2, 24.6, 31.9, 33, 21.9, 29.9, 17.7, 17.3, 29.3, 16, 29.4, 19, 20.4, 20.3, 18.2, 25, 23.3, 18.3, 26, 27.4)$'$
+    \vspace{0.2cm}
+  }%
+} 
+& $\mathbf{R}_{\text{eq}}, \rho = 0.1, 0.5, 0.9$ \\
+& $\mathbf{R}_{\text{block}}$ \\
+& \\
+& \\
+\hline
+\multicolumn{2}{c}{\textbf{K = 40}} \\
+\hline
+\multirow{6}{11cm}{(22.5, 24.9, 27.5, 24.3, 24.8, 23.2, 23, 21.6, 25.1, 19, 21.3, 24.1, 26.5, 26.9, 23.2, 25.8, 21.8, 21.6, 25.6, 21.2, 25.7, 22.2, 22.7, 22.6, 21.9, 24.2, 23.6, 22, 24.5, 25, 26.5, 25.1, 25.2, 27.1, 25.3, 22.8, 20.6, 21.1, 26, 26)$'$}
+&  \\
+& $\mathbf{R}_{\text{eq}}, \rho = 0.1, 0.5, 0.9$ \\
+& $\mathbf{R}_{\text{block}}$ \\
+&  \\
+&  \\
+&  \\
+\hline
+\multirow{6}{11cm}{(21.5, 25.7, 30.5, 24.7, 25.5, 22.6, 22.3, 19.9, 26.1, 15.2, 19.3, 24.3, 28.7, 29.3, 22.7, 27.5, 20.1, 19.9, 27.1, 19.1, 27.2, 20.9, 21.8, 21.7, 20.4, 24.5, 23.5, 20.5, 25.1, 26, 28.6, 26.1, 26.4, 29.7, 26.5, 22.1, 18, 18.9, 27.8, 27.8)$'$}
+&  \\
+& $\mathbf{R}_{\text{eq}}, \rho = 0.1, 0.5, 0.9$ \\
+& $\mathbf{R}_{\text{block}}$ \\
+&  \\
+&  \\
+&  \\
+\hline
+\multirow{6}{11cm}{(19.9, 27, 34.9, 25.3, 26.7, 21.9, 21.3, 17.3, 27.7, 9.4, 16.2, 24.6, 31.9, 33, 21.9, 29.9, 17.7, 17.3, 29.3, 16, 29.4, 19, 20.4, 20.3, 18.2, 25, 23.3, 18.3, 26, 27.4, 31.9, 27.7, 28.1, 33.6, 28.2, 20.9, 14.1, 15.6, 30.5, 30.5)$'$}
+&  \\
+& $\mathbf{R}_{\text{eq}}, \rho = 0.1, 0.5, 0.9$ \\
+& $\mathbf{R}_{\text{block}}$ \\
+&  \\
+&  \\
+&  \\
+\hline
+\multicolumn{2}{c}{\textbf{K = 50}} \\
+\hline
+\multirow{6}{11cm}{(22.5, 24.9, 27.5, 24.3, 24.8, 23.2, 23, 21.6, 25.1, 19, 21.3, 24.1, 26.5, 26.9, 23.2, 25.8, 21.8, 21.6, 25.6, 21.2, 25.7, 22.2, 22.7, 22.6, 21.9, 24.2, 23.6, 22, 24.5, 25, 26.5, 25.1, 25.2, 27.1, 25.3, 22.8, 20.6, 21.1, 26, 26, 22.1, 21.4, 23.2, 22.3, 22.4, 23.1, 21.4, 24.8, 27, 23.4)$'$}
+&  \\
+& $\mathbf{R}_{\text{eq}}, \rho = 0.1, 0.5, 0.9$ \\
+& $\mathbf{R}_{\text{block}}$ \\
+&  \\
+&  \\
+&  \\
+&  \\
+\hline
+\multirow{6}{11cm}{(21.5, 25.7, 30.5, 24.7, 25.5, 22.6, 22.3, 19.9, 26.1, 15.2, 19.3, 24.3, 28.7, 29.3, 22.7, 27.5, 20.1, 19.9, 27.1, 19.1, 27.2, 20.9, 21.8, 21.7, 20.4, 24.5, 23.5, 20.5, 25.1, 26, 28.6, 26.1, 26.4, 29.7, 26.5, 22.1, 18, 18.9, 27.8, 27.8, 20.8, 19.5, 22.8, 21.2, 21.3, 22.5, 19.5, 25.5, 29.6, 23)$'$}
+&  \\
+& $\mathbf{R}_{\text{eq}}, \rho = 0.1, 0.5, 0.9$ \\
+& $\mathbf{R}_{\text{block}}$ \\
+&  \\
+&  \\
+&  \\
+&  \\
+\hline
+\multirow{6}{11cm}{(19.9, 27, 34.9, 25.3, 26.7, 21.9, 21.3, 17.3, 27.7, 9.4, 16.2, 24.6, 31.9, 33, 21.9, 29.9, 17.7, 17.3, 29.3, 16, 29.4, 19, 20.4, 20.3, 18.2, 25, 23.3, 18.3, 26, 27.4, 31.9, 27.7, 28.1, 33.6, 28.2, 20.9, 14.1, 15.6, 30.5, 30.5, 18.8, 16.6, 22.1, 19.4, 19.6, 21.6, 16.7, 26.7, 33.5, 22.5)$'$}
+&  \\
+& $\mathbf{R}_{\text{eq}}, \rho = 0.1, 0.5, 0.9$ \\
+& $\mathbf{R}_{\text{block}}$ \\
+&  \\
+&  \\
+&  \\
+&  \\
+\hline
+\end{tabular}
+}
+\end{table}
+
+\begin{table}[H]
+\centering
+\fontsize{13pt}{17pt}\selectfont
+\begin{tabular}{p{1cm} p{14cm}}
+\hline
+$K$ & $\mathbf{R}_{\text{block,K}}$ \\
+\hline
+\hline
+5 & \\
+\hline
+10 & $\mathbf{R}_{\text{eq},n=3}$ with $\rho = 0.1$, $\mathbf{R}_{\text{eq},n=3}$ with $\rho = 0.5$, $\mathbf{R}_{\text{eq},n=4}$ with $\rho = 0.9$ with $\rho = 0.1$ in the off-diagonal blocks \\
+\hline
+20 &  \\
+\hline
+30 &  \\
+\hline
+40 &  \\
+\hline
+50 &  \\
+\hline
+\end{tabular}
+\end{table}
+
+Each \(k\) shares the same population variances \(\sigma^2_1,\sigma^2_2,\ldots,\sigma^2_K\):
+
+\begin{table}[H]
+\centering
+\fontsize{13pt}{17pt}\selectfont
+\begin{tabular}{p{1cm} p{14cm}}
+\hline
+\textbf{K} & \textbf{$\boldsymbol \sigma$} \\
+\hline
+\hline
+5 & (0.14, 0.33, 0.15, 0.23, 0.07)$'$ \\
+\hline
+10 & (0.14, 0.33, 0.15, 0.23, 0.07, 0.19, 0.19, 0.37, 0.32, 0.11)$'$ \\
+\hline
+20 & (0.14, 0.33, 0.15, 0.23, 0.07, 0.19, 0.19, 0.37, 0.32, 0.11, 0.17, 0.27, 0.24, 0.11, 0.11, 0.13, 0.16, 0.15, 0.15, 0.25)$'$ \\
+\hline
+30 & (0.14, 0.33, 0.15, 0.23, 0.07, 0.19, 0.19, 0.37, 0.32, 0.11, 0.17, 0.27, 0.24, 0.11, 0.11, 0.13, 0.16, 0.15, 0.15, 0.25, 0.15, 0.13, 0.1, 0.1, 0.24, 0.13, 0.32, 0.19, 0.27, 0.3)$'$ \\
+\hline
+40 & (0.14, 0.33, 0.15, 0.23, 0.07, 0.19, 0.19, 0.37, 0.32, 0.11, 0.17, 0.27, 0.24, 0.11, 0.11, 0.13, 0.16, 0.15, 0.15, 0.25, 0.15, 0.13, 0.1, 0.1, 0.24, 0.13, 0.32, 0.19, 0.27, 0.3, 0.12, 0.27, 0.09, 0.12, 0.36, 0.09, 0.15, 0.16, 0.09, 0.29)$'$ \\
+\hline
+50 & (0.14, 0.33, 0.15, 0.23, 0.07, 0.19, 0.19, 0.37, 0.32, 0.11, 0.17, 0.27, 0.24, 0.11, 0.11, 0.13, 0.16, 0.15, 0.15, 0.25, 0.15, 0.13, 0.1, 0.1, 0.24, 0.13, 0.32, 0.19, 0.27, 0.3, 0.12, 0.27, 0.09, 0.12, 0.36, 0.09, 0.15, 0.16, 0.09, 0.29, 0.16, 0.28, 0.14, 0.07, 0.2, 0.31, 0.13, 0.14, 0.31, 0.11)$'$ \\
+\hline
+\end{tabular}
+\end{table}
+
+\newpage
+\vspace*{1cm}
+
+\section*{Bibliography}\label{bibliography}
+
+\vspace*{0.8cm}
+
+\phantomsection\label{refs}
+\begin{CSLReferences}{1}{0}
+\bibitem[\citeproctext]{ref-carling}
+Andersson, J., Carling, K., \& Mattson, S. (1998). Random ranking of hospitals is unsound. \emph{CHANCE}, \emph{11}(3), 33--39. \url{https://doi.org/doi:10.1080/09332480.1998.10542106}
+
+\bibitem[\citeproctext]{ref-canonical}
+Archakova, I., \& Hansen, P. R. (2020). \emph{A canonical representation of block matrices with applications to covariance and correlation matrices}.
+
+\bibitem[\citeproctext]{ref-mogstadt25}
+Bazylik, S., Mogstad, M., Romano, J. P., Shaikh, A. M., \& Wilhelm, D. (2025). Simultaneous confidence regions for ranks. \emph{Journal of Econometrics}. https://doi.org/\url{https://doi.org/10.1016/j.jeconom.2025.106010}
+
+\bibitem[\citeproctext]{ref-chen}
+Chen, H. J. (1976). Strong consistency and asymptotic unbiasedness of a natural estimator for a ranked parameter. \emph{Sankhyā: The Indian Journal of Statistics}, \emph{38}(1), 92--94.
+
+\bibitem[\citeproctext]{ref-legara}
+David, C., \& Legara, E. F. (2015). \emph{How voters combine candidates on the ballot: The case of the philippine senatorial elections}.
+
+\bibitem[\citeproctext]{ref-dudewicz}
+Dudewicz, E. J. (1972). Point estimation of ordered parameters: The general location parameter case. \emph{Tamkang Journal of Mathematics}, \emph{3}(2), 101--114.
+
+\bibitem[\citeproctext]{ref-dunn}
+Dunn, O. J. (1958). \emph{Estimation of the means of dependent variables}.
+
+\bibitem[\citeproctext]{ref-healy}
+Goldstein, H., \& Healy, M. J. R. (1995). The graphical presentation of a collection of means. \emph{Journal of the Royal Statistical Society: Series A (Statistics in Society)}, \emph{158}(1), 175--177.
+
+\bibitem[\citeproctext]{ref-spiegel}
+Goldstein, H., \& Spiegelhalter, D. J. (1996). League tables and their limitations: Statistical issues in comparisons of institutional performance. \emph{Journal of the Royal Statistical Society: Series A (Statistics in Society)}, \emph{159}(3), 385--443.
+
+\bibitem[\citeproctext]{ref-miller}
+Hall, P., \& Miller, H. (2009). Using the bootstrap to quantify the authority of an empirical ranking. \emph{The Annals of Statistics}, \emph{37}(6B), 3929--3959.
+
+\bibitem[\citeproctext]{ref-klein}
+Klein, M., Wright, T., \& Wieczorek, J. (2020). A joint confidence region for an overall ranking of populations. \emph{Journal of the Royal Statistical Society}, 589--606.
+
+\bibitem[\citeproctext]{ref-elias}
+Krainski, E. T., Gómez-Rubio, V., Bakka, H., Lenzi, A., Castro-Camilo, D., Simpson, D., Lindgren, F., \& Rue, H. (2019). \emph{Advanced spatial modeling with stochastic partial differential equations using r and INLA}. Chapman \& Hall/CRC Press.
+
+\bibitem[\citeproctext]{ref-johan}
+Lyhagen, J., \& Ahlgren, P. (2020). Uncertainty and the ranking of economics journals. \emph{Scientometrics}, \emph{125}, 2545--2560. https://doi.org/\url{https://doi.org/10.1007/s11192-020-03681-5}
+
+\bibitem[\citeproctext]{ref-mogstadt23}
+Mogstad, M., Romano, J. P., Shaikh, A. M., \& Wilhelm, D. (2024). Inference for ranks with applications to mobility across neighbourhoods and academic achievement across countries. \emph{The Review of Economic Studies}, \emph{91}(1), 476--518.
+
+\bibitem[\citeproctext]{ref-jelle}
+Mohamad, D. A., Zwet, E. W. van, \& Goeman, J. J. (2019). Simultaneous confidence intervals for ranks with application to ranking institutions. \emph{Journal of the International Biometric Society}.
+
+\bibitem[\citeproctext]{ref-pork}
+Ravanilla, N., \& Hicken, A. (2023). \emph{When legislators don't bring home the pork: The case of philippine senators}.
+
+\bibitem[\citeproctext]{ref-sidak}
+Šidák, Z. (1967). \emph{Rectangular confidence regions for the means of multivariate normal distributions}.
+
+\bibitem[\citeproctext]{ref-BayesNGSP}
+Turek, D., \& Risser, M. (2022). \emph{bayesNSGP: Bayesian analysis of non-stationary gaussian process models}. \url{https://cran.stat.auckland.ac.nz/web/packages/BayesNSGP/BayesNSGP.pdf}
+
+\bibitem[\citeproctext]{ref-wright}
+Wright, T. (2025). \emph{Optimal tightening of the KWW joint confidence region for a ranking}.
+
+\bibitem[\citeproctext]{ref-zhang}
+Zhang, S., Luo, J., Zhu, L., Stinchcomb, D. G., Campbell, D., Carter, G., Gilkesone, S., \& Feuerc, E. J. (2013). \emph{Confidence intervals for ranks of age-adjusted rates across states or counties}.
+
+\end{CSLReferences}
+
+\end{document}

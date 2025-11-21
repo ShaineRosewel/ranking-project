@@ -1,9 +1,9 @@
-This section introduces the proposed methodologies to obtain joint confidence intervals that can be used to quantify uncertainty for the unknown overall true ranking. It addresses the scenario when the estimates of the parameters being ranked are correlated to certain degrees. Section \ref{sec:proposed-methodology-to-compute-simultaneous-confidence-intervals-for-the-unordered-parameters} lists the algorithms employed to compute the joint confidence regions. These include a non-rank and rank-based methods. It also has a subsection that discusses correlation structures suitable to the intended use cases. The calculated joint confidence regions are then assessed on the basis of coverage and metrics that measure the tightness of estimated confidence regions. These are tackled in Section \ref{sec:evaluation}.
+This section introduces the proposed methodologies to obtain joint confidence intervals that can be used to quantify uncertainty for the unknown overall true ranking. It addresses the scenario when the estimates of the parameters being ranked are correlated to certain degrees. Section \ref{sec:proposed-methodology-to-compute-simultaneous-confidence-intervals-for-the-unordered-parameters} develops the procedure used to compute the joint confidence region for $\theta_1, \theta_2, \dots, \theta_K$. These include a non-rank and rank-based methods. Section \ref{sec:rankbased}, on the other hand, develops the procedure to compute the joint confidence region for $\theta_{(1)},\theta_{(2)},\ldots,\theta_{(K)}$. Section 3.3 discusses some possible correlation structures to be considered for the estimates. Sections \ref{sec:evaluation} and \ref{sec:simulation-settings} discuss how to evaluate the proposed methodology and the simulation settings to be used.
 
-## Proposed methodology to compute simultaneous confidence intervals for the unordered parameters {#sec:proposed-methodology-to-compute-simultaneous-confidence-intervals-for-the-unordered-parameters}
+## Proposed methodology to compute the joint confidence region for the unordered parameters {#sec:proposed-methodology-to-compute-simultaneous-confidence-intervals-for-the-unordered-parameters}
 
 
-In this chapter, we use the notations defined in Section \ref{sec:ranking-problem} and \ref{sec:kleins-joint-confidence-region-for-overall-ranking-uncertainty}. Moreover, we define $\hat{\boldsymbol{\theta}}=(\hat{\theta}_1,\hat{\theta}_2,\ldots,\hat{\theta}_K)'$. We assume that $\hat{\boldsymbol{\theta}}\sim N(\boldsymbol{\theta},\boldsymbol{\Sigma})$ where $\boldsymbol{\theta}=(\theta_1,\theta_2,\ldots,\theta_K)'$ is unknown and $\boldsymbol{\Sigma}$ is a known $K \times K$ positive definite matrix. The diagonal elements of $\boldsymbol{\Sigma}$ are $\sigma^2_1,\ldots,\sigma^2_K$. We note that in the literature on inferences on the ranks, it is customary to assume that the variances are known. As previously mentioned, the setup in this thesis allows the estimates to be correlated, which is contrast with that of @klein which assumes independence among the estimates. In other words, in this thesis, the covariance matrix $\boldsymbol{\Sigma}$ need not be a diagonal matrix.  Similar to the study of @klein, we shall derive simultaneous confidence intervals for $\theta_1,\theta_2,\ldots,\theta_K$ of the form 
+In this section, we adopt the notations defined in Section \ref{sec:ranking-problem} and \ref{sec:kleins-joint-confidence-region-for-overall-ranking-uncertainty}. Moreover, we define $\hat{\boldsymbol{\theta}}=(\hat{\theta}_1,\hat{\theta}_2,\ldots,\hat{\theta}_K)'$ and assume that $\hat{\boldsymbol{\theta}}\sim N(\boldsymbol{\theta},\boldsymbol{\Sigma})$ where $\boldsymbol{\theta}=(\theta_1,\theta_2,\ldots,\theta_K)'$ is unknown and $\boldsymbol{\Sigma}$ is a known $K \times K$ positive definite matrix. The diagonal elements of $\boldsymbol{\Sigma}$ are $\sigma^2_1,\ldots,\sigma^2_K$. We note that in the literature on inferences on the ranks, it is customary to assume that the variances are known. As previously mentioned, the setup in this thesis allows the estimates to be correlated, which is in contrast with that of @klein, which assumes independence among the estimates. In other words, in this thesis, the covariance matrix $\boldsymbol{\Sigma}$ need not be a diagonal matrix.  Similar to the study of @klein, we shall first derive simultaneous confidence intervals for $\theta_1,\theta_2,\ldots,\theta_K$ of the form 
 
 \begin{equation}
 \mathfrak{R}_1 = 
@@ -14,10 +14,10 @@ In this chapter, we use the notations defined in Section \ref{sec:ranking-proble
   \label{eq:rev1}
 \end{equation}
 
-We want the simultaneous confidence intervals in (\ref{eq:rev1}) to satisfy:
+We want the joint confidence region in (\ref{eq:rev1}) to satisfy the following probability condition:
 
 \begin{equation}
- P\left( \hat{\theta}_k-t \cdot \sigma_k \leq  \theta_k \leq  \hat{\theta}_k + t \cdot \sigma_k, \,\, \forall k=1,2,\ldots,K \right)  =1-\alpha.
+ P\left( \hat{\theta}_k-t \cdot \sigma_k \leq  \theta_k \leq  \hat{\theta}_k + t \cdot \sigma_k, \,\, \forall\; k=1,2,\ldots,K \right)  =1-\alpha.
 \end{equation}
 
 Equivalently, we require
@@ -27,18 +27,14 @@ Equivalently, we require
 \end{equation}
 
 
-We use the parametric bootstrap to estimate the quantile $t$ that will be used to construct the confidence intervals while controlling the coverage to be around the nominal level.  Hence, we sample from the multivariate normal distribution with $\hat{\boldsymbol{\theta}}$ and $\boldsymbol{\Sigma}$ as mean and variance, respectively. The idea is also conceptually similar to that of @mogstadt23 who use resampling to obtain the quantile in a different context. Algorithm \ref{alg:nonrank_ci} describes the procedure to compute the confidence intervals based on unordered estimates.
+We use the parametric bootstrap to estimate the quantile $t$ that will be used to construct the confidence intervals while controlling the coverage to be around the nominal level. In implementing the parametric bootstrap, we sample from the multivariate normal distribution with $\hat{\boldsymbol{\theta}}$ and $\boldsymbol{\Sigma}$ as mean and variance, respectively. The idea is also conceptually similar to that of @mogstadt23 who use resampling to obtain the quantile in a different context. Algorithm \ref{alg:nonrank_ci} describes the procedure to compute the joint confidence region based on unordered estimates.
 
-Once the confidence intervals in (\ref{eq:rev1}) have been obtained, we can use the result of @klein in (\ref{eq:joint_cov2}) to get the lower and upper bounds on the ranks $r_k, k=1,2,\ldots,K$.
+Once the confidence intervals in (\ref{eq:rev1}) have been obtained, we can then use the result of @klein in (\ref{eq:joint_cov2}) to get the lower and upper bounds on the ranks $r_k, k=1,2,\ldots,K$. That is, we also get ajoint confidence region for $r_1, r_2, . . . , r_K$.
 
-
-
-### Nonrank-based method {#sec:nonrankbased}
-
-The nonrank-based method, as implied by its name, does not incorporate order statistics in the algorithm. It focuses on the minimum requirement of constructing a sampling distribution from which the $(1-\alpha)$-quantile that keeps the simultaneous coverage at the nominal level will be derived.
 
 \begin{algorithm}[H]
-    \caption{Computing the joint confidence region using standardized unordered estimates} 
+\fontsize{15pt}{18pt}\selectfont
+    \caption{Computing the joint confidence region for the unordered parameters} 
     \label{alg:nonrank_ci}
     Let the data be represented by $\hat{\boldsymbol{\theta}} = \left( \hat \theta_1, \hat \theta_2, \dots, \hat \theta_K \right)'$ and suppose that $\boldsymbol{\Sigma}$ is known
     \begin{algorithmic}[1]
@@ -51,18 +47,17 @@ The nonrank-based method, as implied by its name, does not incorporate order sta
                 \end{minipage}
         \EndFor
         \State Compute the $\left(1-\alpha\right)$-sample quantile of $t^*_1, t^*_2, \dots, t^*_B$, call this $\hat{t}$.
-        \State The joint confidence region of $\theta_1, \theta_2, \dots, \theta_K$ is given by 
+        \State The joint confidence region for $\boldsymbol{\theta} = (\theta_1, \theta_2, \dots, \theta_K)'$ is given by 
         \Statex \begin{minipage}{\linewidth}
     \centering
-$\mathfrak{R}_1 = \left[ \hat\theta_1 \pm \hat t \times \sigma_1  \right] \times \left[ \hat\theta_2 \pm \hat t \times \sigma_2  \right] \times \dots \times \left[ \hat\theta_K \pm \hat t \times \sigma_K  \right]$
+$\mathfrak{R}_1 = \left[ \hat\theta_1 \pm \hat t \times \sigma_1  \right] \times \left[ \hat\theta_2 \pm \hat t \times \sigma_2  \right] \times \dots \times \left[ \hat\theta_K \pm \hat t \times \sigma_K  \right]$.
     \end{minipage}
     \end{algorithmic} 
 \end{algorithm}
 
-### Proposed methodology to compute simultaneous confidence intervals for the ordered parameters {#sec:rankbased}
+## Proposed methodology to compute a joint confidence region for the ordered parameters {#sec:rankbased}
 
-We shall also be proposing an approach to compute simultaneous confidence intervals for the ordered parameters. Suppose that for the parameters $\theta_1,\ldots,\theta_K$, the corresponding ordered values are $\theta_{(1)},\ldots,\theta_{(K)}$. We find confidence intervals for these ordered values, and set these intervals to be of the following form:
-
+We shall also be proposing an approach to compute simultaneous confidence intervals for the ordered parameters. Suppose that for the parameters $\theta_1,\ldots,\theta_K$, the corresponding ordered values are $\theta_{(1)},\ldots,\theta_{(K)}$.  Similarly, let $\hat{\theta}_{(1)},\ldots,\hat{\theta}_{(K)}$ be the ordered estimates. We now derive a joint confidence region for these ordered values, and set the region to be of the following form:
 
 \begin{equation}
 \mathfrak{R}_2=
@@ -72,7 +67,7 @@ We shall also be proposing an approach to compute simultaneous confidence interv
 [\hat{\theta}_{(K)} \pm t \times \sigma_{(K)}],
 \label{eq:rev2}
 \end{equation}
-where $\sigma_{(k)}=\sqrt{V\left(\hat{\theta}_{(k)}\right)}$. The confidence intervals in (\ref{eq:rev2}) are computed such that the following condition holds:
+where $\sigma_{(k)}=\sqrt{V\left(\hat{\theta}_{(k)}\right)}$. The confidence region in (\ref{eq:rev2}) is computed such that the following condition holds:
 
 \begin{equation}
  P\left( \hat{\theta}_{(k)}-t \cdot \sigma_{(k)} \leq  \theta_{(k)} \leq  \hat{\theta}_{(k)} + t \cdot \sigma_{(k)}, \,\, \forall k=1,2,\ldots,K \right)  =1-\alpha,
@@ -84,7 +79,7 @@ which is equivalent to
  P\left( \max_{k=1,2,\ldots,K} \left| \dfrac{\hat{\theta}_{(k)}-\theta_{(k)}}{\sigma_{(k)}} \right| \le t \right)  =1-\alpha,
 \label{eq:rev4}
 \end{equation}
-and we estimate $t$, which in (\ref{eq:rev4}) is the $(1-\alpha)$-quantile of the distribution of $\max_{k} \left| \dfrac{\hat{\theta}_{(k)}-\theta_{(k)}}{\sigma_{(k)}} \right|$, via a parametric bootstrap. We shall refer to this approach as confidence intervals based on ordered estimates. Since $\sigma_{(k)}$ is not known, we estimate its value. We present two approaches to estimate $\sigma_{(k)}$. The first uses results from @chen and @dudewicz to obtain an expression of the asymptotic variance of $\hat{\theta}_{(k)}$ as follows:
+and we estimate $t$, which in (\ref{eq:rev4}) is the $(1-\alpha)$-quantile of the distribution of $\max_{k} \left| \dfrac{\hat{\theta}_{(k)}-\theta_{(k)}}{\sigma_{(k)}} \right|$, via a suitable parametric bootstrap. Since $\sigma_{(k)}$ is not known, we estimate its value. We present two approaches to estimate $\sigma_{(k)}$. The first uses results from @chen and @dudewicz to obtain an expression of the asymptotic variance of $\hat{\theta}_{(k)}$ as follows:
 \begin{equation}
 V(\hat{\theta}_{(k)})= \text{kth ordered value among} \ \left\{ \theta^{2}_{1} + \sigma_1^2, \theta^{2}_{2} + \sigma_2^2, \dots, \theta^{2}_{K} + \sigma_K^2 \right\} - \theta^{2}_{(k)}.
 \label{eq:rev5}
@@ -95,15 +90,10 @@ Consequently, we get an estimate of the asymptotic variance of $\hat{\theta}_{(k
 \label{eq:rev6}
 \end{equation}
 
-Algorithm \ref{alg:rank_asymp} describes the procedure to compute the simultaneous confidence intervals in (\ref{eq:rev1}) using this approach.
-
-
-#### Variance from second-level bootstrap
-
-As an alternative to using the asymptotic variance, a second-level (or double) bootstrap can be employed to estimate the variance, as illustrated in Algorithm \ref{alg:rank_secondlevelbs}. However, this approach is computationally intensive.
+Algorithm \ref{alg:rank_asymp} describes the procedure to compute the joint confidence region in (\ref{eq:rev2}) using this approach.
 
 \begin{algorithm}[H]
-    \caption{Computing the joint confidence region based on ordered estimates and the estimated asymptotic variance} 
+    \caption{Computing the joint confidence region for the ordered parameters using the estimated asymptotic variance} 
     \label{alg:rank_asymp}
     \begin{algorithmic}[1]
     \For {$b = 1, 2, \dots, B$}
@@ -134,11 +124,11 @@ $\hat\sigma_{(k)} = \sqrt{\text{kth ordered value among} \ \left\{ \hat{\theta}^
     \end{algorithmic} 
 \end{algorithm}
 
-The expression for the asymptotic variance of $\hat{\theta}_{(k)}$ has actually been derived in a setting where the $\hat{\theta}_1,\hat{\theta}_2,\ldots,\hat{\theta}_K$ are independent. It is not clear if the expression in (\ref{eq:rev5}) holds whenever $\hat{\theta}_1,\hat{\theta}_2,\ldots,\hat{\theta}_K$ are correlated. Since this thesis allows for the $\hat{\theta}_k$s to be correlated, it is possible that the expression in (\ref{eq:rev6}) for the estimate of the variance of $\hat{\theta}_{(k)}$ lacks optimality.  As an alternative to using the asymptotic variance, we shall also consider using the bootstrap to estimate the variance of $\hat{\theta}_{(k)}$. To this end, a second-level bootstrap can be employed to estimate the variance. Algorithm  \ref{alg:rank_secondlevelbs} illustrates the procedure to compute the simultaneous confidence intervals based on the ordered estimates and using the bootstrap to estimate the variance of the ordered estimates. As may be expected, this approach is computationally intensive.
+The expression for the asymptotic variance of $\hat{\theta}_{(k)}$ has actually been derived in a setting where the $\hat{\theta}_1,\hat{\theta}_2,\ldots,\hat{\theta}_K$ are independent. It is not clear if the expression in (\ref{eq:rev5}) holds whenever $\hat{\theta}_1,\hat{\theta}_2,\ldots,\hat{\theta}_K$ are correlated. Since this thesis allows for the $\hat{\theta}_k$s to be correlated, it is possible that the expression in (\ref{eq:rev6}) for the estimate of the variance of $\hat{\theta}_{(k)}$ lacks optimality.  As an alternative to using the asymptotic variance, we shall also consider using the bootstrap to estimate the variance of $\hat{\theta}_{(k)}$. To this end, a second-level bootstrap can be employed to estimate the variance. Algorithm  \ref{alg:rank_secondlevelbs} illustrates the procedure to compute the joint confidence region for the ordered parameters with the use of the bootstrap to estimate the variance of the ordered estimates. As may be expected, this approach is computationally intensive.
 
 
 \begin{algorithm}[H]
-    \caption{Computing the joint confidence region based on ordered estimates and the bootstrap estimate of the variance}
+    \caption{Computing the joint confidence region for the ordered parameters using the bootstrap estimate of the variance}
     \label{alg:rank_secondlevelbs}
     \begin{algorithmic}[1]
         \For {$b = 1, 2, \dots, B$}
@@ -169,7 +159,7 @@ $\displaystyle \hat \sigma_{(k)} = \frac{\sum^B_{b=1} \left( \hat \theta^*_{b(k)
     \end{algorithmic} 
 \end{algorithm}
 
-### Correlation structures {#sec:corrstructures}
+## Correlation structures {#sec:corrstructures}
 
 The proposed methodologies assume that $V(\hat{\boldsymbol{\theta}})=\boldsymbol{\Sigma}$ is known. Note that we can express $\boldsymbol{\Sigma}$ as in (3.9), where $\mathbf{R}$ is the population correlation matrix.
 
@@ -179,7 +169,7 @@ The proposed methodologies assume that $V(\hat{\boldsymbol{\theta}})=\boldsymbol
 \end{equation}
 The diagonal elements of $\boldsymbol{\Sigma}$, which are $\sigma^2_k=V(\hat{\theta}_k)$ for $k =1,2, \ldots,K$, are treated as known quantities in practice. With large sample sizes, the variance estimates are stable enough that they are treated as the actual values. However, there is limited information to use as basis for the correlations among the stimates. In this thesis, we shall be  assuming certain correlation structures among the $\hat{\theta}$s.  
 
-One structure thay may be used is an equicorrelation matrix shown in (\ref{eq:equicorrelation}). This assumes that the $k$ variables are equally correlated, such that $\rho_{jk}=\rho$ where $\rho \in [-1,1]$ for $j \neq k \in \{1, \dots, K\}$.
+One structure that may be used is an equicorrelation matrix shown in (\ref{eq:equicorrelation}). This assumes that the $k$ variables are equally correlated, i.e., that $\rho_{jk}=\rho$ where $\rho \in [-1,1]$ for $j \neq k \in \{1, \dots, K\}$.
 
 \begin{equation}
   \mathbf{R}_{\text{eq}} = \left( 1-\rho \right) \mathbf{I}_K + \rho \boldsymbol{1}_K \boldsymbol{1}'_K = 
@@ -207,7 +197,7 @@ Thus, the full block correlation matrix can be expressed as in (\ref{eq:blockcor
   \mathbf{R}_{\text{block}} = 
 \begin{bmatrix}
 \mathbf{R}_{eq,1} & \mathbf{C}_{12} & \cdots & \mathbf{C}_{1G} \\
-\mathbf{C}_{11} & \mathbf{R}_{eq,2} & \cdots & \mathbf{C}_{2G} \\
+\mathbf{C}_{21} & \mathbf{R}_{eq,2} & \cdots & \mathbf{C}_{2G} \\
 \vdots & \vdots & \ddots & \vdots \\
 \mathbf{C}_{G1} & \mathbf{C}_{G2} & \cdots & \mathbf{R}_{eq,G}
 \end{bmatrix}_{K \times K}
@@ -242,6 +232,7 @@ Algorithm \ref{alg:evaluation} estimates the coverage probabilities associated w
 In equation \ref{eq:t3}, $OP = K + \sum^K_{k=1} \big | \Lambda_{Ok} \big|$ denotes the total number of occupied positions in a joint confidence region out of the total number of positions $K^2$; or the sum of the differences between the upper and lower bound of the simultaneous rank intervals added by 1, for each population $k$. Higher values of $T_1$ and $T_2$ indicate wider confidence intervals and are therefore less desirable, whereas higher values of $T_3$ are preferable. $T_3$ can range from 0, indicating no tightness, to $\frac{K-1}{K}$, implying the confidence region only contains the estimated ranking which is likely the true ranking.
 
 \begin{algorithm}[H]
+\fontsize{15pt}{18pt}\selectfont
     \caption{Computing the coverage probability and tightness measures} 
     \label{alg:evaluation}
     For given values of $\boldsymbol{\Sigma}$ and $\theta_1, \theta_2, \dots, \theta_K$ (with corresponding $\theta_{(1)}, \theta_{(2)}, \dots, \theta_{(K)}$ for rank-based methods)
@@ -255,7 +246,330 @@ In equation \ref{eq:t3}, $OP = K + \sum^K_{k=1} \big | \Lambda_{Ok} \big|$ denot
     \end{algorithmic} % End algorithmic block
 \end{algorithm}
 
-## Simulation settings
+## Simulation settings {#sec:simulation-settings}
 
-For the simulation settings to be used in evaluating the performance of the proposed methodologies, we shall be varying the settings for the population mean $\boldsymbol{\theta}$, population variances $\sigma^2_1,\ldots,\sigma^2_K$, population correlation matrix $\mathbf{R}$, and number of populations being ranked $K$. In carrying out the simulations, a nominal level of $1-\alpha=0.95$ will be used. The table below summarizes the simulations settings.
+For the simulation settings to be used in evaluating the performance of the proposed methodologies, we shall be varying the settings for the population mean $\boldsymbol{\theta}$, population variances $\sigma^2_1, \sigma^2_2,\ldots,\sigma^2_K$, population correlation matrix $\mathbf{R}$, and number of populations being ranked $K$. In carrying out the simulations, a nominal level of $1-\alpha=0.95$ will be used. The table below summarizes the simulations settings.
 
+```{r named, echo = FALSE, eval = FALSE}
+mean <- 23.8
+sds <- c(2, 3.6, 6)
+Ks <- c(50)
+#corrs <- c(0.1,0.5,0.9)
+alphas <- c(0.05)#c(0.05, 0.1, 0.15, 0.2)
+
+my_list <- c()
+i <- 1   # initialize index
+
+for (K in Ks) {
+  for (sd in sds) {
+
+    set.seed(123974)
+    true_theta <- rnorm(K, mean, sd)
+
+    value_to_add <- paste(round(true_theta,1), collapse = ", ")
+
+    my_list[i] <- value_to_add
+    i <- i + 1
+  }
+}
+#my_list
+df <- readRDS("../../data/mean_travel_time_ranking_2011.rds")
+
+sig5 <- paste0("(",paste(df$S[1:50], collapse = ", "),")")
+sig5
+```
+
+
+\begin{table}[H]
+\centering
+{\fontsize{13pt}{15pt}\selectfont 
+\begin{tabular}{p{11cm} p{4cm}}
+\hline
+$\boldsymbol{\theta}$ & $\mathbf{R}$ \\
+\hline
+\hline
+\multicolumn{2}{c}{\textbf{K = 5}} \\
+\hline
+\multirow{3}{11cm}{(22.5, 24.9, 27.5, 24.3, 24.8)$'$} 
+& $\mathbf{R}_{\text{eq}}, \rho = 0.1, 0.5, 0.9$ \\
+& $\mathbf{R}_{\text{block}}$ \\
+\hline
+\multirow{3}{11cm}{(21.5, 25.7, 30.5, 24.7, 25.5)$'$} 
+& $\mathbf{R}_{\text{eq}}, \rho = 0.1, 0.5, 0.9$ \\
+& $\mathbf{R}_{\text{block}}$ \\
+\hline
+\multirow{3}{11cm}{(19.9, 27, 34.9, 25.3, 26.7)$'$} 
+& $\mathbf{R}_{\text{eq}}, \rho = 0.1, 0.5, 0.9$ \\
+& $\mathbf{R}_{\text{block}}$ \\
+\hline
+\multicolumn{2}{c}{\textbf{K = 10}} \\
+\hline
+\multirow{3}{11cm}{(22.5, 24.9, 27.5, 24.3, 24.8, 23.2, 23, 21.6, 25.1, 19)$'$} 
+& $\mathbf{R}_{\text{eq}}, \rho = 0.1, 0.5, 0.9$ \\
+& $\mathbf{R}_{\text{block,10}}$ \\
+\hline
+\multirow{3}{11cm}{(21.5, 25.7, 30.5, 24.7, 25.5, 22.6, 22.3, 19.9, 26.1, 15.2)$'$} 
+& $\mathbf{R}_{\text{eq}}, \rho = 0.1, 0.5, 0.9$ \\
+& $\mathbf{R}_{\text{block,10}}$ \\
+
+\hline
+\multirow{3}{11cm}{(19.9, 27, 34.9, 25.3, 26.7, 21.9, 21.3, 17.3, 27.7, 9.4)$'$} 
+& $\mathbf{R}_{\text{eq}}, \rho = 0.1, 0.5, 0.9$ \\
+& $\mathbf{R}_{\text{block,10}}$ \\
+\hline
+\multicolumn{2}{c}{\textbf{K = 20}} \\
+\hline
+\multirow{3}{11cm}{(22.5, 24.9, 27.5, 24.3, 24.8, 23.2, 23, 21.6, 25.1, 19, 21.3, 24.1, 26.5, 26.9, 23.2, 25.8, 21.8, 21.6, 25.6, 21.2)$'$} 
+& $\mathbf{R}_{\text{eq}}, \rho = 0.1, 0.5, 0.9$ \\
+& $\mathbf{R}_{\text{block}}$ \\
+& \\
+\hline
+\multirow{3}{11cm}{(21.5, 25.7, 30.5, 24.7, 25.5, 22.6, 22.3, 19.9, 26.1, 15.2, 19.3, 24.3, 28.7, 29.3, 22.7, 27.5, 20.1, 19.9, 27.1, 19.1)$'$} 
+& $\mathbf{R}_{\text{eq}}, \rho = 0.1, 0.5, 0.9$ \\
+& $\mathbf{R}_{\text{block}}$ \\
+& \\
+\hline
+\multirow{3}{11cm}{(19.9, 27, 34.9, 25.3, 26.7, 21.9, 21.3, 17.3, 27.7, 9.4, 16.2, 24.6, 31.9, 33, 21.9, 29.9, 17.7, 17.3, 29.3, 16)$'$} 
+& $\mathbf{R}_{\text{eq}}, \rho = 0.1, 0.5, 0.9$ \\
+& $\mathbf{R}_{\text{block}}$ \\
+& \\
+\hline
+\multicolumn{2}{c}{\textbf{K = 30}} \\
+\hline
+\multirow{4}{*}{%
+  \parbox{11cm}{%
+  \vspace{0.2cm}
+    (22.5, 24.9, 27.5, 24.3, 24.8, 23.2, 23, 21.6, 25.1, 19, 
+    21.3, 24.1, 26.5, 26.9, 23.2, 25.8, 21.8, 21.6, 25.6, 21.2, 
+    25.7, 22.2, 22.7, 22.6, 21.9, 24.2, 23.6, 22, 24.5, 25)$'$
+    \vspace{0.2cm}
+  }%
+} 
+& $\mathbf{R}_{\text{eq}}, \rho = 0.1, 0.5, 0.9$ \\
+& $\mathbf{R}_{\text{block}}$ \\
+& \\
+& \\
+\hline
+\multirow{4}{*}{%
+  \parbox{11cm}{%
+  \vspace{0.2cm}
+  (21.5, 25.7, 30.5, 24.7, 25.5, 22.6, 22.3, 19.9, 26.1, 15.2, 19.3, 24.3, 28.7, 29.3, 22.7, 27.5, 20.1, 19.9, 27.1, 19.1, 27.2, 20.9, 21.8, 21.7, 20.4, 24.5, 23.5, 20.5, 25.1, 26)$'$
+    \vspace{0.2cm}
+  }%
+} 
+& $\mathbf{R}_{\text{eq}}, \rho = 0.1, 0.5, 0.9$ \\
+& $\mathbf{R}_{\text{block}}$ \\
+& \\
+& \\
+\hline
+\end{tabular}
+}
+\end{table}
+
+
+
+
+
+\begin{table}[H]
+\centering
+{\fontsize{13pt}{15pt}\selectfont 
+\begin{tabular}{p{11cm} p{4cm}}
+\hline
+$\boldsymbol{\theta}$ & $\mathbf{R}$ \\
+\hline
+\hline
+\multicolumn{2}{c}{\textbf{K = 30}} \\
+\hline
+\multirow{4}{*}{%
+  \parbox{11cm}{%
+  \vspace{0.2cm}
+  (19.9, 27, 34.9, 25.3, 26.7, 21.9, 21.3, 17.3, 27.7, 9.4, 16.2, 24.6, 31.9, 33, 21.9, 29.9, 17.7, 17.3, 29.3, 16, 29.4, 19, 20.4, 20.3, 18.2, 25, 23.3, 18.3, 26, 27.4)$'$
+    \vspace{0.2cm}
+  }%
+} 
+& $\mathbf{R}_{\text{eq}}, \rho = 0.1, 0.5, 0.9$ \\
+& $\mathbf{R}_{\text{block}}$ \\
+& \\
+& \\
+\hline
+\multicolumn{2}{c}{\textbf{K = 40}} \\
+\hline
+\multirow{6}{11cm}{(22.5, 24.9, 27.5, 24.3, 24.8, 23.2, 23, 21.6, 25.1, 19, 21.3, 24.1, 26.5, 26.9, 23.2, 25.8, 21.8, 21.6, 25.6, 21.2, 25.7, 22.2, 22.7, 22.6, 21.9, 24.2, 23.6, 22, 24.5, 25, 26.5, 25.1, 25.2, 27.1, 25.3, 22.8, 20.6, 21.1, 26, 26)$'$}
+&  \\
+& $\mathbf{R}_{\text{eq}}, \rho = 0.1, 0.5, 0.9$ \\
+& $\mathbf{R}_{\text{block}}$ \\
+&  \\
+&  \\
+&  \\
+\hline
+\multirow{6}{11cm}{(21.5, 25.7, 30.5, 24.7, 25.5, 22.6, 22.3, 19.9, 26.1, 15.2, 19.3, 24.3, 28.7, 29.3, 22.7, 27.5, 20.1, 19.9, 27.1, 19.1, 27.2, 20.9, 21.8, 21.7, 20.4, 24.5, 23.5, 20.5, 25.1, 26, 28.6, 26.1, 26.4, 29.7, 26.5, 22.1, 18, 18.9, 27.8, 27.8)$'$}
+&  \\
+& $\mathbf{R}_{\text{eq}}, \rho = 0.1, 0.5, 0.9$ \\
+& $\mathbf{R}_{\text{block}}$ \\
+&  \\
+&  \\
+&  \\
+\hline
+\multirow{6}{11cm}{(19.9, 27, 34.9, 25.3, 26.7, 21.9, 21.3, 17.3, 27.7, 9.4, 16.2, 24.6, 31.9, 33, 21.9, 29.9, 17.7, 17.3, 29.3, 16, 29.4, 19, 20.4, 20.3, 18.2, 25, 23.3, 18.3, 26, 27.4, 31.9, 27.7, 28.1, 33.6, 28.2, 20.9, 14.1, 15.6, 30.5, 30.5)$'$}
+&  \\
+& $\mathbf{R}_{\text{eq}}, \rho = 0.1, 0.5, 0.9$ \\
+& $\mathbf{R}_{\text{block}}$ \\
+&  \\
+&  \\
+&  \\
+\hline
+\multicolumn{2}{c}{\textbf{K = 50}} \\
+\hline
+\multirow{6}{11cm}{(22.5, 24.9, 27.5, 24.3, 24.8, 23.2, 23, 21.6, 25.1, 19, 21.3, 24.1, 26.5, 26.9, 23.2, 25.8, 21.8, 21.6, 25.6, 21.2, 25.7, 22.2, 22.7, 22.6, 21.9, 24.2, 23.6, 22, 24.5, 25, 26.5, 25.1, 25.2, 27.1, 25.3, 22.8, 20.6, 21.1, 26, 26, 22.1, 21.4, 23.2, 22.3, 22.4, 23.1, 21.4, 24.8, 27, 23.4)$'$}
+&  \\
+& $\mathbf{R}_{\text{eq}}, \rho = 0.1, 0.5, 0.9$ \\
+& $\mathbf{R}_{\text{block}}$ \\
+&  \\
+&  \\
+&  \\
+&  \\
+\hline
+\multirow{6}{11cm}{(21.5, 25.7, 30.5, 24.7, 25.5, 22.6, 22.3, 19.9, 26.1, 15.2, 19.3, 24.3, 28.7, 29.3, 22.7, 27.5, 20.1, 19.9, 27.1, 19.1, 27.2, 20.9, 21.8, 21.7, 20.4, 24.5, 23.5, 20.5, 25.1, 26, 28.6, 26.1, 26.4, 29.7, 26.5, 22.1, 18, 18.9, 27.8, 27.8, 20.8, 19.5, 22.8, 21.2, 21.3, 22.5, 19.5, 25.5, 29.6, 23)$'$}
+&  \\
+& $\mathbf{R}_{\text{eq}}, \rho = 0.1, 0.5, 0.9$ \\
+& $\mathbf{R}_{\text{block}}$ \\
+&  \\
+&  \\
+&  \\
+&  \\
+\hline
+\multirow{6}{11cm}{(19.9, 27, 34.9, 25.3, 26.7, 21.9, 21.3, 17.3, 27.7, 9.4, 16.2, 24.6, 31.9, 33, 21.9, 29.9, 17.7, 17.3, 29.3, 16, 29.4, 19, 20.4, 20.3, 18.2, 25, 23.3, 18.3, 26, 27.4, 31.9, 27.7, 28.1, 33.6, 28.2, 20.9, 14.1, 15.6, 30.5, 30.5, 18.8, 16.6, 22.1, 19.4, 19.6, 21.6, 16.7, 26.7, 33.5, 22.5)$'$}
+&  \\
+& $\mathbf{R}_{\text{eq}}, \rho = 0.1, 0.5, 0.9$ \\
+& $\mathbf{R}_{\text{block}}$ \\
+&  \\
+&  \\
+&  \\
+&  \\
+\hline
+\end{tabular}
+}
+\end{table}
+
+\begin{table}[H]
+\centering
+\fontsize{13pt}{17pt}\selectfont
+\begin{tabular}{p{1cm} p{14cm}}
+\hline
+$K$ & $\mathbf{R}_{\text{block,K}}$ \\
+\hline
+\hline
+5 & \\
+\hline
+10 & $\mathbf{R}_{\text{eq},n=3}$ with $\rho = 0.1$, $\mathbf{R}_{\text{eq},n=3}$ with $\rho = 0.5$, $\mathbf{R}_{\text{eq},n=4}$ with $\rho = 0.9$ with $\rho = 0.1$ in the off-diagonal blocks \\
+\hline
+20 &  \\
+\hline
+30 &  \\
+\hline
+40 &  \\
+\hline
+50 &  \\
+\hline
+\end{tabular}
+\end{table}
+
+
+Each $k$ shares the same population variances $\sigma^2_1,\sigma^2_2,\ldots,\sigma^2_K$:
+
+
+\begin{table}[H]
+\centering
+\fontsize{13pt}{17pt}\selectfont
+\begin{tabular}{p{1cm} p{14cm}}
+\hline
+\textbf{K} & \textbf{$\boldsymbol \sigma$} \\
+\hline
+\hline
+5 & (0.14, 0.33, 0.15, 0.23, 0.07)$'$ \\
+\hline
+10 & (0.14, 0.33, 0.15, 0.23, 0.07, 0.19, 0.19, 0.37, 0.32, 0.11)$'$ \\
+\hline
+20 & (0.14, 0.33, 0.15, 0.23, 0.07, 0.19, 0.19, 0.37, 0.32, 0.11, 0.17, 0.27, 0.24, 0.11, 0.11, 0.13, 0.16, 0.15, 0.15, 0.25)$'$ \\
+\hline
+30 & (0.14, 0.33, 0.15, 0.23, 0.07, 0.19, 0.19, 0.37, 0.32, 0.11, 0.17, 0.27, 0.24, 0.11, 0.11, 0.13, 0.16, 0.15, 0.15, 0.25, 0.15, 0.13, 0.1, 0.1, 0.24, 0.13, 0.32, 0.19, 0.27, 0.3)$'$ \\
+\hline
+40 & (0.14, 0.33, 0.15, 0.23, 0.07, 0.19, 0.19, 0.37, 0.32, 0.11, 0.17, 0.27, 0.24, 0.11, 0.11, 0.13, 0.16, 0.15, 0.15, 0.25, 0.15, 0.13, 0.1, 0.1, 0.24, 0.13, 0.32, 0.19, 0.27, 0.3, 0.12, 0.27, 0.09, 0.12, 0.36, 0.09, 0.15, 0.16, 0.09, 0.29)$'$ \\
+\hline
+50 & (0.14, 0.33, 0.15, 0.23, 0.07, 0.19, 0.19, 0.37, 0.32, 0.11, 0.17, 0.27, 0.24, 0.11, 0.11, 0.13, 0.16, 0.15, 0.15, 0.25, 0.15, 0.13, 0.1, 0.1, 0.24, 0.13, 0.32, 0.19, 0.27, 0.3, 0.12, 0.27, 0.09, 0.12, 0.36, 0.09, 0.15, 0.16, 0.09, 0.29, 0.16, 0.28, 0.14, 0.07, 0.2, 0.31, 0.13, 0.14, 0.31, 0.11)$'$ \\
+\hline
+\end{tabular}
+\end{table}
+
+
+```{r simulation-table, results='asis', echo=FALSE, eval = FALSE}
+library(dplyr)
+library(tidyr)
+
+K <- c(5, 10)
+theta <-c(2.3,6,9)# my_list
+R_type <- c("R_eq", "R_block", "R_matern")
+
+grid <- expand.grid(K = K, theta = theta, R = R_type) %>%
+  arrange(K, theta, R)
+
+grid <- grid %>%
+  mutate(R_desc = case_when(
+    R == "R_eq" ~ "$\\mathbf{R}_{\\text{eq}}, \\rho = 0.1, 0.5, 0.9$",
+    R == "R_block" ~ "$\\mathbf{R}_{\\text{block}}$",
+    R == "R_matern" ~ "$\\mathbf{R}_{\\text{matern}}$ (using distances between states)"
+  ))
+
+# row spans
+grid <- grid %>%
+  group_by(K, theta) %>%
+  mutate(theta_rows = n()) %>%
+  ungroup() %>%
+  group_by(K) %>%
+  mutate(K_rows = sum(theta_rows)) %>%
+  ungroup()
+
+# Identify when K and theta change
+grid <- grid %>%
+  group_by(K) %>%
+  mutate(
+    K_cell = ifelse(row_number() == 1,
+                    paste0("\\multirow[t]{", K_rows, "}{*}{", K, "}"), "")
+  ) %>%
+  group_by(K, theta) %>%
+  mutate(
+    theta_cell = ifelse(row_number() == 1,
+                        paste0("\\multirow[t]{", theta_rows, "}{*}{", theta, "}"), "")
+  ) %>%
+  ungroup()
+
+# lines
+grid <- grid %>%
+  group_by(K) %>%
+  mutate(
+    add_hline = ifelse(row_number() == n(), "\\hline", ""),
+    add_cline = ifelse(row_number() %% 3 == 0 & row_number() != n(), "\\cline{2-3}", "")
+  ) %>%
+  ungroup()
+
+# Build LaTeX lines
+table_lines <- grid %>%
+  mutate(
+    line = paste0(K_cell, " & ", theta_cell, " & ", R_desc, " \\\\ ", add_cline, add_hline)
+  ) %>%
+  pull(line)
+
+# Wrap into LaTeX table
+cat("\\begin{table}[H]",
+    "\\centering",
+    "{\\fontsize{10pt}{12pt}\\selectfont",
+    "\\begin{tabular}{c l l}",
+    "\\hline",
+    "$K$ & $\\boldsymbol{\\theta}$ & $\\mathbf{R}$ \\\\",
+    "\\hline",
+    paste(table_lines, collapse = "\n"),
+    "\\end{tabular}",
+    "}",
+    "\\end{table}",
+    sep = "\n")
+```

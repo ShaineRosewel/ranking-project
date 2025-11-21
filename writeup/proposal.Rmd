@@ -6,7 +6,6 @@ output:
     keep_tex: true
     toc: false
     highlight: kate # monochrome
-fontsize: 12pt 
 indent: true
 header-includes:
 - \usepackage{amsmath}
@@ -23,15 +22,43 @@ header-includes:
 - \usepackage{placeins}
 - \renewcommand{\ttfamily}{\rmfamily}
 - \usepackage{etoolbox}
+- \usepackage{multirow}
+- \usepackage{makecell}
+- \usepackage{booktabs}
 - \AtBeginEnvironment{algorithmic}{\setstretch{1.5}} 
-- \renewcommand{\arraystretch}{0.75}                  
+- \renewcommand{\arraystretch}{0.75}
+- \renewcommand{\multirowsetup}{\raggedright}
+# --- Thesis font definition (change here once, affects everything) ---
+- \usepackage{anyfontsize}
+- \newcommand{\thesisfont}{\fontsize{20pt}{19pt}\selectfont}
+- \thesisfont
+
+# --- Section headers proportional to body font ---
+- \usepackage{titlesec}
+- \titleformat{\section}{\fontsize{20pt}{22pt}\bfseries}{\thesection}{1em}{}
+- \titleformat{\subsection}{\fontsize{18pt}{20pt}\bfseries}{\thesubsection}{1em}{}
+- \titleformat{\subsubsection}{\fontsize{16pt}{19pt}\bfseries}{\thesubsubsection}{1em}{}
+
+# --- Algorithms (caption + body + pseudocode) ---
+- \usepackage{caption}
+- \newcommand{\algfont}{\fontsize{15pt}{18pt}\selectfont}   # slightly smaller than thesis font
+- \DeclareCaptionFont{thesisalg}{\algfont\bfseries}         # caption font
+- \captionsetup[algorithm]{font=thesisalg}
+- \AtBeginEnvironment{algorithm}{\algfont}                  # algorithm body
+- \AtBeginEnvironment{algorithmic}{\algfont}   
 
 papersize: a4
 bibliography: /home/realiseshewon/PDev/kde-ranking/writeup/references.bib
 nocite: | 
   @elias
+  @wright
+  @sidak
+  @dunn
+  @pork
+  @healy
 csl: /home/realiseshewon/PDev/kde-ranking/writeup/harvard-educational-review.csl
 ---
+\fontsize{15pt}{18pt}\selectfont
 
 \title{%
   \vspace{35mm}% <- reduce this from 45mm to something smaller
@@ -46,15 +73,13 @@ A Thesis proposal submitted to UP Diliman School of Statistics\\
 \vspace*{14px}
 In Partial Fulfillment of the Requirements for the Degree of\\
 Master of Science in Statistics\\
-\vspace*{280px}
+\vspace*{250px}
 School of Statistics\\
 University of the Philippines\\
 November 2025
 \end{center}
 
-
 \newpage
-
 
 ```{r echo = FALSE}
 knitr::opts_chunk$set(
@@ -71,6 +96,7 @@ knitr::opts_chunk$set(
 \vspace*{1cm}
 
 # Introduction
+
 \vspace*{0.8cm}
 
 ```{r, child = "child/introduction.Rmd", echo = FALSE}
@@ -81,6 +107,7 @@ knitr::opts_chunk$set(
 \vspace*{1cm}
 
 # Related Literature
+
 \vspace*{0.8cm}
 
 ```{r, child = "child/rrl.Rmd", echo = FALSE}
@@ -91,16 +118,19 @@ knitr::opts_chunk$set(
 \vspace*{1cm}
 
 # Methodology
+
 \vspace*{0.8cm}
 
 ```{r, child = "child/methodology.Rmd"}
 
 ```
 
-
 \newpage
 \vspace*{1cm}
-# Bibliography {- .unnumbered .unlisted}
-\vspace*{0.8cm}
-<div id="refs"></div>
 
+# Bibliography {.unnumbered .unnumbered .unlisted}
+
+\vspace*{0.8cm}
+
+::: {#refs}
+:::
