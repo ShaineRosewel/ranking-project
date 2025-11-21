@@ -1,5 +1,75 @@
 ## Codes for algorithm 1 {-}
 
+
+```{r simulation-table, results='asis', echo=FALSE}
+library(dplyr)
+library(tidyr)
+mean <- 23.8
+sds <- c(2, 3.6, 6)
+Ks <- c(10, 20, 30, 40, 50)
+#corrs <- c(0.1,0.5,0.9)
+alphas <- c(0.05)#c(0.05, 0.1, 0.15, 0.2)
+
+theta <- c()
+std <- c()
+K <- c()
+i <- 1   # initialize index
+
+for (k in Ks) {
+  for (sd in sds) {
+
+    set.seed(123974)
+    true_theta <- rnorm(k, mean, sd)
+    value_to_add <- paste(round(true_theta,1), collapse = ", ")
+    theta[i] <- value_to_add
+    std[i] <- sd
+    K[i] <- k
+    i <- i + 1
+  }
+}
+
+reals <- data.frame(theta, K, std)
+
+
+# grid <- grid %>%
+
+# grid#dplyr::inner_join(grid, reals, by = c("std", "K"))
+
+reals <- data.frame(theta, K, std)
+
+K <- c(10, 20, 30, 40, 50)
+sd <-c(2.0, 3.6, 6.0)# my_list
+R_type <- c("R_eq", "R_block")
+
+reals$R <- rep(list(R_type), nrow(reals))
+table_to_plot <- reals %>%
+  unnest(R) %>%
+  mutate(
+    `$\\mathbf{R}$` = case_when(
+      R == "R_eq" ~ "$\\mathbf{R}_{\\text{eq}}, \\rho = 0.1, 0.5, 0.9$",
+      R == "R_block" ~ "$\\mathbf{R}_{\\text{block}} \\text{(2 or 3 blocks)}$"
+    )
+  ) %>%
+  select(theta, `$\\mathbf{R}$`)
+```
+
+
+
+```{r asis = TRUE}
+library(kableExtra)
+
+
+kable(table_to_plot, "latex", booktabs = TRUE, escape = FALSE,linesep = "",
+      longtable = TRUE) %>%
+  column_spec(1, width = "10cm") %>%    # wrap column 1
+  column_spec(2, width = "5cm") %>%
+  kable_styling(
+    latex_options = c("striped", "repeat_header"),
+    stripe_color = "gray!15"  # light gray, can change
+  )
+```
+
+
 ```{r, results='asis', echo=FALSE, warning=FALSE}
 code <- readLines("../../R/compute_ci.R")
 cat("```r\n", paste(code, collapse = "\n"), "\n```")

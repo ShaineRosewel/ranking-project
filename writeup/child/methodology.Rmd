@@ -164,7 +164,7 @@ $\displaystyle \hat \sigma_{(k)} = \frac{\sum^B_{b=1} \left( \hat \theta^*_{b(k)
 The proposed methodologies assume that $V(\hat{\boldsymbol{\theta}})=\boldsymbol{\Sigma}$ is known. Note that we can express $\boldsymbol{\Sigma}$ as in (3.9), where $\mathbf{R}$ is the population correlation matrix.
 
 \begin{equation}
-  \boldsymbol{\Sigma} = \boldsymbol{\Delta}^{1/2} \mathbf{R} \boldsymbol{\Delta}^{1/2}; \quad \boldsymbol{\Delta} = \text{diag} \left\{ \sigma^2_1, \sigma^2_2, \dots, \sigma^2_K \right\}
+  \boldsymbol{\Sigma} = \boldsymbol{\Delta}^{1/2} \mathbf{R} \boldsymbol{\Delta}^{1/2}; \quad \boldsymbol{\Delta} = \text{diag} \left\{ \sigma^2_1, \sigma^2_2, \dots, \sigma^2_K \right\}.
   \label{eq:sigma_matrix}
 \end{equation}
 The diagonal elements of $\boldsymbol{\Sigma}$, which are $\sigma^2_k=V(\hat{\theta}_k)$ for $k =1,2, \ldots,K$, are treated as known quantities in practice. With large sample sizes, the variance estimates are stable enough that they are treated as the actual values. However, there is limited information to use as basis for the correlations among the stimates. In this thesis, we shall be  assuming certain correlation structures among the $\hat{\theta}$s.  
@@ -248,90 +248,48 @@ In equation \ref{eq:t3}, $OP = K + \sum^K_{k=1} \big | \Lambda_{Ok} \big|$ denot
 
 ## Simulation settings {#sec:simulation-settings}
 
-For the simulation settings to be used in evaluating the performance of the proposed methodologies, we shall be varying the settings for the population mean $\boldsymbol{\theta}$, population variances $\sigma^2_1, \sigma^2_2,\ldots,\sigma^2_K$, population correlation matrix $\mathbf{R}$, and number of populations being ranked $K$. In carrying out the simulations, a nominal level of $1-\alpha=0.95$ will be used. The table below summarizes the simulations settings.
-
-```{r named, echo = FALSE, eval = FALSE}
-mean <- 23.8
-sds <- c(2, 3.6, 6)
-Ks <- c(50)
-#corrs <- c(0.1,0.5,0.9)
-alphas <- c(0.05)#c(0.05, 0.1, 0.15, 0.2)
-
-my_list <- c()
-i <- 1   # initialize index
-
-for (K in Ks) {
-  for (sd in sds) {
-
-    set.seed(123974)
-    true_theta <- rnorm(K, mean, sd)
-
-    value_to_add <- paste(round(true_theta,1), collapse = ", ")
-
-    my_list[i] <- value_to_add
-    i <- i + 1
-  }
-}
-#my_list
-df <- readRDS("../../data/mean_travel_time_ranking_2011.rds")
-
-sig5 <- paste0("(",paste(df$S[1:50], collapse = ", "),")")
-sig5
-```
+For the simulation settings to be used in evaluating the performance of the proposed methodologies, we shall be varying the settings for the population mean $\boldsymbol{\theta}$, population variances $\sigma^2_1, \sigma^2_2,\ldots,\sigma^2_K$, population correlation matrix $\mathbf{R}$, and number of populations being ranked $K$. In carrying out the simulations, a nominal level of $1-\alpha=0.95$ will be used. The table below summarizes the simulation settings.
 
 
 \begin{table}[H]
 \centering
-{\fontsize{13pt}{15pt}\selectfont 
+{\fontsize{13pt}{17pt}\selectfont 
 \begin{tabular}{p{11cm} p{4cm}}
 \hline
 $\boldsymbol{\theta}$ & $\mathbf{R}$ \\
 \hline
 \hline
-\multicolumn{2}{c}{\textbf{K = 5}} \\
-\hline
-\multirow{3}{11cm}{(22.5, 24.9, 27.5, 24.3, 24.8)$'$} 
-& $\mathbf{R}_{\text{eq}}, \rho = 0.1, 0.5, 0.9$ \\
-& $\mathbf{R}_{\text{block}}$ \\
-\hline
-\multirow{3}{11cm}{(21.5, 25.7, 30.5, 24.7, 25.5)$'$} 
-& $\mathbf{R}_{\text{eq}}, \rho = 0.1, 0.5, 0.9$ \\
-& $\mathbf{R}_{\text{block}}$ \\
-\hline
-\multirow{3}{11cm}{(19.9, 27, 34.9, 25.3, 26.7)$'$} 
-& $\mathbf{R}_{\text{eq}}, \rho = 0.1, 0.5, 0.9$ \\
-& $\mathbf{R}_{\text{block}}$ \\
-\hline
+
 \multicolumn{2}{c}{\textbf{K = 10}} \\
 \hline
 \multirow{3}{11cm}{(22.5, 24.9, 27.5, 24.3, 24.8, 23.2, 23, 21.6, 25.1, 19)$'$} 
 & $\mathbf{R}_{\text{eq}}, \rho = 0.1, 0.5, 0.9$ \\
-& $\mathbf{R}_{\text{block,10}}$ \\
+& $\mathbf{R}_{\text{block}}$ - \text{2, 3 blocks} \\
 \hline
 \multirow{3}{11cm}{(21.5, 25.7, 30.5, 24.7, 25.5, 22.6, 22.3, 19.9, 26.1, 15.2)$'$} 
 & $\mathbf{R}_{\text{eq}}, \rho = 0.1, 0.5, 0.9$ \\
-& $\mathbf{R}_{\text{block,10}}$ \\
+& $\mathbf{R}_{\text{block}}$ - \text{2, 3 blocks} \\
 
 \hline
 \multirow{3}{11cm}{(19.9, 27, 34.9, 25.3, 26.7, 21.9, 21.3, 17.3, 27.7, 9.4)$'$} 
 & $\mathbf{R}_{\text{eq}}, \rho = 0.1, 0.5, 0.9$ \\
-& $\mathbf{R}_{\text{block,10}}$ \\
+& $\mathbf{R}_{\text{block}}$ - \text{2, 3 blocks} \\
 \hline
 \multicolumn{2}{c}{\textbf{K = 20}} \\
 \hline
 \multirow{3}{11cm}{(22.5, 24.9, 27.5, 24.3, 24.8, 23.2, 23, 21.6, 25.1, 19, 21.3, 24.1, 26.5, 26.9, 23.2, 25.8, 21.8, 21.6, 25.6, 21.2)$'$} 
 & $\mathbf{R}_{\text{eq}}, \rho = 0.1, 0.5, 0.9$ \\
-& $\mathbf{R}_{\text{block}}$ \\
+& $\mathbf{R}_{\text{block}}$ - \text{2, 3 blocks} \\
 & \\
 \hline
 \multirow{3}{11cm}{(21.5, 25.7, 30.5, 24.7, 25.5, 22.6, 22.3, 19.9, 26.1, 15.2, 19.3, 24.3, 28.7, 29.3, 22.7, 27.5, 20.1, 19.9, 27.1, 19.1)$'$} 
 & $\mathbf{R}_{\text{eq}}, \rho = 0.1, 0.5, 0.9$ \\
-& $\mathbf{R}_{\text{block}}$ \\
+& $\mathbf{R}_{\text{block}}$ - \text{2, 3 blocks} \\
 & \\
 \hline
 \multirow{3}{11cm}{(19.9, 27, 34.9, 25.3, 26.7, 21.9, 21.3, 17.3, 27.7, 9.4, 16.2, 24.6, 31.9, 33, 21.9, 29.9, 17.7, 17.3, 29.3, 16)$'$} 
 & $\mathbf{R}_{\text{eq}}, \rho = 0.1, 0.5, 0.9$ \\
-& $\mathbf{R}_{\text{block}}$ \\
+& $\mathbf{R}_{\text{block}}$ - \text{2, 3 blocks} \\
 & \\
 \hline
 \multicolumn{2}{c}{\textbf{K = 30}} \\
@@ -346,7 +304,7 @@ $\boldsymbol{\theta}$ & $\mathbf{R}$ \\
   }%
 } 
 & $\mathbf{R}_{\text{eq}}, \rho = 0.1, 0.5, 0.9$ \\
-& $\mathbf{R}_{\text{block}}$ \\
+& $\mathbf{R}_{\text{block}}$ - \text{2, 3 blocks} \\
 & \\
 & \\
 \hline
@@ -358,27 +316,9 @@ $\boldsymbol{\theta}$ & $\mathbf{R}$ \\
   }%
 } 
 & $\mathbf{R}_{\text{eq}}, \rho = 0.1, 0.5, 0.9$ \\
-& $\mathbf{R}_{\text{block}}$ \\
+& $\mathbf{R}_{\text{block}}$ - \text{2, 3 blocks} \\
 & \\
 & \\
-\hline
-\end{tabular}
-}
-\end{table}
-
-
-
-
-
-\begin{table}[H]
-\centering
-{\fontsize{13pt}{15pt}\selectfont 
-\begin{tabular}{p{11cm} p{4cm}}
-\hline
-$\boldsymbol{\theta}$ & $\mathbf{R}$ \\
-\hline
-\hline
-\multicolumn{2}{c}{\textbf{K = 30}} \\
 \hline
 \multirow{4}{*}{%
   \parbox{11cm}{%
@@ -388,16 +328,32 @@ $\boldsymbol{\theta}$ & $\mathbf{R}$ \\
   }%
 } 
 & $\mathbf{R}_{\text{eq}}, \rho = 0.1, 0.5, 0.9$ \\
-& $\mathbf{R}_{\text{block}}$ \\
+& $\mathbf{R}_{\text{block}}$ - \text{2, 3 blocks} \\
 & \\
 & \\
+\hline
+\end{tabular}
+}
+\end{table}
+
+
+
+
+
+\begin{table}[H]
+\centering
+{\fontsize{13pt}{17pt}\selectfont 
+\begin{tabular}{p{11cm} p{4cm}}
+\hline
+$\boldsymbol{\theta}$ & $\mathbf{R}$ \\
+\hline
 \hline
 \multicolumn{2}{c}{\textbf{K = 40}} \\
 \hline
 \multirow{6}{11cm}{(22.5, 24.9, 27.5, 24.3, 24.8, 23.2, 23, 21.6, 25.1, 19, 21.3, 24.1, 26.5, 26.9, 23.2, 25.8, 21.8, 21.6, 25.6, 21.2, 25.7, 22.2, 22.7, 22.6, 21.9, 24.2, 23.6, 22, 24.5, 25, 26.5, 25.1, 25.2, 27.1, 25.3, 22.8, 20.6, 21.1, 26, 26)$'$}
 &  \\
 & $\mathbf{R}_{\text{eq}}, \rho = 0.1, 0.5, 0.9$ \\
-& $\mathbf{R}_{\text{block}}$ \\
+& $\mathbf{R}_{\text{block}}$ - \text{2, 3 blocks} \\
 &  \\
 &  \\
 &  \\
@@ -405,7 +361,7 @@ $\boldsymbol{\theta}$ & $\mathbf{R}$ \\
 \multirow{6}{11cm}{(21.5, 25.7, 30.5, 24.7, 25.5, 22.6, 22.3, 19.9, 26.1, 15.2, 19.3, 24.3, 28.7, 29.3, 22.7, 27.5, 20.1, 19.9, 27.1, 19.1, 27.2, 20.9, 21.8, 21.7, 20.4, 24.5, 23.5, 20.5, 25.1, 26, 28.6, 26.1, 26.4, 29.7, 26.5, 22.1, 18, 18.9, 27.8, 27.8)$'$}
 &  \\
 & $\mathbf{R}_{\text{eq}}, \rho = 0.1, 0.5, 0.9$ \\
-& $\mathbf{R}_{\text{block}}$ \\
+& $\mathbf{R}_{\text{block}}$ - \text{2, 3 blocks} \\
 &  \\
 &  \\
 &  \\
@@ -413,7 +369,7 @@ $\boldsymbol{\theta}$ & $\mathbf{R}$ \\
 \multirow{6}{11cm}{(19.9, 27, 34.9, 25.3, 26.7, 21.9, 21.3, 17.3, 27.7, 9.4, 16.2, 24.6, 31.9, 33, 21.9, 29.9, 17.7, 17.3, 29.3, 16, 29.4, 19, 20.4, 20.3, 18.2, 25, 23.3, 18.3, 26, 27.4, 31.9, 27.7, 28.1, 33.6, 28.2, 20.9, 14.1, 15.6, 30.5, 30.5)$'$}
 &  \\
 & $\mathbf{R}_{\text{eq}}, \rho = 0.1, 0.5, 0.9$ \\
-& $\mathbf{R}_{\text{block}}$ \\
+& $\mathbf{R}_{\text{block}}$ - \text{2, 3 blocks} \\
 &  \\
 &  \\
 &  \\
@@ -423,7 +379,7 @@ $\boldsymbol{\theta}$ & $\mathbf{R}$ \\
 \multirow{6}{11cm}{(22.5, 24.9, 27.5, 24.3, 24.8, 23.2, 23, 21.6, 25.1, 19, 21.3, 24.1, 26.5, 26.9, 23.2, 25.8, 21.8, 21.6, 25.6, 21.2, 25.7, 22.2, 22.7, 22.6, 21.9, 24.2, 23.6, 22, 24.5, 25, 26.5, 25.1, 25.2, 27.1, 25.3, 22.8, 20.6, 21.1, 26, 26, 22.1, 21.4, 23.2, 22.3, 22.4, 23.1, 21.4, 24.8, 27, 23.4)$'$}
 &  \\
 & $\mathbf{R}_{\text{eq}}, \rho = 0.1, 0.5, 0.9$ \\
-& $\mathbf{R}_{\text{block}}$ \\
+& $\mathbf{R}_{\text{block}}$ - \text{2, 3 blocks} \\
 &  \\
 &  \\
 &  \\
@@ -432,7 +388,7 @@ $\boldsymbol{\theta}$ & $\mathbf{R}$ \\
 \multirow{6}{11cm}{(21.5, 25.7, 30.5, 24.7, 25.5, 22.6, 22.3, 19.9, 26.1, 15.2, 19.3, 24.3, 28.7, 29.3, 22.7, 27.5, 20.1, 19.9, 27.1, 19.1, 27.2, 20.9, 21.8, 21.7, 20.4, 24.5, 23.5, 20.5, 25.1, 26, 28.6, 26.1, 26.4, 29.7, 26.5, 22.1, 18, 18.9, 27.8, 27.8, 20.8, 19.5, 22.8, 21.2, 21.3, 22.5, 19.5, 25.5, 29.6, 23)$'$}
 &  \\
 & $\mathbf{R}_{\text{eq}}, \rho = 0.1, 0.5, 0.9$ \\
-& $\mathbf{R}_{\text{block}}$ \\
+& $\mathbf{R}_{\text{block}}$ - \text{2, 3 blocks} \\
 &  \\
 &  \\
 &  \\
@@ -441,7 +397,7 @@ $\boldsymbol{\theta}$ & $\mathbf{R}$ \\
 \multirow{6}{11cm}{(19.9, 27, 34.9, 25.3, 26.7, 21.9, 21.3, 17.3, 27.7, 9.4, 16.2, 24.6, 31.9, 33, 21.9, 29.9, 17.7, 17.3, 29.3, 16, 29.4, 19, 20.4, 20.3, 18.2, 25, 23.3, 18.3, 26, 27.4, 31.9, 27.7, 28.1, 33.6, 28.2, 20.9, 14.1, 15.6, 30.5, 30.5, 18.8, 16.6, 22.1, 19.4, 19.6, 21.6, 16.7, 26.7, 33.5, 22.5)$'$}
 &  \\
 & $\mathbf{R}_{\text{eq}}, \rho = 0.1, 0.5, 0.9$ \\
-& $\mathbf{R}_{\text{block}}$ \\
+& $\mathbf{R}_{\text{block}}$ - \text{2, 3 blocks} \\
 &  \\
 &  \\
 &  \\
@@ -451,42 +407,15 @@ $\boldsymbol{\theta}$ & $\mathbf{R}$ \\
 }
 \end{table}
 
-\begin{table}[H]
-\centering
-\fontsize{13pt}{17pt}\selectfont
-\begin{tabular}{p{1cm} p{14cm}}
-\hline
-$K$ & $\mathbf{R}_{\text{block,K}}$ \\
-\hline
-\hline
-5 & \\
-\hline
-10 & $\mathbf{R}_{\text{eq},n=3}$ with $\rho = 0.1$, $\mathbf{R}_{\text{eq},n=3}$ with $\rho = 0.5$, $\mathbf{R}_{\text{eq},n=4}$ with $\rho = 0.9$ with $\rho = 0.1$ in the off-diagonal blocks \\
-\hline
-20 &  \\
-\hline
-30 &  \\
-\hline
-40 &  \\
-\hline
-50 &  \\
-\hline
-\end{tabular}
-\end{table}
-
-
-Each $k$ shares the same population variances $\sigma^2_1,\sigma^2_2,\ldots,\sigma^2_K$:
 
 
 \begin{table}[H]
 \centering
-\fontsize{13pt}{17pt}\selectfont
+\fontsize{13pt}{20pt}\selectfont
 \begin{tabular}{p{1cm} p{14cm}}
 \hline
 \textbf{K} & \textbf{$\boldsymbol \sigma$} \\
 \hline
-\hline
-5 & (0.14, 0.33, 0.15, 0.23, 0.07)$'$ \\
 \hline
 10 & (0.14, 0.33, 0.15, 0.23, 0.07, 0.19, 0.19, 0.37, 0.32, 0.11)$'$ \\
 \hline
@@ -500,76 +429,3 @@ Each $k$ shares the same population variances $\sigma^2_1,\sigma^2_2,\ldots,\sig
 \hline
 \end{tabular}
 \end{table}
-
-
-```{r simulation-table, results='asis', echo=FALSE, eval = FALSE}
-library(dplyr)
-library(tidyr)
-
-K <- c(5, 10)
-theta <-c(2.3,6,9)# my_list
-R_type <- c("R_eq", "R_block", "R_matern")
-
-grid <- expand.grid(K = K, theta = theta, R = R_type) %>%
-  arrange(K, theta, R)
-
-grid <- grid %>%
-  mutate(R_desc = case_when(
-    R == "R_eq" ~ "$\\mathbf{R}_{\\text{eq}}, \\rho = 0.1, 0.5, 0.9$",
-    R == "R_block" ~ "$\\mathbf{R}_{\\text{block}}$",
-    R == "R_matern" ~ "$\\mathbf{R}_{\\text{matern}}$ (using distances between states)"
-  ))
-
-# row spans
-grid <- grid %>%
-  group_by(K, theta) %>%
-  mutate(theta_rows = n()) %>%
-  ungroup() %>%
-  group_by(K) %>%
-  mutate(K_rows = sum(theta_rows)) %>%
-  ungroup()
-
-# Identify when K and theta change
-grid <- grid %>%
-  group_by(K) %>%
-  mutate(
-    K_cell = ifelse(row_number() == 1,
-                    paste0("\\multirow[t]{", K_rows, "}{*}{", K, "}"), "")
-  ) %>%
-  group_by(K, theta) %>%
-  mutate(
-    theta_cell = ifelse(row_number() == 1,
-                        paste0("\\multirow[t]{", theta_rows, "}{*}{", theta, "}"), "")
-  ) %>%
-  ungroup()
-
-# lines
-grid <- grid %>%
-  group_by(K) %>%
-  mutate(
-    add_hline = ifelse(row_number() == n(), "\\hline", ""),
-    add_cline = ifelse(row_number() %% 3 == 0 & row_number() != n(), "\\cline{2-3}", "")
-  ) %>%
-  ungroup()
-
-# Build LaTeX lines
-table_lines <- grid %>%
-  mutate(
-    line = paste0(K_cell, " & ", theta_cell, " & ", R_desc, " \\\\ ", add_cline, add_hline)
-  ) %>%
-  pull(line)
-
-# Wrap into LaTeX table
-cat("\\begin{table}[H]",
-    "\\centering",
-    "{\\fontsize{10pt}{12pt}\\selectfont",
-    "\\begin{tabular}{c l l}",
-    "\\hline",
-    "$K$ & $\\boldsymbol{\\theta}$ & $\\mathbf{R}$ \\\\",
-    "\\hline",
-    paste(table_lines, collapse = "\n"),
-    "\\end{tabular}",
-    "}",
-    "\\end{table}",
-    sep = "\n")
-```

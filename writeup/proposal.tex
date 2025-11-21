@@ -212,7 +212,7 @@ This study proposes methodologies to construct joint confidence regions to quant
 
 \subsection{Ranking Problem}\label{sec:ranking-problem}
 
-In the problem of estimating ranks of several unknown real-valued parameters \(\theta_1,\theta_2,\ldots, \theta_K\), it is desired to rank these \(K\) parameters from smallest to largest, \(\theta_{(1)}<\theta_{(2)}<\ldots<\theta_{(K)}\). Let \(r_1,r_2,\ldots,r_K\) be the true unknown ranks of \(\theta_1,\theta_2,\ldots, \theta_K\). For example, if \(\theta_{(2)}=\theta_4\), then \(r_4=2\). Our first goal is to derive a joint confidence region for \(\theta_1,\theta_2,\ldots, \theta_K\) and, using the derived confidence region, obtain joint confidence intervals for the \(r_1,r_2,\ldots,r_K\) using a result from Klein et al. (2020). In deriving a joint confidence region for \(\theta_1,\theta_2,\ldots,\theta_K\), we will make use of the corresponding point estimates \(\hat{\theta}_1,\hat{\theta}_2,\ldots,\hat{\theta}_K\).
+In the problem of estimating ranks of several unknown real-valued parameters \(\theta_1,\theta_2,\ldots, \theta_K\), it is desired to rank these \(K\) parameters from smallest to largest, \(\theta_{(1)}<\theta_{(2)}<\ldots<\theta_{(K)}\). Let \(r_1,r_2,\ldots,r_K\) be the true unknown ranks of \(\theta_1,\theta_2,\ldots, \theta_K\). For example, if \(\theta_{(2)}=\theta_4\), then \(r_4=2\). Our first goal is to derive a joint confidence region for \(\theta_1,\theta_2,\ldots, \theta_K\) and thereby obtain joint confidence intervals for the \(r_1,r_2,\ldots,r_K\) using a result from Klein et al. (2020). In deriving a joint confidence region for \(\theta_1,\theta_2,\ldots,\theta_K\), we will make use of the corresponding point estimates \(\hat{\theta}_1,\hat{\theta}_2,\ldots,\hat{\theta}_K\).
 
 There are several real-life applications of this problem. For example, the study of Klein et al. (2020) illustrates the problem of ranking the US states in terms of travel time to work. In this context, \(\theta_k\) is the true mean travel time to work for state \(k\), and we wish to find a joint confidence statement about \(r_1,r_2,\ldots,r_K\). Our second goal is to derive a joint confidence region for the ordered parameters \(\theta_{(1)},\theta_{(2)},\ldots,\theta_{(K)}\). In the context of senatorial elections where \(\theta_k\) denotes the proportion of votes earned by a candidate, confidence intervals on ordered parameters help determine if one candidate's lead is statistically significant. If the confidence intervals for two candidates' support levels do not overlap, it is highly likely (at the specified confidence level) that the candidate with the higher point estimate is the true winner. Overall uncertainty also highlights that in election polls, reported candidate rankings that seem decisive may in fact be much less stable once uncertainty is considered, and hence it is possible that these rankings do not align with the actual election outcomes. This is particularly important when discussing the potential influence of such polls on voter behavior---commonly referred to as the bandwagon effect---because apparent leads may encourage support for candidates who are not actually ahead, underscoring the value of clearly communicating the uncertainty in poll-based rankings. As to Andersson et al. (1998), in institutions like hospitals that are ranked according to mortality rates for a particular ailment, failure to report uncertainties may create a misleading impression, potentially causing fear among patients and casting a negative light on hospitals that appear at the bottom of the ranking.
 
@@ -380,7 +380,7 @@ where \(L^{-1}(1-\alpha,S,P)\) is the \((1-\alpha)\)-quantile corresponding to t
   \label{eq:mogstadt23_quantile}
 \end{equation}
 
-They added that if the estimators \(\hat{\theta}_1, \dots, \hat{\theta}_K\) are jointly asymptotically normally distributed, then the quantiles \(L^{-1}(1-\alpha, S, \hat{P})\), can be computed from the limiting distributions of the max-statistics shown in (\ref{eq:mogstadt23_quantile}), through resampling methods. Mogstad et al. (2024) show that their approach generally leads to a confidence set that is narrower than that of Klein et al. (2020).
+They added that if the estimators \(\hat{\theta}_1, \hat{\theta}_2, \dots, \hat{\theta}_K\) are jointly asymptotically normally distributed, then the quantiles \(L^{-1}(1-\alpha, S, \hat{P})\), can be computed from the limiting distributions of the max-statistics shown in (\ref{eq:mogstadt23_quantile}), through resampling methods. Mogstad et al. (2024) show that their approach generally leads to a confidence set that is narrower than that of Klein et al. (2020).
 
 \subsubsection{Accounting for Data Dependencies}\label{accounting-for-data-dependencies}
 
@@ -561,7 +561,7 @@ $\displaystyle \hat \sigma_{(k)} = \frac{\sum^B_{b=1} \left( \hat \theta^*_{b(k)
 The proposed methodologies assume that \(V(\hat{\boldsymbol{\theta}})=\boldsymbol{\Sigma}\) is known. Note that we can express \(\boldsymbol{\Sigma}\) as in (3.9), where \(\mathbf{R}\) is the population correlation matrix.
 
 \begin{equation}
-  \boldsymbol{\Sigma} = \boldsymbol{\Delta}^{1/2} \mathbf{R} \boldsymbol{\Delta}^{1/2}; \quad \boldsymbol{\Delta} = \text{diag} \left\{ \sigma^2_1, \sigma^2_2, \dots, \sigma^2_K \right\}
+  \boldsymbol{\Sigma} = \boldsymbol{\Delta}^{1/2} \mathbf{R} \boldsymbol{\Delta}^{1/2}; \quad \boldsymbol{\Delta} = \text{diag} \left\{ \sigma^2_1, \sigma^2_2, \dots, \sigma^2_K \right\}.
   \label{eq:sigma_matrix}
 \end{equation}
 The diagonal elements of \(\boldsymbol{\Sigma}\), which are \(\sigma^2_k=V(\hat{\theta}_k)\) for \(k =1,2, \ldots,K\), are treated as known quantities in practice. With large sample sizes, the variance estimates are stable enough that they are treated as the actual values. However, there is limited information to use as basis for the correlations among the stimates. In this thesis, we shall be assuming certain correlation structures among the \(\hat{\theta}\)s.
@@ -645,60 +645,47 @@ In equation \ref{eq:t3}, \(OP = K + \sum^K_{k=1} \big | \Lambda_{Ok} \big|\) den
 
 \subsection{Simulation settings}\label{sec:simulation-settings}
 
-For the simulation settings to be used in evaluating the performance of the proposed methodologies, we shall be varying the settings for the population mean \(\boldsymbol{\theta}\), population variances \(\sigma^2_1,\ldots,\sigma^2_K\), population correlation matrix \(\mathbf{R}\), and number of populations being ranked \(K\). In carrying out the simulations, a nominal level of \(1-\alpha=0.95\) will be used. The table below summarizes the simulations settings.
+For the simulation settings to be used in evaluating the performance of the proposed methodologies, we shall be varying the settings for the population mean \(\boldsymbol{\theta}\), population variances \(\sigma^2_1, \sigma^2_2,\ldots,\sigma^2_K\), population correlation matrix \(\mathbf{R}\), and number of populations being ranked \(K\). In carrying out the simulations, a nominal level of \(1-\alpha=0.95\) will be used. The table below summarizes the simulation settings.
 
 \begin{table}[H]
 \centering
-{\fontsize{13pt}{15pt}\selectfont 
+{\fontsize{13pt}{17pt}\selectfont 
 \begin{tabular}{p{11cm} p{4cm}}
 \hline
 $\boldsymbol{\theta}$ & $\mathbf{R}$ \\
 \hline
 \hline
-\multicolumn{2}{c}{\textbf{K = 5}} \\
-\hline
-\multirow{3}{11cm}{(22.5, 24.9, 27.5, 24.3, 24.8)$'$} 
-& $\mathbf{R}_{\text{eq}}, \rho = 0.1, 0.5, 0.9$ \\
-& $\mathbf{R}_{\text{block}}$ \\
-\hline
-\multirow{3}{11cm}{(21.5, 25.7, 30.5, 24.7, 25.5)$'$} 
-& $\mathbf{R}_{\text{eq}}, \rho = 0.1, 0.5, 0.9$ \\
-& $\mathbf{R}_{\text{block}}$ \\
-\hline
-\multirow{3}{11cm}{(19.9, 27, 34.9, 25.3, 26.7)$'$} 
-& $\mathbf{R}_{\text{eq}}, \rho = 0.1, 0.5, 0.9$ \\
-& $\mathbf{R}_{\text{block}}$ \\
-\hline
+
 \multicolumn{2}{c}{\textbf{K = 10}} \\
 \hline
 \multirow{3}{11cm}{(22.5, 24.9, 27.5, 24.3, 24.8, 23.2, 23, 21.6, 25.1, 19)$'$} 
 & $\mathbf{R}_{\text{eq}}, \rho = 0.1, 0.5, 0.9$ \\
-& $\mathbf{R}_{\text{block,10}}$ \\
+& $\mathbf{R}_{\text{block}}$ - \text{2, 3 blocks} \\
 \hline
 \multirow{3}{11cm}{(21.5, 25.7, 30.5, 24.7, 25.5, 22.6, 22.3, 19.9, 26.1, 15.2)$'$} 
 & $\mathbf{R}_{\text{eq}}, \rho = 0.1, 0.5, 0.9$ \\
-& $\mathbf{R}_{\text{block,10}}$ \\
+& $\mathbf{R}_{\text{block}}$ - \text{2, 3 blocks} \\
 
 \hline
 \multirow{3}{11cm}{(19.9, 27, 34.9, 25.3, 26.7, 21.9, 21.3, 17.3, 27.7, 9.4)$'$} 
 & $\mathbf{R}_{\text{eq}}, \rho = 0.1, 0.5, 0.9$ \\
-& $\mathbf{R}_{\text{block,10}}$ \\
+& $\mathbf{R}_{\text{block}}$ - \text{2, 3 blocks} \\
 \hline
 \multicolumn{2}{c}{\textbf{K = 20}} \\
 \hline
 \multirow{3}{11cm}{(22.5, 24.9, 27.5, 24.3, 24.8, 23.2, 23, 21.6, 25.1, 19, 21.3, 24.1, 26.5, 26.9, 23.2, 25.8, 21.8, 21.6, 25.6, 21.2)$'$} 
 & $\mathbf{R}_{\text{eq}}, \rho = 0.1, 0.5, 0.9$ \\
-& $\mathbf{R}_{\text{block}}$ \\
+& $\mathbf{R}_{\text{block}}$ - \text{2, 3 blocks} \\
 & \\
 \hline
 \multirow{3}{11cm}{(21.5, 25.7, 30.5, 24.7, 25.5, 22.6, 22.3, 19.9, 26.1, 15.2, 19.3, 24.3, 28.7, 29.3, 22.7, 27.5, 20.1, 19.9, 27.1, 19.1)$'$} 
 & $\mathbf{R}_{\text{eq}}, \rho = 0.1, 0.5, 0.9$ \\
-& $\mathbf{R}_{\text{block}}$ \\
+& $\mathbf{R}_{\text{block}}$ - \text{2, 3 blocks} \\
 & \\
 \hline
 \multirow{3}{11cm}{(19.9, 27, 34.9, 25.3, 26.7, 21.9, 21.3, 17.3, 27.7, 9.4, 16.2, 24.6, 31.9, 33, 21.9, 29.9, 17.7, 17.3, 29.3, 16)$'$} 
 & $\mathbf{R}_{\text{eq}}, \rho = 0.1, 0.5, 0.9$ \\
-& $\mathbf{R}_{\text{block}}$ \\
+& $\mathbf{R}_{\text{block}}$ - \text{2, 3 blocks} \\
 & \\
 \hline
 \multicolumn{2}{c}{\textbf{K = 30}} \\
@@ -713,7 +700,7 @@ $\boldsymbol{\theta}$ & $\mathbf{R}$ \\
   }%
 } 
 & $\mathbf{R}_{\text{eq}}, \rho = 0.1, 0.5, 0.9$ \\
-& $\mathbf{R}_{\text{block}}$ \\
+& $\mathbf{R}_{\text{block}}$ - \text{2, 3 blocks} \\
 & \\
 & \\
 \hline
@@ -725,23 +712,9 @@ $\boldsymbol{\theta}$ & $\mathbf{R}$ \\
   }%
 } 
 & $\mathbf{R}_{\text{eq}}, \rho = 0.1, 0.5, 0.9$ \\
-& $\mathbf{R}_{\text{block}}$ \\
+& $\mathbf{R}_{\text{block}}$ - \text{2, 3 blocks} \\
 & \\
 & \\
-\hline
-\end{tabular}
-}
-\end{table}
-
-\begin{table}[H]
-\centering
-{\fontsize{13pt}{15pt}\selectfont 
-\begin{tabular}{p{11cm} p{4cm}}
-\hline
-$\boldsymbol{\theta}$ & $\mathbf{R}$ \\
-\hline
-\hline
-\multicolumn{2}{c}{\textbf{K = 30}} \\
 \hline
 \multirow{4}{*}{%
   \parbox{11cm}{%
@@ -751,16 +724,28 @@ $\boldsymbol{\theta}$ & $\mathbf{R}$ \\
   }%
 } 
 & $\mathbf{R}_{\text{eq}}, \rho = 0.1, 0.5, 0.9$ \\
-& $\mathbf{R}_{\text{block}}$ \\
+& $\mathbf{R}_{\text{block}}$ - \text{2, 3 blocks} \\
 & \\
 & \\
+\hline
+\end{tabular}
+}
+\end{table}
+
+\begin{table}[H]
+\centering
+{\fontsize{13pt}{17pt}\selectfont 
+\begin{tabular}{p{11cm} p{4cm}}
+\hline
+$\boldsymbol{\theta}$ & $\mathbf{R}$ \\
+\hline
 \hline
 \multicolumn{2}{c}{\textbf{K = 40}} \\
 \hline
 \multirow{6}{11cm}{(22.5, 24.9, 27.5, 24.3, 24.8, 23.2, 23, 21.6, 25.1, 19, 21.3, 24.1, 26.5, 26.9, 23.2, 25.8, 21.8, 21.6, 25.6, 21.2, 25.7, 22.2, 22.7, 22.6, 21.9, 24.2, 23.6, 22, 24.5, 25, 26.5, 25.1, 25.2, 27.1, 25.3, 22.8, 20.6, 21.1, 26, 26)$'$}
 &  \\
 & $\mathbf{R}_{\text{eq}}, \rho = 0.1, 0.5, 0.9$ \\
-& $\mathbf{R}_{\text{block}}$ \\
+& $\mathbf{R}_{\text{block}}$ - \text{2, 3 blocks} \\
 &  \\
 &  \\
 &  \\
@@ -768,7 +753,7 @@ $\boldsymbol{\theta}$ & $\mathbf{R}$ \\
 \multirow{6}{11cm}{(21.5, 25.7, 30.5, 24.7, 25.5, 22.6, 22.3, 19.9, 26.1, 15.2, 19.3, 24.3, 28.7, 29.3, 22.7, 27.5, 20.1, 19.9, 27.1, 19.1, 27.2, 20.9, 21.8, 21.7, 20.4, 24.5, 23.5, 20.5, 25.1, 26, 28.6, 26.1, 26.4, 29.7, 26.5, 22.1, 18, 18.9, 27.8, 27.8)$'$}
 &  \\
 & $\mathbf{R}_{\text{eq}}, \rho = 0.1, 0.5, 0.9$ \\
-& $\mathbf{R}_{\text{block}}$ \\
+& $\mathbf{R}_{\text{block}}$ - \text{2, 3 blocks} \\
 &  \\
 &  \\
 &  \\
@@ -776,7 +761,7 @@ $\boldsymbol{\theta}$ & $\mathbf{R}$ \\
 \multirow{6}{11cm}{(19.9, 27, 34.9, 25.3, 26.7, 21.9, 21.3, 17.3, 27.7, 9.4, 16.2, 24.6, 31.9, 33, 21.9, 29.9, 17.7, 17.3, 29.3, 16, 29.4, 19, 20.4, 20.3, 18.2, 25, 23.3, 18.3, 26, 27.4, 31.9, 27.7, 28.1, 33.6, 28.2, 20.9, 14.1, 15.6, 30.5, 30.5)$'$}
 &  \\
 & $\mathbf{R}_{\text{eq}}, \rho = 0.1, 0.5, 0.9$ \\
-& $\mathbf{R}_{\text{block}}$ \\
+& $\mathbf{R}_{\text{block}}$ - \text{2, 3 blocks} \\
 &  \\
 &  \\
 &  \\
@@ -786,7 +771,7 @@ $\boldsymbol{\theta}$ & $\mathbf{R}$ \\
 \multirow{6}{11cm}{(22.5, 24.9, 27.5, 24.3, 24.8, 23.2, 23, 21.6, 25.1, 19, 21.3, 24.1, 26.5, 26.9, 23.2, 25.8, 21.8, 21.6, 25.6, 21.2, 25.7, 22.2, 22.7, 22.6, 21.9, 24.2, 23.6, 22, 24.5, 25, 26.5, 25.1, 25.2, 27.1, 25.3, 22.8, 20.6, 21.1, 26, 26, 22.1, 21.4, 23.2, 22.3, 22.4, 23.1, 21.4, 24.8, 27, 23.4)$'$}
 &  \\
 & $\mathbf{R}_{\text{eq}}, \rho = 0.1, 0.5, 0.9$ \\
-& $\mathbf{R}_{\text{block}}$ \\
+& $\mathbf{R}_{\text{block}}$ - \text{2, 3 blocks} \\
 &  \\
 &  \\
 &  \\
@@ -795,7 +780,7 @@ $\boldsymbol{\theta}$ & $\mathbf{R}$ \\
 \multirow{6}{11cm}{(21.5, 25.7, 30.5, 24.7, 25.5, 22.6, 22.3, 19.9, 26.1, 15.2, 19.3, 24.3, 28.7, 29.3, 22.7, 27.5, 20.1, 19.9, 27.1, 19.1, 27.2, 20.9, 21.8, 21.7, 20.4, 24.5, 23.5, 20.5, 25.1, 26, 28.6, 26.1, 26.4, 29.7, 26.5, 22.1, 18, 18.9, 27.8, 27.8, 20.8, 19.5, 22.8, 21.2, 21.3, 22.5, 19.5, 25.5, 29.6, 23)$'$}
 &  \\
 & $\mathbf{R}_{\text{eq}}, \rho = 0.1, 0.5, 0.9$ \\
-& $\mathbf{R}_{\text{block}}$ \\
+& $\mathbf{R}_{\text{block}}$ - \text{2, 3 blocks} \\
 &  \\
 &  \\
 &  \\
@@ -804,7 +789,7 @@ $\boldsymbol{\theta}$ & $\mathbf{R}$ \\
 \multirow{6}{11cm}{(19.9, 27, 34.9, 25.3, 26.7, 21.9, 21.3, 17.3, 27.7, 9.4, 16.2, 24.6, 31.9, 33, 21.9, 29.9, 17.7, 17.3, 29.3, 16, 29.4, 19, 20.4, 20.3, 18.2, 25, 23.3, 18.3, 26, 27.4, 31.9, 27.7, 28.1, 33.6, 28.2, 20.9, 14.1, 15.6, 30.5, 30.5, 18.8, 16.6, 22.1, 19.4, 19.6, 21.6, 16.7, 26.7, 33.5, 22.5)$'$}
 &  \\
 & $\mathbf{R}_{\text{eq}}, \rho = 0.1, 0.5, 0.9$ \\
-& $\mathbf{R}_{\text{block}}$ \\
+& $\mathbf{R}_{\text{block}}$ - \text{2, 3 blocks} \\
 &  \\
 &  \\
 &  \\
@@ -816,38 +801,11 @@ $\boldsymbol{\theta}$ & $\mathbf{R}$ \\
 
 \begin{table}[H]
 \centering
-\fontsize{13pt}{17pt}\selectfont
-\begin{tabular}{p{1cm} p{14cm}}
-\hline
-$K$ & $\mathbf{R}_{\text{block,K}}$ \\
-\hline
-\hline
-5 & \\
-\hline
-10 & $\mathbf{R}_{\text{eq},n=3}$ with $\rho = 0.1$, $\mathbf{R}_{\text{eq},n=3}$ with $\rho = 0.5$, $\mathbf{R}_{\text{eq},n=4}$ with $\rho = 0.9$ with $\rho = 0.1$ in the off-diagonal blocks \\
-\hline
-20 &  \\
-\hline
-30 &  \\
-\hline
-40 &  \\
-\hline
-50 &  \\
-\hline
-\end{tabular}
-\end{table}
-
-Each \(k\) shares the same population variances \(\sigma^2_1,\ldots,\sigma^2_K\):
-
-\begin{table}[H]
-\centering
-\fontsize{13pt}{17pt}\selectfont
+\fontsize{13pt}{20pt}\selectfont
 \begin{tabular}{p{1cm} p{14cm}}
 \hline
 \textbf{K} & \textbf{$\boldsymbol \sigma$} \\
 \hline
-\hline
-5 & (0.14, 0.33, 0.15, 0.23, 0.07)$'$ \\
 \hline
 10 & (0.14, 0.33, 0.15, 0.23, 0.07, 0.19, 0.19, 0.37, 0.32, 0.11)$'$ \\
 \hline

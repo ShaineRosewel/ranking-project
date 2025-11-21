@@ -499,7 +499,7 @@ correlation matrix.</p>
 <p><span class="math display">\[\begin{equation}
   \boldsymbol{\Sigma} = \boldsymbol{\Delta}^{1/2} \mathbf{R}
 \boldsymbol{\Delta}^{1/2}; \quad \boldsymbol{\Delta} = \text{diag}
-\left\{ \sigma^2_1, \sigma^2_2, \dots, \sigma^2_K \right\}
+\left\{ \sigma^2_1, \sigma^2_2, \dots, \sigma^2_K \right\}.
   \label{eq:sigma_matrix}
 \end{equation}\]</span> The diagonal elements of <span class="math inline">\(\boldsymbol{\Sigma}\)</span>, which are <span class="math inline">\(\sigma^2_k=V(\hat{\theta}_k)\)</span> for <span class="math inline">\(k =1,2, \ldots,K\)</span>, are treated as known
 quantities in practice. With large sample sizes, the variance estimates
@@ -542,7 +542,7 @@ expressed as in (<span class="math inline">\(\ref{eq:blockcorrelation}\)</span>)
 \begin{bmatrix}
 \mathbf{R}_{eq,1} &amp; \mathbf{C}_{12} &amp; \cdots &amp;
 \mathbf{C}_{1G} \\
-\mathbf{C}_{11} &amp; \mathbf{R}_{eq,2} &amp; \cdots &amp;
+\mathbf{C}_{21} &amp; \mathbf{R}_{eq,2} &amp; \cdots &amp;
 \mathbf{C}_{2G} \\
 \vdots &amp; \vdots &amp; \ddots &amp; \vdots \\
 \mathbf{C}_{G1} &amp; \mathbf{C}_{G2} &amp; \cdots &amp;
@@ -610,13 +610,12 @@ is likely the true ranking.</p>
 <p>For the simulation settings to be used in evaluating the performance
 of the proposed methodologies, we shall be varying the settings for the
 population mean <span class="math inline">\(\boldsymbol{\theta}\)</span>, population variances
-<span class="math inline">\(\sigma^2_1,\ldots,\sigma^2_K\)</span>,
-population correlation matrix <span class="math inline">\(\mathbf{R}\)</span>, and number of populations
-being ranked <span class="math inline">\(K\)</span>. In carrying out the
-simulations, a nominal level of <span class="math inline">\(1-\alpha=0.95\)</span> will be used. The table
-below summarizes the simulations settings.</p>
-<p>Each <span class="math inline">\(k\)</span> shares the same
-population variances <span class="math inline">\(\sigma^2_1,\ldots,\sigma^2_K\)</span>:</p>
+<span class="math inline">\(\sigma^2_1,
+\sigma^2_2,\ldots,\sigma^2_K\)</span>, population correlation matrix
+<span class="math inline">\(\mathbf{R}\)</span>, and number of
+populations being ranked <span class="math inline">\(K\)</span>. In
+carrying out the simulations, a nominal level of <span class="math inline">\(1-\alpha=0.95\)</span> will be used. The table
+below summarizes the simulation settings.</p>
 </div>
 
 
