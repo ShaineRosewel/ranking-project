@@ -1,50 +1,231 @@
 ---
-title: "Beamer from RMarkdown"
-subtitle: "A repreducible example"
-author: "Matala, Shaine"
+author: "Matala, Shaine Rosewel"
 date: "`r format(Sys.Date(), '%B %d, %Y')`"
-institute: "University of the Philippines"
-fontsize: 9pt
+fontsize: 11pt
+bibliography: /home/realiseshewon/PDev/kde-ranking/writeup/references.bib
+csl: /home/realiseshewon/PDev/kde-ranking/writeup/harvard-educational-review.csl
 output:
   beamer_presentation:
     theme: "Madrid"
     colortheme: "beaver"
     fonttheme: "structurebold"
     incremental: false
-    latex_engine: xelatex
+header-includes:
+  - |
+    \title[Joint Confidence Regions for Rankings]{Joint Confidence Regions for Rankings based on Correlated Estimates}
+    \author[Matala]{Matala, Shaine Rosewel}
+    \institute[UP Stat]{University of the Philippines}
+    \usepackage{algorithm}
+    \usepackage{algpseudocode}
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
 ```
 
-# Two column layout
+\maketitle
+
+# Background of the Study {.allowframebreaks}
+
+@klein illustrates the problem of ranking the US states in terms of travel time to work. In this context, $\theta_k$ is the true mean travel time to work for state $k$, and we wish to find a joint confidence statement about $r_1,r_2,\ldots,r_K$.
+
+## Rank $r_k$
+
+A mathematical definition of $r_k$ is as follows:
+
+\begin{equation}
+  r_k = \sum^K_{j=1} I(\theta_j \leq \theta_k) = 1 + \sum_{j:j \neq k} I(\theta_j \leq \theta_k), \qquad \text{for} \; k = 1, 2, \dots, K.
+  \label{eq:rank1}
+\end{equation}
+
+## Estimated rank
+
+Let $\hat{r}_k$ denote the estimated rank of the $k$th observation.
+
+\begin{equation}
+  \hat{r}_k = 1 + \sum_{j:j \neq k} I(\hat{\theta}_j \leq \hat{\theta}_k), \qquad \text{for} \; k = 1, 2, \dots, K.
+  \label{eq:rank2}
+\end{equation}
+
+# Motivation
+
+# Objective
+
+This research aims to do the following:
+
+- Develop a procedure to construct joint confidence intervals for the ranks and the ranked parameters when the estimates to be ranked may be correlated.
+- Evaluate the performance of the proposed approaches under various
+parameter settings.
+- Apply the proposed approaches to a real-life example.
+
+# Definitions and Assumptions
+
+- Define $\hat{\boldsymbol{\theta}}=(\hat{\theta}_1,\hat{\theta}_2,\ldots,\hat{\theta}_K)'$ and assume that $\hat{\boldsymbol{\theta}}\sim N(\boldsymbol{\theta},\boldsymbol{\Sigma})$ where $\boldsymbol{\theta}=(\theta_1,\theta_2,\ldots,\theta_K)'$ is unknown and $\boldsymbol{\Sigma}$ is a known $K \times K$ positive definite matrix. The diagonal elements of $\boldsymbol{\Sigma}$ are $\sigma^2_1,\ldots,\sigma^2_K$.  
+- Note that in the literature on inferences on the ranks, it is customary to assume that the variances are known.
+
+# Procedure {.allowframebreaks}
+
+1. Derive simultaneous confidence intervals for $\theta_1,\theta_2,\ldots,\theta_K$ of the form 
+
+\begin{equation}
+\mathfrak{R}_1 = 
+[\hat{\theta}_1 \pm t \times \sigma_1] \times
+[\hat{\theta}_2 \pm t \times \sigma_2] \times
+\cdots \times
+[\hat{\theta}_K \pm t \times \sigma_K].
+  \label{eq:rev1}
+\end{equation}
 
 
-\begin{columns}
-\column{0.50\textwidth}
+2. Once the confidence intervals in (\ref{eq:rev1}) have been obtained, we can then use the result of @klein in (\ref{eq:joint_cov2}) to get the lower and upper bounds on the ranks $r_k, k=1,2,\ldots,K$. That is, we also get a joint confidence region for $r_1, r_2, . . . , r_K$.
 
-```{r out.width="100%"}
-hist(rnorm(1000,0,1))
-```
+# Proposed methodology to compute the joint confidence region for the unordered parameters: Algorithm 1 
+
+Let the data be represented by $\hat{\boldsymbol{\theta}} = \left( \hat \theta_1, \hat \theta_2, \dots, \hat \theta_K \right)'$ and suppose that $\boldsymbol{\Sigma}$ is known
+    \begin{algorithmic}[1]
+        \For {$b = 1, 2, \dots, B$}
+                \State Generate $\hat{\boldsymbol{\theta}}^*_b \sim N_K \left( \hat{\boldsymbol{\theta}}, \boldsymbol{\Sigma}\right)$ and write $\hat{\boldsymbol{\theta}}^*_b = \left( \hat\theta^*_{b1}, \hat\theta^*_{b2}, \dots, \hat\theta^*_{bK} \right)' $
+                \State Compute 
+                \Statex \begin{minipage}{\linewidth}
+                \centering
+                $t^*_b = \underset{1 \leq k \leq K}{\max} \Bigg| \frac{\hat\theta^*_{bk} - \hat\theta_{k}}{\sigma_k} \Bigg|$
+                \end{minipage}
+        \EndFor
+        \State Compute the $\left(1-\alpha\right)$-sample quantile of $t^*_1, t^*_2, \dots, t^*_B$, call this $\hat{t}$.
+        \State The joint confidence region for $\boldsymbol{\theta} = (\theta_1, \theta_2, \dots, \theta_K)'$ is given by 
+        \Statex \begin{minipage}{\linewidth}
+    \centering
+$\mathfrak{R}_1 = \left[ \hat\theta_1 \pm \hat t \times \sigma_1  \right] \times \left[ \hat\theta_2 \pm \hat t \times \sigma_2  \right] \times \dots \times \left[ \hat\theta_K \pm \hat t \times \sigma_K  \right]$.
+    \end{minipage}
+    \end{algorithmic} 
+    
+# Algorithm 1: Quantile Calculation
+    
+We want the joint confidence region in (\ref{eq:rev1}) to satisfy the following probability condition:
+
+\begin{equation}
+ P\left( \hat{\theta}_k-t \cdot \sigma_k \leq  \theta_k \leq  \hat{\theta}_k + t \cdot \sigma_k, \,\, \forall\; k=1,2,\ldots,K \right)  =1-\alpha.
+\end{equation}
+
+Equivalently, we require
+
+\begin{equation}
+ P\left( \max_{k=1,2,\ldots,K} \left| \dfrac{\hat{\theta}_k-\theta_k}{\sigma_k} \right| \le t \right) =1-\alpha. 
+\end{equation}
+
+# Proposed methodology to compute a joint confidence region for the ordered parameters {#sec:nonrank}
+\begin{minipage}{1.0\textwidth}
+\begin{algorithmic}[1]
+    \For {$b = 1, 2, \dots, B$}
+        \State
+            Generate $\hat{\boldsymbol{\theta}}^*_b = \left( \hat{\theta}^*_{b1}, \hat{\theta}^*_{b2}, \dots, \hat{\theta}^*_{bK} \right)' \sim N_K \left( \boldsymbol{\hat \theta}, \boldsymbol {\Sigma} \right)$ and let $\hat{\theta}^*_{b(1)}, \hat{\theta}^*_{b(2)}, \dots, \hat{\theta}^*_{b(K)}$ be the corresponding ordered values 
+        \State
+        Compute $\hat\sigma^*_{b(k)}$ using:
+        \Statex \qquad • asymptotic variance definition
+        \Statex \qquad • second-level bootstrap
+        \State
+            Compute
+\Statex
+\begin{center}
+$t^*_b = \underset{1 \leq k \leq K}{\max} \Bigg| \frac{\hat\theta^*_{b(k)} - \hat\theta^*_{k}}{\hat\sigma^*_{b(k)}} \Bigg|$
+\end{center}
+    \EndFor
+    \State Compute the $\left(1-\alpha\right)$-sample quantile of $t^*_1, \dots, t^*_B$, call this $\hat{t}$.
+    \State The joint confidence region of $\theta_{(1)}, \theta_{(2)}, \dots, \theta_{(K)}$ is given by
+\Statex
+\begin{center}
+    $\mathfrak{R}_2 = \left[ \hat\theta_{(1)} \pm \hat t \times \hat\sigma_{(1)}  \right] \times \left[ \hat\theta_{(2)} \pm \hat t \times \hat\sigma_{(2)}  \right] \times \dots \times \left[ \hat\theta_{(K)} \pm \hat t \times \hat\sigma_{(K)}  \right]$
+\end{center}
+    \end{algorithmic}
+\end{minipage}
+
+# Algorithm 2
+
+$\hat\sigma^*_{b(k)} = \sqrt{\left[\text{kth ordered value among} \ \left\{ \hat{\theta}^{*2}_{b1} + \sigma_1^2, \dots, \hat{\theta}^{*2}_{bK} + \sigma_K^2 \right\}\right] - \hat {\theta}^{*2}_{(k)}}$
+
+# Algorithm 3 
+
+\begin{algorithmic}[1]
+            \For {$c = 1, 2, \dots, C$}
+                \State \begin{minipage}[t]{\dimexpr\linewidth-\algorithmicindent} Generate $\hat{\boldsymbol{\theta}}^{**}_{bc} = \left( \hat{\theta}^{**}_{bc1}, \hat{\theta}^{**}_{bc2}, \dots, \hat{\theta}^{**}_{bcK} \right) \sim N_K \left( \hat{\boldsymbol{\theta}}_b^*, \boldsymbol {\Sigma} \right)$ and let $\hat{\theta}^{**}_{bc(1)}, \hat{\theta}^{**}_{bc(2)}, \dots, \hat{\theta}^{**}_{bc(K)}$ be the corresponding ordered values of $\hat{\theta}^{**}_{bc1}, \hat{\theta}^{**}_{bc2}, \dots, \hat{\theta}^{**}_{bcK}$
+                \end{minipage}
+                \State \begin{minipage}[t]{\dimexpr\linewidth-\algorithmicindent} Compute
+                $\displaystyle \hat{\sigma}^*_{b(k)} = \frac{\sum^C_{c=1} \left( \hat \theta^{**}_{bc(k)} - \bar {\hat\theta}^{**}_{b \cdot (k)} \right)^2}{C-1}, \quad \bar {\hat\theta}^{**}_{b\cdot(k)} = \frac{1}{C} \sum^C_{c=1} {\hat\theta}^{**}_{bc(k)}$
+                \end{minipage}
+                \EndFor
+    \end{algorithmic} 
+
+# Evaluation Algorithm
+
+For given values of $\boldsymbol{\Sigma}$ and $\theta_1, \theta_2, \dots, \theta_K$ (with corresponding $\theta_{(1)}, \theta_{(2)}, \dots, \theta_{(K)}$ for rank-based methods)
+    \begin{algorithmic}[1] % Start algorithmic block
+            \For {$\text{replications} = 1, 2, \dots, 5000$}
+            \State Generate $\hat{\boldsymbol{\theta}} \sim N_K(\boldsymbol{\theta}, \boldsymbol{\Sigma})$
+            \State Compute the confidence region $\mathfrak{R}_1$ for the unordered parameters using Algorithm \ref{alg:nonrank_ci} and the confidence region for the ordered parameters $\mathfrak{R}_2$ using Algorithms \ref{alg:rank_asymp} and \ref{alg:rank_secondlevelbs}.
+            \State For the unordered parameters, check if $\left( \theta_1, \theta_2, \dots, \theta_K\right) \in \mathfrak{R}_1$ and compute $T_1, T_2$, and $T_3$. For the ordered parameters, check if $\left( \theta_{(1)}, \theta_{(2)}, \dots, \theta_{(K)}\right) \in \mathfrak{R}_2$
+        \EndFor
+    \State Compute the proportion of times that the condition in line 4 is satisfied and the average of $T_1, T_2$, and $T_3$.
+    \end{algorithmic}
+
+# Covariance Matrix $\boldsymbol{\Sigma}$
+    
+- The covariance matrix $\boldsymbol{\Sigma}$ need not be a diagonal matrix.
+- We assume that $V(\hat{\boldsymbol{\theta}})=\boldsymbol{\Sigma}$ is known and express $\boldsymbol{\Sigma}$ as in (\ref{eq:sigma_matrix}), where $\mathbf{R}$ is the population correlation matrix.
+
+\begin{equation}
+  \boldsymbol{\Sigma} = \boldsymbol{\Delta}^{1/2} \mathbf{R} \boldsymbol{\Delta}^{1/2}; \quad \boldsymbol{\Delta} = \text{diag} \left\{ \sigma^2_1, \sigma^2_2, \dots, \sigma^2_K \right\}.
+  \label{eq:sigma_matrix}
+\end{equation}
+
+- The diagonal elements of $\boldsymbol{\Sigma}$, which are $\sigma^2_k=V(\hat{\theta}_k)$ for $k =1,2, \ldots,K$, are treated as known quantities in practice.
+
+# Correlation Structures: Equicorrelation
+
+>- We assume certain correlation structures among the $\hat{\theta}$s.  
+>- Equicorrelation is considered for simplicity.  
+>- This assumes that the $k$ variables are equally correlated, i.e., that $\rho_{jk}=\rho$ where $\rho \in [-1,1]$ for $j \neq k \in \{1, \dots, K\}$.
+\begin{equation}
+  \mathbf{R}_{\text{eq}} = \left( 1-\rho \right) \mathbf{I}_K + \rho \boldsymbol{1}_K \boldsymbol{1}'_K = 
+\begin{bmatrix}
+1 & \rho & \cdots & \rho \\
+\rho & 1 & \cdots & \rho \\
+\vdots & \vdots & \ddots & \vdots \\
+\rho & \rho & \cdots & 1
+\end{bmatrix}_{K \times K}
+  \label{eq:equicorrelation}
+\end{equation}
+
+# Correlation Structures: Block correlation
+
+>- Useful in the context of pre-election surveys
+>- In a block correlation matrix $\mathbf{R}_{block}$ with $G$ blocks, each diagonal block represents an equicorrelation structure within group $g$, denoted by
+\begin{equation}
+  \mathbf{R}_{\text{eq,g}} = \left( 1-\rho_{g} \right) \mathbf{I}_{n_g} + \rho_{g} \boldsymbol{1}_{n_g} \boldsymbol{1}'_{n_g} \notag
+\end{equation}
+where $\rho_{g}$ is the within-block correlation and $n_g$ is the number of variables in block $g$ such that $\sum_{g=1}^G n_g = K$.  
+>- The off-diagonal blocks capture between-block correlations, represented by  $\mathbf{C}_{g'g} = \mathbf{C}_{gg'} = \rho_{gg'}\boldsymbol{1}_{n_g} \boldsymbol{1}'_{n_g}$ where $g\neq g' \in \{1, \dots, G\}$
+>- The full block correlation matrix can be expressed as in (\ref{eq:blockcorrelation}).  
+\begin{equation}
+  \mathbf{R}_{\text{block}} = 
+\begin{bmatrix}
+\mathbf{R}_{eq,1} & \mathbf{C}_{12} & \cdots & \mathbf{C}_{1G} \\
+\mathbf{C}_{21} & \mathbf{R}_{eq,2} & \cdots & \mathbf{C}_{2G} \\
+\vdots & \vdots & \ddots & \vdots \\
+\mathbf{C}_{G1} & \mathbf{C}_{G2} & \cdots & \mathbf{R}_{eq,G}
+\end{bmatrix}_{K \times K}
+  \label{eq:blockcorrelation}
+\end{equation}
 
 
-\column{0.50\textwidth}
-This is a normal distribution.In Figure 2.2, the x-axis represents the distribution of possible
-batting averages, and the y-axis represents the probability density
-of the beta distribution: how likely the batting average is to fall at a
-particular point. The beta distribution is representing a probability
-distribution of probabilities.
-Here’s why the beta distribution is so appropriate for modeling
-the binomial. Imagine the player gets a single hit. His record for
-the season is now “1 hit; 1 at bat.” We have to then update our
-probabilities- we want to shift this entire curve over just a bit to
-reflect our new information. This is the Bayesian philosophy in a
-nutshell: we start with a prior distribution, see some evidence, then
-update to a posterior distribution.
-The math for proving this is a bit involved (it’s shown here), the
-result is very simple. The new beta distribution will be:
-\end{columns}
+# Correlation Structures: Distance-based correlation
+
+>- Useful in the mean travel time from the study of @klein.
+>- Spatial dependence can be modeled using a stationary Matérn correlation function, which for two locations $\mathbf{s}_i$ and $\mathbf{s}_j$ is expressed as
+\begin{equation}
+\rho_{\text{matern}} = \frac{2^{1-\nu}}{\Gamma(\nu)} (\kappa \;\Vert \;\mathbf{s}_i - \mathbf{s}_j \; \Vert)^\nu K_\nu  (\kappa \;\Vert \;\mathbf{s}_i - \mathbf{s}_j \; \Vert)
+  \notag
+\end{equation}
+where $\Vert \cdot \Vert$ denotes the Euclidean distance and $K_\nu$ is the second kind of the modified Bessel function. It has a scale parameter $\kappa > 0$ and a smoothness parameter $\nu > 0$. $\rho_{\text{matern}}$ reduces to the exponential correlation when $\nu = 0.5$ and to Gaussian correlation function when $\nu = \infty$.
 
 
 # Code blocks
@@ -90,6 +271,62 @@ Example blocks are automatically green in color
 >- Bullet 2
 >    + subbullet 1
 >    + subbullet 2
+
+
+# Algo Font Size Adjustments sample
+\begin{minipage}{0.9\textwidth}
+\begin{algorithmic}[1]
+    \For {$b = 1, 2, \dots, B$}
+        \State \parbox[t]{0.85\linewidth}{\footnotesize{
+            Generate $\hat{\boldsymbol{\theta}}^*_b = \left( \hat{\theta}^*_{b1}, \hat{\theta}^*_{b2}, \dots, \hat{\theta}^*_{bK} \right)' \sim N_K \left( \boldsymbol{\hat \theta}, \boldsymbol {\Sigma} \right)$ and let $\hat{\theta}^*_{b(1)}, \hat{\theta}^*_{b(2)}, \dots, \hat{\theta}^*_{b(K)}$ be the corresponding ordered values 
+        }}
+        \State \parbox[t]{0.85\linewidth}{\footnotesize{
+            Compute $\hat\sigma^*_{b(k)} = \hat\sigma^*_{b(k)} = \sqrt{\left[\text{kth ordered value among} \ \left\{ \hat{\theta}^{*2}_{b1} + \sigma_1^2, \dots, \hat{\theta}^{*2}_{bK} + \sigma_K^2 \right\}\right] - \hat {\theta}^{*2}_{(k)}}$}}
+            \Statex
+        \State \parbox[t]{0.85\linewidth}{\footnotesize{ 
+            Compute}}
+\Statex
+\begin{center}
+\parbox{0.9\linewidth}{
+    \centering
+    {\footnotesize
+$t^*_b = \underset{1 \leq k \leq K}{\max} \Bigg| \frac{\hat\theta^*_{b(k)} - \hat\theta^*_{k}}{\hat\sigma^*_{b(k)}} \Bigg|$
+    }}
+\end{center}
+    \EndFor
+    \State \parbox[t]{0.85\linewidth}{\footnotesize{Compute the $\left(1-\alpha\right)$-sample quantile of $t^*_1, \dots, t^*_B$, call this $\hat{t}$.}}
+    \State \parbox[t]{0.85\linewidth}{\footnotesize{The joint confidence region of $\theta_{(1)}, \theta_{(2)}, \dots, \theta_{(K)}$ is given by
+     }}
+\Statex
+\begin{center}
+\parbox{0.9\linewidth}{
+    \centering
+    {\footnotesize
+    $\mathfrak{R}_2 = \left[ \hat\theta_{(1)} \pm \hat t \times \hat\sigma_{(1)}  \right] \times \left[ \hat\theta_{(2)} \pm \hat t \times \hat\sigma_{(2)}  \right] \times \dots \times \left[ \hat\theta_{(K)} \pm \hat t \times \hat\sigma_{(K)}  \right]$
+    }}
+\end{center}
+\Statex
+\parbox{0.9\linewidth}{
+    {\footnotesize
+    where
+    }}
+\Statex
+\begin{center}
+\parbox{0.9\linewidth}{
+    \centering
+    {\footnotesize
+    $\hat\sigma_{(k)} =
+    \sqrt{
+      \text{kth ordered value among }
+      \{ \hat\theta_1^{2} + \sigma_1^2,\,
+         \dots,\,
+         \hat\theta_K^{2} + \sigma_K^2 \}
+      - \hat\theta_{(k)}^{2}
+    }$
+    }}
+\end{center}
+    \end{algorithmic}
+\end{minipage}
 
 
 # Text
