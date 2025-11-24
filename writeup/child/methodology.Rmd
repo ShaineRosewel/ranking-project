@@ -29,7 +29,7 @@ Equivalently, we require
 
 We use the parametric bootstrap to estimate the quantile $t$ that will be used to construct the confidence intervals while controlling the coverage to be around the nominal level. In implementing the parametric bootstrap, we sample from the multivariate normal distribution with $\hat{\boldsymbol{\theta}}$ and $\boldsymbol{\Sigma}$ as mean and variance, respectively. The idea is also conceptually similar to that of @mogstadt23 who use resampling to obtain the quantile in a different context. Algorithm \ref{alg:nonrank_ci} describes the procedure to compute the joint confidence region based on unordered estimates.
 
-Once the confidence intervals in (\ref{eq:rev1}) have been obtained, we can then use the result of @klein in (\ref{eq:joint_cov2}) to get the lower and upper bounds on the ranks $r_k, k=1,2,\ldots,K$. That is, we also get ajoint confidence region for $r_1, r_2, . . . , r_K$.
+Once the confidence intervals in (\ref{eq:rev1}) have been obtained, we can then use the result of @klein in (\ref{eq:joint_cov2}) to get the lower and upper bounds on the ranks $r_k, k=1,2,\ldots,K$. That is, we also get a joint confidence region for $r_1, r_2, . . . , r_K$.
 
 
 \begin{algorithm}[H]
@@ -161,13 +161,13 @@ $\displaystyle \hat \sigma_{(k)} = \frac{\sum^B_{b=1} \left( \hat \theta^*_{b(k)
 
 ## Correlation structures {#sec:corrstructures}
 
-The proposed methodologies assume that $V(\hat{\boldsymbol{\theta}})=\boldsymbol{\Sigma}$ is known. Note that we can express $\boldsymbol{\Sigma}$ as in (3.9), where $\mathbf{R}$ is the population correlation matrix.
+The proposed methodologies assume that $V(\hat{\boldsymbol{\theta}})=\boldsymbol{\Sigma}$ is known. Note that we can express $\boldsymbol{\Sigma}$ as in (\ref{eq:sigma_matrix}), where $\mathbf{R}$ is the population correlation matrix.
 
 \begin{equation}
   \boldsymbol{\Sigma} = \boldsymbol{\Delta}^{1/2} \mathbf{R} \boldsymbol{\Delta}^{1/2}; \quad \boldsymbol{\Delta} = \text{diag} \left\{ \sigma^2_1, \sigma^2_2, \dots, \sigma^2_K \right\}.
   \label{eq:sigma_matrix}
 \end{equation}
-The diagonal elements of $\boldsymbol{\Sigma}$, which are $\sigma^2_k=V(\hat{\theta}_k)$ for $k =1,2, \ldots,K$, are treated as known quantities in practice. With large sample sizes, the variance estimates are stable enough that they are treated as the actual values. However, there is limited information to use as basis for the correlations among the stimates. In this thesis, we shall be  assuming certain correlation structures among the $\hat{\theta}$s.  
+The diagonal elements of $\boldsymbol{\Sigma}$, which are $\sigma^2_k=V(\hat{\theta}_k)$ for $k =1,2, \ldots,K$, are treated as known quantities in practice. With large sample sizes, the variance estimates are stable enough that they are treated as the actual values. However, there is limited information to use as basis for the correlations among the estimates. In this thesis, we shall be assuming certain correlation structures among the $\hat{\theta}$s.  
 
 One structure that may be used is an equicorrelation matrix shown in (\ref{eq:equicorrelation}). This assumes that the $k$ variables are equally correlated, i.e., that $\rho_{jk}=\rho$ where $\rho \in [-1,1]$ for $j \neq k \in \{1, \dots, K\}$.
 
