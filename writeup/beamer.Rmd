@@ -6,6 +6,7 @@ bibliography: /home/realiseshewon/PDev/kde-ranking/writeup/references.bib
 csl: /home/realiseshewon/PDev/kde-ranking/writeup/harvard-educational-review.csl
 output:
   beamer_presentation:
+    keep_tex: true
     theme: "Madrid"
     colortheme: "beaver"
     fonttheme: "structurebold"
@@ -17,6 +18,8 @@ header-includes:
     \institute[UP Stat]{University of the Philippines}
     \usepackage{algorithm}
     \usepackage{algpseudocode}
+    \usepackage{pgfpages}
+    \setbeameroption{show notes on second screen=right}
 ---
 
 ```{r setup, include=FALSE}
@@ -25,31 +28,82 @@ knitr::opts_chunk$set(echo = FALSE)
 
 \maketitle
 
-# Background of the Study {.allowframebreaks}
+# Background of the Study
 
-@klein illustrates the problem of ranking the US states in terms of travel time to work. In this context, $\theta_k$ is the true mean travel time to work for state $k$, and we wish to find a joint confidence statement about $r_1,r_2,\ldots,r_K$.
+>- In the problem of estimating ranks of several unknown real-valued parameters $\theta_1,\theta_2,\ldots, \theta_K$, it is desired to rank these $K$ parameters from smallest to largest, $\theta_{(1)}<\theta_{(2)}<\ldots<\theta_{(K)}$. 
+>- Given estimates in a table without an explicit ranking, readers tend to compare units by looking for smallest or largest estimates and for relative standings between the units. Such tables as motivate "implicit" rankings.
+>- Because rankings based on the observed values of $\hat\theta_1,\hat\theta_2,\ldots, \hat\theta_K$ can vary because of sampling variability, widely understood statements of uncertainty should accompany each released ranking.
+>- The margin of error gives uncertainty in the estimate $\hat\theta_k$ for each unit separately
+>- A direct assessment of the uncertainty in the estimated overall ranking would simultaneously involve all units and their relative standing to each other
 
-## Rank $r_k$
+# Background of the Study
 
-A mathematical definition of $r_k$ is as follows:
-
+>- Let $r_1,r_2,\ldots,r_K$ be the true unknown ranks of $\theta_1,\theta_2,\ldots, \theta_K$. A mathematical definition of $r_k$ is as follows:
 \begin{equation}
   r_k = \sum^K_{j=1} I(\theta_j \leq \theta_k) = 1 + \sum_{j:j \neq k} I(\theta_j \leq \theta_k), \qquad \text{for} \; k = 1, 2, \dots, K.
   \label{eq:rank1}
 \end{equation}
+>- Goal
+>    1. derive a joint confidence region for $\theta_1,\theta_2,\ldots, \theta_K$ 
+>    2. obtain joint confidence intervals for the $r_1,r_2,\ldots,r_K$ using a result from Klein et al. (2020). 
 
-## Estimated rank
 
-Let $\hat{r}_k$ denote the estimated rank of the $k$th observation.
+\note{this is my note-testing}
+# Klein's
+
+Suppose that for each \(k \in \left\{1, 2, \dots, K\right\}\) there exists values \(L_k\) and \(U_k\) ST
 
 \begin{equation}
-  \hat{r}_k = 1 + \sum_{j:j \neq k} I(\hat{\theta}_j \leq \hat{\theta}_k), \qquad \text{for} \; k = 1, 2, \dots, K.
-  \label{eq:rank2}
+  \theta_k \in \left( L_k, U_k \right), k=1,2,\ldots,K.
+  \label{eq:theta_int}
 \end{equation}
+
+If the condition in (\ref{eq:theta_int}) holds, the main result from Klein et al. (2020) gives a range for the value of \(r_k\) for each \(k \in \left\{1, 2, \dots, K\right\}\) as follows:
+
+\begin{equation}
+  r_k \in 
+  \left\{ 
+  \lvert \Lambda_{Lk} \rvert + 1,  
+  \lvert \Lambda_{Lk} \rvert + 2,
+  \lvert \Lambda_{Lk} \rvert + 3,
+  \dots,
+  \lvert \Lambda_{Lk} \rvert + \lvert \Lambda_{Ok} \rvert + 1
+  \right\}
+  \label{eq:klein_jcs}
+\end{equation}
+
+# Klein's
+
+Suppose that for random quantities \(L_k\) and \(U_k\) the event defined in (\ref{eq:theta_int}) satisfies the following probability condition:
+
+\begin{equation}
+  P\left[ \bigcap^K_{k=1} \left\{ \theta_k \in \left(L_k, U_k\right) \right\} \right] \geq 1-\alpha,
+  \label{eq:joint_cov1}
+\end{equation}
+then, by the result of Klein et al. (2020), it also follows that
+
+\begin{equation}
+  P\left[
+  \bigcap^K_{k=1}
+  \left\{
+  r_k \in 
+  \left\{ 
+  \lvert \Lambda_{Lk} \rvert + 1,  
+  \lvert \Lambda_{Lk} \rvert + 2,
+  \dots,
+  \lvert \Lambda_{Lk} \rvert + \lvert \Lambda_{Ok} \rvert + 1
+  \right\}
+  \right\}
+  \right] \geq 1-\alpha.
+  \label{eq:joint_cov2}
+\end{equation}
+
+# Other related studies
 
 # Motivation
 
-Assuming independence when constructing joint confidence regions for estimators that are, in fact, correlated may lead to overly conservative and thus wider intervals, implying greater uncertainty.
+>- Assuming independence when constructing joint confidence regions for estimators that are, in fact, correlated may lead to overly conservative and thus wider intervals, implying greater uncertainty.
+>- We aim to develop a procedure capable of handling such dependencies while maintaining coverage close to the nominal level and producing relatively narrow joint confidence intervals.
 
 # Motivation
 
@@ -63,24 +117,24 @@ Assuming independence when constructing joint confidence regions for estimators 
 >- Klein et al. (2020) also noted that states with large unpopulated land areas and relatively few high-density population centers tend to report shorter travel times while longer travel times are typically observed in highly urbanized states with large populations and high population densities.
 >- Many states with shorter travel times are located in the Mountain and Central regions, whereas majority of those with longer travel times are concentrated along the East Coast.
 
+
 # Objective
 
 This research aims to do the following:
 
-- Develop a procedure to construct joint confidence intervals for the ranks and the ranked parameters when the estimates to be ranked may be correlated.
-- Evaluate the performance of the proposed approaches under various
+>- Develop a procedure to construct joint confidence intervals for the ranks and the ranked parameters when the estimates to be ranked may be correlated.
+>- Evaluate the performance of the proposed approaches under various
 parameter settings.
-- Apply the proposed approaches to a real-life example.
+>- Apply the proposed approaches to a real-life example.
 
 # Definitions and Assumptions
 
-- Define $\hat{\boldsymbol{\theta}}=(\hat{\theta}_1,\hat{\theta}_2,\ldots,\hat{\theta}_K)'$ and assume that $\hat{\boldsymbol{\theta}}\sim N(\boldsymbol{\theta},\boldsymbol{\Sigma})$ where $\boldsymbol{\theta}=(\theta_1,\theta_2,\ldots,\theta_K)'$ is unknown and $\boldsymbol{\Sigma}$ is a known $K \times K$ positive definite matrix. The diagonal elements of $\boldsymbol{\Sigma}$ are $\sigma^2_1,\ldots,\sigma^2_K$.  
-- Note that in the literature on inferences on the ranks, it is customary to assume that the variances are known.
+>- Define $\hat{\boldsymbol{\theta}}=(\hat{\theta}_1,\hat{\theta}_2,\ldots,\hat{\theta}_K)'$ and assume that $\hat{\boldsymbol{\theta}}\sim N(\boldsymbol{\theta},\boldsymbol{\Sigma})$ where $\boldsymbol{\theta}=(\theta_1,\theta_2,\ldots,\theta_K)'$ is unknown and $\boldsymbol{\Sigma}$ is a known $K \times K$ positive definite matrix. The diagonal elements of $\boldsymbol{\Sigma}$ are $\sigma^2_1,\ldots,\sigma^2_K$.  
+>- Note that in the literature on inferences on the ranks, it is customary to assume that the variances are known.
 
-# Procedure {.allowframebreaks}
+# Procedure
 
-1. Derive simultaneous confidence intervals for $\theta_1,\theta_2,\ldots,\theta_K$ of the form 
-
+>1. Derive simultaneous confidence intervals for $\theta_1,\theta_2,\ldots,\theta_K$ of the form 
 \begin{equation}
 \mathfrak{R}_1 = 
 [\hat{\theta}_1 \pm t \times \sigma_1] \times
@@ -91,7 +145,7 @@ parameter settings.
 \end{equation}
 
 
-2. Once the confidence intervals in (\ref{eq:rev1}) have been obtained, we can then use the result of @klein in (\ref{eq:joint_cov2}) to get the lower and upper bounds on the ranks $r_k, k=1,2,\ldots,K$. That is, we also get a joint confidence region for $r_1, r_2, . . . , r_K$.
+>2. Once the confidence intervals in (\ref{eq:rev1}) have been obtained, we can then use the result of @klein in (\ref{eq:joint_cov2}) to get the lower and upper bounds on the ranks $r_k, k=1,2,\ldots,K$. That is, we also get a joint confidence region for $r_1, r_2, . . . , r_K$.
 
 # Proposed methodology to compute the joint confidence region for the unordered parameters: Algorithm 1 
 

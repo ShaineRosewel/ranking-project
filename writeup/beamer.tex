@@ -1,0 +1,778 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+  11pt,
+  ignorenonframetext,
+]{beamer}
+\usepackage{pgfpages}
+\setbeamertemplate{caption}[numbered]
+\setbeamertemplate{caption label separator}{: }
+\setbeamercolor{caption name}{fg=normal text.fg}
+\beamertemplatenavigationsymbolsempty
+% Prevent slide breaks in the middle of a paragraph
+\widowpenalties 1 10000
+\raggedbottom
+\setbeamertemplate{part page}{
+  \centering
+  \begin{beamercolorbox}[sep=16pt,center]{part title}
+    \usebeamerfont{part title}\insertpart\par
+  \end{beamercolorbox}
+}
+\setbeamertemplate{section page}{
+  \centering
+  \begin{beamercolorbox}[sep=12pt,center]{part title}
+    \usebeamerfont{section title}\insertsection\par
+  \end{beamercolorbox}
+}
+\setbeamertemplate{subsection page}{
+  \centering
+  \begin{beamercolorbox}[sep=8pt,center]{part title}
+    \usebeamerfont{subsection title}\insertsubsection\par
+  \end{beamercolorbox}
+}
+\AtBeginPart{
+  \frame{\partpage}
+}
+\AtBeginSection{
+  \ifbibliography
+  \else
+    \frame{\sectionpage}
+  \fi
+}
+\AtBeginSubsection{
+  \frame{\subsectionpage}
+}
+\usepackage{amsmath,amssymb}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\usetheme[]{Madrid}
+\usecolortheme{beaver}
+\usefonttheme{structurebold}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\newif\ifbibliography
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+% definitions for citeproc citations
+\NewDocumentCommand\citeproctext{}{}
+\NewDocumentCommand\citeproc{mm}{%
+  \begingroup\def\citeproctext{#2}\cite{#1}\endgroup}
+\makeatletter
+ % allow citations to break across lines
+ \let\@cite@ofmt\@firstofone
+ % avoid brackets around text for \cite:
+ \def\@biblabel#1{}
+ \def\@cite#1#2{{#1\if@tempswa , #2\fi}}
+\makeatother
+\newlength{\cslhangindent}
+\setlength{\cslhangindent}{1.5em}
+\newlength{\csllabelwidth}
+\setlength{\csllabelwidth}{3em}
+\newenvironment{CSLReferences}[2] % #1 hanging-indent, #2 entry-spacing
+ {\begin{list}{}{%
+  \setlength{\itemindent}{0pt}
+  \setlength{\leftmargin}{0pt}
+  \setlength{\parsep}{0pt}
+  % turn on hanging indent if param 1 is 1
+  \ifodd #1
+   \setlength{\leftmargin}{\cslhangindent}
+   \setlength{\itemindent}{-1\cslhangindent}
+  \fi
+  % set entry spacing
+  \setlength{\itemsep}{#2\baselineskip}}}
+ {\end{list}}
+\usepackage{calc}
+\newcommand{\CSLBlock}[1]{\hfill\break\parbox[t]{\linewidth}{\strut\ignorespaces#1\strut}}
+\newcommand{\CSLLeftMargin}[1]{\parbox[t]{\csllabelwidth}{\strut#1\strut}}
+\newcommand{\CSLRightInline}[1]{\parbox[t]{\linewidth - \csllabelwidth}{\strut#1\strut}}
+\newcommand{\CSLIndent}[1]{\hspace{\cslhangindent}#1}
+\title[Joint Confidence Regions for Rankings]{Joint Confidence Regions for Rankings based on Correlated Estimates}
+\author[Matala]{Matala, Shaine Rosewel}
+\institute[UP Stat]{University of the Philippines}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{pgfpages}
+\setbeameroption{show notes on second screen=right}
+\ifLuaTeX
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+\usepackage{bookmark}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+\hypersetup{
+  pdfauthor={Matala, Shaine Rosewel},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+
+\author{Matala, Shaine Rosewel}
+\date{November 25, 2025}
+
+\begin{document}
+
+\begin{frame}
+\maketitle
+\end{frame}
+
+\begin{frame}{Background of the Study}
+\phantomsection\label{background-of-the-study}
+\begin{itemize}[<+->]
+\tightlist
+\item
+  In the problem of estimating ranks of several unknown real-valued
+  parameters \(\theta_1,\theta_2,\ldots, \theta_K\), it is desired to
+  rank these \(K\) parameters from smallest to largest,
+  \(\theta_{(1)}<\theta_{(2)}<\ldots<\theta_{(K)}\).
+\item
+  Given estimates in a table without an explicit ranking, readers tend
+  to compare units by looking for smallest or largest estimates and for
+  relative standings between the units. Such tables as motivate
+  ``implicit'' rankings.
+\item
+  Because rankings based on the observed values of
+  \(\hat\theta_1,\hat\theta_2,\ldots, \hat\theta_K\) can vary because of
+  sampling variability, widely understood statements of uncertainty
+  should accompany each released ranking.
+\item
+  The margin of error gives uncertainty in the estimate \(\hat\theta_k\)
+  for each unit separately
+\item
+  A direct assessment of the uncertainty in the estimated overall
+  ranking would simultaneously involve all units and their relative
+  standing to each other
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Background of the Study}
+\phantomsection\label{background-of-the-study-1}
+\begin{itemize}[<+->]
+\tightlist
+\item
+  Let \(r_1,r_2,\ldots,r_K\) be the true unknown ranks of
+  \(\theta_1,\theta_2,\ldots, \theta_K\). A mathematical definition of
+  \(r_k\) is as follows: \begin{equation}
+  r_k = \sum^K_{j=1} I(\theta_j \leq \theta_k) = 1 + \sum_{j:j \neq k} I(\theta_j \leq \theta_k), \qquad \text{for} \; k = 1, 2, \dots, K.
+  \label{eq:rank1}
+  \end{equation}
+\item
+  Goal
+
+  \begin{enumerate}[<+->]
+  \tightlist
+  \item
+    derive a joint confidence region for
+    \(\theta_1,\theta_2,\ldots, \theta_K\)
+  \item
+    obtain joint confidence intervals for the \(r_1,r_2,\ldots,r_K\)
+    using a result from Klein et al.~(2020).
+  \end{enumerate}
+\end{itemize}
+
+\note{this is my note-testing}
+\end{frame}
+
+\begin{frame}{Klein's}
+\phantomsection\label{kleins}
+Suppose that for each \(k \in \left\{1, 2, \dots, K\right\}\) there
+exists values \(L_k\) and \(U_k\) ST
+
+\begin{equation}
+  \theta_k \in \left( L_k, U_k \right), k=1,2,\ldots,K.
+  \label{eq:theta_int}
+\end{equation}
+
+If the condition in (\ref{eq:theta_int}) holds, the main result from
+Klein et al.~(2020) gives a range for the value of \(r_k\) for each
+\(k \in \left\{1, 2, \dots, K\right\}\) as follows:
+
+\begin{equation}
+  r_k \in 
+  \left\{ 
+  \lvert \Lambda_{Lk} \rvert + 1,  
+  \lvert \Lambda_{Lk} \rvert + 2,
+  \lvert \Lambda_{Lk} \rvert + 3,
+  \dots,
+  \lvert \Lambda_{Lk} \rvert + \lvert \Lambda_{Ok} \rvert + 1
+  \right\}
+  \label{eq:klein_jcs}
+\end{equation}
+\end{frame}
+
+\begin{frame}{Klein's}
+\phantomsection\label{kleins-1}
+Suppose that for random quantities \(L_k\) and \(U_k\) the event defined
+in (\ref{eq:theta_int}) satisfies the following probability condition:
+
+\begin{equation}
+  P\left[ \bigcap^K_{k=1} \left\{ \theta_k \in \left(L_k, U_k\right) \right\} \right] \geq 1-\alpha,
+  \label{eq:joint_cov1}
+\end{equation} then, by the result of Klein et al.~(2020), it also
+follows that
+
+\begin{equation}
+  P\left[
+  \bigcap^K_{k=1}
+  \left\{
+  r_k \in 
+  \left\{ 
+  \lvert \Lambda_{Lk} \rvert + 1,  
+  \lvert \Lambda_{Lk} \rvert + 2,
+  \dots,
+  \lvert \Lambda_{Lk} \rvert + \lvert \Lambda_{Ok} \rvert + 1
+  \right\}
+  \right\}
+  \right] \geq 1-\alpha.
+  \label{eq:joint_cov2}
+\end{equation}
+\end{frame}
+
+\begin{frame}{Other related studies}
+\phantomsection\label{other-related-studies}
+\end{frame}
+
+\begin{frame}{Motivation}
+\phantomsection\label{motivation}
+\begin{itemize}[<+->]
+\tightlist
+\item
+  Assuming independence when constructing joint confidence regions for
+  estimators that are, in fact, correlated may lead to overly
+  conservative and thus wider intervals, implying greater uncertainty.
+\item
+  We aim to develop a procedure capable of handling such dependencies
+  while maintaining coverage close to the nominal level and producing
+  relatively narrow joint confidence intervals.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Motivation}
+\phantomsection\label{motivation-1}
+\begin{block}{Political setting}
+\phantomsection\label{political-setting}
+\begin{itemize}[<+->]
+\tightlist
+\item
+  David \& Legara (2015) demonstrated that candidates with a name-recall
+  advantage, such as media celebrities, incumbents, and members of
+  dynastic families, received majority of the votes in the 2010
+  senatorial elections.
+\item
+  In weak-party systems, candidates who belong to the same political
+  alliance or ticket commonly co-occur in ballots and hence perform with
+  similarity.
+\end{itemize}
+\end{block}
+\end{frame}
+
+\begin{frame}{Motivation}
+\phantomsection\label{motivation-2}
+\begin{block}{Measurement across geographies}
+\phantomsection\label{measurement-across-geographies}
+\begin{itemize}[<+->]
+\tightlist
+\item
+  Klein et al.~(2020) also noted that states with large unpopulated land
+  areas and relatively few high-density population centers tend to
+  report shorter travel times while longer travel times are typically
+  observed in highly urbanized states with large populations and high
+  population densities.
+\item
+  Many states with shorter travel times are located in the Mountain and
+  Central regions, whereas majority of those with longer travel times
+  are concentrated along the East Coast.
+\end{itemize}
+\end{block}
+\end{frame}
+
+\begin{frame}{Objective}
+\phantomsection\label{objective}
+This research aims to do the following:
+
+\begin{itemize}[<+->]
+\tightlist
+\item
+  Develop a procedure to construct joint confidence intervals for the
+  ranks and the ranked parameters when the estimates to be ranked may be
+  correlated.
+\item
+  Evaluate the performance of the proposed approaches under various
+  parameter settings.
+\item
+  Apply the proposed approaches to a real-life example.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Definitions and Assumptions}
+\phantomsection\label{definitions-and-assumptions}
+\begin{itemize}[<+->]
+\tightlist
+\item
+  Define
+  \(\hat{\boldsymbol{\theta}}=(\hat{\theta}_1,\hat{\theta}_2,\ldots,\hat{\theta}_K)'\)
+  and assume that
+  \(\hat{\boldsymbol{\theta}}\sim N(\boldsymbol{\theta},\boldsymbol{\Sigma})\)
+  where \(\boldsymbol{\theta}=(\theta_1,\theta_2,\ldots,\theta_K)'\) is
+  unknown and \(\boldsymbol{\Sigma}\) is a known \(K \times K\) positive
+  definite matrix. The diagonal elements of \(\boldsymbol{\Sigma}\) are
+  \(\sigma^2_1,\ldots,\sigma^2_K\).\\
+\item
+  Note that in the literature on inferences on the ranks, it is
+  customary to assume that the variances are known.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Procedure}
+\phantomsection\label{procedure}
+\begin{enumerate}[<+->]
+\tightlist
+\item
+  Derive simultaneous confidence intervals for
+  \(\theta_1,\theta_2,\ldots,\theta_K\) of the form \begin{equation}
+  \mathfrak{R}_1 = 
+  [\hat{\theta}_1 \pm t \times \sigma_1] \times
+  [\hat{\theta}_2 \pm t \times \sigma_2] \times
+  \cdots \times
+  [\hat{\theta}_K \pm t \times \sigma_K].
+  \label{eq:rev1}
+  \end{equation}
+\end{enumerate}
+
+\begin{enumerate}[<+->]
+\setcounter{enumi}{1}
+\tightlist
+\item
+  Once the confidence intervals in (\ref{eq:rev1}) have been obtained,
+  we can then use the result of Klein et al. (2020) in
+  (\ref{eq:joint_cov2}) to get the lower and upper bounds on the ranks
+  \(r_k, k=1,2,\ldots,K\). That is, we also get a joint confidence
+  region for \(r_1, r_2, . . . , r_K\).
+\end{enumerate}
+\end{frame}
+
+\begin{frame}{Proposed methodology to compute the joint confidence
+region for the unordered parameters: Algorithm 1}
+\phantomsection\label{proposed-methodology-to-compute-the-joint-confidence-region-for-the-unordered-parameters-algorithm-1}
+Let the data be represented by
+\(\hat{\boldsymbol{\theta}} = \left( \hat \theta_1, \hat \theta_2, \dots, \hat \theta_K \right)'\)
+and suppose that \(\boldsymbol{\Sigma}\) is known
+
+\begin{algorithmic}[1]
+        \For {$b = 1, 2, \dots, B$}
+                \State Generate $\hat{\boldsymbol{\theta}}^*_b \sim N_K \left( \hat{\boldsymbol{\theta}}, \boldsymbol{\Sigma}\right)$ and write $\hat{\boldsymbol{\theta}}^*_b = \left( \hat\theta^*_{b1}, \hat\theta^*_{b2}, \dots, \hat\theta^*_{bK} \right)' $
+                \State Compute 
+                \Statex \begin{minipage}{\linewidth}
+                \centering
+                $t^*_b = \underset{1 \leq k \leq K}{\max} \Bigg| \frac{\hat\theta^*_{bk} - \hat\theta_{k}}{\sigma_k} \Bigg|$
+                \end{minipage}
+        \EndFor
+        \State Compute the $\left(1-\alpha\right)$-sample quantile of $t^*_1, t^*_2, \dots, t^*_B$, call this $\hat{t}$.
+        \State The joint confidence region for $\boldsymbol{\theta} = (\theta_1, \theta_2, \dots, \theta_K)'$ is given by 
+        \Statex \begin{minipage}{\linewidth}
+    \centering
+$\mathfrak{R}_1 = \left[ \hat\theta_1 \pm \hat t \times \sigma_1  \right] \times \left[ \hat\theta_2 \pm \hat t \times \sigma_2  \right] \times \dots \times \left[ \hat\theta_K \pm \hat t \times \sigma_K  \right]$.
+    \end{minipage}
+    \end{algorithmic}
+\end{frame}
+
+\begin{frame}{Algorithm 1: Quantile Calculation}
+\phantomsection\label{algorithm-1-quantile-calculation}
+We want the joint confidence region in (\ref{eq:rev1}) to satisfy the
+following probability condition:
+
+\begin{equation}
+ P\left( \hat{\theta}_k-t \cdot \sigma_k \leq  \theta_k \leq  \hat{\theta}_k + t \cdot \sigma_k, \,\, \forall\; k=1,2,\ldots,K \right)  =1-\alpha.
+\end{equation}
+
+Equivalently, we require
+
+\begin{equation}
+ P\left( \max_{k=1,2,\ldots,K} \left| \dfrac{\hat{\theta}_k-\theta_k}{\sigma_k} \right| \le t \right) =1-\alpha. 
+\end{equation}
+\end{frame}
+
+\begin{frame}{Proposed methodology to compute a joint confidence region
+for the ordered parameters}
+\phantomsection\label{sec:nonrank}
+\begin{minipage}{1.0\textwidth}
+\begin{algorithmic}[1]
+    \For {$b = 1, 2, \dots, B$}
+        \State
+            Generate $\hat{\boldsymbol{\theta}}^*_b = \left( \hat{\theta}^*_{b1}, \hat{\theta}^*_{b2}, \dots, \hat{\theta}^*_{bK} \right)' \sim N_K \left( \boldsymbol{\hat \theta}, \boldsymbol {\Sigma} \right)$ and let $\hat{\theta}^*_{b(1)}, \hat{\theta}^*_{b(2)}, \dots, \hat{\theta}^*_{b(K)}$ be the corresponding ordered values 
+        \State
+        Compute $\hat\sigma^*_{b(k)}$ using:
+        \Statex \qquad • asymptotic variance definition
+        \Statex \qquad • second-level bootstrap
+        \State
+            Compute
+\Statex
+\begin{center}
+$t^*_b = \underset{1 \leq k \leq K}{\max} \Bigg| \frac{\hat\theta^*_{b(k)} - \hat\theta^*_{k}}{\hat\sigma^*_{b(k)}} \Bigg|$
+\end{center}
+    \EndFor
+    \State Compute the $\left(1-\alpha\right)$-sample quantile of $t^*_1, \dots, t^*_B$, call this $\hat{t}$.
+    \State The joint confidence region of $\theta_{(1)}, \theta_{(2)}, \dots, \theta_{(K)}$ is given by
+\Statex
+\begin{center}
+    $\mathfrak{R}_2 = \left[ \hat\theta_{(1)} \pm \hat t \times \hat\sigma_{(1)}  \right] \times \left[ \hat\theta_{(2)} \pm \hat t \times \hat\sigma_{(2)}  \right] \times \dots \times \left[ \hat\theta_{(K)} \pm \hat t \times \hat\sigma_{(K)}  \right]$
+\end{center}
+    \end{algorithmic}
+\end{minipage}
+\end{frame}
+
+\begin{frame}{Algorithm 2: Asymptotic Definition of Variance}
+\phantomsection\label{algorithm-2-asymptotic-definition-of-variance}
+\(\hat\sigma^*_{b(k)} = \sqrt{\left[\text{kth ordered value among} \ \left\{ \hat{\theta}^{*2}_{b1} + \sigma_1^2, \dots, \hat{\theta}^{*2}_{bK} + \sigma_K^2 \right\}\right] - \hat {\theta}^{*2}_{(k)}}\)
+\end{frame}
+
+\begin{frame}{Algorithm 3: Variance from Second-Level Bootstrap}
+\phantomsection\label{algorithm-3-variance-from-second-level-bootstrap}
+\begin{algorithmic}[1]
+            \For {$c = 1, 2, \dots, C$}
+                \State \begin{minipage}[t]{\dimexpr\linewidth-\algorithmicindent} Generate $\hat{\boldsymbol{\theta}}^{**}_{bc} = \left( \hat{\theta}^{**}_{bc1}, \hat{\theta}^{**}_{bc2}, \dots, \hat{\theta}^{**}_{bcK} \right) \sim N_K \left( \hat{\boldsymbol{\theta}}_b^*, \boldsymbol {\Sigma} \right)$ and let $\hat{\theta}^{**}_{bc(1)}, \hat{\theta}^{**}_{bc(2)}, \dots, \hat{\theta}^{**}_{bc(K)}$ be the corresponding ordered values of $\hat{\theta}^{**}_{bc1}, \hat{\theta}^{**}_{bc2}, \dots, \hat{\theta}^{**}_{bcK}$
+                \end{minipage}
+                \State \begin{minipage}[t]{\dimexpr\linewidth-\algorithmicindent} Compute
+                $\displaystyle \hat{\sigma}^*_{b(k)} = \frac{\sum^C_{c=1} \left( \hat \theta^{**}_{bc(k)} - \bar {\hat\theta}^{**}_{b \cdot (k)} \right)^2}{C-1}, \quad \bar {\hat\theta}^{**}_{b\cdot(k)} = \frac{1}{C} \sum^C_{c=1} {\hat\theta}^{**}_{bc(k)}$
+                \end{minipage}
+                \EndFor
+    \end{algorithmic}
+\end{frame}
+
+\begin{frame}{Evaluation Algorithm}
+\phantomsection\label{evaluation-algorithm}
+For given values of \(\boldsymbol{\Sigma}\) and
+\(\theta_1, \theta_2, \dots, \theta_K\) (with corresponding
+\(\theta_{(1)}, \theta_{(2)}, \dots, \theta_{(K)}\) for rank-based
+methods)
+
+\begin{algorithmic}[1] % Start algorithmic block
+            \For {$\text{replications} = 1, 2, \dots, 5000$}
+            \State Generate $\hat{\boldsymbol{\theta}} \sim N_K(\boldsymbol{\theta}, \boldsymbol{\Sigma})$
+            \State Compute the confidence region $\mathfrak{R}_1$ for the unordered parameters using Algorithm 1 and the confidence region for the ordered parameters $\mathfrak{R}_2$ using Algorithms 2 and 3.
+            \State For the unordered parameters, check if $\left( \theta_1, \theta_2, \dots, \theta_K\right) \in \mathfrak{R}_1$ and compute $T_1, T_2$, and $T_3$. For the ordered parameters, check if $\left( \theta_{(1)}, \theta_{(2)}, \dots, \theta_{(K)}\right) \in \mathfrak{R}_2$
+        \EndFor
+    \State Compute the proportion of times that the condition in line 4 is satisfied and the average of $T_1, T_2$, and $T_3$.
+    \end{algorithmic}
+\end{frame}
+
+\begin{frame}{Covariance Matrix \(\boldsymbol{\Sigma}\)}
+\phantomsection\label{covariance-matrix-boldsymbolsigma}
+\begin{itemize}
+\tightlist
+\item
+  The covariance matrix \(\boldsymbol{\Sigma}\) need not be a diagonal
+  matrix.
+\item
+  We assume that \(V(\hat{\boldsymbol{\theta}})=\boldsymbol{\Sigma}\) is
+  known and express \(\boldsymbol{\Sigma}\) as in
+  (\ref{eq:sigma_matrix}), where \(\mathbf{R}\) is the population
+  correlation matrix.
+\end{itemize}
+
+\begin{equation}
+  \boldsymbol{\Sigma} = \boldsymbol{\Delta}^{1/2} \mathbf{R} \boldsymbol{\Delta}^{1/2}; \quad \boldsymbol{\Delta} = \text{diag} \left\{ \sigma^2_1, \sigma^2_2, \dots, \sigma^2_K \right\}.
+  \label{eq:sigma_matrix}
+\end{equation}
+
+\begin{itemize}
+\tightlist
+\item
+  The diagonal elements of \(\boldsymbol{\Sigma}\), which are
+  \(\sigma^2_k=V(\hat{\theta}_k)\) for \(k =1,2, \ldots,K\), are treated
+  as known quantities in practice.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Correlation Structures: Equicorrelation}
+\phantomsection\label{correlation-structures-equicorrelation}
+\begin{itemize}[<+->]
+\tightlist
+\item
+  We assume certain correlation structures among the
+  \(\hat{\theta}\)s.\\
+\item
+  Equicorrelation is considered for simplicity.\\
+\item
+  This assumes that the \(k\) variables are equally correlated, i.e.,
+  that \(\rho_{jk}=\rho\) where \(\rho \in [-1,1]\) for
+  \(j \neq k \in \{1, \dots, K\}\). \begin{equation}
+  \mathbf{R}_{\text{eq}} = \left( 1-\rho \right) \mathbf{I}_K + \rho \boldsymbol{1}_K \boldsymbol{1}'_K = 
+  \begin{bmatrix}
+  1 & \rho & \cdots & \rho \\
+  \rho & 1 & \cdots & \rho \\
+  \vdots & \vdots & \ddots & \vdots \\
+  \rho & \rho & \cdots & 1
+  \end{bmatrix}_{K \times K}
+  \label{eq:equicorrelation}
+  \end{equation}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Correlation Structures: Block correlation}
+\phantomsection\label{correlation-structures-block-correlation}
+\begin{itemize}[<+->]
+\tightlist
+\item
+  Useful in the context of pre-election surveys
+\item
+  In a block correlation matrix \(\mathbf{R}_{block}\) with \(G\)
+  blocks, each diagonal block represents an equicorrelation structure
+  within group \(g\), denoted by \begin{equation}
+  \mathbf{R}_{\text{eq,g}} = \left( 1-\rho_{g} \right) \mathbf{I}_{n_g} + \rho_{g} \boldsymbol{1}_{n_g} \boldsymbol{1}'_{n_g} \notag
+  \end{equation} where \(\rho_{g}\) is the within-block correlation and
+  \(n_g\) is the number of variables in block \(g\) such that
+  \(\sum_{g=1}^G n_g = K\).\\
+\item
+  The off-diagonal blocks capture between-block correlations,
+  represented by
+  \(\mathbf{C}_{g'g} = \mathbf{C}_{gg'} = \rho_{gg'}\boldsymbol{1}_{n_g} \boldsymbol{1}'_{n_g}\)
+  where \(g\neq g' \in \{1, \dots, G\}\)
+\item
+  The full block correlation matrix can be expressed as in
+  (\ref{eq:blockcorrelation}).\\
+  \begin{equation}
+  \mathbf{R}_{\text{block}} = 
+  \begin{bmatrix}
+  \mathbf{R}_{eq,1} & \mathbf{C}_{12} & \cdots & \mathbf{C}_{1G} \\
+  \mathbf{C}_{21} & \mathbf{R}_{eq,2} & \cdots & \mathbf{C}_{2G} \\
+  \vdots & \vdots & \ddots & \vdots \\
+  \mathbf{C}_{G1} & \mathbf{C}_{G2} & \cdots & \mathbf{R}_{eq,G}
+  \end{bmatrix}_{K \times K}
+  \label{eq:blockcorrelation}
+  \end{equation}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Correlation Structures: Distance-based correlation}
+\phantomsection\label{correlation-structures-distance-based-correlation}
+\begin{itemize}[<+->]
+\tightlist
+\item
+  Useful in the mean travel time from the study of Klein et al. (2020).
+\item
+  Spatial dependence can be modeled using a stationary Matérn
+  correlation function, which for two locations \(\mathbf{s}_i\) and
+  \(\mathbf{s}_j\) is expressed as \begin{equation}
+  \rho_{\text{matern}} = \frac{2^{1-\nu}}{\Gamma(\nu)} (\kappa \;\Vert \;\mathbf{s}_i - \mathbf{s}_j \; \Vert)^\nu K_\nu  (\kappa \;\Vert \;\mathbf{s}_i - \mathbf{s}_j \; \Vert)
+  \notag
+  \end{equation} where \(\Vert \cdot \Vert\) denotes the Euclidean
+  distance and \(K_\nu\) is the second kind of the modified Bessel
+  function. It has a scale parameter \(\kappa > 0\) and a smoothness
+  parameter \(\nu > 0\). \(\rho_{\text{matern}}\) reduces to the
+  exponential correlation when \(\nu = 0.5\) and to Gaussian correlation
+  function when \(\nu = \infty\).
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Code blocks}
+\phantomsection\label{code-blocks}
+\begin{alertblock}{Alert block}
+$$
+E = mc^2
+$$
+\end{alertblock}
+
+\begin{examples}
+Example blocks are automatically green in color
+\end{examples}
+
+\begin{block}{Blue block}
+\phantomsection\label{blue-block}
+\begin{itemize}
+\tightlist
+\item
+  happens with level 2, 3 headings
+\item
+  this is only true for `Madrid' theme in R Markdown!!
+\end{itemize}
+\end{block}
+\end{frame}
+
+\begin{frame}{This works, incremental bullets}
+\phantomsection\label{this-works-incremental-bullets}
+\begin{itemize}[<+->]
+\tightlist
+\item
+  Bullet 1
+\item
+  Bullet 2
+\end{itemize}
+\end{frame}
+
+\begin{frame}{This nests, but does not increment}
+\phantomsection\label{this-nests-but-does-not-increment}
+\begin{itemize}
+\tightlist
+\item
+  Bullet 1
+\item
+  Bullet 2
+
+  \begin{itemize}
+  \tightlist
+  \item
+    subbullet 1
+  \item
+    subbullet 2
+  \end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{This increments}
+\phantomsection\label{this-increments}
+\begin{itemize}[<+->]
+\tightlist
+\item
+  Bullet 1
+\item
+  Bullet 2
+
+  \begin{itemize}[<+->]
+  \tightlist
+  \item
+    subbullet 1
+  \item
+    subbullet 2
+  \end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{This increments too}
+\phantomsection\label{this-increments-too}
+\begin{itemize}[<+->]
+\tightlist
+\item
+  Bullet 1
+\item
+  Bullet 2
+
+  \begin{itemize}[<+->]
+  \tightlist
+  \item
+    subbullet 1
+  \item
+    subbullet 2
+  \end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Algo Font Size Adjustments sample}
+\phantomsection\label{algo-font-size-adjustments-sample}
+\begin{minipage}{0.9\textwidth}
+\begin{algorithmic}[1]
+    \For {$b = 1, 2, \dots, B$}
+        \State \parbox[t]{0.85\linewidth}{\footnotesize{
+            Generate $\hat{\boldsymbol{\theta}}^*_b = \left( \hat{\theta}^*_{b1}, \hat{\theta}^*_{b2}, \dots, \hat{\theta}^*_{bK} \right)' \sim N_K \left( \boldsymbol{\hat \theta}, \boldsymbol {\Sigma} \right)$ and let $\hat{\theta}^*_{b(1)}, \hat{\theta}^*_{b(2)}, \dots, \hat{\theta}^*_{b(K)}$ be the corresponding ordered values 
+        }}
+        \State \parbox[t]{0.85\linewidth}{\footnotesize{
+            Compute $\hat\sigma^*_{b(k)} = \hat\sigma^*_{b(k)} = \sqrt{\left[\text{kth ordered value among} \ \left\{ \hat{\theta}^{*2}_{b1} + \sigma_1^2, \dots, \hat{\theta}^{*2}_{bK} + \sigma_K^2 \right\}\right] - \hat {\theta}^{*2}_{(k)}}$}}
+            \Statex
+        \State \parbox[t]{0.85\linewidth}{\footnotesize{ 
+            Compute}}
+\Statex
+\begin{center}
+\parbox{0.9\linewidth}{
+    \centering
+    {\footnotesize
+$t^*_b = \underset{1 \leq k \leq K}{\max} \Bigg| \frac{\hat\theta^*_{b(k)} - \hat\theta^*_{k}}{\hat\sigma^*_{b(k)}} \Bigg|$
+    }}
+\end{center}
+    \EndFor
+    \State \parbox[t]{0.85\linewidth}{\footnotesize{Compute the $\left(1-\alpha\right)$-sample quantile of $t^*_1, \dots, t^*_B$, call this $\hat{t}$.}}
+    \State \parbox[t]{0.85\linewidth}{\footnotesize{The joint confidence region of $\theta_{(1)}, \theta_{(2)}, \dots, \theta_{(K)}$ is given by
+     }}
+\Statex
+\begin{center}
+\parbox{0.9\linewidth}{
+    \centering
+    {\footnotesize
+    $\mathfrak{R}_2 = \left[ \hat\theta_{(1)} \pm \hat t \times \hat\sigma_{(1)}  \right] \times \left[ \hat\theta_{(2)} \pm \hat t \times \hat\sigma_{(2)}  \right] \times \dots \times \left[ \hat\theta_{(K)} \pm \hat t \times \hat\sigma_{(K)}  \right]$
+    }}
+\end{center}
+\Statex
+\parbox{0.9\linewidth}{
+    {\footnotesize
+    where
+    }}
+\Statex
+\begin{center}
+\parbox{0.9\linewidth}{
+    \centering
+    {\footnotesize
+    $\hat\sigma_{(k)} =
+    \sqrt{
+      \text{kth ordered value among }
+      \{ \hat\theta_1^{2} + \sigma_1^2,\,
+         \dots,\,
+         \hat\theta_K^{2} + \sigma_K^2 \}
+      - \hat\theta_{(k)}^{2}
+    }$
+    }}
+\end{center}
+    \end{algorithmic}
+\end{minipage}
+\end{frame}
+
+\begin{frame}{Text}
+\phantomsection\label{text}
+Today is going to be a great day
+
+\begin{block}{Today is\ldots{}}
+\phantomsection\label{today-is}
+A new beginning.
+\end{block}
+
+\begin{block}{Your Reference}
+\phantomsection\label{your-reference}
+\begin{itemize}
+\tightlist
+\item
+  \href{https://www.slideshare.net/slideshow/create-beamer-slide-with-r-markdown/105158435}{slideshare}
+\item
+  \href{https://mpetroff.net/files/beamer-theme-matrix/}{themes}
+\item
+  \href{https://stackoverflow.com/questions/49367078/incremental-sub-bullets-in-rmarkdown-and-beamer}{incremental
+  bullets}
+\end{itemize}
+
+\phantomsection\label{refs}
+\begin{CSLReferences}{1}{0}
+\bibitem[\citeproctext]{ref-klein}
+Klein, M., Wright, T., \& Wieczorek, J. (2020). A joint confidence
+region for an overall ranking of populations. \emph{Journal of the Royal
+Statistical Society}, 589--606.
+
+\end{CSLReferences}
+\end{block}
+\end{frame}
+
+\end{document}
