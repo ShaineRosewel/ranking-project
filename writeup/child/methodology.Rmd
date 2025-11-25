@@ -169,7 +169,7 @@ The proposed methodologies assume that $V(\hat{\boldsymbol{\theta}})=\boldsymbol
 \end{equation}
 The diagonal elements of $\boldsymbol{\Sigma}$, which are $\sigma^2_k=V(\hat{\theta}_k)$ for $k =1,2, \ldots,K$, are treated as known quantities in practice. With large sample sizes, the variance estimates are stable enough that they are treated as the actual values. However, there is limited information to use as basis for the correlations among the estimates. In this thesis, we shall be assuming certain correlation structures among the $\hat{\theta}$s.  
 
-One structure that may be used is an equicorrelation matrix shown in (\ref{eq:equicorrelation}). This assumes that the $k$ variables are equally correlated, i.e., that $\rho_{jk}=\rho$ where $\rho \in [-1,1]$ for $j \neq k \in \{1, \dots, K\}$.
+One structure that may be used is an equicorrelation matrix shown in (\ref{eq:equicorrelation}). This assumes that the $K$ variables are equally correlated, i.e., that $\rho_{jk}=\rho$ where $\rho \in [-1,1]$ for $j \neq k \in \{1, \dots, K\}$.
 
 \begin{equation}
   \mathbf{R}_{\text{eq}} = \left( 1-\rho \right) \mathbf{I}_K + \rho \boldsymbol{1}_K \boldsymbol{1}'_K = 
