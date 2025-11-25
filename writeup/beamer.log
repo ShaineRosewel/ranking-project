@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (TeX Live 2025) (preloaded format=pdflatex 2025.11.21)  24 NOV 2025 09:04
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (TeX Live 2025) (preloaded format=pdflatex 2025.11.21)  25 NOV 2025 08:53
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1038,44 +1038,52 @@ t/fonts/enc/dvips/lm/lm-mathsy.enc}] [3
 
 ] [5
 
+] [6
+
+] [7
+
+] [8
+
+] [9
+
 ]
 LaTeX Font Info:    Font shape `OT1/lmss/b/n' in size <10.95> not available
-(Font)              Font shape `OT1/lmss/bx/n' tried instead on input line 212.
+(Font)              Font shape `OT1/lmss/bx/n' tried instead on input line 254.
 
 LaTeX Font Info:    Font shape `OT1/lmss/b/n' in size <8> not available
-(Font)              Font shape `OT1/lmss/bx/n' tried instead on input line 212.
+(Font)              Font shape `OT1/lmss/bx/n' tried instead on input line 254.
 
 LaTeX Font Info:    Font shape `OT1/lmss/b/n' in size <6> not available
-(Font)              Font shape `OT1/lmss/bx/n' tried instead on input line 212.
+(Font)              Font shape `OT1/lmss/bx/n' tried instead on input line 254.
 
 LaTeX Font Info:    Font shape `T1/lmss/b/n' in size <10.95> not available
-(Font)              Font shape `T1/lmss/bx/n' tried instead on input line 212.
+(Font)              Font shape `T1/lmss/bx/n' tried instead on input line 254.
 LaTeX Font Info:    Font shape `T1/lmss/b/n' in size <8> not available
-(Font)              Font shape `T1/lmss/bx/n' tried instead on input line 212.
+(Font)              Font shape `T1/lmss/bx/n' tried instead on input line 254.
 LaTeX Font Info:    Font shape `T1/lmss/b/n' in size <6> not available
-(Font)              Font shape `T1/lmss/bx/n' tried instead on input line 212.
+(Font)              Font shape `T1/lmss/bx/n' tried instead on input line 254.
 LaTeX Font Info:    Font shape `T1/lmss/b/it' in size <10.95> not available
-(Font)              Font shape `T1/lmss/bx/it' tried instead on input line 212.
+(Font)              Font shape `T1/lmss/bx/it' tried instead on input line 254.
 
 LaTeX Font Info:    Font shape `T1/lmss/bx/it' in size <10.95> not available
-(Font)              Font shape `T1/lmss/bx/sl' tried instead on input line 212.
+(Font)              Font shape `T1/lmss/bx/sl' tried instead on input line 254.
 
 LaTeX Font Info:    Font shape `T1/lmss/b/it' in size <8> not available
-(Font)              Font shape `T1/lmss/bx/it' tried instead on input line 212.
+(Font)              Font shape `T1/lmss/bx/it' tried instead on input line 254.
 
 LaTeX Font Info:    Font shape `T1/lmss/bx/it' in size <8> not available
-(Font)              Font shape `T1/lmss/bx/sl' tried instead on input line 212.
+(Font)              Font shape `T1/lmss/bx/sl' tried instead on input line 254.
 
 LaTeX Font Info:    Font shape `T1/lmss/b/it' in size <6> not available
-(Font)              Font shape `T1/lmss/bx/it' tried instead on input line 212.
+(Font)              Font shape `T1/lmss/bx/it' tried instead on input line 254.
 
 LaTeX Font Info:    Font shape `T1/lmss/bx/it' in size <6> not available
-(Font)              Font shape `T1/lmss/bx/sl' tried instead on input line 212.
+(Font)              Font shape `T1/lmss/bx/sl' tried instead on input line 254.
 
-[6
+[10
 
 ]
-LaTeX Font Info:    Trying to load font information for U+euf on input line 242
+LaTeX Font Info:    Trying to load font information for U+euf on input line 284
 .
 (/usr/local/texlive/2025/texmf-dist/tex/latex/amsfonts/ueuf.fd
 File: ueuf.fd 2013/01/14 v3.01 Euler Fraktur
@@ -1084,102 +1092,81 @@ File: mt-euf.cfg 2006/07/03 v1.1 microtype config. file: AMS Euler Fraktur (RS)
 
 )
 
-LaTeX Warning: Reference `eq:joint_cov2' on page 7 undefined on input line 242.
+LaTeX Warning: Reference `eq:joint_cov2' on page 11 undefined on input line 284
+.
 
+[11
 
-[7
+] [12
 
-] [8
-
-] [9
+] [13
 
 ]
-Underfull \hbox (badness 1803) in paragraph at lines 312--312
+Underfull \hbox (badness 1803) in paragraph at lines 354--354
 [] \T1/lmss/m/n/10.95 (+20) Gen-er-ate $[][] \OT1/lmss/m/n/10.95 (+20) = [][] \
 OMS/lmsy/m/n/10.95 ^^X \T1/lmss/m/sl/10.95 (+20) N[] []$ \T1/lmss/m/n/10.95 (+2
 0) and let
  []
 
 LaTeX Font Info:    Trying to load font information for TS1+lmss on input line 
-312.
+354.
 (/usr/local/texlive/2025/texmf-dist/tex/latex/lm/ts1lmss.fd
 File: ts1lmss.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
-) [10
+) [14
 
-{/usr/local/texlive/2025/texmf-dist/fonts/enc/dvips/lm/lm-ts1.enc}] [11
-
-] [12
-
-]
-
-LaTeX Warning: Reference `alg:nonrank_ci' on page 13 undefined on input line 34
-7.
-
-
-LaTeX Warning: Reference `alg:rank_asymp' on page 13 undefined on input line 34
-7.
-
-
-LaTeX Warning: Reference `alg:rank_secondlevelbs' on page 13 undefined on input
- line 347.
-
-[13
-
-]
-LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <14.4> on input line 375.
-LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <10> on input line 375.
-LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <7> on input line 375.
-LaTeX Font Info:    Font shape `T1/lmss/b/n' in size <14.4> not available
-(Font)              Font shape `T1/lmss/bx/n' tried instead on input line 375.
-LaTeX Font Info:    Font shape `T1/lmss/b/n' in size <10> not available
-(Font)              Font shape `T1/lmss/bx/n' tried instead on input line 375.
-LaTeX Font Info:    Font shape `T1/lmss/b/n' in size <7> not available
-(Font)              Font shape `T1/lmss/bx/n' tried instead on input line 375.
-LaTeX Font Info:    Font shape `T1/lmss/m/it' in size <14.4> not available
-(Font)              Font shape `T1/lmss/m/sl' tried instead on input line 375.
-LaTeX Font Info:    Font shape `T1/lmss/m/it' in size <10> not available
-(Font)              Font shape `T1/lmss/m/sl' tried instead on input line 375.
-LaTeX Font Info:    Font shape `T1/lmss/m/it' in size <7> not available
-(Font)              Font shape `T1/lmss/m/sl' tried instead on input line 375.
-LaTeX Font Info:    Font shape `OT1/lmss/b/n' in size <14.4> not available
-(Font)              Font shape `OT1/lmss/bx/n' tried instead on input line 375.
-
-LaTeX Font Info:    Font shape `OT1/lmss/b/n' in size <10> not available
-(Font)              Font shape `OT1/lmss/bx/n' tried instead on input line 375.
-
-LaTeX Font Info:    Font shape `OT1/lmss/b/n' in size <7> not available
-(Font)              Font shape `OT1/lmss/bx/n' tried instead on input line 375.
-
-LaTeX Font Info:    Font shape `T1/lmss/b/it' in size <14.4> not available
-(Font)              Font shape `T1/lmss/bx/it' tried instead on input line 375.
-
-LaTeX Font Info:    Font shape `T1/lmss/bx/it' in size <14.4> not available
-(Font)              Font shape `T1/lmss/bx/sl' tried instead on input line 375.
-
-LaTeX Font Info:    Font shape `T1/lmss/b/it' in size <10> not available
-(Font)              Font shape `T1/lmss/bx/it' tried instead on input line 375.
-
-LaTeX Font Info:    Font shape `T1/lmss/bx/it' in size <10> not available
-(Font)              Font shape `T1/lmss/bx/sl' tried instead on input line 375.
-
-LaTeX Font Info:    Font shape `T1/lmss/b/it' in size <7> not available
-(Font)              Font shape `T1/lmss/bx/it' tried instead on input line 375.
-
-LaTeX Font Info:    Font shape `T1/lmss/bx/it' in size <7> not available
-(Font)              Font shape `T1/lmss/bx/sl' tried instead on input line 375.
-
-[14
-
-] [15
+{/usr/local/texlive/2025/texmf-dist/fonts/enc/dvips/lm/lm-ts1.enc}] [15
 
 ] [16
 
 ] [17
 
-] [18
+]
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <14.4> on input line 417.
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <10> on input line 417.
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <7> on input line 417.
+LaTeX Font Info:    Font shape `T1/lmss/b/n' in size <14.4> not available
+(Font)              Font shape `T1/lmss/bx/n' tried instead on input line 417.
+LaTeX Font Info:    Font shape `T1/lmss/b/n' in size <10> not available
+(Font)              Font shape `T1/lmss/bx/n' tried instead on input line 417.
+LaTeX Font Info:    Font shape `T1/lmss/b/n' in size <7> not available
+(Font)              Font shape `T1/lmss/bx/n' tried instead on input line 417.
+LaTeX Font Info:    Font shape `T1/lmss/m/it' in size <14.4> not available
+(Font)              Font shape `T1/lmss/m/sl' tried instead on input line 417.
+LaTeX Font Info:    Font shape `T1/lmss/m/it' in size <10> not available
+(Font)              Font shape `T1/lmss/m/sl' tried instead on input line 417.
+LaTeX Font Info:    Font shape `T1/lmss/m/it' in size <7> not available
+(Font)              Font shape `T1/lmss/m/sl' tried instead on input line 417.
+LaTeX Font Info:    Font shape `OT1/lmss/b/n' in size <14.4> not available
+(Font)              Font shape `OT1/lmss/bx/n' tried instead on input line 417.
+
+LaTeX Font Info:    Font shape `OT1/lmss/b/n' in size <10> not available
+(Font)              Font shape `OT1/lmss/bx/n' tried instead on input line 417.
+
+LaTeX Font Info:    Font shape `OT1/lmss/b/n' in size <7> not available
+(Font)              Font shape `OT1/lmss/bx/n' tried instead on input line 417.
+
+LaTeX Font Info:    Font shape `T1/lmss/b/it' in size <14.4> not available
+(Font)              Font shape `T1/lmss/bx/it' tried instead on input line 417.
+
+LaTeX Font Info:    Font shape `T1/lmss/bx/it' in size <14.4> not available
+(Font)              Font shape `T1/lmss/bx/sl' tried instead on input line 417.
+
+LaTeX Font Info:    Font shape `T1/lmss/b/it' in size <10> not available
+(Font)              Font shape `T1/lmss/bx/it' tried instead on input line 417.
+
+LaTeX Font Info:    Font shape `T1/lmss/bx/it' in size <10> not available
+(Font)              Font shape `T1/lmss/bx/sl' tried instead on input line 417.
+
+LaTeX Font Info:    Font shape `T1/lmss/b/it' in size <7> not available
+(Font)              Font shape `T1/lmss/bx/it' tried instead on input line 417.
+
+LaTeX Font Info:    Font shape `T1/lmss/bx/it' in size <7> not available
+(Font)              Font shape `T1/lmss/bx/sl' tried instead on input line 417.
+
+[18
 
 ] [19
 
@@ -1215,45 +1202,53 @@ LaTeX Font Info:    Font shape `T1/lmss/bx/it' in size <7> not available
 
 ] [35
 
+] [36
+
+] [37
+
+] [38
+
+] [39
+
 ]
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <9> on input line 605.
+(Font)              <9> on input line 647.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <5> on input line 605.
+(Font)              <5> on input line 647.
 LaTeX Font Info:    Font shape `T1/lmss/b/n' in size <9> not available
-(Font)              Font shape `T1/lmss/bx/n' tried instead on input line 605.
+(Font)              Font shape `T1/lmss/bx/n' tried instead on input line 647.
 LaTeX Font Info:    Font shape `T1/lmss/b/n' in size <5> not available
-(Font)              Font shape `T1/lmss/bx/n' tried instead on input line 605.
+(Font)              Font shape `T1/lmss/bx/n' tried instead on input line 647.
 LaTeX Font Info:    Font shape `T1/lmss/m/it' in size <9> not available
-(Font)              Font shape `T1/lmss/m/sl' tried instead on input line 605.
+(Font)              Font shape `T1/lmss/m/sl' tried instead on input line 647.
 LaTeX Font Info:    Font shape `T1/lmss/m/it' in size <5> not available
-(Font)              Font shape `T1/lmss/m/sl' tried instead on input line 605.
+(Font)              Font shape `T1/lmss/m/sl' tried instead on input line 647.
 LaTeX Font Info:    Font shape `OT1/lmss/b/n' in size <9> not available
-(Font)              Font shape `OT1/lmss/bx/n' tried instead on input line 605.
+(Font)              Font shape `OT1/lmss/bx/n' tried instead on input line 647.
 
 LaTeX Font Info:    Font shape `OT1/lmss/b/n' in size <5> not available
-(Font)              Font shape `OT1/lmss/bx/n' tried instead on input line 605.
+(Font)              Font shape `OT1/lmss/bx/n' tried instead on input line 647.
 
 LaTeX Font Info:    Font shape `T1/lmss/b/it' in size <9> not available
-(Font)              Font shape `T1/lmss/bx/it' tried instead on input line 605.
+(Font)              Font shape `T1/lmss/bx/it' tried instead on input line 647.
 
 LaTeX Font Info:    Font shape `T1/lmss/bx/it' in size <9> not available
-(Font)              Font shape `T1/lmss/bx/sl' tried instead on input line 605.
+(Font)              Font shape `T1/lmss/bx/sl' tried instead on input line 647.
 
 LaTeX Font Info:    Font shape `T1/lmss/b/it' in size <5> not available
-(Font)              Font shape `T1/lmss/bx/it' tried instead on input line 605.
+(Font)              Font shape `T1/lmss/bx/it' tried instead on input line 647.
 
 LaTeX Font Info:    Font shape `T1/lmss/bx/it' in size <5> not available
-(Font)              Font shape `T1/lmss/bx/sl' tried instead on input line 605.
+(Font)              Font shape `T1/lmss/bx/sl' tried instead on input line 647.
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 605--605
+Underfull \hbox (badness 10000) in paragraph at lines 647--647
 []\T1/lmss/m/n/9 (+20) Compute $[] \OT1/lmss/m/n/9 (+20) = [] =
  []
 
-[36
+[40
 
-] [37
+] [41
 
 ]
 \tf@nav=\write5
@@ -1275,25 +1270,13 @@ LaTeX Warning: There were undefined references.
 
  ) 
 Here is how much of TeX's memory you used:
- 26135 strings out of 467538
- 502888 string characters out of 5419551
- 907362 words of memory out of 5000000
- 54127 multiletter control sequences out of 15000+600000
- 804435 words of font info for 267 fonts, out of 8000000 for 9000
+ 26171 strings out of 467538
+ 503838 string characters out of 5419551
+ 908567 words of memory out of 5000000
+ 54144 multiletter control sequences out of 15000+600000
+ 804940 words of font info for 272 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 128i,15n,123p,1003b,718s stack positions out of 10000i,1000n,20000p,200000b,200000s
-
-pdfTeX warning (dest): name{alg:rank_secondlevelbs} has been referenced but doe
-s not exist, replaced by a fixed one
-
-
-pdfTeX warning (dest): name{alg:rank_asymp} has been referenced but does not ex
-ist, replaced by a fixed one
-
-
-pdfTeX warning (dest): name{alg:nonrank_ci} has been referenced but does not ex
-ist, replaced by a fixed one
-
+ 128i,15n,123p,1003b,782s stack positions out of 10000i,1000n,20000p,200000b,200000s
 
 pdfTeX warning (dest): name{eq:joint_cov2} has been referenced but does not exi
 st, replaced by a fixed one
@@ -1315,10 +1298,10 @@ blic/lm/lmsy10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lm
 sy5.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmsy6.pfb></u
 sr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmsy8.pfb></usr/local/te
 xlive/2025/texmf-dist/fonts/type1/public/lm/lmsy9.pfb>
-Output written on beamer.pdf (37 pages, 287440 bytes).
+Output written on beamer.pdf (41 pages, 299038 bytes).
 PDF statistics:
- 577 PDF objects out of 1000 (max. 8388607)
- 406 compressed objects within 5 object streams
- 114 named destinations out of 1000 (max. 500000)
- 110959 words of extra memory for PDF output out of 128383 (max. 10000000)
+ 645 PDF objects out of 1000 (max. 8388607)
+ 446 compressed objects within 5 object streams
+ 123 named destinations out of 1000 (max. 500000)
+ 111091 words of extra memory for PDF output out of 128383 (max. 10000000)
 

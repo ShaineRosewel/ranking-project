@@ -49,6 +49,20 @@ Let $\hat{r}_k$ denote the estimated rank of the $k$th observation.
 
 # Motivation
 
+Assuming independence when constructing joint confidence regions for estimators that are, in fact, correlated may lead to overly conservative and thus wider intervals, implying greater uncertainty.
+
+# Motivation
+
+## Political setting
+>- David \& Legara (2015) demonstrated that candidates with a name-recall advantage, such as media celebrities, incumbents, and members of dynastic families, received majority of the votes in the 2010 senatorial elections.
+>- In weak-party systems, candidates who belong to the same political alliance or ticket commonly co-occur in ballots and hence perform with similarity.
+
+# Motivation
+
+## Measurement across geographies
+>- Klein et al. (2020) also noted that states with large unpopulated land areas and relatively few high-density population centers tend to report shorter travel times while longer travel times are typically observed in highly urbanized states with large populations and high population densities.
+>- Many states with shorter travel times are located in the Mountain and Central regions, whereas majority of those with longer travel times are concentrated along the East Coast.
+
 # Objective
 
 This research aims to do the following:
@@ -139,11 +153,11 @@ $t^*_b = \underset{1 \leq k \leq K}{\max} \Bigg| \frac{\hat\theta^*_{b(k)} - \ha
     \end{algorithmic}
 \end{minipage}
 
-# Algorithm 2
+# Algorithm 2: Asymptotic Definition of Variance
 
 $\hat\sigma^*_{b(k)} = \sqrt{\left[\text{kth ordered value among} \ \left\{ \hat{\theta}^{*2}_{b1} + \sigma_1^2, \dots, \hat{\theta}^{*2}_{bK} + \sigma_K^2 \right\}\right] - \hat {\theta}^{*2}_{(k)}}$
 
-# Algorithm 3 
+# Algorithm 3: Variance from Second-Level Bootstrap
 
 \begin{algorithmic}[1]
             \For {$c = 1, 2, \dots, C$}
@@ -161,7 +175,7 @@ For given values of $\boldsymbol{\Sigma}$ and $\theta_1, \theta_2, \dots, \theta
     \begin{algorithmic}[1] % Start algorithmic block
             \For {$\text{replications} = 1, 2, \dots, 5000$}
             \State Generate $\hat{\boldsymbol{\theta}} \sim N_K(\boldsymbol{\theta}, \boldsymbol{\Sigma})$
-            \State Compute the confidence region $\mathfrak{R}_1$ for the unordered parameters using Algorithm \ref{alg:nonrank_ci} and the confidence region for the ordered parameters $\mathfrak{R}_2$ using Algorithms \ref{alg:rank_asymp} and \ref{alg:rank_secondlevelbs}.
+            \State Compute the confidence region $\mathfrak{R}_1$ for the unordered parameters using Algorithm 1 and the confidence region for the ordered parameters $\mathfrak{R}_2$ using Algorithms 2 and 3.
             \State For the unordered parameters, check if $\left( \theta_1, \theta_2, \dots, \theta_K\right) \in \mathfrak{R}_1$ and compute $T_1, T_2$, and $T_3$. For the ordered parameters, check if $\left( \theta_{(1)}, \theta_{(2)}, \dots, \theta_{(K)}\right) \in \mathfrak{R}_2$
         \EndFor
     \State Compute the proportion of times that the condition in line 4 is satisfied and the average of $T_1, T_2$, and $T_3$.
