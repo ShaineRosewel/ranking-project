@@ -136,7 +136,7 @@
   pdfcreator={LaTeX via pandoc}}
 
 \author{Matala, Shaine Rosewel}
-\date{November 25, 2025}
+\date{November 26, 2025}
 
 \begin{document}
 
@@ -194,11 +194,9 @@
     \(\theta_1,\theta_2,\ldots, \theta_K\)
   \item
     obtain joint confidence intervals for the \(r_1,r_2,\ldots,r_K\)
-    using a result from Klein et al.~(2020).
+    using a result from Klein et al. (2020)).
   \end{enumerate}
 \end{itemize}
-
-\note{this is my note-testing}
 \end{frame}
 
 \begin{frame}{Klein's}
@@ -212,7 +210,7 @@ exists values \(L_k\) and \(U_k\) ST
 \end{equation}
 
 If the condition in (\ref{eq:theta_int}) holds, the main result from
-Klein et al.~(2020) gives a range for the value of \(r_k\) for each
+Klein et al. (2020) gives a range for the value of \(r_k\) for each
 \(k \in \left\{1, 2, \dots, K\right\}\) as follows:
 
 \begin{equation}
@@ -236,7 +234,7 @@ in (\ref{eq:theta_int}) satisfies the following probability condition:
 \begin{equation}
   P\left[ \bigcap^K_{k=1} \left\{ \theta_k \in \left(L_k, U_k\right) \right\} \right] \geq 1-\alpha,
   \label{eq:joint_cov1}
-\end{equation} then, by the result of Klein et al.~(2020), it also
+\end{equation} then, by the result of Klein et al. (2020), it also
 follows that
 
 \begin{equation}
@@ -265,52 +263,65 @@ follows that
 \begin{itemize}[<+->]
 \tightlist
 \item
-  Assuming independence when constructing joint confidence regions for
-  estimators that are, in fact, correlated may lead to overly
-  conservative and thus wider intervals, implying greater uncertainty.
+  Problem: Assuming independence when constructing joint confidence
+  regions for estimators that are, in fact, correlated may lead to
+  overly conservative and thus wider intervals, implying greater
+  uncertainty.
 \item
-  We aim to develop a procedure capable of handling such dependencies
-  while maintaining coverage close to the nominal level and producing
+  Aim: develop a procedure capable of handling such dependencies while
+  maintaining coverage close to the nominal level and producing
   relatively narrow joint confidence intervals.
 \end{itemize}
 \end{frame}
 
 \begin{frame}{Motivation}
 \phantomsection\label{motivation-1}
-\begin{block}{Political setting}
-\phantomsection\label{political-setting}
+\begin{block}{Political setting --- David \& Legara (2015)}
+\phantomsection\label{political-setting-legara}
 \begin{itemize}[<+->]
 \tightlist
 \item
-  David \& Legara (2015) demonstrated that candidates with a name-recall
-  advantage, such as media celebrities, incumbents, and members of
-  dynastic families, received majority of the votes in the 2010
-  senatorial elections.
+  Name recall is a powerful predictor of likely victory in elections.
 \item
   In weak-party systems, candidates who belong to the same political
   alliance or ticket commonly co-occur in ballots and hence perform with
   similarity.
 \end{itemize}
+
+\note{
+\begin{itemize}
+  \item Candidates with a name-recall advantage, such as media celebrities, incumbents, and members of dynastic families, received majority of the votes in the 2010 senatorial elections
+  \item top-ranked candidates is composed of people who can take the most advantage of name recall: All belong to at least one of the following types: media celebrity, member of political dynasty, or had prior experience in the Senate (labeled henceforth Celebrities and Dynasties). Of the eight candidates, three are former movie and television actors, three are offspring of former presidents and senators, and six had prior experience in the Senate. They come from different political parties and different tickets
+  \item This set of candidates was aggressively campaigned alongside candidate for President Aquino, who was popular
+throughout the election season and eventually won by a 12% margin.This is the only ticket-based cluster;
+\end{itemize}
+}
 \end{block}
 \end{frame}
 
 \begin{frame}{Motivation}
 \phantomsection\label{motivation-2}
-\begin{block}{Measurement across geographies}
-\phantomsection\label{measurement-across-geographies}
-\begin{itemize}[<+->]
-\tightlist
-\item
-  Klein et al.~(2020) also noted that states with large unpopulated land
-  areas and relatively few high-density population centers tend to
-  report shorter travel times while longer travel times are typically
-  observed in highly urbanized states with large populations and high
-  population densities.
-\item
-  Many states with shorter travel times are located in the Mountain and
-  Central regions, whereas majority of those with longer travel times
-  are concentrated along the East Coast.
+\begin{block}{Measurement across geographies --- Klein et al. (2020)}
+\phantomsection\label{measurement-across-geographies-klein}
+\begin{table}[h]
+\centering
+\begin{tabular}{p{1cm} p{4.5cm} p{4.5cm}}
+\textbf{Travel Time} & \textbf{Population Density} & \textbf{Common Locations} \\ \hline
+Shorter mean &
+Large unpopulated land areas; fewer high-density population centers &
+Mountain region and Central region states \\[3pt] %3pt is the gap%
+Longer mean &
+Highly urbanized areas with large populations and dense population centers &
+East Coast states \\
+\end{tabular}
+\end{table}
+
+\note{
+\begin{itemize}
+  \item @klein also noted that states with large unpopulated land areas and relatively few high-density population centers tend to report shorter travel times while longer travel times are typically observed in highly urbanized states with large populations and high population densities.
+  \item 2019---Many states with shorter travel times are located in the Mountain and Central regions, whereas majority of those with longer travel times are concentrated along the East Coast.
 \end{itemize}
+}
 \end{block}
 \end{frame}
 
@@ -766,6 +777,10 @@ A new beginning.
 
 \phantomsection\label{refs}
 \begin{CSLReferences}{1}{0}
+\bibitem[\citeproctext]{ref-legara}
+David, C., \& Legara, E. F. (2015). \emph{How voters combine candidates
+on the ballot: The case of the philippine senatorial elections}.
+
 \bibitem[\citeproctext]{ref-klein}
 Klein, M., Wright, T., \& Wieczorek, J. (2020). A joint confidence
 region for an overall ranking of populations. \emph{Journal of the Royal
