@@ -84,39 +84,6 @@
 \providecommand{\tightlist}{%
   \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
 \setcounter{secnumdepth}{-\maxdimen} % remove section numbering
-% definitions for citeproc citations
-\NewDocumentCommand\citeproctext{}{}
-\NewDocumentCommand\citeproc{mm}{%
-  \begingroup\def\citeproctext{#2}\cite{#1}\endgroup}
-\makeatletter
- % allow citations to break across lines
- \let\@cite@ofmt\@firstofone
- % avoid brackets around text for \cite:
- \def\@biblabel#1{}
- \def\@cite#1#2{{#1\if@tempswa , #2\fi}}
-\makeatother
-\newlength{\cslhangindent}
-\setlength{\cslhangindent}{1.5em}
-\newlength{\csllabelwidth}
-\setlength{\csllabelwidth}{3em}
-\newenvironment{CSLReferences}[2] % #1 hanging-indent, #2 entry-spacing
- {\begin{list}{}{%
-  \setlength{\itemindent}{0pt}
-  \setlength{\leftmargin}{0pt}
-  \setlength{\parsep}{0pt}
-  % turn on hanging indent if param 1 is 1
-  \ifodd #1
-   \setlength{\leftmargin}{\cslhangindent}
-   \setlength{\itemindent}{-1\cslhangindent}
-  \fi
-  % set entry spacing
-  \setlength{\itemsep}{#2\baselineskip}}}
- {\end{list}}
-\usepackage{calc}
-\newcommand{\CSLBlock}[1]{\hfill\break\parbox[t]{\linewidth}{\strut\ignorespaces#1\strut}}
-\newcommand{\CSLLeftMargin}[1]{\parbox[t]{\csllabelwidth}{\strut#1\strut}}
-\newcommand{\CSLRightInline}[1]{\parbox[t]{\linewidth - \csllabelwidth}{\strut#1\strut}}
-\newcommand{\CSLIndent}[1]{\hspace{\cslhangindent}#1}
 \title[Joint Confidence Regions for Rankings]{Joint Confidence Regions for Rankings based on Correlated Estimates}
 \author[Matala]{Matala, Shaine Rosewel}
 \institute[UP Stat]{University of the Philippines}
@@ -124,6 +91,7 @@
 \usepackage{algpseudocode}
 \usepackage{pgfpages}
 \setbeameroption{show notes on second screen=right}
+\usepackage{comment}
 \ifLuaTeX
   \usepackage{selnolig}  % disable illegal ligatures
 \fi
@@ -136,7 +104,7 @@
   pdfcreator={LaTeX via pandoc}}
 
 \author{Matala, Shaine Rosewel}
-\date{November 26, 2025}
+\date{December 11, 2025}
 
 \begin{document}
 
@@ -156,21 +124,28 @@
 \item
   Given estimates in a table without an explicit ranking, readers tend
   to compare units by looking for smallest or largest estimates and for
-  relative standings between the units. Such tables as motivate
-  ``implicit'' rankings.
+  relative standings between the units.
 \item
-  Because rankings based on the observed values of
-  \(\hat\theta_1,\hat\theta_2,\ldots, \hat\theta_K\) can vary because of
-  sampling variability, widely understood statements of uncertainty
-  should accompany each released ranking.
+  Because rankings based on
+  \(\hat\theta_1,\hat\theta_2,\ldots, \hat\theta_K\) can vary due to
+  sampling variability, statements of uncertainty should accompany
+  released rankings.
 \item
-  The margin of error gives uncertainty in the estimate \(\hat\theta_k\)
-  for each unit separately
+  The margin of error gives uncertainty in \(\hat\theta_k\) for each
+  \(k\) separately.
 \item
   A direct assessment of the uncertainty in the estimated overall
-  ranking would simultaneously involve all units and their relative
-  standing to each other
+  ranking would simultaneously involve all units.
 \end{itemize}
+
+\note{
+\begin{itemize}
+  \item Example 30 day mortality rate in hospitals, mean travel time to work by Klein
+  \item Such tables motivate "implicit" rankings.
+  \item Because rankings based on the observed values of $\hat\theta_1,\hat\theta_2,\ldots, \hat\theta_K$ can vary because of sampling variability, widely understood statements of uncertainty should accompany each released ranking.
+  \item While the margin of error gives uncertainty in the estimate $\hat\theta_k$ for each unit $k$ separately, A direct assessment of the uncertainty in the estimated overall ranking would jointly involve all units and their relative standing to each other.
+\end{itemize}
+}
 \end{frame}
 
 \begin{frame}{Background of the Study}
@@ -185,18 +160,26 @@
   \label{eq:rank1}
   \end{equation}
 \item
-  Goal
-
-  \begin{enumerate}[<+->]
-  \tightlist
-  \item
-    derive a joint confidence region for
-    \(\theta_1,\theta_2,\ldots, \theta_K\)
-  \item
-    obtain joint confidence intervals for the \(r_1,r_2,\ldots,r_K\)
-    using a result from Klein et al. (2020)).
-  \end{enumerate}
+  Example
 \end{itemize}
+
+\begin{center}
+\uncover<2->{
+\begin{tabular}{ |c|c|c| }
+\hline
+$k$ & $\hat\theta_k$ & $\hat r_k$ \\
+\hline \hline
+1 & \uncover<3->{12} & \uncover<4->{1} \\
+2 & \uncover<3->{17} & \uncover<5->{2} \\  
+3 & \uncover<3->{19} & \uncover<7->{5} \\  
+4 & \uncover<3->{18} & \uncover<6->{3} \\  
+5 & \uncover<3->{19} & \uncover<7->{5} \\  
+\hline
+\end{tabular}
+}
+
+\uncover<8->{$\longrightarrow \left( \hat \theta_{(1)}, \hat \theta_{(2)}, \hat \theta_{(3)}, \hat \theta_{(4)}, \hat \theta_{(5)} \right)' = (12, 17, 18, 19, 19)'$}
+\end{center}
 \end{frame}
 
 \begin{frame}{Klein's}
@@ -209,9 +192,8 @@ exists values \(L_k\) and \(U_k\) ST
   \label{eq:theta_int}
 \end{equation}
 
-If the condition in (\ref{eq:theta_int}) holds, the main result from
-Klein et al. (2020) gives a range for the value of \(r_k\) for each
-\(k \in \left\{1, 2, \dots, K\right\}\) as follows:
+\uncover<2->{
+If the condition in (\ref{eq:theta_int}) holds, the main result from Klein et al. (2020) gives a range for the value of \(r_k\) for each \(k \in \left\{1, 2, \dots, K\right\}\) as follows:
 
 \begin{equation}
   r_k \in 
@@ -224,6 +206,32 @@ Klein et al. (2020) gives a range for the value of \(r_k\) for each
   \right\}
   \label{eq:klein_jcs}
 \end{equation}
+
+where
+
+\begin{align}
+  \Lambda_{Lk} &= \left\{ j\in I_k \mid U_j \le L_k \right\} \\
+  \Lambda_{Ok} &= \left\{ j\in I_k \mid U_j > L_k \text{ and } U_k > L_j \right\} \\
+  I_k &= \left\{1,2,\dots,K\right\}\setminus\left\{k\right\}
+\end{align}
+}
+\end{frame}
+
+\begin{frame}{Example}
+\phantomsection\label{example-1}
+\begin{center}
+\begin{tabular}{ |c|c|c|c|c|c|c| }
+\hline
+$k$ & $\hat\theta_k$ & $\hat r_k$ & $(L_k, U_k)$ & $\vert \Lambda_{L_k} \vert$ & $\vert \Lambda_{O_k} \vert$ & range \\
+\hline \hline
+1 & {12} & {1} & \uncover<2->{(11, 14)} & \uncover<4->{0} & \uncover<7->{0} & \uncover<10->{1} \\
+2 & {17} & {2} & \uncover<3->{(14, 21)} & \uncover<5->{1} & \uncover<8->{3} & \uncover<11->{2,3,4,5} \\  
+3 & {19} & {5} & \uncover<3->{(18, 20)} & \uncover<6->{2} & \uncover<9->{2} & \uncover<12->{3,4,5} \\  
+4 & {18} & {3} & \uncover<3->{(17, 18)} & \uncover<6->{1} & \uncover<9->{1} & \uncover<12->{2,3} \\  
+5 & {19} & {5} & \uncover<3->{(18, 21)} & \uncover<6->{2} & \uncover<9->{2} & \uncover<12->{3,4,5} \\  
+\hline
+\end{tabular}
+\end{center}
 \end{frame}
 
 \begin{frame}{Klein's}
@@ -234,8 +242,10 @@ in (\ref{eq:theta_int}) satisfies the following probability condition:
 \begin{equation}
   P\left[ \bigcap^K_{k=1} \left\{ \theta_k \in \left(L_k, U_k\right) \right\} \right] \geq 1-\alpha,
   \label{eq:joint_cov1}
-\end{equation} then, by the result of Klein et al. (2020), it also
-follows that
+\end{equation}
+
+\uncover<2->{
+then, by the result of Klein et al. (2020), it also follows that
 
 \begin{equation}
   P\left[
@@ -252,10 +262,63 @@ follows that
   \right] \geq 1-\alpha.
   \label{eq:joint_cov2}
 \end{equation}
+}
 \end{frame}
 
 \begin{frame}{Other related studies}
 \phantomsection\label{other-related-studies}
+\begin{itemize}[<+->]
+\tightlist
+\item
+  Mohamad et al.~(2019) apply Tukey's Honest Significant Difference
+  (HSD) to test \(H_0: \theta_j - \theta_{k} = 0\) for all
+  \(j \neq k \in {1, ..., K}\) at level \(\alpha\).
+\item
+  Mogstad et al.~(2024) construct the rectangular confidence region from
+  the pairwise differences of the estimators
+  \(\hat{\theta}_1, \dots, \hat{\theta}_K\) and an estimator of the
+  variance of \(\hat{\theta}_{j}-\hat{\theta}_{k}\).
+\end{itemize}
+
+\note{
+\begin{itemize}
+  \item their approach tends to be overly conservative, showing coverage levels between 0.996 and 1.0 at a 0.90 nominal level in simulations, when the $\theta$s differ. They also demonstrated that as the true differences increase from 0 to 0.5, the coverage quickly increases from the nominal level to 1. As a remedy, they proposed a rescaling technique that brings the coverage closer to the nominal level, though it remains conservative (e.g., from 1.0 to 0.978, from 0.998 to 0.961---at 0.90 confidence level
+\end{itemize}
+}
+\end{frame}
+
+\begin{frame}{Other related studies}
+\phantomsection\label{other-related-studies-1}
+\begin{itemize}[<+->]
+\tightlist
+\item
+  Goldstein \& Spiegelhalter (1996) use multilevel models, in the
+  context of ranking education and health institutions (e.g., schools,
+  hospitals, medical practitioners, etc.), to address the hierarchical
+  nature of data structures associated with institutional performance.
+\item
+  Hall \& Miller (2009) suggest using an ``independent component''
+  version of the bootstrap on the sample, where m-out-of-n bootstrap (m
+  \textless{} n) is applied as though the ranked variables were
+  statistically independent.
+\item
+  Zhang et al.~(2013) analyze U.S. age-adjusted cancer incidence and
+  mortality rates across states and counties by computing individual and
+  overall simultaneous confidence intervals for age-adjusted health
+  index using the Monte Carlo method.
+\item
+  Bazylik et al.~(2025), in their recent study, tackle the ranking of
+  political candidates or parties using the estimated share of support
+  each one receives in surveys. They address the dependence attributed
+  to the success probabilities of different categories by using their
+  proposed bootstrap algorithm.
+\end{itemize}
+
+\note{
+\begin{itemize}
+  \item hall and miller: They show this to perform at its best when a reasonable level of correlation is present among the variables.
+\end{itemize}
+}
 \end{frame}
 
 \begin{frame}{Motivation}
@@ -277,7 +340,7 @@ follows that
 \begin{frame}{Motivation}
 \phantomsection\label{motivation-1}
 \begin{block}{Political setting --- David \& Legara (2015)}
-\phantomsection\label{political-setting-legara}
+\phantomsection\label{political-setting-david-legara-2015}
 \begin{itemize}[<+->]
 \tightlist
 \item
@@ -301,24 +364,24 @@ throughout the election season and eventually won by a 12% margin.This is the on
 
 \begin{frame}{Motivation}
 \phantomsection\label{motivation-2}
-\begin{block}{Measurement across geographies --- Klein et al. (2020)}
-\phantomsection\label{measurement-across-geographies-klein}
+\begin{block}{Measurement across geographies --- Klein et al.~(2020)}
+\phantomsection\label{measurement-across-geographies-klein-et-al.-2020}
 \begin{table}[h]
 \centering
 \begin{tabular}{p{1cm} p{4.5cm} p{4.5cm}}
 \textbf{Travel Time} & \textbf{Population Density} & \textbf{Common Locations} \\ \hline
-Shorter mean &
-Large unpopulated land areas; fewer high-density population centers &
-Mountain region and Central region states \\[3pt] %3pt is the gap%
-Longer mean &
-Highly urbanized areas with large populations and dense population centers &
-East Coast states \\
+\uncover<2->{Shorter mean} &
+\uncover<3->{Large unpopulated land areas; fewer high-density population centers} &
+\uncover<5->{Mountain region and Central region states} \\[3pt] %3pt is the gap%
+\uncover<2->{Longer mean} &
+\uncover<4->{Highly urbanized areas with large populations and dense population centers} &
+\uncover<6->{East Coast states} \\
 \end{tabular}
 \end{table}
 
 \note{
 \begin{itemize}
-  \item @klein also noted that states with large unpopulated land areas and relatively few high-density population centers tend to report shorter travel times while longer travel times are typically observed in highly urbanized states with large populations and high population densities.
+  \item Klein et al. (2020) also noted that states with large unpopulated land areas and relatively few high-density population centers tend to report shorter travel times while longer travel times are typically observed in highly urbanized states with large populations and high population densities.
   \item 2019---Many states with shorter travel times are located in the Mountain and Central regions, whereas majority of those with longer travel times are concentrated along the East Coast.
 \end{itemize}
 }
@@ -383,11 +446,16 @@ This research aims to do the following:
 \tightlist
 \item
   Once the confidence intervals in (\ref{eq:rev1}) have been obtained,
-  we can then use the result of Klein et al. (2020) in
+  we can then use the result of Klein et al.~(2020) in
   (\ref{eq:joint_cov2}) to get the lower and upper bounds on the ranks
-  \(r_k, k=1,2,\ldots,K\). That is, we also get a joint confidence
-  region for \(r_1, r_2, . . . , r_K\).
+  \(r_k, k=1,2,\ldots,K\).
 \end{enumerate}
+
+\note{
+\begin{itemize}
+  \item bullet 2: That is, we also get a joint confidence region for $r_1, r_2, . . . , r_K$.
+\end{itemize}
+}
 \end{frame}
 
 \begin{frame}{Proposed methodology to compute the joint confidence
@@ -588,7 +656,7 @@ methods)
 \begin{itemize}[<+->]
 \tightlist
 \item
-  Useful in the mean travel time from the study of Klein et al. (2020).
+  Useful in the mean travel time from the study of Klein et al.~(2020).
 \item
   Spatial dependence can be modeled using a stationary Matérn
   correlation function, which for two locations \(\mathbf{s}_i\) and
@@ -604,190 +672,24 @@ methods)
 \end{itemize}
 \end{frame}
 
-\begin{frame}{Code blocks}
-\phantomsection\label{code-blocks}
-\begin{alertblock}{Alert block}
-$$
-E = mc^2
-$$
-\end{alertblock}
+\begin{frame}{Simulation settings}
+\phantomsection\label{simulation-settings}
+The following settings are considered for
+\(K = \{10, 20, 30, 40, 50\}\). Each \(K\) has a set of corresponding
+population variances \(\sigma^2_1, \sigma^2_2,\ldots,\sigma^2_K\). A
+nominal level of \(1-\alpha=0.95\) will be used.
 
-\begin{examples}
-Example blocks are automatically green in color
-\end{examples}
-
-\begin{block}{Blue block}
-\phantomsection\label{blue-block}
-\begin{itemize}
-\tightlist
-\item
-  happens with level 2, 3 headings
-\item
-  this is only true for `Madrid' theme in R Markdown!!
-\end{itemize}
-\end{block}
-\end{frame}
-
-\begin{frame}{This works, incremental bullets}
-\phantomsection\label{this-works-incremental-bullets}
-\begin{itemize}[<+->]
-\tightlist
-\item
-  Bullet 1
-\item
-  Bullet 2
-\end{itemize}
-\end{frame}
-
-\begin{frame}{This nests, but does not increment}
-\phantomsection\label{this-nests-but-does-not-increment}
-\begin{itemize}
-\tightlist
-\item
-  Bullet 1
-\item
-  Bullet 2
-
-  \begin{itemize}
-  \tightlist
-  \item
-    subbullet 1
-  \item
-    subbullet 2
-  \end{itemize}
-\end{itemize}
-\end{frame}
-
-\begin{frame}{This increments}
-\phantomsection\label{this-increments}
-\begin{itemize}[<+->]
-\tightlist
-\item
-  Bullet 1
-\item
-  Bullet 2
-
-  \begin{itemize}[<+->]
-  \tightlist
-  \item
-    subbullet 1
-  \item
-    subbullet 2
-  \end{itemize}
-\end{itemize}
-\end{frame}
-
-\begin{frame}{This increments too}
-\phantomsection\label{this-increments-too}
-\begin{itemize}[<+->]
-\tightlist
-\item
-  Bullet 1
-\item
-  Bullet 2
-
-  \begin{itemize}[<+->]
-  \tightlist
-  \item
-    subbullet 1
-  \item
-    subbullet 2
-  \end{itemize}
-\end{itemize}
-\end{frame}
-
-\begin{frame}{Algo Font Size Adjustments sample}
-\phantomsection\label{algo-font-size-adjustments-sample}
-\begin{minipage}{0.9\textwidth}
-\begin{algorithmic}[1]
-    \For {$b = 1, 2, \dots, B$}
-        \State \parbox[t]{0.85\linewidth}{\footnotesize{
-            Generate $\hat{\boldsymbol{\theta}}^*_b = \left( \hat{\theta}^*_{b1}, \hat{\theta}^*_{b2}, \dots, \hat{\theta}^*_{bK} \right)' \sim N_K \left( \boldsymbol{\hat \theta}, \boldsymbol {\Sigma} \right)$ and let $\hat{\theta}^*_{b(1)}, \hat{\theta}^*_{b(2)}, \dots, \hat{\theta}^*_{b(K)}$ be the corresponding ordered values 
-        }}
-        \State \parbox[t]{0.85\linewidth}{\footnotesize{
-            Compute $\hat\sigma^*_{b(k)} = \hat\sigma^*_{b(k)} = \sqrt{\left[\text{kth ordered value among} \ \left\{ \hat{\theta}^{*2}_{b1} + \sigma_1^2, \dots, \hat{\theta}^{*2}_{bK} + \sigma_K^2 \right\}\right] - \hat {\theta}^{*2}_{(k)}}$}}
-            \Statex
-        \State \parbox[t]{0.85\linewidth}{\footnotesize{ 
-            Compute}}
-\Statex
 \begin{center}
-\parbox{0.9\linewidth}{
-    \centering
-    {\footnotesize
-$t^*_b = \underset{1 \leq k \leq K}{\max} \Bigg| \frac{\hat\theta^*_{b(k)} - \hat\theta^*_{k}}{\hat\sigma^*_{b(k)}} \Bigg|$
-    }}
+\begin{tabular}{ |c|c| }
+\hline
+$\boldsymbol{\theta}$ & Correlation matrix \\
+\hline \hline
+low variability & $\mathbf{R}_{\text{eq}},\, \mathbf{R}_{\text{block}}$ \\
+medium variability & $\mathbf{R}_{\text{eq}},\, \mathbf{R}_{\text{block}}$ \\  
+high variability & $\mathbf{R}_{\text{eq}},\, \mathbf{R}_{\text{block}}$ \\
+\hline
+\end{tabular}
 \end{center}
-    \EndFor
-    \State \parbox[t]{0.85\linewidth}{\footnotesize{Compute the $\left(1-\alpha\right)$-sample quantile of $t^*_1, \dots, t^*_B$, call this $\hat{t}$.}}
-    \State \parbox[t]{0.85\linewidth}{\footnotesize{The joint confidence region of $\theta_{(1)}, \theta_{(2)}, \dots, \theta_{(K)}$ is given by
-     }}
-\Statex
-\begin{center}
-\parbox{0.9\linewidth}{
-    \centering
-    {\footnotesize
-    $\mathfrak{R}_2 = \left[ \hat\theta_{(1)} \pm \hat t \times \hat\sigma_{(1)}  \right] \times \left[ \hat\theta_{(2)} \pm \hat t \times \hat\sigma_{(2)}  \right] \times \dots \times \left[ \hat\theta_{(K)} \pm \hat t \times \hat\sigma_{(K)}  \right]$
-    }}
-\end{center}
-\Statex
-\parbox{0.9\linewidth}{
-    {\footnotesize
-    where
-    }}
-\Statex
-\begin{center}
-\parbox{0.9\linewidth}{
-    \centering
-    {\footnotesize
-    $\hat\sigma_{(k)} =
-    \sqrt{
-      \text{kth ordered value among }
-      \{ \hat\theta_1^{2} + \sigma_1^2,\,
-         \dots,\,
-         \hat\theta_K^{2} + \sigma_K^2 \}
-      - \hat\theta_{(k)}^{2}
-    }$
-    }}
-\end{center}
-    \end{algorithmic}
-\end{minipage}
-\end{frame}
-
-\begin{frame}{Text}
-\phantomsection\label{text}
-Today is going to be a great day
-
-\begin{block}{Today is\ldots{}}
-\phantomsection\label{today-is}
-A new beginning.
-\end{block}
-
-\begin{block}{Your Reference}
-\phantomsection\label{your-reference}
-\begin{itemize}
-\tightlist
-\item
-  \href{https://www.slideshare.net/slideshow/create-beamer-slide-with-r-markdown/105158435}{slideshare}
-\item
-  \href{https://mpetroff.net/files/beamer-theme-matrix/}{themes}
-\item
-  \href{https://stackoverflow.com/questions/49367078/incremental-sub-bullets-in-rmarkdown-and-beamer}{incremental
-  bullets}
-\end{itemize}
-
-\phantomsection\label{refs}
-\begin{CSLReferences}{1}{0}
-\bibitem[\citeproctext]{ref-legara}
-David, C., \& Legara, E. F. (2015). \emph{How voters combine candidates
-on the ballot: The case of the philippine senatorial elections}.
-
-\bibitem[\citeproctext]{ref-klein}
-Klein, M., Wright, T., \& Wieczorek, J. (2020). A joint confidence
-region for an overall ranking of populations. \emph{Journal of the Royal
-Statistical Society}, 589--606.
-
-\end{CSLReferences}
-\end{block}
 \end{frame}
 
 \end{document}
