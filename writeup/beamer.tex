@@ -104,7 +104,7 @@
   pdfcreator={LaTeX via pandoc}}
 
 \author{Matala, Shaine Rosewel}
-\date{December 11, 2025}
+\date{December 14, 2025}
 
 \begin{document}
 
@@ -122,12 +122,8 @@
   rank these \(K\) parameters from smallest to largest,
   \(\theta_{(1)}<\theta_{(2)}<\ldots<\theta_{(K)}\).
 \item
-  Given estimates in a table without an explicit ranking, readers tend
-  to compare units by looking for smallest or largest estimates and for
-  relative standings between the units.
-\item
   Because rankings based on
-  \(\hat\theta_1,\hat\theta_2,\ldots, \hat\theta_K\) can vary due to
+  \(\hat\theta_1,\hat\theta_2,\ldots, \hat\theta_K\) can change due to
   sampling variability, statements of uncertainty should accompany
   released rankings.
 \item
@@ -157,7 +153,7 @@
   \(\theta_1,\theta_2,\ldots, \theta_K\). A mathematical definition of
   \(r_k\) is as follows: \begin{equation}
   r_k = \sum^K_{j=1} I(\theta_j \leq \theta_k) = 1 + \sum_{j:j \neq k} I(\theta_j \leq \theta_k), \qquad \text{for} \; k = 1, 2, \dots, K.
-  \label{eq:rank1}
+  \notag
   \end{equation}
 \item
   Example
@@ -169,31 +165,33 @@
 \hline
 $k$ & $\hat\theta_k$ & $\hat r_k$ \\
 \hline \hline
-1 & \uncover<3->{12} & \uncover<4->{1} \\
-2 & \uncover<3->{17} & \uncover<5->{2} \\  
-3 & \uncover<3->{19} & \uncover<7->{5} \\  
-4 & \uncover<3->{18} & \uncover<6->{3} \\  
-5 & \uncover<3->{19} & \uncover<7->{5} \\  
+1 & \uncover<3->{12.3} & \uncover<4->{1} \\
+2 & \uncover<3->{17.2} & \uncover<5->{2} \\  
+3 & \uncover<3->{19.1} & \uncover<7->{5} \\  
+4 & \uncover<3->{18.0} & \uncover<6->{3} \\  
+5 & \uncover<3->{19.0} & \uncover<7->{4} \\  
 \hline
 \end{tabular}
 }
-
-\uncover<8->{$\longrightarrow \left( \hat \theta_{(1)}, \hat \theta_{(2)}, \hat \theta_{(3)}, \hat \theta_{(4)}, \hat \theta_{(5)} \right)' = (12, 17, 18, 19, 19)'$}
 \end{center}
 \end{frame}
 
-\begin{frame}{Klein's}
-\phantomsection\label{kleins}
-Suppose that for each \(k \in \left\{1, 2, \dots, K\right\}\) there
-exists values \(L_k\) and \(U_k\) ST
+\begin{frame}{Klein's Approach}
+\phantomsection\label{kleins-approach}
+Klein et al.~(2020) assumes that
+\(\hat{\theta}_k\sim N(\theta_k,\sigma^2_k), k=1,2,\ldots,K\) where
+\(\theta_k\) is unknown but \(\sigma^2_k\) is known.
+
+\uncover<2->{Suppose that for each \(k \in \left\{1, 2, \dots, K\right\}\) there exists values \(L_k\) and \(U_k\) ST
 
 \begin{equation}
-  \theta_k \in \left( L_k, U_k \right), k=1,2,\ldots,K.
+  \theta_k \in \left( L_k, U_k \right), k=1,2,\ldots,K,
   \label{eq:theta_int}
 \end{equation}
+}
 
-\uncover<2->{
-If the condition in (\ref{eq:theta_int}) holds, the main result from Klein et al. (2020) gives a range for the value of \(r_k\) for each \(k \in \left\{1, 2, \dots, K\right\}\) as follows:
+\uncover<3->{
+their main result gives a range for \(r_k\) for each \(k \in \left\{1, 2, \dots, K\right\}\) as follows:
 
 \begin{equation}
   r_k \in 
@@ -207,40 +205,44 @@ If the condition in (\ref{eq:theta_int}) holds, the main result from Klein et al
   \label{eq:klein_jcs}
 \end{equation}
 
-where
-
 \begin{align}
-  \Lambda_{Lk} &= \left\{ j\in I_k \mid U_j \le L_k \right\} \\
-  \Lambda_{Ok} &= \left\{ j\in I_k \mid U_j > L_k \text{ and } U_k > L_j \right\} \\
-  I_k &= \left\{1,2,\dots,K\right\}\setminus\left\{k\right\}
+  \text{where } &I_k = \left\{1,2,\dots,K\right\}\setminus\left\{k\right\} \notag \\
+  &\Lambda_{Lk} = \left\{ j\in I_k \mid U_j \le L_k \right\} \notag \\
+  &\Lambda_{Ok} = \left\{ j\in I_k \mid U_j > L_k \text{ and } U_k > L_j \right\} \notag
 \end{align}
+}
+
+\note{
+\begin{itemize}
+  \item Note that the number of elements in the range given in (\ref{eq:klein_jcs}) is $|\Lambda_{Ok}|+1$. Since the smaller difference between \(U_k\) and \(L_k\) leads to a smaller \(\lvert \Lambda_{Ok} \rvert\), narrower confidence intervals for $\theta_1,\theta_2,\ldots,\theta_K$ are desirable.
+\end{itemize}
 }
 \end{frame}
 
-\begin{frame}{Example}
-\phantomsection\label{example-1}
+\begin{frame}{Klein's Approach}
+\phantomsection\label{kleins-approach-1}
 \begin{center}
 \begin{tabular}{ |c|c|c|c|c|c|c| }
 \hline
-$k$ & $\hat\theta_k$ & $\hat r_k$ & $(L_k, U_k)$ & $\vert \Lambda_{L_k} \vert$ & $\vert \Lambda_{O_k} \vert$ & range \\
+$k$ & $\hat\theta_k$ & $\hat r_k$ & $(L_k, U_k)$ & $\vert \Lambda_{Lk} \vert$ & $\vert \Lambda_{Ok} \vert$ & range \\
 \hline \hline
-1 & {12} & {1} & \uncover<2->{(11, 14)} & \uncover<4->{0} & \uncover<7->{0} & \uncover<10->{1} \\
-2 & {17} & {2} & \uncover<3->{(14, 21)} & \uncover<5->{1} & \uncover<8->{3} & \uncover<11->{2,3,4,5} \\  
-3 & {19} & {5} & \uncover<3->{(18, 20)} & \uncover<6->{2} & \uncover<9->{2} & \uncover<12->{3,4,5} \\  
-4 & {18} & {3} & \uncover<3->{(17, 18)} & \uncover<6->{1} & \uncover<9->{1} & \uncover<12->{2,3} \\  
-5 & {19} & {5} & \uncover<3->{(18, 21)} & \uncover<6->{2} & \uncover<9->{2} & \uncover<12->{3,4,5} \\  
+1 & {12.3} & {1} & \uncover<2->{(11.0, 14.3)} & \uncover<4->{0} & \uncover<7->{1} & \uncover<10->{1,2} \\
+2 & {17.2} & {2} & \uncover<3->{(14.1, 21.2)} & \uncover<5->{0} & \uncover<8->{4} & \uncover<11->{1,2,3,4,5} \\  
+3 & {19.1} & {5} & \uncover<3->{(18.2, 20.1)} & \uncover<6->{2} & \uncover<9->{2} & \uncover<12->{3,4,5} \\  
+4 & {18.0} & {3} & \uncover<3->{(17.3, 18.0)} & \uncover<6->{1} & \uncover<9->{1} & \uncover<12->{2,3} \\  
+5 & {19.0} & {4} & \uncover<3->{(18.4, 21.0)} & \uncover<6->{2} & \uncover<9->{2} & \uncover<12->{3,4,5} \\  
 \hline
 \end{tabular}
 \end{center}
 \end{frame}
 
-\begin{frame}{Klein's}
-\phantomsection\label{kleins-1}
-Suppose that for random quantities \(L_k\) and \(U_k\) the event defined
-in (\ref{eq:theta_int}) satisfies the following probability condition:
+\begin{frame}{Klein's Approach}
+\phantomsection\label{kleins-approach-2}
+Suppose that for random quantities \(L_k\) and \(U_k\), the intervals
+satisfy the following probability condition:
 
 \begin{equation}
-  P\left[ \bigcap^K_{k=1} \left\{ \theta_k \in \left(L_k, U_k\right) \right\} \right] \geq 1-\alpha,
+  P\left[ \bigcap^K_{k=1} \left\{ \theta_k \in \left(L_k, U_k\right) \right\} \right] \geq 1-\alpha;
   \label{eq:joint_cov1}
 \end{equation}
 
@@ -263,60 +265,43 @@ then, by the result of Klein et al. (2020), it also follows that
   \label{eq:joint_cov2}
 \end{equation}
 }
-\end{frame}
-
-\begin{frame}{Other related studies}
-\phantomsection\label{other-related-studies}
-\begin{itemize}[<+->]
-\tightlist
-\item
-  Mohamad et al.~(2019) apply Tukey's Honest Significant Difference
-  (HSD) to test \(H_0: \theta_j - \theta_{k} = 0\) for all
-  \(j \neq k \in {1, ..., K}\) at level \(\alpha\).
-\item
-  Mogstad et al.~(2024) construct the rectangular confidence region from
-  the pairwise differences of the estimators
-  \(\hat{\theta}_1, \dots, \hat{\theta}_K\) and an estimator of the
-  variance of \(\hat{\theta}_{j}-\hat{\theta}_{k}\).
-\end{itemize}
 
 \note{
 \begin{itemize}
-  \item their approach tends to be overly conservative, showing coverage levels between 0.996 and 1.0 at a 0.90 nominal level in simulations, when the $\theta$s differ. They also demonstrated that as the true differences increase from 0 to 0.5, the coverage quickly increases from the nominal level to 1. As a remedy, they proposed a rescaling technique that brings the coverage closer to the nominal level, though it remains conservative (e.g., from 1.0 to 0.978, from 0.998 to 0.961---at 0.90 confidence level
+  \item Since the smaller difference between \(U_k\) and \(L_k\) leads to a smaller \(\lvert \Lambda_{Ok} \rvert\), narrower confidence intervals for $\theta_1,\theta_2,\ldots,\theta_K$ are desirable.
 \end{itemize}
 }
 \end{frame}
 
-\begin{frame}{Other related studies}
-\phantomsection\label{other-related-studies-1}
+\begin{frame}{Klein's Approach}
+\phantomsection\label{kleins-approach-3}
 \begin{itemize}[<+->]
 \tightlist
 \item
-  Goldstein \& Spiegelhalter (1996) use multilevel models, in the
-  context of ranking education and health institutions (e.g., schools,
-  hospitals, medical practitioners, etc.), to address the hierarchical
-  nature of data structures associated with institutional performance.
+  Due to the assumption of normality on \(\hat{\theta}_k\) as well as
+  the fact that \(\sigma_k\) is assumed known, Klein set the confidence
+  intervals \((L_k,U_k)\) for \(\theta_k\) to be of the form
+  \(\hat \theta_k \pm t \times \sigma_k\) for
+  \(k \in \left\{1, 2, \dots, K\right\}\).
+\end{itemize}
+
+\begin{itemize}[<+->]
+\tightlist
 \item
-  Hall \& Miller (2009) suggest using an ``independent component''
-  version of the bootstrap on the sample, where m-out-of-n bootstrap (m
-  \textless{} n) is applied as though the ranked variables were
-  statistically independent.
+  Bonferroni approach: \(t = z_{\alpha/2K}\)
+\end{itemize}
+
+\begin{itemize}[<+->]
+\tightlist
 \item
-  Zhang et al.~(2013) analyze U.S. age-adjusted cancer incidence and
-  mortality rates across states and counties by computing individual and
-  overall simultaneous confidence intervals for age-adjusted health
-  index using the Monte Carlo method.
-\item
-  Bazylik et al.~(2025), in their recent study, tackle the ranking of
-  political candidates or parties using the estimated share of support
-  each one receives in surveys. They address the dependence attributed
-  to the success probabilities of different categories by using their
-  proposed bootstrap algorithm.
+  Independence assumption: \(t = z_{\gamma/2}\) where
+  \(\gamma=1-(1-\alpha)^{1/K}\)
 \end{itemize}
 
 \note{
 \begin{itemize}
-  \item hall and miller: They show this to perform at its best when a reasonable level of correlation is present among the variables.
+  \item One may use the Bonferroni approach to choose $t$. If such an approach is used, the choice of $t$ that would satisfy (\ref{eq:joint_cov1}) is $t = z_{\alpha/2K}$.
+  \item Another choice of $t$ is one that exploits the independence assumption on $\hat{\theta}_k$. Such a choice is given by $z_{\gamma/2}$ where $\gamma=1-(1-\alpha)^{1/K}$
 \end{itemize}
 }
 \end{frame}
@@ -344,19 +329,17 @@ then, by the result of Klein et al. (2020), it also follows that
 \begin{itemize}[<+->]
 \tightlist
 \item
-  Name recall is a powerful predictor of likely victory in elections.
-\item
   In weak-party systems, candidates who belong to the same political
   alliance or ticket commonly co-occur in ballots and hence perform with
   similarity.
+\item
+  Name recall is a powerful predictor of likely victory in elections.
 \end{itemize}
 
 \note{
 \begin{itemize}
-  \item Candidates with a name-recall advantage, such as media celebrities, incumbents, and members of dynastic families, received majority of the votes in the 2010 senatorial elections
-  \item top-ranked candidates is composed of people who can take the most advantage of name recall: All belong to at least one of the following types: media celebrity, member of political dynasty, or had prior experience in the Senate (labeled henceforth Celebrities and Dynasties). Of the eight candidates, three are former movie and television actors, three are offspring of former presidents and senators, and six had prior experience in the Senate. They come from different political parties and different tickets
-  \item This set of candidates was aggressively campaigned alongside candidate for President Aquino, who was popular
-throughout the election season and eventually won by a 12% margin.This is the only ticket-based cluster;
+  \item Candidates with a name-recall advantage, such as media celebrities, incumbents, and members of dynastic families
+  \item In the Philippine setting, candidates running under the same alliance often share campaign machinery and voter bases, which induces correlation in their vote totals across districts. However, dependence need not arise solely from alliance membership. Other factors such as name recall can affect multiple candidates simultaneously, even across different alliances.
 \end{itemize}
 }
 \end{block}
@@ -422,7 +405,21 @@ This research aims to do the following:
 \item
   Note that in the literature on inferences on the ranks, it is
   customary to assume that the variances are known.
+\item
+  We assume that \(V(\hat{\boldsymbol{\theta}})=\boldsymbol{\Sigma}\) is
+  known and express \(\boldsymbol{\Sigma}\), where \(\mathbf{R}\) is the
+  population correlation matrix. \begin{equation}
+  \boldsymbol{\Sigma} = \boldsymbol{\Delta}^{1/2} \mathbf{R} \boldsymbol{\Delta}^{1/2}; \quad \boldsymbol{\Delta} = \text{diag} \left\{ \sigma^2_1, \sigma^2_2, \dots, \sigma^2_K \right\}.
+  \notag
+  \end{equation}
 \end{itemize}
+
+\note{
+\begin{itemize}
+  \item The estimators may be correlated, so the covariance matrix is not necessarily diagonal. We write the covariance matrix in terms of marginal variances and a correlation matrix, and we treat the marginal variances as known in practice.
+  \item The diagonal elements of $\boldsymbol{\Sigma}$, which are $\sigma^2_k=V(\hat{\theta}_k)$ for $k =1,2, \ldots,K$, are treated as known quantities in practice.
+\end{itemize}
+}
 \end{frame}
 
 \begin{frame}{Procedure}
@@ -445,15 +442,13 @@ This research aims to do the following:
 \setcounter{enumi}{1}
 \tightlist
 \item
-  Once the confidence intervals in (\ref{eq:rev1}) have been obtained,
-  we can then use the result of Klein et al.~(2020) in
-  (\ref{eq:joint_cov2}) to get the lower and upper bounds on the ranks
-  \(r_k, k=1,2,\ldots,K\).
+  Use the result of Klein et al.~(2020) to get the lower and upper
+  bounds on the ranks \(r_k, k=1,2,\ldots,K\).
 \end{enumerate}
 
 \note{
 \begin{itemize}
-  \item bullet 2: That is, we also get a joint confidence region for $r_1, r_2, . . . , r_K$.
+  \item bullet 2: Once the confidence intervals in (\ref{eq:rev1}) have been obtained, we can then use the result of Klein et al. (2020) in (\ref{eq:joint_cov2}) to get the lower and upper bounds on the ranks $r_k, k=1,2,\ldots,K$. That is, we also get a joint confidence region for $r_1, r_2, . . . , r_K$.
 \end{itemize}
 }
 \end{frame}
@@ -467,36 +462,52 @@ and suppose that \(\boldsymbol{\Sigma}\) is known
 
 \begin{algorithmic}[1]
         \For {$b = 1, 2, \dots, B$}
-                \State Generate $\hat{\boldsymbol{\theta}}^*_b \sim N_K \left( \hat{\boldsymbol{\theta}}, \boldsymbol{\Sigma}\right)$ and write $\hat{\boldsymbol{\theta}}^*_b = \left( \hat\theta^*_{b1}, \hat\theta^*_{b2}, \dots, \hat\theta^*_{bK} \right)' $
-                \State Compute 
+\uncover<2->{                \State Generate $\hat{\boldsymbol{\theta}}^*_b \sim N_K \left( \hat{\boldsymbol{\theta}}, \boldsymbol{\Sigma}\right)$ and write $\hat{\boldsymbol{\theta}}^*_b = \left( \hat\theta^*_{b1}, \hat\theta^*_{b2}, \dots, \hat\theta^*_{bK} \right)' $}
+\uncover<3->{                \State Compute 
                 \Statex \begin{minipage}{\linewidth}
                 \centering
                 $t^*_b = \underset{1 \leq k \leq K}{\max} \Bigg| \frac{\hat\theta^*_{bk} - \hat\theta_{k}}{\sigma_k} \Bigg|$
-                \end{minipage}
+                \end{minipage}}
         \EndFor
-        \State Compute the $\left(1-\alpha\right)$-sample quantile of $t^*_1, t^*_2, \dots, t^*_B$, call this $\hat{t}$.
-        \State The joint confidence region for $\boldsymbol{\theta} = (\theta_1, \theta_2, \dots, \theta_K)'$ is given by 
+\uncover<4->{        \State Compute the $\left(1-\alpha\right)$-sample quantile of $t^*_1, t^*_2, \dots, t^*_B$, call this $\hat{t}$.}
+\uncover<5->{         \State The joint confidence region for $\boldsymbol{\theta} = (\theta_1, \theta_2, \dots, \theta_K)'$ is given by 
         \Statex \begin{minipage}{\linewidth}
     \centering
 $\mathfrak{R}_1 = \left[ \hat\theta_1 \pm \hat t \times \sigma_1  \right] \times \left[ \hat\theta_2 \pm \hat t \times \sigma_2  \right] \times \dots \times \left[ \hat\theta_K \pm \hat t \times \sigma_K  \right]$.
-    \end{minipage}
+    \end{minipage}}
     \end{algorithmic}
+
+\note{
+Remarks about bootstrap (Hesterberg,2021):
+\begin{itemize}
+  \item Plug-in principle: We can plugin the estimator of an unknown parameter to the normal distribution
+  \item Bootstrap is implemented by Monte Carlo sampling. Estimator of SE improves as $B$ increases, as long as sampling is $iid$.
+  \item When sampling from estimated distribution, the resulting bootstrap distribution provides useful information about the sampling distribution of the statistic.
+  \item Bootstrap distribution is centered at the observed statistic, not the parameter. That is, the mean of the bootstrap estimates is not $\mu$ but $\bar x$. As a result, we do not use the mean of the bootstrap  statistic as a replacement for the original estimator (e.g., bootstrap cannot improve upon $\bar x$) as an estimator for $\mu$.  
+  \item Bootstrap is for estimating only the SE (it is only use to estimate parameter for some, e.g. quantiles)
+\end{itemize}
+}
 \end{frame}
 
 \begin{frame}{Algorithm 1: Quantile Calculation}
 \phantomsection\label{algorithm-1-quantile-calculation}
-We want the joint confidence region in (\ref{eq:rev1}) to satisfy the
-following probability condition:
+We want our joint confidence region to satisfy the probability
+condition:
 
-\begin{equation}
- P\left( \hat{\theta}_k-t \cdot \sigma_k \leq  \theta_k \leq  \hat{\theta}_k + t \cdot \sigma_k, \,\, \forall\; k=1,2,\ldots,K \right)  =1-\alpha.
-\end{equation}
+\begin{align}
+P\left( \hat{\theta}_k-t \cdot \sigma_k \leq  \theta_k \leq  \hat{\theta}_k + t \cdot \sigma_k, \,\, \forall\; k=1,2,\ldots,K \right)  =1-\alpha \notag \\
+\uncover<2->{P\left( -t \cdot \sigma_k \leq  \theta_k - \hat{\theta}_k \leq t \cdot \sigma_k, \,\, \forall\; k=1,2,\ldots,K \right)  =1-\alpha} \notag \\
+\uncover<3->{P\left( t \geq  \frac{\hat{\theta}_k-\theta_k}{\sigma_k} \geq -t, \,\, \forall\; k=1,2,\ldots,K \right)  =1-\alpha} \notag \\
+\uncover<4->{P\left( \left| \dfrac{\hat{\theta}_k-\theta_k}{\sigma_k} \right| \le t, \,\, \forall\; k=1,2,\ldots,K \right) =1-\alpha} \notag \\
+\uncover<5->{\Longleftrightarrow P\left( \max_{k=1,2,\ldots,K} \left| \dfrac{\hat{\theta}_k-\theta_k}{\sigma_k} \right| \le t \right) =1-\alpha
+} \notag
+\end{align}
 
-Equivalently, we require
-
-\begin{equation}
- P\left( \max_{k=1,2,\ldots,K} \left| \dfrac{\hat{\theta}_k-\theta_k}{\sigma_k} \right| \le t \right) =1-\alpha. 
-\end{equation}
+\note{
+\begin{itemize}
+  \item Bootstrap principle: Sample acts as a new population; bootstrap sample take the place of the sample 
+\end{itemize}
+}
 \end{frame}
 
 \begin{frame}{Proposed methodology to compute a joint confidence region
@@ -505,179 +516,121 @@ for the ordered parameters}
 \begin{minipage}{1.0\textwidth}
 \begin{algorithmic}[1]
     \For {$b = 1, 2, \dots, B$}
-        \State
-            Generate $\hat{\boldsymbol{\theta}}^*_b = \left( \hat{\theta}^*_{b1}, \hat{\theta}^*_{b2}, \dots, \hat{\theta}^*_{bK} \right)' \sim N_K \left( \boldsymbol{\hat \theta}, \boldsymbol {\Sigma} \right)$ and let $\hat{\theta}^*_{b(1)}, \hat{\theta}^*_{b(2)}, \dots, \hat{\theta}^*_{b(K)}$ be the corresponding ordered values 
-        \State
+\uncover<2->{        \State
+            Generate $\hat{\boldsymbol{\theta}}^*_b = \left( \hat{\theta}^*_{b1}, \hat{\theta}^*_{b2}, \dots, \hat{\theta}^*_{bK} \right)' \sim N_K \left( \boldsymbol{\hat \theta}, \boldsymbol {\Sigma} \right)$ and let $\hat{\theta}^*_{b(1)}, \hat{\theta}^*_{b(2)}, \dots, \hat{\theta}^*_{b(K)}$ be the corresponding ordered values}
+\uncover<3->{        \State
         Compute $\hat\sigma^*_{b(k)}$ using:
         \Statex \qquad • asymptotic variance definition
-        \Statex \qquad • second-level bootstrap
-        \State
+        \Statex \qquad • second-level bootstrap}
+\uncover<4->{        \State
             Compute
 \Statex
 \begin{center}
 $t^*_b = \underset{1 \leq k \leq K}{\max} \Bigg| \frac{\hat\theta^*_{b(k)} - \hat\theta_{(k)}}{\hat\sigma^*_{b(k)}} \Bigg|$
-\end{center}
+\end{center}}
     \EndFor
-    \State Compute the $\left(1-\alpha\right)$-sample quantile of $t^*_1, \dots, t^*_B$, call this $\hat{t}$.
-    \State The joint confidence region of $\theta_{(1)}, \theta_{(2)}, \dots, \theta_{(K)}$ is given by
+\uncover<5->{    \State Compute the $\left(1-\alpha\right)$-sample quantile of $t^*_1, \dots, t^*_B$, call this $\hat{t}$.}
+\uncover<6->{    \State The joint confidence region of $\theta_{(1)}, \theta_{(2)}, \dots, \theta_{(K)}$ is given by
 \Statex
 \begin{center}
     $\mathfrak{R}_2 = \left[ \hat\theta_{(1)} \pm \hat t \times \hat\sigma_{(1)}  \right] \times \left[ \hat\theta_{(2)} \pm \hat t \times \hat\sigma_{(2)}  \right] \times \dots \times \left[ \hat\theta_{(K)} \pm \hat t \times \hat\sigma_{(K)}  \right]$
-\end{center}
+\end{center}}
     \end{algorithmic}
 \end{minipage}
 \end{frame}
 
 \begin{frame}{Algorithm 2: Asymptotic Definition of Variance}
 \phantomsection\label{algorithm-2-asymptotic-definition-of-variance}
+\begin{itemize}[<+->]
+\tightlist
+\item
+  This uses results from Chen (1976) and Dudewicz (1972) to obtain an
+  expression of the asymptotic variance of \(\hat{\theta}_{(k)}\)
+\end{itemize}
+
 \(\hat\sigma^*_{b(k)} = \sqrt{\left[\text{kth ordered value among} \ \left\{ \hat{\theta}^{*2}_{b1} + \sigma_1^2, \dots, \hat{\theta}^{*2}_{bK} + \sigma_K^2 \right\}\right] - \hat {\theta}^{*2}_{(k)}}\)
+
+\begin{itemize}[<+->]
+\tightlist
+\item
+  In \(\mathfrak{R}_2\),
+  \(\hat\sigma_{(k)} = \sqrt{\text{kth ordered value among} \ \left\{ \hat{\theta}^{2}_{1} + \sigma_1^2, \hat{\theta}^{2}_{2} + \sigma_2^2, \dots, \hat{\theta}^{2}_{K} + \sigma_K^2 \right\} - \hat {\theta}^{2}_{(k)}}\)
+\end{itemize}
 \end{frame}
 
 \begin{frame}{Algorithm 3: Variance from Second-Level Bootstrap}
 \phantomsection\label{algorithm-3-variance-from-second-level-bootstrap}
+\begin{itemize}[<+->]
+\tightlist
+\item
+  Second-level bootstrap algorithm
+\end{itemize}
+
 \begin{algorithmic}[1]
             \For {$c = 1, 2, \dots, C$}
-                \State \begin{minipage}[t]{\dimexpr\linewidth-\algorithmicindent} Generate $\hat{\boldsymbol{\theta}}^{**}_{bc} = \left( \hat{\theta}^{**}_{bc1}, \hat{\theta}^{**}_{bc2}, \dots, \hat{\theta}^{**}_{bcK} \right) \sim N_K \left( \hat{\boldsymbol{\theta}}_b^*, \boldsymbol {\Sigma} \right)$ and let $\hat{\theta}^{**}_{bc(1)}, \hat{\theta}^{**}_{bc(2)}, \dots, \hat{\theta}^{**}_{bc(K)}$ be the corresponding ordered values of $\hat{\theta}^{**}_{bc1}, \hat{\theta}^{**}_{bc2}, \dots, \hat{\theta}^{**}_{bcK}$
-                \end{minipage}
-                \State \begin{minipage}[t]{\dimexpr\linewidth-\algorithmicindent} Compute
-                $\displaystyle \hat{\sigma}^*_{b(k)} = \frac{\sum^C_{c=1} \left( \hat \theta^{**}_{bc(k)} - \bar {\hat\theta}^{**}_{b \cdot (k)} \right)^2}{C-1}, \quad \bar {\hat\theta}^{**}_{b\cdot(k)} = \frac{1}{C} \sum^C_{c=1} {\hat\theta}^{**}_{bc(k)}$
-                \end{minipage}
+\uncover<2->{                \State \begin{minipage}[t]{\dimexpr\linewidth-\algorithmicindent} Generate $\hat{\boldsymbol{\theta}}^{**}_{bc} = \left( \hat{\theta}^{**}_{bc1}, \hat{\theta}^{**}_{bc2}, \dots, \hat{\theta}^{**}_{bcK} \right) \sim N_K \left( \hat{\boldsymbol{\theta}}_b^*, \boldsymbol {\Sigma} \right)$ and let $\hat{\theta}^{**}_{bc(1)}, \hat{\theta}^{**}_{bc(2)}, \dots, \hat{\theta}^{**}_{bc(K)}$ be the corresponding ordered values of $\hat{\theta}^{**}_{bc1}, \hat{\theta}^{**}_{bc2}, \dots, \hat{\theta}^{**}_{bcK}$
+                \end{minipage}}
+\uncover<3->{                \State \begin{minipage}[t]{\dimexpr\linewidth-\algorithmicindent} Compute
+                $\displaystyle \hat{\sigma}^*_{b(k)} = \sqrt{\frac{\sum^C_{c=1} \left( \hat \theta^{**}_{bc(k)} - \bar {\hat\theta}^{**}_{b \cdot (k)} \right)^2}{C-1}}, \quad \bar {\hat\theta}^{**}_{b\cdot(k)} = \frac{1}{C} \sum^C_{c=1} {\hat\theta}^{**}_{bc(k)}$
+                \end{minipage}}
                 \EndFor
-    \end{algorithmic}
+    \end{algorithmic} 
+\uncover<4->{ In $\mathfrak{R}_2$, $\displaystyle \hat \sigma_{(k)} = \sqrt{ \frac{\sum^B_{b=1} \left( \hat \theta^*_{b(k)} - \bar {\hat\theta}^*_{\cdot (k)} \right)^2}{B-1}}, \quad \bar {\hat\theta}^*_{\cdot(k)} = \frac{1}{B} \sum^B_{b=1} {\hat\theta}^*_{b(k)}$}
+
+\note{
+\begin{itemize}
+  \item unavailable SE formula: $\widehat {se} \left(\hat \theta \right)$ 
+  \item involves taking second level, nested bs samples that will be used to estimate se.
+\end{itemize}
+}
 \end{frame}
 
 \begin{frame}{Evaluation Algorithm}
 \phantomsection\label{evaluation-algorithm}
 For given values of \(\boldsymbol{\Sigma}\) and
 \(\theta_1, \theta_2, \dots, \theta_K\) (with corresponding
-\(\theta_{(1)}, \theta_{(2)}, \dots, \theta_{(K)}\) for rank-based
-methods)
+\(\theta_{(1)}, \theta_{(2)}, \dots, \theta_{(K)}\) for ordered
+parameters)
 
 \begin{algorithmic}[1] % Start algorithmic block
             \For {$\text{replications} = 1, 2, \dots, 5000$}
-            \State Generate $\hat{\boldsymbol{\theta}} \sim N_K(\boldsymbol{\theta}, \boldsymbol{\Sigma})$
-            \State Compute the confidence region $\mathfrak{R}_1$ for the unordered parameters using Algorithm 1 and the confidence region for the ordered parameters $\mathfrak{R}_2$ using Algorithms 2 and 3.
-            \State For the unordered parameters, check if $\left( \theta_1, \theta_2, \dots, \theta_K\right) \in \mathfrak{R}_1$ and compute $T_1, T_2$, and $T_3$. For the ordered parameters, check if $\left( \theta_{(1)}, \theta_{(2)}, \dots, \theta_{(K)}\right) \in \mathfrak{R}_2$
+\uncover<2->{            \State Generate $\hat{\boldsymbol{\theta}} \sim N_K(\boldsymbol{\theta}, \boldsymbol{\Sigma})$}
+\uncover<3->{            \State Compute the confidence region $\mathfrak{R}_1$ for the unordered parameters using Algorithm 1 and the confidence region for the ordered parameters $\mathfrak{R}_2$ using Algorithms 2 and 3.}
+\uncover<4->{            \State For the unordered parameters, check if $\left( \theta_1, \theta_2, \dots, \theta_K\right) \in \mathfrak{R}_1$ and compute $T_1, T_2$, and $T_3$. For the ordered parameters, check if $\left( \theta_{(1)}, \theta_{(2)}, \dots, \theta_{(K)}\right) \in \mathfrak{R}_2$}
         \EndFor
-    \State Compute the proportion of times that the condition in line 4 is satisfied and the average of $T_1, T_2$, and $T_3$.
+\uncover<3->{    \State Compute the proportion of times that the condition in line 4 is satisfied and the average of $T_1, T_2$, and $T_3$.}
     \end{algorithmic}
 \end{frame}
 
-\begin{frame}{Covariance Matrix \(\boldsymbol{\Sigma}\)}
-\phantomsection\label{covariance-matrix-boldsymbolsigma}
-\begin{itemize}
-\tightlist
-\item
-  The covariance matrix \(\boldsymbol{\Sigma}\) need not be a diagonal
-  matrix.
-\item
-  We assume that \(V(\hat{\boldsymbol{\theta}})=\boldsymbol{\Sigma}\) is
-  known and express \(\boldsymbol{\Sigma}\) as in
-  (\ref{eq:sigma_matrix}), where \(\mathbf{R}\) is the population
-  correlation matrix.
-\end{itemize}
-
+\begin{frame}{Measures of tightness}
+\phantomsection\label{measures-of-tightness}
 \begin{equation}
-  \boldsymbol{\Sigma} = \boldsymbol{\Delta}^{1/2} \mathbf{R} \boldsymbol{\Delta}^{1/2}; \quad \boldsymbol{\Delta} = \text{diag} \left\{ \sigma^2_1, \sigma^2_2, \dots, \sigma^2_K \right\}.
-  \label{eq:sigma_matrix}
+  T_1 = \frac{1}{K} \sum^K_{k=1} \Big | \Lambda_{Ok} \Big|
+  \notag
+\end{equation} \begin{equation}
+  T_2 = \prod^K_{k=1} \Big | \Lambda_{Ok} \Big|
+  \notag
 \end{equation}
 
-\begin{itemize}
-\tightlist
-\item
-  The diagonal elements of \(\boldsymbol{\Sigma}\), which are
-  \(\sigma^2_k=V(\hat{\theta}_k)\) for \(k =1,2, \ldots,K\), are treated
-  as known quantities in practice.
-\end{itemize}
-\end{frame}
-
-\begin{frame}{Correlation Structures: Equicorrelation}
-\phantomsection\label{correlation-structures-equicorrelation}
-\begin{itemize}[<+->]
-\tightlist
-\item
-  We assume certain correlation structures among the
-  \(\hat{\theta}\)s.\\
-\item
-  Equicorrelation is considered for simplicity.\\
-\item
-  This assumes that the \(k\) variables are equally correlated, i.e.,
-  that \(\rho_{jk}=\rho\) where \(\rho \in [-1,1]\) for
-  \(j \neq k \in \{1, \dots, K\}\). \begin{equation}
-  \mathbf{R}_{\text{eq}} = \left( 1-\rho \right) \mathbf{I}_K + \rho \boldsymbol{1}_K \boldsymbol{1}'_K = 
-  \begin{bmatrix}
-  1 & \rho & \cdots & \rho \\
-  \rho & 1 & \cdots & \rho \\
-  \vdots & \vdots & \ddots & \vdots \\
-  \rho & \rho & \cdots & 1
-  \end{bmatrix}_{K \times K}
-  \label{eq:equicorrelation}
-  \end{equation}
-\end{itemize}
-\end{frame}
-
-\begin{frame}{Correlation Structures: Block correlation}
-\phantomsection\label{correlation-structures-block-correlation}
-\begin{itemize}[<+->]
-\tightlist
-\item
-  Useful in the context of pre-election surveys
-\item
-  In a block correlation matrix \(\mathbf{R}_{block}\) with \(G\)
-  blocks, each diagonal block represents an equicorrelation structure
-  within group \(g\), denoted by \begin{equation}
-  \mathbf{R}_{\text{eq,g}} = \left( 1-\rho_{g} \right) \mathbf{I}_{n_g} + \rho_{g} \boldsymbol{1}_{n_g} \boldsymbol{1}'_{n_g} \notag
-  \end{equation} where \(\rho_{g}\) is the within-block correlation and
-  \(n_g\) is the number of variables in block \(g\) such that
-  \(\sum_{g=1}^G n_g = K\).\\
-\item
-  The off-diagonal blocks capture between-block correlations,
-  represented by
-  \(\mathbf{C}_{g'g} = \mathbf{C}_{gg'} = \rho_{gg'}\boldsymbol{1}_{n_g} \boldsymbol{1}'_{n_g}\)
-  where \(g\neq g' \in \{1, \dots, G\}\)
-\item
-  The full block correlation matrix can be expressed as in
-  (\ref{eq:blockcorrelation}).\\
-  \begin{equation}
-  \mathbf{R}_{\text{block}} = 
-  \begin{bmatrix}
-  \mathbf{R}_{eq,1} & \mathbf{C}_{12} & \cdots & \mathbf{C}_{1G} \\
-  \mathbf{C}_{21} & \mathbf{R}_{eq,2} & \cdots & \mathbf{C}_{2G} \\
-  \vdots & \vdots & \ddots & \vdots \\
-  \mathbf{C}_{G1} & \mathbf{C}_{G2} & \cdots & \mathbf{R}_{eq,G}
-  \end{bmatrix}_{K \times K}
-  \label{eq:blockcorrelation}
-  \end{equation}
-\end{itemize}
-\end{frame}
-
-\begin{frame}{Correlation Structures: Distance-based correlation}
-\phantomsection\label{correlation-structures-distance-based-correlation}
-\begin{itemize}[<+->]
-\tightlist
-\item
-  Useful in the mean travel time from the study of Klein et al.~(2020).
-\item
-  Spatial dependence can be modeled using a stationary Matérn
-  correlation function, which for two locations \(\mathbf{s}_i\) and
-  \(\mathbf{s}_j\) is expressed as \begin{equation}
-  \rho_{\text{matern}} = \frac{2^{1-\nu}}{\Gamma(\nu)} (\kappa \;\Vert \;\mathbf{s}_i - \mathbf{s}_j \; \Vert)^\nu K_\nu  (\kappa \;\Vert \;\mathbf{s}_i - \mathbf{s}_j \; \Vert)
+\begin{equation}
+  T_3 = 1 - \frac{OP}{K^2}; OP = K + \sum^K_{k=1} \big | \Lambda_{Ok} \big|
   \notag
-  \end{equation} where \(\Vert \cdot \Vert\) denotes the Euclidean
-  distance and \(K_\nu\) is the second kind of the modified Bessel
-  function. It has a scale parameter \(\kappa > 0\) and a smoothness
-  parameter \(\nu > 0\). \(\rho_{\text{matern}}\) reduces to the
-  exponential correlation when \(\nu = 0.5\) and to Gaussian correlation
-  function when \(\nu = \infty\).
+\end{equation}
+
+\note{
+\begin{itemize}
+  \item Moreover, the tightness of the joint confidence region that results from Algorithm 1 is assessed using three summary measures: the arithmetic mean (\(T_1\)), geometric mean (\(T_2\)), and the metric \(T_3\) introduced by Wright (2025)
+  \item $OP$ denotes the total number of occupied positions in a joint confidence region out of the total number of positions $K^2$; or the sum of the differences between the upper and lower bound of the simultaneous rank intervals added by 1, for each population $k$. Higher values of $T_1$ and $T_2$ indicate wider confidence intervals and are therefore less desirable, whereas higher values of $T_3$ are preferable. $T_3$ can range from 0, indicating no tightness, to $\frac{K-1}{K}$, implying the confidence region only contains the estimated ranking which is likely the true ranking.
 \end{itemize}
+}
 \end{frame}
 
 \begin{frame}{Simulation settings}
 \phantomsection\label{simulation-settings}
 The following settings are considered for
 \(K = \{10, 20, 30, 40, 50\}\). Each \(K\) has a set of corresponding
-population variances \(\sigma^2_1, \sigma^2_2,\ldots,\sigma^2_K\). A
-nominal level of \(1-\alpha=0.95\) will be used.
+variances \(\sigma^2_1, \sigma^2_2,\ldots,\sigma^2_K\). A nominal level
+of \(1-\alpha=0.95\) will be used.
 
 \begin{center}
 \begin{tabular}{ |c|c| }
@@ -690,6 +643,124 @@ high variability & $\mathbf{R}_{\text{eq}},\, \mathbf{R}_{\text{block}}$ \\
 \hline
 \end{tabular}
 \end{center}
+
+\note{
+\begin{itemize}
+  \item We assume certain correlation structures among the $\hat{\theta}$s.  
+  \item Equicorrelation is considered for simplicity.  
+\end{itemize}
+}
+\end{frame}
+
+\begin{frame}{Correlation Structures: Equicorrelation}
+\phantomsection\label{correlation-structures-equicorrelation}
+\begin{itemize}[<+->]
+\tightlist
+\item
+  This assumes that the \(k\) variables are equally correlated, i.e.,
+  that \(\rho_{jk}=\rho\) where \(\rho \in [-1,1]\) for
+  \(j \neq k \in \{1, \dots, K\}\). \begin{equation}
+  \mathbf{R}_{\text{eq}} = \left( 1-\rho \right) \mathbf{I}_K + \rho \boldsymbol{1}_K \boldsymbol{1}'_K = 
+  \begin{bmatrix}
+  1 & \rho & \cdots & \rho \\
+  \rho & 1 & \cdots & \rho \\
+  \vdots & \vdots & \ddots & \vdots \\
+  \rho & \rho & \cdots & 1
+  \end{bmatrix}_{K \times K}
+  \notag
+  \end{equation}
+\end{itemize}
+
+\note{
+\begin{itemize}
+  \item We assume certain correlation structures among the $\hat{\theta}$s.  
+  \item Equicorrelation is considered for simplicity.  
+\end{itemize}
+}
+\end{frame}
+
+\begin{frame}{Correlation Structures: Block correlation}
+\phantomsection\label{correlation-structures-block-correlation}
+\begin{itemize}[<+->]
+\tightlist
+\item
+  The full block correlation matrix can be expressed as\\
+  \begin{equation}
+  \mathbf{R}_{\text{block}} = 
+  \begin{bmatrix}
+  \mathbf{R}_{eq,1} & \mathbf{C}_{12} & \cdots & \mathbf{C}_{1G} \\
+  \mathbf{C}_{21} & \mathbf{R}_{eq,2} & \cdots & \mathbf{C}_{2G} \\
+  \vdots & \vdots & \ddots & \vdots \\
+  \mathbf{C}_{G1} & \mathbf{C}_{G2} & \cdots & \mathbf{R}_{eq,G}
+  \end{bmatrix}_{K \times K}
+  \notag
+  \end{equation}
+\item
+  \(\mathbf{C}_{g'g} = \mathbf{C}_{gg'} = \rho_{gg'}\boldsymbol{1}_{n_g} \boldsymbol{1}'_{n_g}\)
+  where \(g\neq g' \in \{1, \dots, G\}\)
+\end{itemize}
+
+\note{
+\begin{itemize}
+  \item Useful in the context of pre-election surveys
+  \item In a block correlation matrix $\mathbf{R}_{block}$ with $G$ blocks, each diagonal block represents an equicorrelation structure within group $g$, denoted by
+\begin{equation}
+  \mathbf{R}_{\text{eq,g}} = \left( 1-\rho_{g} \right) \mathbf{I}_{n_g} + \rho_{g} \boldsymbol{1}_{n_g} \boldsymbol{1}'_{n_g} \notag
+\end{equation}
+where $\rho_{g}$ is the within-block correlation and $n_g$ is the number of variables in block $g$ such that $\sum_{g=1}^G n_g = K$.  
+  \item The off-diagonal blocks capture between-block correlations, represented by  $\mathbf{C}_{g'g} = \mathbf{C}_{gg'} = \rho_{gg'}\boldsymbol{1}_{n_g} \boldsymbol{1}'_{n_g}$ where $g\neq g' \in \{1, \dots, G\}$
+\end{itemize}
+}
+\end{frame}
+
+\begin{frame}{Correlation Structures: Distance-based correlation}
+\phantomsection\label{correlation-structures-distance-based-correlation}
+\begin{itemize}[<+->]
+\tightlist
+\item
+  Spatial dependence can be modeled using a stationary Matérn
+  correlation function, which for two locations \(\mathbf{s}_i\) and
+  \(\mathbf{s}_j\) is expressed as \begin{equation}
+  \rho_{\text{matern}} = \frac{2^{1-\nu}}{\Gamma(\nu)} (\kappa \;\Vert \;\mathbf{s}_i - \mathbf{s}_j \; \Vert)^\nu K_\nu  (\kappa \;\Vert \;\mathbf{s}_i - \mathbf{s}_j \; \Vert)
+  \notag
+  \end{equation} where \(\Vert \cdot \Vert\) denotes the Euclidean
+  distance and \(K_\nu\) is the second kind of the modified Bessel
+  function. It has a scale parameter \(\kappa > 0\) and a smoothness
+  parameter \(\nu > 0\).
+\end{itemize}
+
+\note{
+\begin{itemize}
+  \item  Useful in the mean travel time from the study of Klein et al. (2020).
+\end{itemize}
+}
+\end{frame}
+
+\begin{frame}{Summary and Next steps}
+\phantomsection\label{summary-and-next-steps}
+\begin{itemize}[<+->]
+\tightlist
+\item
+  Proposed contribution: Develop a procedure to construct joint
+  confidence intervals for the ranks and the ranked parameters when the
+  estimates to be ranked may be correlated.
+\item
+  Next steps:
+
+  \begin{itemize}[<+->]
+  \tightlist
+  \item
+    Complete simulation studies
+  \item
+    Apply the proposed approach to a real-life example
+  \end{itemize}
+\end{itemize}
+
+\vspace{1cm}
+
+\uncover<6->{
+Thank you.
+}
 \end{frame}
 
 \end{document}
