@@ -48,6 +48,7 @@ knitr::opts_chunk$set(echo = FALSE)
   \item Such tables motivate "implicit" rankings.
   \item Because rankings based on the observed values of $\hat\theta_1,\hat\theta_2,\ldots, \hat\theta_K$ can vary because of sampling variability, widely understood statements of uncertainty should accompany each released ranking.
   \item While the margin of error gives uncertainty in the estimate $\hat\theta_k$ for each unit $k$ separately, A direct assessment of the uncertainty in the estimated overall ranking would jointly involve all units and their relative standing to each other.
+  \item If we repeat the entire process of generating all \(K\) intervals many times, at least 95 percent of the time, all \(K\) of the resulting intervals will simultaneously contain their respective true parameters \(\theta _{1},\dots ,\theta _{K}\)
 \end{itemize}
 }
 ```
@@ -90,7 +91,7 @@ Klein et al. (2020) assumes that $\hat{\theta}_k\sim N(\theta_k,\sigma^2_k), k=1
 }
 
 \uncover<3->{
-their main result gives a range for \(r_k\) for each \(k \in \left\{1, 2, \dots, K\right\}\) as follows:
+the range for \(r_k\) for each \(k \in \left\{1, 2, \dots, K\right\}\) is as follows:
 
 \begin{equation}
   r_k \in 
@@ -111,14 +112,6 @@ their main result gives a range for \(r_k\) for each \(k \in \left\{1, 2, \dots,
 \end{align}
 }
 
-```{=latex}
-\note{
-\begin{itemize}
-  \item Note that the number of elements in the range given in (\ref{eq:klein_jcs}) is $|\Lambda_{Ok}|+1$. Since the smaller difference between \(U_k\) and \(L_k\) leads to a smaller \(\lvert \Lambda_{Ok} \rvert\), narrower confidence intervals for $\theta_1,\theta_2,\ldots,\theta_K$ are desirable.
-\end{itemize}
-}
-```
-
 # Klein's Approach
 \begin{center}
 \begin{tabular}{ |c|c|c|c|c|c|c| }
@@ -133,6 +126,15 @@ $k$ & $\hat\theta_k$ & $\hat r_k$ & $(L_k, U_k)$ & $\vert \Lambda_{Lk} \vert$ & 
 \hline
 \end{tabular}
 \end{center}
+
+
+```{=latex}
+\note{
+\begin{itemize}
+  \item Note that the number of elements in the range given in (\ref{eq:klein_jcs}) is $|\Lambda_{Ok}|+1$. 
+\end{itemize}
+}
+```
 
 # Klein's Approach
 
@@ -164,10 +166,11 @@ then, by the result of Klein et al. (2020), it also follows that
 }
 
 
+
 ```{=latex}
 \note{
 \begin{itemize}
-  \item Since the smaller difference between \(U_k\) and \(L_k\) leads to a smaller \(\lvert \Lambda_{Ok} \rvert\), narrower confidence intervals for $\theta_1,\theta_2,\ldots,\theta_K$ are desirable.
+  \item We want narrower confidence intervals for $\theta_1,\theta_2,\ldots,\theta_K$ since smaller difference between \(U_k\) and \(L_k\) leads to a smaller \(\lvert \Lambda_{Ok} \rvert\).
 \end{itemize}
 }
 ```
@@ -240,7 +243,7 @@ algorithm.
 \note{
 \begin{itemize}
   \item Candidates with a name-recall advantage, such as media celebrities, incumbents, and members of dynastic families
-  \item In the Philippine setting, candidates running under the same alliance often share campaign machinery and voter bases, which induces correlation in their vote totals across districts. However, dependence need not arise solely from alliance membership. Other factors such as name recall can affect multiple candidates simultaneously, even across different alliances.
+  \item In the Philippine setting, candidates running under the same alliance often share campaign machinery and voter bases, which induces correlation in their vote totals across districts. Dependence may also arise from factors such as name recall, which can affect multiple candidates simultaneously, even across different alliances.
 \end{itemize}
 }
 ```
@@ -281,11 +284,19 @@ This research aims to do the following:
 parameter settings.
 >- Apply the proposed approaches to a real-life example.
 
+```{=latex}
+\note{
+\begin{itemize}
+  \item For these use cases,
+\end{itemize}
+}
+```
+
 # Definitions and Assumptions
 
->- Define $\hat{\boldsymbol{\theta}}=(\hat{\theta}_1,\hat{\theta}_2,\ldots,\hat{\theta}_K)'$ and assume that $\hat{\boldsymbol{\theta}}\sim N(\boldsymbol{\theta},\boldsymbol{\Sigma})$ where $\boldsymbol{\theta}=(\theta_1,\theta_2,\ldots,\theta_K)'$ is unknown and $\boldsymbol{\Sigma}$ is a known $K \times K$ positive definite matrix. The diagonal elements of $\boldsymbol{\Sigma}$ are $\sigma^2_1,\ldots,\sigma^2_K$.  
+>- Define $\hat{\boldsymbol{\theta}}=(\hat{\theta}_1,\hat{\theta}_2,\ldots,\hat{\theta}_K)'$ and assume that $\hat{\boldsymbol{\theta}}\sim N(\boldsymbol{\theta},\boldsymbol{\Sigma})$ where $\boldsymbol{\theta}=(\theta_1,\theta_2,\ldots,\theta_K)'$ is unknown and $\boldsymbol{\Sigma}$ is a known $K \times K$ positive definite matrix.
 >- Note that in the literature on inferences on the ranks, it is customary to assume that the variances are known.
->- We assume that $V(\hat{\boldsymbol{\theta}})=\boldsymbol{\Sigma}$ is known and express $\boldsymbol{\Sigma}$, where $\mathbf{R}$ is the population correlation matrix.
+>- We express $\boldsymbol{\Sigma}$, where $\mathbf{R}$ is the correlation matrix.
 \begin{equation}
   \boldsymbol{\Sigma} = \boldsymbol{\Delta}^{1/2} \mathbf{R} \boldsymbol{\Delta}^{1/2}; \quad \boldsymbol{\Delta} = \text{diag} \left\{ \sigma^2_1, \sigma^2_2, \dots, \sigma^2_K \right\}.
   \notag
@@ -294,7 +305,7 @@ parameter settings.
 ```{=latex}
 \note{
 \begin{itemize}
-  \item The estimators may be correlated, so the covariance matrix is not necessarily diagonal. We write the covariance matrix in terms of marginal variances and a correlation matrix, and we treat the marginal variances as known in practice.
+  \item The estimators may be correlated, so the covariance matrix is not necessarily diagonal. We write the covariance matrix in terms of variances and a correlation matrix.
   \item The diagonal elements of $\boldsymbol{\Sigma}$, which are $\sigma^2_k=V(\hat{\theta}_k)$ for $k =1,2, \ldots,K$, are treated as known quantities in practice.
 \end{itemize}
 }
@@ -319,7 +330,7 @@ parameter settings.
 ```{=latex}
 \note{
 \begin{itemize}
-  \item bullet 2: Once the confidence intervals in (\ref{eq:rev1}) have been obtained, we can then use the result of Klein et al. (2020) in (\ref{eq:joint_cov2}) to get the lower and upper bounds on the ranks $r_k, k=1,2,\ldots,K$. That is, we also get a joint confidence region for $r_1, r_2, . . . , r_K$.
+  \item bullet 2: Once the confidence intervals in have been obtained, we can then use the result of Klein to get the lower and upper bounds on the ranks $r_k, k=1,2,\ldots,K$. That is, we also get a joint confidence region for $r_1, r_2, . . . , r_K$.
 \end{itemize}
 }
 ```
@@ -350,9 +361,9 @@ $\mathfrak{R}_1 = \left[ \hat\theta_1 \pm \hat t \times \sigma_1  \right] \times
 \note{
 Remarks about bootstrap (Hesterberg,2021):
 \begin{itemize}
-  \item Plug-in principle: We can plugin the estimator of an unknown parameter to the normal distribution
-  \item Bootstrap is implemented by Monte Carlo sampling. Estimator of SE improves as $B$ increases, as long as sampling is $iid$.
-  \item When sampling from estimated distribution, the resulting bootstrap distribution provides useful information about the sampling distribution of the statistic.
+  \item We plugin the estimator of an unknown parameter to the normal distribution
+  \item Bootstrap is implemented by Monte Carlo sampling.
+  \item We estimate the distribution of t directly from the data, contrary to using the z-table
   \item Bootstrap distribution is centered at the observed statistic, not the parameter. That is, the mean of the bootstrap estimates is not $\mu$ but $\bar x$. As a result, we do not use the mean of the bootstrap  statistic as a replacement for the original estimator (e.g., bootstrap cannot improve upon $\bar x$) as an estimator for $\mu$.  
   \item Bootstrap is for estimating only the SE (it is only use to estimate parameter for some, e.g. quantiles)
 \end{itemize}
@@ -361,7 +372,7 @@ Remarks about bootstrap (Hesterberg,2021):
 
 
     
-# Algorithm 1: Quantile Calculation
+# Algorithm 1:
     
 We want our joint confidence region to satisfy the probability condition:
 
@@ -410,6 +421,13 @@ $t^*_b = \underset{1 \leq k \leq K}{\max} \Bigg| \frac{\hat\theta^*_{b(k)} - \ha
     \end{algorithmic}
 \end{minipage}
 
+```{=latex}
+\note{
+\begin{itemize}
+  \item We can say we are 95 percent confident that the smallest parameter up to the largest parameter falls between the calculated bounds.
+\end{itemize}
+}
+```
 
 # Algorithm 2: Asymptotic Definition of Variance
 
@@ -418,6 +436,12 @@ $t^*_b = \underset{1 \leq k \leq K}{\max} \Bigg| \frac{\hat\theta^*_{b(k)} - \ha
 $\hat\sigma^*_{b(k)} = \sqrt{\left[\text{kth ordered value among} \ \left\{ \hat{\theta}^{*2}_{b1} + \sigma_1^2, \dots, \hat{\theta}^{*2}_{bK} + \sigma_K^2 \right\}\right] - \hat {\theta}^{*2}_{(k)}}$
 
 >- In $\mathfrak{R}_2$, $\hat\sigma_{(k)} = \sqrt{\text{kth ordered value among} \ \left\{ \hat{\theta}^{2}_{1} + \sigma_1^2, \hat{\theta}^{2}_{2} + \sigma_2^2, \dots, \hat{\theta}^{2}_{K} + \sigma_K^2 \right\} - \hat {\theta}^{2}_{(k)}}$
+
+
+
+
+
+
 
 # Algorithm 3: Variance from Second-Level Bootstrap
 
@@ -438,8 +462,9 @@ $\hat\sigma^*_{b(k)} = \sqrt{\left[\text{kth ordered value among} \ \left\{ \hat
 ```{=latex}
 \note{
 \begin{itemize}
-  \item unavailable SE formula: $\widehat {se} \left(\hat \theta \right)$ 
+  \item unavailable SE formula - we would need to compute a bootstrap estimate for the standard error for each bootstrap sample.
   \item involves taking second level, nested bs samples that will be used to estimate se.
+  \item 
 \end{itemize}
 }
 ```
@@ -476,7 +501,8 @@ For given values of $\boldsymbol{\Sigma}$ and $\theta_1, \theta_2, \dots, \theta
 \note{
 \begin{itemize}
   \item Moreover, the tightness of the joint confidence region that results from Algorithm 1 is assessed using three summary measures: the arithmetic mean (\(T_1\)), geometric mean (\(T_2\)), and the metric \(T_3\) introduced by Wright (2025)
-  \item $OP$ denotes the total number of occupied positions in a joint confidence region out of the total number of positions $K^2$; or the sum of the differences between the upper and lower bound of the simultaneous rank intervals added by 1, for each population $k$. Higher values of $T_1$ and $T_2$ indicate wider confidence intervals and are therefore less desirable, whereas higher values of $T_3$ are preferable. $T_3$ can range from 0, indicating no tightness, to $\frac{K-1}{K}$, implying the confidence region only contains the estimated ranking which is likely the true ranking.
+  \item $OP$ denotes the total number of occupied positions in a joint confidence region out of the total number of positions $K^2$; or the sum of the differences between the upper and lower bound of the simultaneous rank intervals added by 1, for each population $k$. 
+  \item Higher values of $T_1$ and $T_2$ indicate wider confidence intervals and are therefore less desirable, whereas higher values of $T_3$ are preferable. $T_3$ can range from 0, indicating no tightness, to $\frac{K-1}{K}$, implying the confidence region only contains the estimated ranking which is likely the true ranking.
 \end{itemize}
 }
 ```
