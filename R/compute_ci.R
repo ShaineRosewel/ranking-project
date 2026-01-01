@@ -30,21 +30,41 @@ get_ci_rankbased_asymptotic <- function(B,
                                         theta_hat,
                                         varcovar_matrix,
                                         alpha) {
-  #print("ci_rankbased_asymptotic ===================================")
+
   K <- length(theta_hat)
   
   generate_data <- function(){MASS::mvrnorm(n = 1,
                                             mu = theta_hat,
                                             Sigma = varcovar_matrix)}
-  thetahat_star <- t(replicate(B, generate_data()))
-  #print(dim(thetahat_star))
+  # line 2 ~~~
+  thetahat_star <- t(replicate(B, generate_data())) # B x K
+  # print("theta_hat")
+  # print(theta_hat)
+  # print("thetahat_star")
+  # print(cat("shape: ", dim(thetahat_star)))
+  # print(thetahat_star)
+  
+  # sorted counterpart line 2
   sorted_thetahat_star <- t(apply(thetahat_star, 1, sort))
-  #print(dim(sorted_thetahat_star))
-  # step 1b ====================================
-  #print("printing S")
+
   variance_vector <- diag(varcovar_matrix)
-  #print(variance_vector)
+  print("Variance vec:")
+  print(variance_vector)
+  print("Variance mat:")
+  print(matrix(variance_vector, B, K, byrow = TRUE)[c(1:3),])
+  print("thetahat_star:")
+  print(thetahat_star[c(1:3),])
+  print("thetahat_star squared:")
+  print((thetahat_star^2)[c(1:3),])
+  print("minuend:")
+  
+  # line 3 ~~~
   minuend <- thetahat_star^2 + matrix(variance_vector, B, K, byrow = TRUE)
+  print(minuend[c(1:3),])
+  
+  print(t(apply(minuend, 1, sort))[c(1:3),])
+  
+  print((sorted_thetahat_star^2)[c(1:3),])
     #(matrix(rep(variance_vector, each = B),nrow = B, byrow = FALSE))
   # print("minuend")
   # print(dim(minuend))
@@ -58,33 +78,45 @@ get_ci_rankbased_asymptotic <- function(B,
   # print(sorted_theta_hat)
   # print((matrix(rep(sorted_theta_hat, each = B),
   #              nrow = B, byrow = FALSE)))
-  t_star <- apply(
-    abs(
-      (
-        sorted_thetahat_star - matrix(sorted_theta_hat, B, K, byrow = TRUE)
-        # (matrix(rep(sorted_theta_hat, each = B),
-        #                               nrow = B, byrow = FALSE))
-        )/sigma_hat_star
-      ),
-    1,
-    max)
+  
+  # line 4 ~~~
+  # t_star <- apply(
+  #   abs(
+  #     (
+  #       sorted_thetahat_star - matrix(sorted_theta_hat, B, K, byrow = TRUE)
+  #       # (matrix(rep(sorted_theta_hat, each = B),
+  #       #                               nrow = B, byrow = FALSE))
+  #       )/sigma_hat_star
+  #     ),
+  #   1,
+  #   max)
+  compute_max <- function(b) {
+    t_b <- abs(
+      (sorted_thetahat_star[b, ] - sorted_theta_hat) /
+        sigma_hat_star[[b]]
+    )
+    max(t_b)
+  }
+  t_star <- sapply(1:B, compute_max)
+  
+
+  
   # print("sigma_hat_star")
   # print(sigma_hat_star)
   # 
   # print("t_star")
   # print(t_star)
   
-  # step 2 =====================================
+  # line 6 ~~~
   t_hat <- quantile(t_star, probs = 1 - alpha)
-  # step 3 =====================================
+  # line 7 ~~~
   sigma_hat <- sqrt(
     sort(theta_hat^2 + variance_vector) - sorted_theta_hat^2)
-  # step 6 =====================================
   ci_lower <- sorted_theta_hat - t_hat*sigma_hat
   ci_upper <- sorted_theta_hat + t_hat*sigma_hat
   
-  print(ci_lower)
-  print(ci_upper)
+  # print(ci_lower)
+  # print(ci_upper)
   return(list(
     ci_lower = ci_lower,
     ci_upper = ci_upper
@@ -208,13 +240,18 @@ get_ci_nonrankbased <- function(B,
   generate_data <- function(){MASS::mvrnorm(n = 1,
                                             mu = theta_hat,
                                             Sigma = varcovar_matrix)}
-  thetahat_star <- t(replicate(B, generate_data()))
-  # step 1b ===================================
+  # line 2 ~~~
+  thetahat_star <- t(replicate(B, generate_data())) # B x K
+  
+  # line 3 ~~~
   t_star <- apply(thetahat_star, 
                   1, 
-                  function(x) max(abs((x - theta_hat) / sqrt(
-                    diag(varcovar_matrix)))))  
-  # step 2 ====================================
+                  function(x) max(
+                    abs(
+                    (x - theta_hat) / sqrt(diag(varcovar_matrix))
+                    )
+                    ))  
+  # line 5 ~~~
   t_hat <- quantile(t_star, probs = 1 - alpha)
   # step 3 ====================================
   ci_lower <- theta_hat - t_hat*sqrt(diag(varcovar_matrix))
