@@ -33,19 +33,29 @@ get_ci_rankbased_asymptotic <- function(B,
 
   K <- length(theta_hat)
   
-  generate_data <- function(){MASS::mvrnorm(n = 1,
-                                            mu = theta_hat,
-                                            Sigma = varcovar_matrix)}
+  # generate_data <- function(){MASS::mvrnorm(n = 1,
+  #                                           mu = theta_hat,
+  #                                           Sigma = varcovar_matrix)}
+  # # line 2 ~~~
+  # thetahat_star <- t(replicate(B, generate_data())) # B x K
+  
   # line 2 ~~~
-  thetahat_star <- t(replicate(B, generate_data())) # B x K
-  # print("theta_hat")
-  # print(theta_hat)
-  # print("thetahat_star")
-  # print(cat("shape: ", dim(thetahat_star)))
-  # print(thetahat_star)
+  thetahat_star <- MASS::mvrnorm(n = B,
+                                 mu = theta_hat,
+                                 Sigma = varcovar_matrix) # B x K
+  
+  print("theta_hat")
+  print(theta_hat)
+  
+  print("thetahat_star")
+  print(cat("shape: ", dim(thetahat_star)))
+  print(thetahat_star[c(1:3),])
   
   # sorted counterpart line 2
   sorted_thetahat_star <- t(apply(thetahat_star, 1, sort))
+  print("sorted_thetahat_star")
+  print(cat("shape: ", dim(thetahat_star)))
+  print(sorted_thetahat_star[c(1:3),])
 
   variance_vector <- diag(varcovar_matrix)
   print("Variance vec:")
@@ -62,20 +72,26 @@ get_ci_rankbased_asymptotic <- function(B,
   minuend <- thetahat_star^2 + matrix(variance_vector, B, K, byrow = TRUE)
   print(minuend[c(1:3),])
   
+  print("sorted minuend:")
   print(t(apply(minuend, 1, sort))[c(1:3),])
   
+  print("sorted_thetahat_star^2")
   print((sorted_thetahat_star^2)[c(1:3),])
     #(matrix(rep(variance_vector, each = B),nrow = B, byrow = FALSE))
-  # print("minuend")
+  print("their difference")
+  print((t(apply(minuend, 1, sort)) - sorted_thetahat_star^2)[c(1:3),])
   # print(dim(minuend))
   # print("sorted minuend shape")
   # print(dim(t(apply(minuend, 1, sort))))
   sigma_hat_star <- sqrt(
     t(apply(minuend, 1, sort)) - sorted_thetahat_star^2)
   # step 1c ====================================
+  print("sigma_hat_star")
+  print(sigma_hat_star)
   sorted_theta_hat <- sort(theta_hat)
-  # print("sorted theta hat")
-  # print(sorted_theta_hat)
+  
+  print("sorted theta hat")
+  print(sorted_theta_hat)
   # print((matrix(rep(sorted_theta_hat, each = B),
   #              nrow = B, byrow = FALSE)))
   
@@ -91,12 +107,24 @@ get_ci_rankbased_asymptotic <- function(B,
   #   1,
   #   max)
   compute_max <- function(b) {
-    t_b <- abs(
+    t_b <- max(abs(
       (sorted_thetahat_star[b, ] - sorted_theta_hat) /
-        sigma_hat_star[[b]]
-    )
-    max(t_b)
+        sigma_hat_star[b,]
+    ))
+    return(t_b)
   }
+  print(sorted_thetahat_star[1, ])
+  print(sorted_theta_hat)
+  print(sigma_hat_star[1,])
+  print("compute max for b = 1")
+  print(sigma_hat_star[1,])
+  print(sorted_thetahat_star[1, ] - sorted_theta_hat)
+  print((sorted_thetahat_star[1, ] - sorted_theta_hat)/sigma_hat_star[1,])
+  print(max(abs(
+    (sorted_thetahat_star[1, ] - sorted_theta_hat) /
+      sigma_hat_star[1,]
+  )))
+  print(compute_max(1))
   t_star <- sapply(1:B, compute_max)
   
 
@@ -132,11 +160,16 @@ get_ci_rankbased_level2bs <- function(B,
   K <- length(theta_hat)
   sorted_theta_hat <- sort(theta_hat)
 
-  generate_data <- function(){MASS::mvrnorm(n = 1,
-                                            mu = theta_hat,
-                                            Sigma = varcovar_matrix)}
+  # generate_data <- function(){MASS::mvrnorm(n = 1,
+  #                                           mu = theta_hat,
+  #                                           Sigma = varcovar_matrix)}
+  # # line 2 ~~~
+  # thetahat_star <- t(replicate(B, generate_data())) # B x K
+
   # line 2 ~~~
-  thetahat_star <- t(replicate(B, generate_data())) # B x K
+  thetahat_star <- MASS::mvrnorm(n = B,
+                                 mu = theta_hat,
+                                 Sigma = varcovar_matrix) # B x K
   # print("theta_hat")
   # print(theta_hat)
   # print("thetahat_star")
@@ -237,11 +270,17 @@ get_ci_nonrankbased <- function(B,
   print("ci_nonrankbased ===================================")
   K <- length(theta_hat)
   # step 1a ===================================
-  generate_data <- function(){MASS::mvrnorm(n = 1,
-                                            mu = theta_hat,
-                                            Sigma = varcovar_matrix)}
+  # generate_data <- function(){MASS::mvrnorm(n = 1,
+  #                                           mu = theta_hat,
+  #                                           Sigma = varcovar_matrix)}
+  # # line 2 ~~~
+  # thetahat_star <- t(replicate(B, generate_data())) # B x K
+
+
   # line 2 ~~~
-  thetahat_star <- t(replicate(B, generate_data())) # B x K
+  thetahat_star <- MASS::mvrnorm(n = B,
+                                 mu = theta_hat,
+                                 Sigma = varcovar_matrix) # B x K
   
   # line 3 ~~~
   t_star <- apply(thetahat_star, 
