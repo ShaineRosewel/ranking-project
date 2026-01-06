@@ -53,7 +53,8 @@ Show in New Window
   - [ ] K=40 for 16 cases ~8 days
   - [ ] K=30 for 16 cases ~6 days
   - [ ] K=20 for 16 cases ~4 days
-  - [ ] K=10 for 16 cases ~2 days
+  - [ ] K=10 for 6 cases ~1 day
+  - [x] K=10: 1 day for 9/16 cases done
 - Application to real data. This should be done by mid-March.
   
 # To-Do
