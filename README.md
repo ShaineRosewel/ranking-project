@@ -1,7 +1,5 @@
 # Project Directory Tree
 
-Show in New Window
-
     ├── analysis
     │   ├── nonparametric
     │   │   ├── kde.html
@@ -52,9 +50,9 @@ Show in New Window
   - [ ] K=50 for 16 cases ~10 days
   - [ ] K=40 for 16 cases ~8 days
   - [ ] K=30 for 16 cases ~6 days (~8 hours per case)
-  - [ ] K=20 for 6 cases ~1.5 days (~4 hours per case)
+  - [ ] K=20 for 6 cases ~1.5 days (~5 hours per case)
   - [ ] K=10 for 6 cases ~1 day (~3 hours per case)
-  - [x] K=20: 2 days for 9/16 cases done (~4 hours per case)
+  - [x] K=20: 2 days for 9/16 cases done (~5 hours per case)
   - [x] K=10: 1 day for 9/16 cases done (~3 hours per case)
 - Application to real data. This should be done by mid-March.
   
