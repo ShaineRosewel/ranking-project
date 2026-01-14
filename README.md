@@ -1,7 +1,5 @@
 # Project Directory Tree
 
-Show in New Window
-
     ├── analysis
     │   ├── nonparametric
     │   │   ├── kde.html
@@ -45,12 +43,23 @@ Show in New Window
     ├── README.md
     ├── README.Rmd
     └── renv.lock
-    
+
+# Timeline
+
+- Each `K` needs to be ran for 3 different cases of `sd` and 5 `R` (3 for equicorrelation and 2 for block). We consider 16 for allowance. This should all be done by February, this already has (excessive) buffer.
+  - [ ] K=50 for 16 cases ~10 days
+  - [ ] K=40 for 16 cases ~8 days (~13 hours per case)
+  - [ ] K=30 for 6 cases ~6 days (~8 hours per case)
+  - [ ] K=20 for 6 cases ~1.5 days (~5 hours per case)
+  - [ ] K=10 for 6 cases ~1 day (~3 hours per case)
+  - [x] K=20: 3.25 days for 9/16 cases done (~5 hours per case)
+  - [x] K=20: 2 days for 9/16 cases done (~5 hours per case)
+  - [x] K=10: 1 day for 9/16 cases done (~3 hours per case)
+- Application to real data. This should be done by mid-March.
   
 # To-Do
-
-- [ ] Using Klein's result, check what happens when there are ties
-- [ ] Prepare code to run over the weekend (choose a different correlation structure)
+- [ ] Prepare codes for block correlation assumption
+- [ ] Prepare codes for read data application
 - [x] Read full text - [Klein](https://github.com/ShaineRosewel/kde-ranking/tree/master/references)
 - [x] Structure writeup template: Use `multipleStrategies` repo as pattern to edit content
 - [x] Update texLive and test that citation works - [refer to stackoverflow solution](https://stackoverflow.com/questions/79087384/pandoc-rstudio-failing-simple-rmarkdown-document-with-undefined-control-sequenc?noredirect=1#comment139455462_79087384)
