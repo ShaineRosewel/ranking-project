@@ -127,8 +127,8 @@ case_start <- Sys.time()
 df <- readRDS("data/mean_travel_time_ranking_2011.rds")
 mean <- 23.8
 sds <- c(2, 3.6, 6)
-K <- c(10)#(51, 40, 30, 20, 10, 5)
-corr <- c(0.1,0.5)
+K <- c(40)#(51, 40, 30, 20, 10, 5)
+corr <- c(0.1,0.5,0.9)
 
 for (sd in sds) {
   for (r in corr) {
@@ -145,9 +145,9 @@ for (sd in sds) {
       true_theta = true_theta,
       K = K, 
       reps=5000, # step 4
-      B=500, 
+      B=500,#700, 
       alpha= 0.05,
-      C=300,
+      C=300,#350,
       varcovar_matrix = varcovar_matrix)
   case <- paste(paste0("K",gsub("\\.", "p", as.character(K))),
           paste0("sd",gsub("\\.", "p", as.character(sd))),
@@ -168,6 +168,16 @@ for (sd in sds) {
 }
 stopCluster(cl)
 ```
+
+
+
+
+
+
+
+
+
+
 
 ```{r}
 colMeans(readRDS("K10_sd3p6_r0p1.rds"))
@@ -230,7 +240,64 @@ colMeans(out) # K10_r0p5_sd2p0
 # Finished at: 12:59 AM 
 ```
 
+
+
+
 ```{r}
-saveRDS(out, file = "K10_r0p5_sd3p6.rds")
+# Source - https://stackoverflow.com/a/63126233
+# Posted by heds1
+# Retrieved 2026-01-05, License - CC BY-SA 4.0
+
+base_dir <- './'
+all_files <- paste0(base_dir, 
+                    list.files(base_dir, pattern = "\\.rds$", 
+                               recursive = FALSE))
+
+summarize_means <- function(file){
+  dat <- readRDS(file)
+  summary <- colMeans(dat)
+  return(summary)
+  #summary['file'] = file
+  #return(t(as.data.frame(summary)))
+}
+
+df <- as.data.frame(do.call("rbind", lapply(all_files, summarize_means)))
+df$file <-all_files
+```
+
+
+```{r}
+library(tidyr)
+library(dplyr)
+# df %>% separate(file, sep = "_", into = c("K", "sd", 'r')) #%>% mutate(sd = sd.replace)
+```
+
+
+
+```{r}
+# Source - https://stackoverflow.com/a/55986799
+# Posted by G. Grothendieck, modified by community. See post 'Timeline' for change history
+# Retrieved 2026-01-05, License - CC BY-SA 4.0
+summ <- df %>% separate(file, sep = "_", into = c("K", "sd", 'r'))
+
+summ$sd <- sub("sd", "", summ$sd) 
+summ$sd <- sub("p", ".", summ$sd) 
+summ$K <- sub("./K", "", summ$K) 
+summ$r <- sub("r", "", summ$r) 
+summ$r <- sub(".rds", "", summ$r) 
+summ$r <- sub("p", ".", summ$r) 
+summary <- summ %>%  mutate(sd = as.numeric(sd)) %>%  mutate(r = as.numeric(r)) %>%  mutate(K = as.numeric(K))
+
+
+summary_form <- summary %>% pivot_longer(
+    cols = `t1_nonrankbased`:`coverage_bonferroni`, 
+    names_to = "metric",
+    values_to = "value"
+) %>% 
+  separate(metric, into=c("metric", "approach"), extra = "merge", sep = "_") %>%
+  pivot_wider(names_from = "approach", values_from = "value")
+
+
+write.csv(summary_form, "summary_k40.csv")
 ```
 
