@@ -47,15 +47,21 @@
 # Timeline
 
 - Each `K` needs to be ran for 3 different cases of `sd` and 5 `R` (3 for equicorrelation and 2 for block). We consider 16 for allowance. This should all be done by February, this already has (excessive) buffer.
-  - [ ] K=50 for 16 cases ~10 days
-  - [ ] K=40 for 16 cases ~8 days (~13 hours per case)
+  - [ ] K=50 for 6 cases ~10 days (~18 hours per case)
+  - [ ] K=40 for 6 cases ~8 days (~13 hours per case)
   - [ ] K=30 for 6 cases ~6 days (~8 hours per case)
   - [ ] K=20 for 6 cases ~1.5 days (~5 hours per case)
   - [ ] K=10 for 6 cases ~1 day (~3 hours per case)
+  - [x] K=50: staggered runs for 9/16 case (~18 hours per case)
   - [x] K=20: 3.25 days for 9/16 cases done (~5 hours per case)
   - [x] K=20: 2 days for 9/16 cases done (~5 hours per case)
   - [x] K=10: 1 day for 9/16 cases done (~3 hours per case)
-- Application to real data. This should be done by mid-March.
+- Remaining cases will take around 11.75 days when ran non-stop. For allowance, we set to 20 days, including studies of which block correlations will be used.
+- Write-up for results: 3 days.
+- Follow changes from overleaf to Rmarkdown: 2 days
+- Application to real data including writeup: 5 days. 
+- Submit to Sir Mike for checking: 15 days
+- This should be done March.
   
 # To-Do
 - [ ] Prepare codes for block correlation assumption
