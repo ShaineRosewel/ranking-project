@@ -47,11 +47,11 @@
 # Timeline
 
 - Each `K` needs to be ran for 3 different cases of `sd` and 5 `R` (3 for equicorrelation and 2 for block). We consider 16 for allowance. This should all be done by February, this already has (excessive) buffer.
-  - [ ] K=50 for 6/9 cases (~18 hours per case)
-  - [ ] K=40 for 6/9 cases (~13 hours per case)
-  - [ ] K=30 for 6/9 cases (~8 hours per case)
-  - [ ] K=20 for 6/9 cases (~5 hours per case)
-  - [ ] K=10 for 6/9 cases (~3 hours per case)
+  - [ ] K=50 for 8/9 cases (~18 hours per case)
+  - [x] K=40 for 9/9 cases (~13 hours per case)
+  - [x] K=30 for 9/9 cases (~8 hours per case)
+  - [x] K=20 for 9/9 cases (~5 hours per case)
+  - [x] K=10 for 9/9 cases (~3 hours per case)
   - [x] K=50: staggered runs for 9/16 case (~18 hours per case)
   - [x] K=20: 3.25 days for 9/16 cases done (~5 hours per case)
   - [x] K=20: 2 days for 9/16 cases done (~5 hours per case)
