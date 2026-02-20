@@ -169,8 +169,8 @@ case_start <- Sys.time()
 
 df <- readRDS("data/mean_travel_time_ranking_2011.rds")
 mean <- 23.8
-sds <- c(3.6)
-Ks <- c(40,50)#51, 40, 30, 20, 10, 5)
+sds <- c(6.0)
+Ks <- c(50, 40, 30, 20, 10)
 # corr <- c(0.1, 0.5, 0.9)
 
 for (sd in sds) {
