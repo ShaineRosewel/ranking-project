@@ -43,10 +43,8 @@ get_ci_rankbased_asymptotic <- function(B,
   thetahat_star <- MASS::mvrnorm(n = B,
                                  mu = theta_hat,
                                  Sigma = varcovar_matrix) # B x K
-  
   print("theta_hat")
   print(theta_hat)
-  
   print("thetahat_star")
   print(cat("shape: ", dim(thetahat_star)))
   print(thetahat_star[c(1:3),])
@@ -71,31 +69,26 @@ get_ci_rankbased_asymptotic <- function(B,
   # line 3 ~~~
   minuend <- thetahat_star^2 + matrix(variance_vector, B, K, byrow = TRUE)
   print(minuend[c(1:3),])
-  
   print("sorted minuend:")
   print(t(apply(minuend, 1, sort))[c(1:3),])
-  
   print("sorted_thetahat_star^2")
   print((sorted_thetahat_star^2)[c(1:3),])
     #(matrix(rep(variance_vector, each = B),nrow = B, byrow = FALSE))
   print("their difference")
   print((t(apply(minuend, 1, sort)) - sorted_thetahat_star^2)[c(1:3),])
-  # print(dim(minuend))
-  # print("sorted minuend shape")
-  # print(dim(t(apply(minuend, 1, sort))))
+
   sigma_hat_star <- sqrt(
-    t(apply(minuend, 1, sort)) - sorted_thetahat_star^2)
+    t(apply(minuend, 1, sort)) - sorted_thetahat_star^2
+    )
   # step 1c ====================================
   print("sigma_hat_star")
   print(sigma_hat_star)
+
   sorted_theta_hat <- sort(theta_hat)
-  
   print("sorted theta hat")
   print(sorted_theta_hat)
   # print((matrix(rep(sorted_theta_hat, each = B),
   #              nrow = B, byrow = FALSE)))
-  
-  # line 4 ~~~
   # t_star <- apply(
   #   abs(
   #     (
@@ -106,6 +99,8 @@ get_ci_rankbased_asymptotic <- function(B,
   #     ),
   #   1,
   #   max)
+
+  # line 4 ~~~
   compute_max <- function(b) {
     t_b <- max(abs(
       (sorted_thetahat_star[b, ] - sorted_theta_hat) /
@@ -125,26 +120,19 @@ get_ci_rankbased_asymptotic <- function(B,
       sigma_hat_star[1,]
   )))
   print(compute_max(1))
-  t_star <- sapply(1:B, compute_max)
-  
 
-  
-  # print("sigma_hat_star")
-  # print(sigma_hat_star)
-  # 
-  # print("t_star")
-  # print(t_star)
-  
+  t_star <- sapply(1:B, compute_max)
+
   # line 6 ~~~
   t_hat <- quantile(t_star, probs = 1 - alpha)
+
   # line 7 ~~~
   sigma_hat <- sqrt(
-    sort(theta_hat^2 + variance_vector) - sorted_theta_hat^2)
+    sort(theta_hat^2 + variance_vector) - sorted_theta_hat^2
+    )
   ci_lower <- sorted_theta_hat - t_hat*sigma_hat
   ci_upper <- sorted_theta_hat + t_hat*sigma_hat
-  
-  # print(ci_lower)
-  # print(ci_upper)
+
   return(list(
     ci_lower = ci_lower,
     ci_upper = ci_upper

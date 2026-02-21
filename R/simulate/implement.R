@@ -11,26 +11,38 @@ registerDoParallel(cl)
 
 sds <- c(2, 3.6, 6)
 Ks <- c(10)
-corrs <- c(0.1,0.5,0.9)
+#corrs <- c(0.1,0.5,0.9)
 alphas <- c(0.05)#c(0.05, 0.1, 0.15, 0.2)
+
+
+blocks <- list(1:3, 4:6, 7:10)          # 3 blocks of sizes 3, 3, 4
+within_corrs <- c(0.1, 0.5, 0.9)        # one correlation per block
+between_corr <- 0.1                     # correlation between blocks
+corr_matrix <- matrix(between_corr, Ks, Ks)
+for (i in seq_along(blocks)) {
+  block <- blocks[[i]]
+  corr_matrix[block, block] <- within_corrs[i]
+}
+diag(corr_matrix) <- 1
+
 
 for (sd in sds) {
   for (K in Ks) {
     set.seed(123974)
     true_theta <- rnorm(K, mean, sd)
-    true_sds <- df$S[1:K]
+    SE <- df$S[1:K]
     
     for (alpha in alphas) {
       
       tic()
-      for (corr in corrs) {
-        corr_matrix <- (1 - corr) * diag(K) + corr * matrix(1, K, K)
-        variance_vector <- true_sds^2
+      # for (corr in corrs) {
+        #corr_matrix <- (1 - corr) * diag(K) + corr * matrix(1, K, K)
+        variance_vector <- SE^2
         delta <- diag(variance_vector)
         varcovar_matrix <- delta^(1/2) %*% corr_matrix %*% delta^(1/2)
         
         cat("==========================================\n\n")
-        cat("SIMULATION SETTINGS ~ K:", K,"corr:", corr,"sd:", sd, "corr:", corr, "alpha:", alpha)
+        cat("SIMULATION SETTINGS ~ K:", K,"corr:", "block","sd:", sd, "corr:", "block", "alpha:", alpha)
         cat("\n")
         cat("SORTED TRUE THETA", sort(true_theta))
         cat("\n")
@@ -47,15 +59,16 @@ for (sd in sds) {
           varcovar_matrix = varcovar_matrix)
         toc()
         
-        saveRDS(coverage_output_df,  paste0("output/final_coverage_",
-                                            K,"_", sd, "_", corr, "_", 
+        # saveRDS(coverage_output_df,  paste0("output/final_coverage_",
+        saveRDS(coverage_output_df,  paste0("output/blockcorr_coverage_",
+                                            K,"_", sd, "_", "block", "_", 
                                             alpha, ".rds"))
         case_end <- Sys.time()
         case_runtime <- as.numeric(difftime(case_end, case_start, units = "mins"))
         cat("Finished at:", format(case_end, "%I:%M %p"), "\n")
         cat("Runtime for this case:", round(case_runtime, 2), "minutes\n")
         cat("==========================================\n\n")
-      }
+      # }
     }
   }
 }
