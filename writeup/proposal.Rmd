@@ -5,9 +5,9 @@ output:
   bookdown::pdf_document2:
     keep_tex: true
     toc: false
-    highlight: kate # monochrome
 indent: true
 header-includes:
+- \PassOptionsToPackage{colorlinks=true,linkcolor=blue,citecolor=black,urlcolor=black}{hyperref}
 - \usepackage{amsmath}
 - \numberwithin{equation}{section}
 - \usepackage{setspace}\onehalfspacing
@@ -16,9 +16,11 @@ header-includes:
 - \newcommand{\elandscape}{\end{landscape}}
 - \usepackage{indentfirst}
 - \usepackage{xparse}
+- \usepackage{tcolorbox}
 - \usepackage{algorithm}
 - \usepackage{algpseudocode}
 - \usepackage{float}
+- \floatplacement{figure}{H}
 - \usepackage{placeins}
 - \renewcommand{\ttfamily}{\rmfamily}
 - \usepackage{etoolbox}
@@ -32,15 +34,15 @@ header-includes:
 - \usepackage{anyfontsize}
 - \newcommand{\thesisfont}{\fontsize{20pt}{19pt}\selectfont}
 - \thesisfont
-
-# --- Section headers proportional to body font ---
+- \usepackage{xcolor}
+- \usepackage[colorlinks=true,linkcolor=blue,urlcolor=black,citecolor=black]{hyperref}
+- \AtBeginDocument{\hypersetup{colorlinks=true,linkcolor=blue,citecolor=black,urlcolor=black}}
 - \usepackage{titlesec}
 - \titleformat{\section}{\fontsize{20pt}{22pt}\bfseries}{\thesection}{1em}{}
 - \titleformat{\subsection}{\fontsize{18pt}{20pt}\bfseries}{\thesubsection}{1em}{}
 - \titleformat{\subsubsection}{\fontsize{16pt}{19pt}\bfseries}{\thesubsubsection}{1em}{}
-
-# --- Algorithms (caption + body + pseudocode) ---
 - \usepackage{caption}
+- \captionsetup[figure]{font=scriptsize}
 - \newcommand{\algfont}{\fontsize{15pt}{18pt}\selectfont}   # slightly smaller than thesis font
 - \DeclareCaptionFont{thesisalg}{\algfont\bfseries}         # caption font
 - \captionsetup[algorithm]{font=thesisalg}
@@ -48,7 +50,7 @@ header-includes:
 - \AtBeginEnvironment{algorithmic}{\algfont}   
 
 papersize: a4
-bibliography: /home/realiseshewon/PDev/kde-ranking/writeup/references.bib
+bibliography: /home/realiseshewon/PDev/kde-ranking/writeup/references/references.bib
 nocite: | 
   @elias
   @wright
@@ -56,27 +58,34 @@ nocite: |
   @dunn
   @pork
   @healy
-csl: /home/realiseshewon/PDev/kde-ranking/writeup/harvard-educational-review.csl
+csl: /home/realiseshewon/PDev/kde-ranking/writeup/references/harvard-educational-review.csl
 ---
+
+```{r, child = "child/revisions.Rmd"}
+
+```
+
+\newpage
+
 \fontsize{15pt}{18pt}\selectfont
 
 \title{%
-  \vspace{35mm}% <- reduce this from 45mm to something smaller
-  \textbf{Joint Confidence Regions for Rankings based on Correlated Estimates}%
+  \vspace{35mm}%
+  \textbf{Joint Confidence Regions for Rankings Based on Correlated Estimates}%
 }
 \maketitle
 \thispagestyle{empty}
 \begin{center}
 Shaine Rosewel Paralis Matala\\
 \vspace*{32px}
-A Thesis proposal submitted to UP Diliman School of Statistics\\
+A thesis proposal submitted to UP Diliman School of Statistics\\
 \vspace*{14px}
 In Partial Fulfillment of the Requirements for the Degree of\\
 Master of Science in Statistics\\
 \vspace*{250px}
 School of Statistics\\
 University of the Philippines\\
-November 2025
+December 2025
 \end{center}
 
 \newpage
@@ -89,13 +98,16 @@ knitr::opts_chunk$set(
 )
 ```
 
+
+
 \newpage
 
 \tableofcontents
+
 \newpage
 \vspace*{1cm}
 
-# Introduction
+# Introduction {#sec:intro}
 
 \vspace*{0.8cm}
 
@@ -128,9 +140,32 @@ knitr::opts_chunk$set(
 \newpage
 \vspace*{1cm}
 
+
+# Methodology
+
+\vspace*{0.8cm}
+
+```{r, child = "child/result.Rmd"}
+
+```
+
+\newpage
+\vspace*{1cm}
+
 # Bibliography {.unnumbered .unnumbered .unlisted}
 
 \vspace*{0.8cm}
 
 ::: {#refs}
 :::
+
+# Appendices
+
+\vspace*{0.8cm}
+
+```{r, child = "child/appendix.Rmd"}
+
+```
+
+\newpage
+\vspace*{1cm}

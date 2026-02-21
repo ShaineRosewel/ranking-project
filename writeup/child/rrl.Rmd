@@ -1,8 +1,8 @@
 ## Ranking Problem {#sec:ranking-problem}
 
-In the problem of estimating ranks of several unknown real-valued parameters $\theta_1,\theta_2,\ldots, \theta_K$, it is desired to rank these $K$ parameters from smallest to largest, $\theta_{(1)}<\theta_{(2)}<\ldots<\theta_{(K)}$. Let $r_1,r_2,\ldots,r_K$ be the true unknown ranks of $\theta_1,\theta_2,\ldots, \theta_K$. For example, if $\theta_{(2)}=\theta_4$, then $r_4=2$. Our first goal is to derive a joint confidence region for $\theta_1,\theta_2,\ldots, \theta_K$ and thereby obtain joint confidence intervals for the $r_1,r_2,\ldots,r_K$ using a result from @klein. In deriving a joint confidence region for $\theta_1,\theta_2,\ldots,\theta_K$, we will make use of the corresponding point estimates $\hat{\theta}_1,\hat{\theta}_2,\ldots,\hat{\theta}_K$. 
+In the problem of estimating ranks of several unknown real-valued parameters $\theta_1,\theta_2,\ldots, \theta_K$, it is desired to rank these $K$ parameters from smallest to largest, $\theta_{(1)}<\theta_{(2)}<\ldots<\theta_{(K)}$. Let $r_1,r_2,\ldots,r_K$ be the true unknown ranks of $\theta_1,\theta_2,\ldots, \theta_K$. For example, if $\theta_{(2)}=\theta_4$, then $r_4=2$. Our first goal is to derive a joint confidence region for $\theta_1,\theta_2,\ldots, \theta_K$ and thereby obtain joint confidence intervals for the $r_1,r_2,\ldots,r_K$ using a result from @klein. In deriving a joint confidence region for $\theta_1,\theta_2,\ldots,\theta_K$, we will make use of the corresponding point estimates $\hat{\theta}_1,\hat{\theta}_2,\ldots,\hat{\theta}_K$. Overall uncertainty highlights that in pre-election polls, reported candidate rankings that seem decisive may in fact be much less stable once uncertainty is considered, and hence it is possible that these rankings do not align with the actual election outcomes.
 
-There are several real-life applications of this problem. For example, the study of @klein illustrates the problem of ranking the US states in terms of travel time to work. In this context, $\theta_k$ is the true mean travel time to work for state $k$, and we wish to find a joint confidence statement about $r_1,r_2,\ldots,r_K$. Our second goal is to derive a joint confidence region for the ordered parameters $\theta_{(1)},\theta_{(2)},\ldots,\theta_{(K)}$. In the context of senatorial elections where $\theta_k$ denotes the proportion of votes earned by a candidate, confidence intervals on ordered parameters help determine if one candidate's lead is statistically significant. If the confidence intervals for two candidates' support levels do not overlap, it is highly likely (at the specified confidence level) that the candidate with the higher point estimate is the true winner. Overall uncertainty also highlights that in election polls, reported candidate rankings that seem decisive may in fact be much less stable once uncertainty is considered, and hence it is possible that these rankings do not align with the actual election outcomes. This is particularly important when discussing the potential influence of such polls on voter behavior---commonly referred to as the bandwagon effect---because apparent leads may encourage support for candidates who are not actually ahead, underscoring the value of clearly communicating the uncertainty in poll-based rankings. As to @carling, in institutions like hospitals that are ranked according to mortality rates for a particular ailment, failure to report uncertainties may create a misleading impression, potentially causing fear among patients and casting a negative light on hospitals that appear at the bottom of the ranking.
+Our second goal is to derive a joint confidence region for the ordered parameters $\theta_{(1)},\theta_{(2)},\ldots,\theta_{(K)}$. In the context of senatorial elections where $\theta_k$ denotes the proportion of votes earned by a candidate, confidence intervals on ordered parameters help determine if a candidate's lead is statistically significant. If the confidence intervals for two candidates' support levels do not overlap, it is highly likely (at the specified confidence level) that the candidate with the higher point estimate is the true winner. 
 
 A mathematical definition of $r_k$ is as follows:
 
@@ -22,12 +22,12 @@ In this chapter, we review the various approaches to solve this problem of findi
 
 ## Klein's Joint Confidence Region for Overall Ranking Uncertainty {#sec:kleins-joint-confidence-region-for-overall-ranking-uncertainty}
 
-The study of @klein assumes that $\hat{\theta}_k\sim N(\theta_k,\sigma^2_k), k=1,2,\ldots,K$ where $\theta_k$ is unknown but $\sigma^2_k$ is known.  Their solution hinges on the fact that the uncertainty in the ranks is determined by the uncertainty in the parameters (@mogstadt23). We now describe their methodology.
+The study of @klein assumes that $\hat{\theta}_k\sim N(\theta_k,\sigma^2_k), k=1,2,\ldots,K$ where $\theta_k$ is unknown but $\sigma^2_k$ is known. We now describe their methodology.
 
 Suppose that for each \(k \in \left\{1, 2, \dots, K\right\}\) there exists values $L_k$ and $U_k$ such that 
 
 \begin{equation}
-  \theta_k \in \left( L_k, U_k \right), k=1,2,\ldots,K.
+  \theta_k \in \left( L_k, U_k \right), \qquad U_k, L_k \in \mathbb{R}
   \label{eq:theta_int}
 \end{equation}
 Moreover, define the quantities $I_k$, $\Lambda_{Lk}$, $\Lambda_{Rk}$, $\Lambda_{Ok}$ as follows:
@@ -90,7 +90,7 @@ then, by the result of @klein, it also follows that
   \label{eq:joint_cov2}
 \end{equation}
 
-Due to the assumption of normality on $\hat{\theta}_k$ as well as the fact that $\sigma_k$ is assumed known, @klein set the confidence intervals $(L_k,U_k)$ for $\theta_k$ to be of the form $\hat \theta_k \pm t \times \sigma_k$ for $k \in \left\{1, 2, \dots, K\right\}$. One may use the Bonferroni approach to choose $t$. If such an approach is used, the choice of $t$ that would satisfy (\ref{eq:joint_cov1}) is $t = z_{\alpha/2K}$. Another choice of $t$ is one that exploits the independence assumption on $\hat{\theta}_k$. Such a choice is given by $z_{\gamma/2}$ where $\gamma=1-(1-\alpha)^{1/K}$. To see why this is the case, note that if we define $Y_k$ as follows:
+Due to the assumption of normality on $\hat{\theta}_k$ as well as the fact that $\sigma_k$ is assumed known, @klein set the confidence intervals $(L_k,U_k)$ for $\theta_k$ to be of the form $\hat \theta_k \pm t \times \sigma_k$ for $k \in \left\{1, 2, \dots, K\right\}$. One may use the Bonferroni approach to choose $t$ and call the resulting confidence region $\mathfrak{R}_{\text{bonf}}$. If such an approach is used, the choice of $t$ that would satisfy (\ref{eq:joint_cov1}) is $t = z_{\alpha/2K}$. Another choice of $t$ is one that exploits the independence assumption on $\hat{\theta}_k$; denote the associated confidence region with $\mathfrak{R}_{\text{ind}}$. Such a choice is given by $z_{\gamma/2}$ where $\gamma=1-(1-\alpha)^{1/K}$. To see why this is the case, note that if we define $Y_k$ as follows:
 
 \begin{align}
 Y_k = \frac{\left( \hat{\theta}_k - \theta_k\right)}{\sigma_k} &\sim N\!(0, 1), \quad k =1,2, \dots, K \label{eq:standardized} 
@@ -108,15 +108,17 @@ then we get
 
 While Klein’s approach provides one framework for constructing joint confidence regions for ranks, several other studies have explored related problems using different formulations or assumptions. These alternative methods vary in whether they account for dependence structures, rely on model-based estimation, or use resampling techniques such as the bootstrap.
 
-### Calculated Measure
+### Calculated Measure {#sec:calculated-measure}
 
-Other studies with similar concern include that of @carling who suggest the use of a statistic $C$ which quantifies the number of positions ranked populations would on average change their order due to random variation. They calculate the measure using a bootstrap approach. Working on risk ratios $p_k$ of $K$ units, @carling draw $B$ bootstrap proportions $\hat{p}^*_k$ from (\ref{eq:carling_bs}):
+Other studies with similar concern include that of @carling who suggest the use of a statistic $C$ which quantifies the number of positions ranked  parameters would on average change their order due to random variation. They calculate the measure using a bootstrap approach. Working on risk ratios $p_k$ of $K$ units, @carling draw $B$ bootstrap proportions $\hat{p}^*_k$ from (\ref{eq:carling_bs}):
 
 \begin{equation}
 \hat{p}^*_{bk} \sim  N \left(\hat{p}_k, \frac{\hat{p}_k(1-\hat{p}_k)}{n_k} \right), \quad k = 1,2, \dots, K; \; b = 1,2, \dots, B
   \label{eq:carling_bs}
 \end{equation}
 and $\hat{p}_k$ and $n_k$ are the sample proportion and sample size, respectively, corresponding to the $k$th unit. For each bootstrap iteration $b$, they sort the set $\hat{p}^*_{b1},\ldots,\hat{p}^*_{bK}$ to get the corresponding ranks $r^*_{bk}, k=1,2,\ldots,K$. The difference $d_{bk}$ between the original and bootstrap rank is then calculated as $d_{bk} =$ \(\lvert \hat{r}_k - \hat{r}^*_{bk}\rvert\), where $\hat{r}_k$ is the rank of $\hat{p}_k$ in the set $\{\hat{p}_1,\hat{p}_2,\ldots,\hat{p}_K\}$. In turn, $\bar{d}_k$ is obtained by taking the average of $d_{bk}$ across the bootstrap samples. Finally, the overall measure $C$ is calculated as the average of $\bar{d}_k$ across all $K$ units. 
+
+This can be applied to Pulse Asia senatorial pre-elections survey where we take $\hat{p}_k$ as the estimated proportion of voters who opted for candidate $k$ and $n=1,200$ as the common sample size. The higher $C$ is, the less we are able to clearly distinguish between the proportion of votes received by different candidates, rendering ranks uninformative.
 
 ### Pairwise Difference {#sec:pairwise}
 
@@ -137,7 +139,7 @@ where $q_{1-\alpha}$ is the $(1-\alpha)$ quantile of the distribution of the stu
 \end{equation}
 In (\ref{eq:jelle}), the notation $\#\{\cdot\}$ counts the number of pairwise hypotheses that are rejected according to Tukey's HSD, which determines the lower and upper bounds of the confidence interval for the rank of $\hat{\theta}_k$. Their method has simultaneous coverage of at least $1-\alpha$ and exactly $1-\alpha$ when $\theta_1=\theta_2=\cdots=\theta_K$. However, their approach tends to be overly conservative, showing coverage levels between 0.996 and 1.0 at a 0.90 nominal level in simulations, when the $\theta$s differ. They also demonstrated that as the true differences increase from 0 to 0.5, the coverage quickly increases from the nominal level to 1. As a remedy, they proposed a rescaling technique that brings the coverage closer to the nominal level, though it remains conservative (e.g., from 1.0 to 0.978, from 0.998 to 0.961---at 0.90 confidence level).
 
-@mogstadt23 presents another technique that closely resembles the procedure by @klein and @jelle. However, they define ranks in the opposite way (i.e., larger rank value for lower estimate). They construct the rectangular confidence region in (\ref{eq:mogstadt23_ci}), from the pairwise differences of the estimators $\hat{\theta}_1, \dots, \hat{\theta}_K$ and an estimator of the variance of $\hat{\theta}_{j}-\hat{\theta}_{k}$. The quantities $\hat{\theta}_1, \dots, \hat{\theta}_K$ need not be independent. Let $P_k$ be the distribution from which $\hat{\theta}_k$ is estimated; and let $\hat{P}_k$ denote the estimate of $P_k$.  The joint confidence intervals for $r_1,\dots,r_K$ are obtained from the joint confidence intervals of the pairwise difference:
+@mogstadt23 presents another technique that closely resembles the procedure by @klein and @jelle. However, they define ranks in the opposite way (i.e., larger rank value for lower estimate). They construct the rectangular confidence region in (\ref{eq:mogstadt23_ci}), from the pairwise differences of the estimators $\hat{\theta}_1, \dots, \hat{\theta}_K$ and an estimator of the variance of $\hat{\theta}_{j}-\hat{\theta}_{k}$. The quantities $\hat{\theta}_1, \dots, \hat{\theta}_K$ need not be independent. Let $P_k$ be the distribution from which $\hat{\theta}_k$ is estimated; and let $\hat{P}_k$ denote the estimate of $P_k$. The joint confidence intervals for $r_1,\dots,r_K$ are obtained from the joint confidence intervals of the pairwise difference:
 
 \begin{equation}
 \begin{split}
@@ -160,18 +162,60 @@ where $L^{-1}(1-\alpha,S,P)$ is the $(1-\alpha)$-quantile corresponding to the C
   \label{eq:mogstadt23_quantile}
 \end{equation}
 
-They added that if the estimators $\hat{\theta}_1, \hat{\theta}_2, \dots, \hat{\theta}_K$ are jointly asymptotically normally distributed, then the quantiles $L^{-1}(1-\alpha, S, \hat{P})$, can be computed from the limiting distributions of the max-statistics shown in (\ref{eq:mogstadt23_quantile}), through resampling methods. @mogstadt23 show that their approach generally leads to a confidence set that is narrower than that of @klein.
+They added that if the estimators $\hat{\theta}_1, \hat{\theta}_2, \dots, \hat{\theta}_K$ are jointly asymptotically normally distributed, then the quantiles $L^{-1}(1-\alpha, S, \hat{P})$, can be computed from the limiting distributions of the max-statistics shown in (\ref{eq:mogstadt23_quantile}), through resampling methods. Their construction of confidence sets for ranks is based on hypothesis testing. @mogstadt23 show that their approach generally leads to a confidence set that is narrower than that of @klein.
 
-### Accounting for Data Dependencies
+### Model-Based Uncertainty {#sec:modelbased}
 
-Some approaches explicitly account for dependencies in the data. @spiegel use multilevel models, in the context of ranking education and health institutions (e.g., schools, hospitals, medical practitioners, etc.), to address the hierarchical nature of data structures associated with institutional performance. Rank uncertainty is presented through a visualization in which non-overlap of confidence intervals conveyed a significant difference between compared institutions (Goldstein \& Healy, 1995). In an alternative approach, along with institution effect estimation through Gibbs sampling, the rank is obtained for each iteration. Their example illustrates that while the multilevel model made individual estimates more accurate, it also had the effect of making the ranks even more uncertain.
+In the context of ranking education and health institutions, @spiegel treat the estimators as latent variables. Estimators are not directly measured but inferred from observed variables. They describe performance indicator as a summary statistical measurement on an institution (e.g., schools, hospitals, medical practitioners, etc.) which is meant to be related to the quality of its functioning. An example of performance indicator is "outcome" measure such as school exam results which have been used to judge institutional effectiveness. They use multilevel models to address the hierarchical nature of data structures associated with institutional performance. In its basic form,
 
-@zhang analyze U.S. age-adjusted cancer incidence and mortality rates across states and counties by computing individual and overall simultaneous confidence intervals for age-adjusted health index using the Monte Carlo method. Because many health conditions are age-dependent, they use age-adjusted rates to minimize the confounding effect of age differences when comparing different population groups. They also extend their method to handle cases where only the adjusted rates and confidence intervals are available, aligning it more closely with the approach of @klein. @jelle show their technique to result in joint confidence sets with very low coverage probabilities and which are only able to reach the nominal level when differences among the means are large enough.
+\begin{align}
+  y_{ik} &= \beta_0 + u_k + e_{ik} \notag \\
+  &\text{var}(\hat{u}_k) = \sigma^2_u \notag \\
+  &\text{var}(\hat{e}_{ik}) = \sigma^2_e \notag \\ \notag
+\end{align}
+where $y_{ik}$ is the exam score for student $i$ from school $k$, $u_k$ is the residual or the $k$th school effect, and $e_{ik}$ is the residual effect for student $i$ from school $j$. This will yield posterior estimates $\hat{u}_j$ and $\text{var}(\hat{u}_j)$ as well as $\text{rank}(\hat{u}_j)$ and $\text{var}(\text{rank}(\hat{u}_j))$ which can be used to compare the institutions. They also visualize rank uncertainty and describe that the non-overlap of confidence intervals convey a significant difference between compared institutions (Goldstein \& Healy, 1995). Their example illustrates that while the multilevel model made individual estimates more accurate, it also had the effect of making the ranks even more uncertain.
+
+### Accounting for Data Dependencies {#sec:dependencies}
+
+Some approaches explicitly account for dependencies in the data. @zhang analyze U.S. age-adjusted cancer incidence and mortality rates across states and counties by computing individual and overall simultaneous confidence intervals for age-adjusted health index using the Monte Carlo method. Because many health conditions are age-dependent, they use age-adjusted rates to minimize the confounding effect of age differences when comparing different population groups. They also extend their method to handle cases where only the adjusted rates and confidence intervals are available, aligning it more closely with the approach of @klein. @jelle show their technique to result in joint confidence sets with very low coverage probabilities and which are only able to reach the nominal level when differences among the means are large enough.
 
 @miller mention that in some use cases such as institutions ranking, dependencies can be accommodated through conditioning, similar to the above approaches. However, in genomics where data on expression levels of different genes from the same individual are generally not independent, they suggest using an "independent component" version of the bootstrap on the sample, where m-out-of-n bootstrap (m < n) is applied as though the ranked variables were statistically independent. They show this to perform at its best when a reasonable level of correlation is present among the variables.
 
-@mogstadt25, in their recent study, tackle the ranking of political candidates or parties using the estimated share of support each one receives in surveys. They use the multinomial distribution to develop confidence sets for finite samples and explore the use of the bootstrap in the case of approximately large samples. They address the dependence attributed to the success probabilities of different categories by using their proposed bootstrap algorithm. Their simulations show that bootstrap-based confidence sets may have coverage probability below the nominal level despite their being excessively wide. In contrast, the finite-sample confidence sets have coverage probability at least as large as expected and may even be relatively shorter.
+@mogstadt25, in their recent study, tackle the ranking of political candidates or parties using the estimated share of support each one receives in surveys. They use the approach of @mogstadt23 but account for the dependence in the estimators through their bootstrap implementation. In their setup, they let $X_k$ be the number of votes received by the $k$th party from the $n$ voters so $\mathbf{X} = (X_1, X_2, \dots, X_K)'$ is distributed according to the multinomial distribution with parameters $n$ and $\boldsymbol{\theta} = (\theta_1, \theta_2, \dots, \theta_K)'$. Their simulations show that bootstrap-based confidence sets may have coverage probability below the nominal level despite their being excessively wide. In contrast, the finite-sample confidence sets have coverage probability at least as large as expected and may even be relatively shorter.
+
+## Asymptotic Variance {#sec:asymptoticvar}
+
+Let $\hat{\theta}_{k,n}$ be an estimator of $\theta_k$ for $k=1,2,\ldots,K$ based on a sample of size $n$, and let $\hat{\theta}_{(k),n}$ be the $k$th ordered value among $\hat{\theta}_{1,n},\hat{\theta}_{2,n},\ldots,\hat{\theta}_{K,n}$. The estimation may be done through standard procedures such as MLE, least squares, and so forth.  Moreover, suppose $\hat{\theta}_{k,n}$s are independent for $k=1,2,\ldots,K$.  Finally, suppose, as in the application of this thesis, that $\hat{\theta}_{k,n}$ is a sample mean (or sample proportion) and $\theta_k$ is a population mean (or population proportion) and both $\hat{\theta}_{k,n}$ and $\theta_k$ are nonnegative. In this subsection, we show that 
+\begin{equation}
+V[\hat{\theta}_{(k),n}]\longrightarrow k\text{th ordered value in }\{\theta^2_1 + \sigma_{1}^2,  \theta^2_2 + \sigma_{2}^2, \dots, \theta^2_K + \sigma_{K}^2\} - \theta^2_{(k)}
+\end{equation}
+as $n\rightarrow \infty$, where $\sigma_{k}^2=V(\hat{\theta}_{k,n})$, which in this study is assumed to be known. The result in (2.13) gives us an expression for the asymptotic variance of $\hat{\theta}_{(k),n}$. We shall also give an expression for an estimator of this variance.
+
+By the definition of variance, we have
+\begin{equation}
+V(\hat{\theta}_{(k),n}) = E(\hat{\theta}_{(k),n}^2) - [E(\hat{\theta}_{(k),n})]^2 
+\end{equation}
+
+We make use of Theorem 2.2 of Chen (1976) on asymptotic results for ordered estimators, which we shall now state.
+
+\begin{tcolorbox}
+\noindent \textbf{Theorem (Chen, 1976)}. Suppose that the estimator \(\hat{\delta}_{k,n}\) is a strongly consistent estimator of the parameter \(\delta_k\) for \(k = 1,2, \dots, K\) and based on a random sample of size $n$. Moreover, suppose $\hat{\delta}_{1,n},\hat{\delta}_{2,n},\dots\hat{\delta}_{K,n}$ are independent. It follows that \(\hat{\delta}_{(k),n}\) is a strongly consistent estimator of \(\delta_{(k)}\), where $\hat{\delta}_{(k),n}$ is the $k$th ordered value of $\hat{\delta}_{1,n},\hat{\delta}_{2,n},\ldots,\hat{\delta}_{K,n}$ and $\delta_{(k)}$ is the $k$th ordered value of the $\delta_1,\delta_2,\ldots,\delta_K$. 
+\end{tcolorbox}
 
 
+Since $\hat{\theta}_{k,n}$, being a sample mean, is a strongly consistent estimator of $\theta_k$, then using the result of Chen (1976), we know that $\hat{\theta}_{(k),n}$ is a strongly consistent estimator of $\theta_{(k)}$. This implies that 
 
+\begin{equation}
+E[\hat{\theta}_{(k),n}] \longrightarrow \theta_{(k)}.
+\end{equation}
 
+Moreover, since $E(\hat{\theta}_{k,n}^2)=\theta_k^2 + \sigma^2_{k}$ we also have
+\begin{equation}
+E[\hat{\theta}_{(k),n}^2] \longrightarrow k\text{th ordered value in }\{\theta^2_1 + \sigma_{1}^2,  \theta^2_2 + \sigma_{2}^2, \dots, \theta^2_K + \sigma_{K}^2\}.
+\end{equation}
+
+Using the results in (2.15) and (2.16) and noting the formula in (2.14), we get the result in (2.13). It also follows that we can estimate $V[\hat{\theta}_{(k),n}]$ as follows:
+\begin{equation}
+\widehat{V[\hat{\theta}_{(k),n}]}= \text{kth ordered value among} \ \left\{ \hat{\theta}^{2}_{1,n} + \sigma_1^2, \dots, \hat{\theta}^{2}_{K,n} + \sigma_K^2 \right\} - \hat {\theta}^{2}_{(k),n}.
+\end{equation}
+In this subsection, we have included the subscript $n$ in our estimators to indicate that the convergence occurs as $n$ tends to infinity. In the rest of this thesis, we shall drop this subscript.

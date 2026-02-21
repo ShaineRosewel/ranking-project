@@ -1,113 +1,110 @@
+---
+output:
+  bookdown::pdf_document2:
+    keep_tex: true
+    toc: false
+---
+
 ## Results
 
-These are compared to current approaches from @klein: independent and Bonferroni. 
-
-```{r echo = FALSE}
-library("gtsummary")
-load("../results/simulation_results.RData")
-
-withcorr_nonrank <- results
-#compare <- results1
-
-load("../results/simulation_results_ocorr.RData")
-
-with0corr_nonrank <- results
-parametric <- results1
-```
+The results of nonrank-based algorithm are compared to the approaches from @klein: independent and Bonferroni. 
 
 
-For the simulation studies, $\alpha$ is fixed at $0.1$, while the true standard deviations are varied ($sd = 2.0, 3.6, 6.0$) along with the number of items to be ranked ($K = 5, 10, 20, 30, 40, 51$). Table \@ref(tab:coverage) shows that when the correlation is zero, the nonrank-based, independent, and Bonferroni CI methodology exhibit similar coverage values regardless of $K$ and $sd$. In contrast, the parametric approach generally yields higher coverage for smaller $sd$ while showing comparable variability across different $K$. It deviates the most from the nominal coverage level.
-
-
-
-```{r coverage}
+```{r}
+library(dplyr)
 library(knitr)
 library(kableExtra)
 library(gt)
 library(dplyr)
-
-out <- with0corr_nonrank %>% left_join(parametric, by = c("K", "sd"))
-
-# out %>% select(c(K, sd, Cov_parametric, Cov_nonrankbased, Cov_independent, Cov_bonferroni)) %>% gt() |>
-#   tab_options(latex.use_longtable = TRUE)
-
-
-out %>%
-  select(K, sd, Cov_parametric, Cov_nonrankbased, Cov_independent, Cov_bonferroni) %>%
-  arrange(K, sd) %>%
-  kable("latex", booktabs = TRUE, longtable = FALSE, 
-        col.names = c("K", "sd", "Parametric", "Nonrank-based", "Independent", "Bonferroni"),
-        caption = "Simulation results for coverage probabilities when $\\rho = 0$.") %>%
-  kable_styling(latex_options = c("repeat_header","hold_position")) %>%
-  collapse_rows(columns = 1, latex_hline = "major") %>%   # <-- merges K column
-  add_header_above(c(" " = 2, "Coverage" = 4))             # spanner over techniques
+combined <- bind_rows(lapply(seq(from = 10, to = 50, by = 10), 
+                             function(K) read.csv(
+                               paste0("/home/realiseshewon/PDev/kde-ranking/simulation_results/summaries/summary_k",
+                                      K,
+                                      ".csv"))))
+combined$X <-NULL
+combined %>% 
+  filter(sd == 2, metric == "coverage") %>% 
+  select(-c(rankbased_asymptotic, rankbased_level2bs, metric, sd))  %>%
+  select(c(K, r, independent, bonferroni, nonrankbased)) %>%
+  kable("latex",
+        booktabs = TRUE, 
+        escape = FALSE,
+        linesep = "",
+        longtable = TRUE,
+        col.names = c("K", "r", "Independent", "Bonferroni", "Nonrank-based"),
+        caption = "Simulation results for coverage probabilities") %>%
+  collapse_rows(columns = 1,
+                valign = "middle", 
+                latex_hline = "none") %>%
+  kable_styling(latex_options = c("striped", 
+                                  "repeat_header", 
+                                  "HOLD_position"),
+             stripe_color = "gray!15",
+             stripe_index = rep(c(0, 6, 12), each = 3) + 1:3)
 ```
 
 
-The case is different in terms of $T_1$ (See Table \@ref(tab:T1).) as it increases with decreasing $sd$ and increasing $K$. The CIs are wider for the parametric approach compared to the remaining approaches whose $T_1$ only vary by a small margin, with nonrank-based method having the smallest $T_1$ and Bonferroni, the largest one. The same behavior is observed for $T_2$ and $T_3$.
+\blandscape
 
+```{r}
+table01 <- combined %>% 
+  filter(metric == "t1") %>% 
+  mutate(variability = ifelse(sd==2.0, 
+                              'low', 
+                              ifelse(sd == 3.6, 'med', 'high'))) %>%
+  select(c(K, r, variability, independent, bonferroni, nonrankbased)) %>%
+  tidyr::pivot_wider(names_from = variability, 
+                     values_from = c(independent, bonferroni, nonrankbased), 
+                     names_sep = "_") %>%
+  select(K, r, 
+         independent_low, bonferroni_low, nonrankbased_low,
+         independent_med, bonferroni_med, nonrankbased_med,
+         independent_high, bonferroni_high, nonrankbased_high)
 
-```{r T1}
-out <- with0corr_nonrank %>% left_join(parametric, by = c("K", "sd"))
-
-out %>%
-  select(K, sd, T1_parametric, T1_nonrankbased, T1_independent, T1_bonferroni) %>%
-  arrange(K, sd) %>%
-  kable("latex", booktabs = TRUE, longtable = FALSE,
-        col.names = c("K", "sd", "Parametric", "Nonrank-based", "Independent", "Bonferroni"),
-        caption = "Simulation results for average $T_1$ when $\\rho = 0$.") %>%
-  kable_styling(latex_options = "repeat_header") %>%
-  collapse_rows(columns = 1, latex_hline = "major") %>%
-  add_header_above(c(" " = 2, "$T_1$" = 4), escape = FALSE)
+table01  %>%
+  kable("latex",
+        booktabs = TRUE,
+        escape = FALSE,
+        linesep = "",
+        longtable = TRUE,
+        col.names = c("K", "r", rep(c("Independent","Bonferroni","Nonrank-based"),3)),
+        caption = "Simulation results for tightness measure t1") %>%
+  # collapse_rows(columns = 1,
+  #               valign = "middle",
+  #               latex_hline = "none") %>%
+  kable_styling(latex_options = c("striped",
+                                  "repeat_header",
+                                  "HOLD_position"),
+                font_size=11.5,
+             stripe_color = "gray!15",
+             stripe_index = rep(c(0, 6, 12), each = 3) + 1:3) %>%
+  add_header_above(c(" "=2,"Low" = 3, "Med" = 3, "High" = 3))
 ```
 
+\elandscape
 
+```{r}
+library(knitr)
+library(kableExtra)
+library(dplyr)
 
-As the correlation increases, the coverage of both independent and Bonferroni CIs exceeds the nominal value while that of nonrank-based method remains close to it. This holds regardless of $K$ and $sd$. See Table \@ref(tab:nonzerocorrel) for $sd=2.0$; results for other $sd$ values are omitted, as they are identical to those shown. This suggests that when items being ranked are correlated, the proposed method is preferable, as it maintains coverage close to the nominal level. 
+# Sample Data
+df <- data.frame(
+  Group = c("A", "A", "A", "B", "B", "B"),
+  Subgroup = c("X", "X", "Y", "Z", "Z", "Z"),
+  Value = c("High", "High", "Low", "Mid", "Mid", "Mid")
+)
 
-```{r nonzerocorrel}
-out <- withcorr_nonrank %>% filter(sd == 2.0)
-out %>%
-  select(corr, K, Cov_nonrankbased, Cov_independent, Cov_bonferroni) %>%
-  arrange(corr, K) %>%
-  kable("latex", booktabs = TRUE, longtable = FALSE,
-        col.names = c("corr","K", "Nonrank-based", "Independent", "Bonferroni"),
-        caption = "Simulation results for coverage probabilities when $\\rho \\neq 0$.") %>%
-  kable_styling(latex_options = c("repeat_header","hold_position")) %>%
-  collapse_rows(columns = 1, latex_hline = "major") %>%   # <-- merges K column
-  add_header_above(c(" " = 2, "Coverage" = 3))             # spanner over techniques
+# 1. Merge columns based on row values (Group + Subgroup)
+# 2. Use collapse_rows for vertical merging
+df %>%
+  mutate(Combined = paste(Group, "-", Subgroup)) %>%
+  select(Combined, Value) %>%
+  kbl(booktabs = T, caption = "Merged Rows with 3 Value States") %>%
+  collapse_rows(columns = 1, valign = "top") %>%
+  kable_styling(latex_options = "striped")
 ```
 
-$sd$ remains to be the quantity that affects $T_1$ as it only differs by a small amount with changes in $\rho$. This is shown in Table \@ref(tab:nonzerocorrelt1).
-
-
-```{r nonzerocorrelt1}
-out <- withcorr_nonrank
-df_wide <- out %>%
-  select(corr, K, sd, T1_nonrankbased, T1_independent, T1_bonferroni) %>%
-  tidyr::pivot_wider(
-    names_from = corr,
-    values_from = c(T1_nonrankbased, T1_independent, T1_bonferroni),
-    names_glue = "{corr}_{.value}"
-  ) %>%
-  arrange(K, sd)
-
-v<- names(df_wide)
-names(df_wide) <- c(names(df_wide)[1:2] , paste0("$\\rho = $ ", sub("_.*", "", names(df_wide)[3:length(v)])))
-
-df_wide %>%
-  kable("latex", booktabs = TRUE, longtable = FALSE, escape = FALSE,
-        caption = "Simulation results for $T_1$ probabilities when $\\rho \\neq 0$.") %>%
-  kable_styling(latex_options = "repeat_header","hold_position") %>%
-  collapse_rows(columns = 1:2, latex_hline = "major") %>%
-  add_header_above(c(" " = 2,
-                     "Nonrank-based" = 3,
-                     "Independent" = 3,
-                     "Bonferroni" = 3)) %>%
-  add_header_above(c(" " = 2, "$T_1$" = 9), escape = FALSE) %>%
-  landscape()
-
-```
 
 
 

@@ -1,0 +1,371 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+]{article}
+\usepackage{amsmath,amssymb}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\usepackage[margin=1in]{geometry}
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{longtable,booktabs,array}
+\usepackage{calc} % for calculating minipage widths
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{5}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{colortbl}
+\usepackage{pdflscape}
+\usepackage{tabu}
+\usepackage{threeparttable}
+\usepackage{threeparttablex}
+\usepackage[normalem]{ulem}
+\usepackage{makecell}
+\usepackage{xcolor}
+\ifLuaTeX
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+\usepackage{bookmark}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+\hypersetup{
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+
+\author{}
+\date{\vspace{-2.5em}}
+
+\begin{document}
+
+\subsection{Results}\label{results}
+
+The results of nonrank-based algorithm are compared to the approaches from @klein: independent and Bonferroni.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(dplyr)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Attaching package: 'dplyr'
+\end{verbatim}
+
+\begin{verbatim}
+## The following objects are masked from 'package:stats':
+## 
+##     filter, lag
+\end{verbatim}
+
+\begin{verbatim}
+## The following objects are masked from 'package:base':
+## 
+##     intersect, setdiff, setequal, union
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(knitr)}
+\FunctionTok{library}\NormalTok{(kableExtra)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Attaching package: 'kableExtra'
+\end{verbatim}
+
+\begin{verbatim}
+## The following object is masked from 'package:dplyr':
+## 
+##     group_rows
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(gt)}
+\FunctionTok{library}\NormalTok{(dplyr)}
+\NormalTok{combined }\OtherTok{\textless{}{-}} \FunctionTok{bind\_rows}\NormalTok{(}\FunctionTok{lapply}\NormalTok{(}\FunctionTok{seq}\NormalTok{(}\AttributeTok{from =} \DecValTok{10}\NormalTok{, }\AttributeTok{to =} \DecValTok{50}\NormalTok{, }\AttributeTok{by =} \DecValTok{10}\NormalTok{), }
+                             \ControlFlowTok{function}\NormalTok{(K) }\FunctionTok{read.csv}\NormalTok{(}
+                               \FunctionTok{paste0}\NormalTok{(}\StringTok{"/home/realiseshewon/PDev/kde{-}ranking/simulation\_results/summaries/summary\_k"}\NormalTok{,}
+\NormalTok{                                      K,}
+                                      \StringTok{".csv"}\NormalTok{))))}
+\NormalTok{combined}\SpecialCharTok{$}\NormalTok{X }\OtherTok{\textless{}{-}}\ConstantTok{NULL}
+\NormalTok{combined }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{filter}\NormalTok{(sd }\SpecialCharTok{==} \DecValTok{2}\NormalTok{, metric }\SpecialCharTok{==} \StringTok{"coverage"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{select}\NormalTok{(}\SpecialCharTok{{-}}\FunctionTok{c}\NormalTok{(rankbased\_asymptotic, rankbased\_level2bs, metric, sd))  }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{select}\NormalTok{(}\FunctionTok{c}\NormalTok{(K, r, independent, bonferroni, nonrankbased)) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{kable}\NormalTok{(}\StringTok{"latex"}\NormalTok{,}
+        \AttributeTok{booktabs =} \ConstantTok{TRUE}\NormalTok{, }
+        \AttributeTok{escape =} \ConstantTok{FALSE}\NormalTok{,}
+        \AttributeTok{linesep =} \StringTok{""}\NormalTok{,}
+        \AttributeTok{longtable =} \ConstantTok{TRUE}\NormalTok{,}
+        \AttributeTok{col.names =} \FunctionTok{c}\NormalTok{(}\StringTok{"K"}\NormalTok{, }\StringTok{"r"}\NormalTok{, }\StringTok{"Independent"}\NormalTok{, }\StringTok{"Bonferroni"}\NormalTok{, }\StringTok{"Nonrank{-}based"}\NormalTok{),}
+        \AttributeTok{caption =} \StringTok{"Simulation results for coverage probabilities"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{collapse\_rows}\NormalTok{(}\AttributeTok{columns =} \DecValTok{1}\NormalTok{,}
+                \AttributeTok{valign =} \StringTok{"middle"}\NormalTok{, }
+                \AttributeTok{latex\_hline =} \StringTok{"none"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{kable\_styling}\NormalTok{(}\AttributeTok{latex\_options =} \FunctionTok{c}\NormalTok{(}\StringTok{"striped"}\NormalTok{, }
+                                  \StringTok{"repeat\_header"}\NormalTok{, }
+                                  \StringTok{"HOLD\_position"}\NormalTok{),}
+             \AttributeTok{stripe\_color =} \StringTok{"gray!15"}\NormalTok{,}
+             \AttributeTok{stripe\_index =} \FunctionTok{rep}\NormalTok{(}\FunctionTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{6}\NormalTok{, }\DecValTok{12}\NormalTok{), }\AttributeTok{each =} \DecValTok{3}\NormalTok{) }\SpecialCharTok{+} \DecValTok{1}\SpecialCharTok{:}\DecValTok{3}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{longtable}[t]{rrrrr}
+\caption{\label{tab:unnamed-chunk-1}Simulation results for coverage probabilities}\\
+\toprule
+K & r & Independent & Bonferroni & Nonrank-based\\
+\midrule
+\endfirsthead
+\caption[]{\label{tab:unnamed-chunk-1}Simulation results for coverage probabilities \textit{(continued)}}\\
+\toprule
+K & r & Independent & Bonferroni & Nonrank-based\\
+\midrule
+\endhead
+
+\endfoot
+\bottomrule
+\endlastfoot
+\cellcolor{gray!15}{} & \cellcolor{gray!15}{0.1} & \cellcolor{gray!15}{0.9474} & \cellcolor{gray!15}{0.9484} & \cellcolor{gray!15}{0.9464}\\
+
+\cellcolor{gray!15}{} & \cellcolor{gray!15}{0.5} & \cellcolor{gray!15}{0.9614} & \cellcolor{gray!15}{0.9620} & \cellcolor{gray!15}{0.9496}\\
+
+\cellcolor{gray!15}{\multirow{-3}{*}{\raggedleft\arraybackslash 10}} & \cellcolor{gray!15}{0.9} & \cellcolor{gray!15}{0.9840} & \cellcolor{gray!15}{0.9840} & \cellcolor{gray!15}{0.9482}\\
+
+ & 0.1 & 0.9450 & 0.9472 & 0.9438\\
+
+ & 0.5 & 0.9610 & 0.9614 & 0.9462\\
+
+\multirow{-3}{*}{\raggedleft\arraybackslash 20} & 0.9 & 0.9864 & 0.9864 & 0.9522\\
+
+\cellcolor{gray!15}{} & \cellcolor{gray!15}{0.1} & \cellcolor{gray!15}{0.9510} & \cellcolor{gray!15}{0.9522} & \cellcolor{gray!15}{0.9488}\\
+
+\cellcolor{gray!15}{} & \cellcolor{gray!15}{0.5} & \cellcolor{gray!15}{0.9646} & \cellcolor{gray!15}{0.9652} & \cellcolor{gray!15}{0.9504}\\
+
+\cellcolor{gray!15}{\multirow{-3}{*}{\raggedleft\arraybackslash 30}} & \cellcolor{gray!15}{0.9} & \cellcolor{gray!15}{0.9904} & \cellcolor{gray!15}{0.9908} & \cellcolor{gray!15}{0.9526}\\
+
+ & 0.1 & 0.9496 & 0.9506 & 0.9462\\
+
+ & 0.5 & 0.9612 & 0.9626 & 0.9442\\
+
+\multirow{-3}{*}{\raggedleft\arraybackslash 40} & 0.9 & 0.9880 & 0.9880 & 0.9462\\
+
+\cellcolor{gray!15}{} & \cellcolor{gray!15}{0.1} & \cellcolor{gray!15}{0.9508} & \cellcolor{gray!15}{0.9520} & \cellcolor{gray!15}{0.9472}\\
+
+\cellcolor{gray!15}{} & \cellcolor{gray!15}{0.5} & \cellcolor{gray!15}{0.9686} & \cellcolor{gray!15}{0.9688} & \cellcolor{gray!15}{0.9472}\\
+
+\cellcolor{gray!15}{\multirow{-3}{*}{\raggedleft\arraybackslash 50}} & \cellcolor{gray!15}{0.9} & \cellcolor{gray!15}{0.9918} & \cellcolor{gray!15}{0.9918} & \cellcolor{gray!15}{0.9488}\\*
+\end{longtable}
+
+\blandscape
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{table01 }\OtherTok{\textless{}{-}}\NormalTok{ combined }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{filter}\NormalTok{(metric }\SpecialCharTok{==} \StringTok{"t1"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{variability =} \FunctionTok{ifelse}\NormalTok{(sd}\SpecialCharTok{==}\FloatTok{2.0}\NormalTok{, }\StringTok{\textquotesingle{}low\textquotesingle{}}\NormalTok{, }\FunctionTok{ifelse}\NormalTok{(sd }\SpecialCharTok{==} \FloatTok{3.6}\NormalTok{, }\StringTok{\textquotesingle{}med\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}high\textquotesingle{}}\NormalTok{))) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{select}\NormalTok{(}\FunctionTok{c}\NormalTok{(K, r, variability, independent, bonferroni, nonrankbased)) }\SpecialCharTok{\%\textgreater{}\%}
+\NormalTok{  tidyr}\SpecialCharTok{::}\FunctionTok{pivot\_wider}\NormalTok{(}\AttributeTok{names\_from =}\NormalTok{ variability, }\AttributeTok{values\_from =} \FunctionTok{c}\NormalTok{(independent, bonferroni, nonrankbased), }\AttributeTok{names\_sep =} \StringTok{"f"}\NormalTok{)}
+
+\NormalTok{table01  }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{kable}\NormalTok{(}\StringTok{"latex"}\NormalTok{,}
+        \AttributeTok{booktabs =} \ConstantTok{TRUE}\NormalTok{,}
+        \AttributeTok{escape =} \ConstantTok{FALSE}\NormalTok{,}
+        \AttributeTok{linesep =} \StringTok{""}\NormalTok{,}
+        \AttributeTok{longtable =} \ConstantTok{TRUE}\NormalTok{,}
+        \AttributeTok{col.names =} \FunctionTok{c}\NormalTok{(}\StringTok{"K"}\NormalTok{, }\StringTok{"r"}\NormalTok{, }\FunctionTok{rep}\NormalTok{(}\StringTok{"Independent"}\NormalTok{,}\DecValTok{3}\NormalTok{), }\FunctionTok{rep}\NormalTok{(}\StringTok{"Bonferroni"}\NormalTok{,}\DecValTok{3}\NormalTok{), }\FunctionTok{rep}\NormalTok{(}\StringTok{"Nonrank{-}based"}\NormalTok{,}\DecValTok{3}\NormalTok{)),}
+        \AttributeTok{caption =} \StringTok{"Simulation results for tightness measure t1"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \CommentTok{\# collapse\_rows(columns = 1,}
+  \CommentTok{\#               valign = "middle",}
+  \CommentTok{\#               latex\_hline = "none") \%\textgreater{}\%}
+  \FunctionTok{kable\_styling}\NormalTok{(}\AttributeTok{latex\_options =} \FunctionTok{c}\NormalTok{(}\StringTok{"striped"}\NormalTok{,}
+                                  \StringTok{"repeat\_header"}\NormalTok{,}
+                                  \StringTok{"HOLD\_position"}\NormalTok{),}
+             \AttributeTok{stripe\_color =} \StringTok{"gray!15"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{add\_header\_above}\NormalTok{(}\FunctionTok{c}\NormalTok{(}\StringTok{" "}\OtherTok{=}\DecValTok{2}\NormalTok{,}\StringTok{"Low"} \OtherTok{=} \DecValTok{3}\NormalTok{, }\StringTok{"Med"} \OtherTok{=} \DecValTok{3}\NormalTok{, }\StringTok{"High"} \OtherTok{=} \DecValTok{3}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{longtable}[t]{rrrrrrrrrrr}
+\caption{\label{tab:unnamed-chunk-2}Simulation results for tightness measure t1}\\
+\toprule
+\multicolumn{2}{c}{ } & \multicolumn{3}{c}{Low} & \multicolumn{3}{c}{Med} & \multicolumn{3}{c}{High} \\
+\cmidrule(l{3pt}r{3pt}){3-5} \cmidrule(l{3pt}r{3pt}){6-8} \cmidrule(l{3pt}r{3pt}){9-11}
+K & r & Independent & Independent & Independent & Bonferroni & Bonferroni & Bonferroni & Nonrank-based & Nonrank-based & Nonrank-based\\
+\midrule
+\endfirsthead
+\caption[]{\label{tab:unnamed-chunk-2}Simulation results for tightness measure t1 \textit{(continued)}}\\
+\toprule
+K & r & Independent & Independent & Independent & Bonferroni & Bonferroni & Bonferroni & Nonrank-based & Nonrank-based & Nonrank-based\\
+\midrule
+\endhead
+
+\endfoot
+\bottomrule
+\endlastfoot
+\cellcolor{gray!15}{10} & \cellcolor{gray!15}{0.1} & \cellcolor{gray!15}{3.44444} & \cellcolor{gray!15}{2.445560} & \cellcolor{gray!15}{1.802560} & \cellcolor{gray!15}{3.45052} & \cellcolor{gray!15}{2.450680} & \cellcolor{gray!15}{1.805040} & \cellcolor{gray!15}{3.435920} & \cellcolor{gray!15}{2.440200} & \cellcolor{gray!15}{1.801920}\\
+10 & 0.5 & 3.43376 & 2.459800 & 1.799520 & 3.43964 & 2.463880 & 1.801760 & 3.363240 & 2.405360 & 1.775320\\
+\cellcolor{gray!15}{10} & \cellcolor{gray!15}{0.9} & \cellcolor{gray!15}{3.41648} & \cellcolor{gray!15}{2.503840} & \cellcolor{gray!15}{1.784600} & \cellcolor{gray!15}{3.42316} & \cellcolor{gray!15}{2.508320} & \cellcolor{gray!15}{1.787160} & \cellcolor{gray!15}{3.094360} & \cellcolor{gray!15}{2.164800} & \cellcolor{gray!15}{1.676640}\\
+20 & 0.1 & 5.67294 & 3.645120 & 2.572500 & 5.68438 & 3.651960 & 2.575400 & 5.661240 & 3.638040 & 2.568080\\
+\cellcolor{gray!15}{20} & \cellcolor{gray!15}{0.5} & \cellcolor{gray!15}{5.66384} & \cellcolor{gray!15}{3.658580} & \cellcolor{gray!15}{2.562460} & \cellcolor{gray!15}{5.67506} & \cellcolor{gray!15}{3.665540} & \cellcolor{gray!15}{2.566240} & \cellcolor{gray!15}{5.488720} & \cellcolor{gray!15}{3.556200} & \cellcolor{gray!15}{2.508340}\\
+20 & 0.9 & 5.67722 & 3.679540 & 2.549400 & 5.68764 & 3.685680 & 2.553100 & 4.837580 & 3.163200 & 2.318540\\
+\cellcolor{gray!15}{30} & \cellcolor{gray!15}{0.1} & \cellcolor{gray!15}{10.14211} & \cellcolor{gray!15}{6.180720} & \cellcolor{gray!15}{3.999533} & \cellcolor{gray!15}{10.16159} & \cellcolor{gray!15}{6.193707} & \cellcolor{gray!15}{4.007147} & \cellcolor{gray!15}{10.115880} & \cellcolor{gray!15}{6.162293} & \cellcolor{gray!15}{3.988707}\\
+30 & 0.5 & 10.14804 & 6.194267 & 4.001600 & 10.16737 & 6.207347 & 4.008733 & 9.796840 & 5.958587 & 3.868147\\
+\cellcolor{gray!15}{30} & \cellcolor{gray!15}{0.9} & \cellcolor{gray!15}{10.18795} & \cellcolor{gray!15}{6.216440} & \cellcolor{gray!15}{4.005987} & \cellcolor{gray!15}{10.20716} & \cellcolor{gray!15}{6.228240} & \cellcolor{gray!15}{4.013373} & \cellcolor{gray!15}{8.519027} & \cellcolor{gray!15}{5.091240} & \cellcolor{gray!15}{3.402453}\\
+40 & 0.1 & 12.82436 & 7.699570 & 4.760430 & 12.84825 & 7.716190 & 4.769720 & 12.789230 & 7.676280 & 4.746380\\
+\cellcolor{gray!15}{40} & \cellcolor{gray!15}{0.5} & \cellcolor{gray!15}{12.84452} & \cellcolor{gray!15}{7.716470} & \cellcolor{gray!15}{4.764730} & \cellcolor{gray!15}{12.86891} & \cellcolor{gray!15}{7.732850} & \cellcolor{gray!15}{4.773450} & \cellcolor{gray!15}{12.377840} & \cellcolor{gray!15}{7.369470} & \cellcolor{gray!15}{4.579730}\\
+40 & 0.9 & 12.88154 & 7.766780 & 4.774930 & 12.90236 & 7.783970 & 4.783880 & 10.697260 & 6.075630 & 3.901920\\
+\cellcolor{gray!15}{50} & \cellcolor{gray!15}{0.1} & \cellcolor{gray!15}{16.64882} & \cellcolor{gray!15}{9.780272} & \cellcolor{gray!15}{6.188472} & \cellcolor{gray!15}{16.68181} & \cellcolor{gray!15}{9.799840} & \cellcolor{gray!15}{6.200008} & \cellcolor{gray!15}{16.601704} & \cellcolor{gray!15}{9.753936} & \cellcolor{gray!15}{6.171592}\\
+50 & 0.5 & 16.68502 & 9.787704 & 6.206400 & 16.71798 & 9.807208 & 6.218376 & 15.980872 & 9.358392 & 5.943096\\
+\cellcolor{gray!15}{50} & \cellcolor{gray!15}{0.9} & \cellcolor{gray!15}{16.73784} & \cellcolor{gray!15}{9.823712} & \cellcolor{gray!15}{6.232280} & \cellcolor{gray!15}{16.77114} & \cellcolor{gray!15}{9.843216} & \cellcolor{gray!15}{6.244280} & \cellcolor{gray!15}{13.436976} & \cellcolor{gray!15}{7.813736} & \cellcolor{gray!15}{4.976224}\\*
+\end{longtable}
+
+\elandscape
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(knitr)}
+\FunctionTok{library}\NormalTok{(kableExtra)}
+\FunctionTok{library}\NormalTok{(dplyr)}
+
+\CommentTok{\# Sample Data}
+\NormalTok{df }\OtherTok{\textless{}{-}} \FunctionTok{data.frame}\NormalTok{(}
+  \AttributeTok{Group =} \FunctionTok{c}\NormalTok{(}\StringTok{"A"}\NormalTok{, }\StringTok{"A"}\NormalTok{, }\StringTok{"A"}\NormalTok{, }\StringTok{"B"}\NormalTok{, }\StringTok{"B"}\NormalTok{, }\StringTok{"B"}\NormalTok{),}
+  \AttributeTok{Subgroup =} \FunctionTok{c}\NormalTok{(}\StringTok{"X"}\NormalTok{, }\StringTok{"X"}\NormalTok{, }\StringTok{"Y"}\NormalTok{, }\StringTok{"Z"}\NormalTok{, }\StringTok{"Z"}\NormalTok{, }\StringTok{"Z"}\NormalTok{),}
+  \AttributeTok{Value =} \FunctionTok{c}\NormalTok{(}\StringTok{"High"}\NormalTok{, }\StringTok{"High"}\NormalTok{, }\StringTok{"Low"}\NormalTok{, }\StringTok{"Mid"}\NormalTok{, }\StringTok{"Mid"}\NormalTok{, }\StringTok{"Mid"}\NormalTok{)}
+\NormalTok{)}
+
+\CommentTok{\# 1. Merge columns based on row values (Group + Subgroup)}
+\CommentTok{\# 2. Use collapse\_rows for vertical merging}
+\NormalTok{df }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{Combined =} \FunctionTok{paste}\NormalTok{(Group, }\StringTok{"{-}"}\NormalTok{, Subgroup)) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{select}\NormalTok{(Combined, Value) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{kbl}\NormalTok{(}\AttributeTok{booktabs =}\NormalTok{ T, }\AttributeTok{caption =} \StringTok{"Merged Rows with 3 Value States"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{collapse\_rows}\NormalTok{(}\AttributeTok{columns =} \DecValTok{1}\NormalTok{, }\AttributeTok{valign =} \StringTok{"top"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{kable\_styling}\NormalTok{(}\AttributeTok{latex\_options =} \StringTok{"striped"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{table}
+\centering
+\caption{\label{tab:unnamed-chunk-3}Merged Rows with 3 Value States}
+\centering
+\begin{tabular}[t]{ll}
+\toprule
+Combined & Value\\
+\midrule
+\cellcolor{gray!10}{} & \cellcolor{gray!10}{High}\\
+\cmidrule{2-2}
+\multirow[t]{-2}{*}{\raggedright\arraybackslash A - X} & High\\
+\cmidrule{1-2}
+\cellcolor{gray!10}{A - Y} & \cellcolor{gray!10}{Low}\\
+\cmidrule{1-2}
+ & \vphantom{1} Mid\\
+\cmidrule{2-2}
+\cellcolor{gray!10}{} & \cellcolor{gray!10}{Mid}\\
+\cmidrule{2-2}
+\multirow[t]{-3}{*}{\raggedright\arraybackslash B - Z} & Mid\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\end{document}

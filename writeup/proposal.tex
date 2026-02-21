@@ -28,6 +28,46 @@
 }{}
 \usepackage{xcolor}
 \usepackage[margin=1in]{geometry}
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
 \usepackage{longtable,booktabs,array}
 \usepackage{calc} % for calculating minipage widths
 % Correct order of tables after \paragraph or \subparagraph
@@ -88,6 +128,7 @@
 \newcommand{\CSLLeftMargin}[1]{\parbox[t]{\csllabelwidth}{\strut#1\strut}}
 \newcommand{\CSLRightInline}[1]{\parbox[t]{\linewidth - \csllabelwidth}{\strut#1\strut}}
 \newcommand{\CSLIndent}[1]{\hspace{\cslhangindent}#1}
+\PassOptionsToPackage{colorlinks=true,linkcolor=blue,citecolor=black,urlcolor=black}{hyperref}
 \usepackage{amsmath}
 \numberwithin{equation}{section}
 \usepackage{setspace}\onehalfspacing
@@ -96,9 +137,11 @@
 \newcommand{\elandscape}{\end{landscape}}
 \usepackage{indentfirst}
 \usepackage{xparse}
+\usepackage{tcolorbox}
 \usepackage{algorithm}
 \usepackage{algpseudocode}
 \usepackage{float}
+\floatplacement{figure}{H}
 \usepackage{placeins}
 \renewcommand{\ttfamily}{\rmfamily}
 \usepackage{etoolbox}
@@ -111,16 +154,34 @@
 \usepackage{anyfontsize}
 \newcommand{\thesisfont}{\fontsize{20pt}{19pt}\selectfont}
 \thesisfont
+\usepackage{xcolor}
+\usepackage[colorlinks=true,linkcolor=blue,urlcolor=black,citecolor=black]{hyperref}
+\AtBeginDocument{\hypersetup{colorlinks=true,linkcolor=blue,citecolor=black,urlcolor=black}}
 \usepackage{titlesec}
 \titleformat{\section}{\fontsize{20pt}{22pt}\bfseries}{\thesection}{1em}{}
 \titleformat{\subsection}{\fontsize{18pt}{20pt}\bfseries}{\thesubsection}{1em}{}
 \titleformat{\subsubsection}{\fontsize{16pt}{19pt}\bfseries}{\thesubsubsection}{1em}{}
 \usepackage{caption}
+\captionsetup[figure]{font=scriptsize}
 \newcommand{\algfont}{\fontsize{15pt}{18pt}\selectfont}
 \DeclareCaptionFont{thesisalg}{\algfont\bfseries}
 \captionsetup[algorithm]{font=thesisalg}
 \AtBeginEnvironment{algorithm}{\algfont}
 \AtBeginEnvironment{algorithmic}{\algfont}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{colortbl}
+\usepackage{pdflscape}
+\usepackage{tabu}
+\usepackage{threeparttable}
+\usepackage{threeparttablex}
+\usepackage[normalem]{ulem}
+\usepackage{makecell}
+\usepackage{xcolor}
 \ifLuaTeX
   \usepackage{selnolig}  % disable illegal ligatures
 \fi
@@ -136,25 +197,98 @@
 
 \begin{document}
 
+\begin{table}[ht]
+\centering
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{|p{0.2\textwidth}|p{0.5\textwidth}|p{0.25\textwidth}|}
+\hline
+\textbf{From} & \textbf{Revision Checklist} & \textbf{Reference} \\
+\hline
+Sir Bong
+& $\checkmark$ Right at the start, show a motivating example on the election polls. Explain what quantities will be ranked (i.e., proportion of voters in favor of certain candidates).
+& See paragraphs 2 to 4 of Section \ref{sec:significance} \\ \hline
+
+
+& $\checkmark$ -- Mention that the decision on whether a voter votes for a candidate or not is a Bernoulli random variable.
+& See paragraph 2 of Section \ref{sec:significance} \\ \hline
+
+
+& $\checkmark$ -- Show the results of Pulse Asia surveys.
+& See added table in Section \ref{sec:significance} \\ \hline
+
+&
+$\checkmark$ -- Emphasize that there is now dependence among the estimates.
+& See paragraphs 3 \& 4 of Section \ref{sec:significance} \\ \hline
+
+&
+$\checkmark$ -- Mention that the estimates may be computed via MLE, least squares, or some other estimation procedure.
+& See last sentences of paragraph 2 in Section \ref{sec:significance} and paragraph 1 in Section \ref{sec:asymptoticvar} \\ \hline
+
+&
+$\checkmark$ Add Section 2.4 for discussion on asymptotic variance. Describe the setup assumed by Chen and Dudiewicz. Use notations consistent with the rest of the thesis.
+& See Section \ref{sec:asymptoticvar} \\ \hline
+
+
+&
+$\checkmark$ Flesh out Goldstein and Spiegelhalter on use of latent variables.
+& See Section \ref{sec:modelbased} \\ \hline
+
+
+&
+$\checkmark$ Address the revisions in the PDF file sent by Sir Bong: Add more details to Section \ref{sec:evaluation}.
+& See Algorithm \ref{alg:evaluation} in Section \ref{sec:evaluation} \\ \hline
+
+Ma'am Rose Anne
+&
+$\checkmark$ In the objectives, state explicitly that the proposed methodology will be compared with the Bonferroni approach.
+& See third bullet in Section \ref{sec:objective} \\ \hline
+
+&
+$\checkmark$ In page 4, before Sec.\ 1.1., explain how your methodology differs from existing approaches.
+& See paragraph 3 of Section \ref{sec:intro} \\ \hline
+
+&
+$\checkmark$ Explain $L_k$ and $U_k$ (or state that they are real numbers).
+& See (\ref{eq:theta_int}) \\ \hline
+
+&
+$\checkmark$ Page 8, remove the reference to Mogstad et al.\ (2024).
+& done \\ \hline
+
+&
+$\checkmark$ In Sec.\ 2.3.1, make a reference to the Pulse Asia example.
+& See paragraphs 2 to 4 of Section \ref{sec:significance} and Section \ref{sec:calculated-measure} \\ \hline
+
+&
+$\checkmark$ More details from Bazylik et al.\ (2025).
+& See paragraph 3 of Section \ref{sec:dependencies} \\ \hline
+\end{tabular}
+\begin{flushleft}
+\footnotesize Thesis proposal revision checklist.
+\end{flushleft}
+\end{table}
+
+\newpage
+
 \fontsize{15pt}{18pt}\selectfont
 
 \title{%
-  \vspace{35mm}% <- reduce this from 45mm to something smaller
-  \textbf{Joint Confidence Regions for Rankings based on Correlated Estimates}%
+  \vspace{35mm}%
+  \textbf{Joint Confidence Regions for Rankings Based on Correlated Estimates}%
 }
 \maketitle
 \thispagestyle{empty}
 \begin{center}
 Shaine Rosewel Paralis Matala\\
 \vspace*{32px}
-A Thesis proposal submitted to UP Diliman School of Statistics\\
+A thesis proposal submitted to UP Diliman School of Statistics\\
 \vspace*{14px}
 In Partial Fulfillment of the Requirements for the Degree of\\
 Master of Science in Statistics\\
 \vspace*{250px}
 School of Statistics\\
 University of the Philippines\\
-November 2025
+December 2025
 \end{center}
 
 \newpage
@@ -162,22 +296,21 @@ November 2025
 \newpage
 
 \tableofcontents
+
 \newpage
 \vspace*{1cm}
 
-\section{Introduction}\label{introduction}
+\section{Introduction}\label{sec:intro}
 
 \vspace*{0.8cm}
 
-Ranked data are commonly of interest because they allow readers to compare populations based on ranked quantities. For example, top universities across the globe may be identified based on their institutional performance indicator; states may receive appropriate intervention according to their relative rank based on average travel times to work; and senatorial candidates who are likely to be granted a seat in the office can be reported by public opinion polling bodies prior to elections. Whenever data on the entire population are unavailable, the ranks are based on estimates rather than the unknown parameters. Consequently, their overall uncertainty---expressed through joint confidence intervals---should also be quantified. Marginally, these intervals provide information on the possible range of each rank while jointly, they facilitate comparing all ranks simultaneously rather than reporting them in isolation.
+Ranked data are commonly of interest because they allow readers to compare populations based on ranked quantities. For example, top universities across the globe may be identified based on their institutional performance indicator; states may receive appropriate intervention according to their relative rank based on average travel times to work; and senatorial candidates who are likely to win seats can be predicted by public opinion polls prior to elections. Whenever data on the entire population are unavailable, the ranks are based on estimates rather than the unknown parameters. Consequently, their overall uncertainty---expressed through joint confidence intervals---should also be quantified. Marginally, these intervals provide information on the possible range of each rank while jointly, they facilitate comparing all ranks simultaneously rather than reporting them in isolation.
 
-Several studies have addressed this concern through different techniques. Some approaches like those by Klein et al. (2020), Mohamad et al. (2019), Mogstad et al. (2024), Andersson et al. (1998), and Lyhagen \& Ahlgren (2020), relied solely on the estimates and their standard errors, constructing joint confidence intervals either for the estimated quantities or directly for the ranks themselves. Others incorporate model-based uncertainty to account for dependencies inherent in the data structure. These include the works of Goldstein \& Spiegelhalter (1996), who utilized conditioning through multilevel models where the ranked quantities are treated as residual effects. Hall \& Miller (2009), on the other hand, developed a bootstrap algorithm that allows for the assumption of independence despite its potential violation.
+Several studies have addressed this concern through different techniques. Some approaches like those by Klein et al. (2020), Mohamad et al. (2019), Mogstad et al. (2024), Andersson et al. (1998) and Lyhagen \& Ahlgren (2020), relied solely on the estimates and their standard errors, constructing joint confidence intervals either for the estimated quantities or directly for the ranks themselves. Others fit models in which institutional differences are modeled explicitly via latent effects, thereby accounting for the dependence among student observations induced by the multilevel structure (Spiegelhalter, 1996). Miller (2009) developed a bootstrap algorithm that allows for the assumption of independence in the estimators despite its potential violation while Bazylik et al. (2025) proposed a bootstrap procedure that explicitly accounts for the dependence in estimators that are multinomially distributed.
 
-Assuming independence when constructing joint confidence regions for estimators that are, in fact, correlated may lead to overly conservative and thus wider intervals, implying greater uncertainty---contrary to what is desired. It is therefore important to account for potential dependencies, as demonstrated by Goldstein \& Spiegelhalter (1996). However, in their case, the estimators were treated as latent variables. In contrast, the present work focuses on estimators that are observable or directly measurable from the data.
+Assuming independence when constructing joint confidence regions for estimators that are, in fact, correlated may lead to overly conservative and thus wider intervals, implying greater uncertainty---contrary to what is desired. The more general setting, which to our knowledge has not yet been explored, allows for a certain degree of correlation among the estimates to be ranked. This thesis develops a procedure capable of handling such dependencies while maintaining coverage close to the nominal level and producing relatively narrow joint confidence intervals. The proposed methodology uses only the observed estimators and their corresponding standard errors. Although it also employs a parametric bootstrap---commonly used to estimate overall rank uncertainties (e.g., Andersson et al. (1998), Mogstad et al. (2024), Bazylik et al. (2025))---our implementation differs from these existing approaches --- Mogstad et al. (2024) and Bazylik et al. (2025) obtained bounds for the simultaneous confidence sets which depend on quantiles from the distribution of the maximum (over k) of the differences (See Section \ref{sec:pairwise}, instead of just the estimators while Andersson et al. (1998) implemented it to obtain a calculated measure as discussed in Section \ref{sec:calculated-measure}.
 
-The more general setting, which to our knowledge has not yet been explored, allows for a certain degree of correlation among the estimates to be ranked. This thesis develops a procedure capable of handling such dependencies while maintaining coverage close to the nominal level and producing relatively narrow joint confidence intervals. The proposed methodology uses only the observed estimators and their corresponding standard errors. Although it also employs a parametric bootstrap---commonly used to estimate overall rank uncertainties (e.g., Mohamad et al. (2019), Mogstad et al. (2024), Andersson et al. (1998), Lyhagen \& Ahlgren (2020))---our implementation differs from these existing approaches.
-
-\subsection{Objective}\label{objective}
+\subsection{Objective}\label{sec:objective}
 
 This research builds upon Klein et al. (2020)'s methodology by extending the set of joint confidence intervals used to capture uncertainty in overall rankings. In particular, it intends to:
 
@@ -188,20 +321,34 @@ This research builds upon Klein et al. (2020)'s methodology by extending the set
 \item
   Evaluate the performance of the proposed approaches under various parameter settings.
 \item
+  Compare the results of Algorithm 1 to Klein's joint confidence regions that uses Bonferroni and independence assumption, in terms of coverage and tightness measures.
+\item
   Apply the proposed approaches to a real-life example.
 \end{itemize}
 
-\subsection{Significance}\label{significance}
+\subsection{Significance}\label{sec:significance}
 
 In order to obtain joint confidence sets for overall ranks, Klein et al. (2020) estimates confidence intervals for the unknown parameters, with a joint coverage probability of at least \(1-\alpha\). Their goal is to produce confidence intervals that collectively produce a small difference between the upper and the lower bound to yield tighter joint uncertainty for ranks. In the same study, they used individual confidence intervals of the form \(\hat{\theta}_k \pm z_{\alpha/2}\times \sigma_k\) for the population parameters \(\theta_1, \theta_2,\ldots,\theta_K\), assuming that the estimates of these parameters \(\hat{\theta}_1, \hat{\theta}_2, \dots, \hat{\theta}_K\) are independently distributed. This approach, while simple, is no longer applicable to the case where \(\hat\theta_k\)s may be correlated. In many cases, assuming independence in the presence of correlated quantities leads to conservative confidence intervals resulting in wider intervals which imply a higher uncertainty in overall ranks.
 
-An example for which the estimates of the parameters are likely to be correlated is the case of ranking senatorial candidates in the Philippines. In such a context, the assumption of independence is limiting as it treats vote shares as statistically independent across contenders. Although senators are elected using Multiple Non-transferable Vote system (MNTV)---where candidates are voted for individually regardless of partisan membership and alliances (Ravanilla \& Hicken, 2023)---David \& Legara (2015) demonstrated that candidates with a name-recall advantage, such as media celebrities, incumbents, and members of dynastic families, received majority of the votes in the 2010 senatorial elections. In that year, media personalities Bong Revilla and Jinggoy Estrada secured the top spots. A similar pattern was observed in 2019, when Cynthia Villar and Grace Poe, both with prominent surnames, garnered the most votes; and again in 2022, when media figures Robin Padilla and Ramon Tulfo ranked among the top three. They also added that in weak-party systems, candidates who belong to the same political alliance or ticket commonly co-occur in ballots and hence perform with similarity.
+In the Philippines, senators are elected using Multiple Non-transferable Vote system (MNTV)---where candidates are voted for individually regardless of partisan membership and alliances (Ravanilla \& Hicken, 2023). This applies to pre-election polls where each voter \(X_i\) selects at most 12 from a pool of \(K\) candidates. We let the data \(\mathcal{X}\) be a set of \(n\) vectors of length \(K\), \(\mathcal{X} = \{X_1, X_2, \dots, X_n\}\), where \(X_i = (X_{i1},X_{i2}, \dots, X_{iK})\) and \(X_{ik} \sim \text{Bernoulli}(p_{k})\) where \(p_{k}\) is the probability that voter \(i\) selects candidate \(k\) for \(k \in \{1, 2, \dots, K\}\) and \(i \in \{1, 2, \dots, n\}\). \(X_{ik} = 1\) if voter \(i\) selects candidate \(k\) and \(0\) otherwise. Public opinion polling bodies report their results by ranking the proportion of votes \(\hat{\theta}_k\) garnered by the \(K\) candidates from the highest to the lowest, stating individual uncertainty to emphasize who can potentially make it to the top 12. Figure \ref{fig:pulse} is an example of results from Pulse Asia Research, Inc. (2025); this shows that 19 out of the 64 senatorial candidates have statistical chances of winning a seat as of a week prior to the previous 2025 elections. The shaded rows correspond to the ultimate winners. Pulse Asia Inc.~notes their surveys are conducted with a 95\%
+confidence level, with confidence intervals calculated using 2.8\% margin of error for a sample size of 1,200. To obtain the estimates, each response is weighted to compensate for the unequal selection probabilities in the sample design.
 
-Klein et al. (2020) also noted that although it is difficult to make generalizations about strong relationships between travel times to work, certain patterns are apparent. States with large unpopulated land areas and relatively few high-density population centers tend to report shorter travel times. In contrast, longer travel times are typically observed in highly urbanized states with large populations and high population densities. Geographic location also appears to play a role---for instance, many states with shorter travel times are located in the Mountain and Central regions, whereas majority of those with longer travel times are concentrated along the East Coast. These observations suggest the presence of potential spatial structures. Accounting for these patterns allows for a more realistic assessment of uncertainty in the estimated ranks for similar use cases.
+\begin{figure}[H]
+
+{\centering \includegraphics[width=0.9\linewidth]{../figures/table2_pulse} 
+
+}
+
+\caption{Candidates in Contention in May 2025 Pulso ng Bayan Survey by Pulse Asia Research Inc.}\label{fig:pulse}
+\end{figure}
+
+In weak-party systems, candidates who belong to the same political alliance or ticket commonly co-occur in ballots and hence perform with similarity (David \& Legara, 2015). As shown in Figure \ref{fig:pulse}, the competitive list is dominated by ten out of 11 (all except Tolentino) candidates under \emph{Alyansa para sa Bagong Pilipinas}, which was actively campaigned by the incumbent president at the time. Four candidates (Go, Dela Rosa, Salvador, and Marcoleta) are associated with the Duterte-backed alliance \emph{DuterTen}, while two (Pangilinan and Aquino) belong to the opposition-backed \emph{KiBam}. The remaining candidates---Marcos, Revillame, and B. Tulfo---do not formally belong to any alliance but benefit from strong name recall. This alliance-based pattern is consistent with dependence in individual voting behavior.
+
+Because each voter is allowed to vote for up to 12 candidates, votes cast by the same individual are not independent. This dependence is reflected at the aggregate level through the proportions of total votes received by candidates, resulting in correlated proportion estimates. Accounting for these dependencies can lead to rank estimates with reduced overall uncertainty and, consequently, shorter simultaneous confidence intervals. In particular, the range of plausible ranks for each candidate may be narrowed, depending on the degree of correlation among candidates' vote shares.
 
 \subsection{Scope and Limitations}\label{scope-and-limitations}
 
-This study proposes methodologies to construct joint confidence regions to quantify uncertainty in overall ranks, building upon the main results of Klein et al. (2020). Unlike the study of Klein et al. (2020), however, this thesis addresses the case where the parameter estimates may be correlated. Moreover, this study also proposes a methodologies to construct joint confidence regions for the ordered parameters. It applies the parametric bootstrap in implementing the procedures, with a strong emphasis on maintaining the desired coverage. However, several limitations must be acknowledged. First, the framework assumes that the data are generated from a multivariate normal distribution. Second, a limited set of correlation structures is examined to illustrate how different dependence assumptions may affect the resulting joint confidence sets.
+This study proposes methodologies to construct joint confidence regions to quantify uncertainty in overall ranks, building upon the main results of Klein et al. (2020). Unlike the study of Klein et al. (2020), however, this thesis addresses the case where the parameter estimates may be correlated. Moreover, this study also proposes a methodologies to construct joint confidence regions for the ordered parameters. It applies the parametric bootstrap in implementing the procedures, with a strong emphasis on maintaining the desired coverage. However, several limitations must be acknowledged. First, the framework assumes that the data are generated from a multivariate normal distribution. Second, a limited set of correlation structures is examined to illustrate how different dependence assumptions may affect the resulting joint confidence sets. That it, we do not discuss how to estimate the correlation matrix from the data.
 
 \newpage
 \vspace*{1cm}
@@ -212,9 +359,9 @@ This study proposes methodologies to construct joint confidence regions to quant
 
 \subsection{Ranking Problem}\label{sec:ranking-problem}
 
-In the problem of estimating ranks of several unknown real-valued parameters \(\theta_1,\theta_2,\ldots, \theta_K\), it is desired to rank these \(K\) parameters from smallest to largest, \(\theta_{(1)}<\theta_{(2)}<\ldots<\theta_{(K)}\). Let \(r_1,r_2,\ldots,r_K\) be the true unknown ranks of \(\theta_1,\theta_2,\ldots, \theta_K\). For example, if \(\theta_{(2)}=\theta_4\), then \(r_4=2\). Our first goal is to derive a joint confidence region for \(\theta_1,\theta_2,\ldots, \theta_K\) and thereby obtain joint confidence intervals for the \(r_1,r_2,\ldots,r_K\) using a result from Klein et al. (2020). In deriving a joint confidence region for \(\theta_1,\theta_2,\ldots,\theta_K\), we will make use of the corresponding point estimates \(\hat{\theta}_1,\hat{\theta}_2,\ldots,\hat{\theta}_K\).
+In the problem of estimating ranks of several unknown real-valued parameters \(\theta_1,\theta_2,\ldots, \theta_K\), it is desired to rank these \(K\) parameters from smallest to largest, \(\theta_{(1)}<\theta_{(2)}<\ldots<\theta_{(K)}\). Let \(r_1,r_2,\ldots,r_K\) be the true unknown ranks of \(\theta_1,\theta_2,\ldots, \theta_K\). For example, if \(\theta_{(2)}=\theta_4\), then \(r_4=2\). Our first goal is to derive a joint confidence region for \(\theta_1,\theta_2,\ldots, \theta_K\) and thereby obtain joint confidence intervals for the \(r_1,r_2,\ldots,r_K\) using a result from Klein et al. (2020). In deriving a joint confidence region for \(\theta_1,\theta_2,\ldots,\theta_K\), we will make use of the corresponding point estimates \(\hat{\theta}_1,\hat{\theta}_2,\ldots,\hat{\theta}_K\). Overall uncertainty highlights that in pre-election polls, reported candidate rankings that seem decisive may in fact be much less stable once uncertainty is considered, and hence it is possible that these rankings do not align with the actual election outcomes.
 
-There are several real-life applications of this problem. For example, the study of Klein et al. (2020) illustrates the problem of ranking the US states in terms of travel time to work. In this context, \(\theta_k\) is the true mean travel time to work for state \(k\), and we wish to find a joint confidence statement about \(r_1,r_2,\ldots,r_K\). Our second goal is to derive a joint confidence region for the ordered parameters \(\theta_{(1)},\theta_{(2)},\ldots,\theta_{(K)}\). In the context of senatorial elections where \(\theta_k\) denotes the proportion of votes earned by a candidate, confidence intervals on ordered parameters help determine if one candidate's lead is statistically significant. If the confidence intervals for two candidates' support levels do not overlap, it is highly likely (at the specified confidence level) that the candidate with the higher point estimate is the true winner. Overall uncertainty also highlights that in election polls, reported candidate rankings that seem decisive may in fact be much less stable once uncertainty is considered, and hence it is possible that these rankings do not align with the actual election outcomes. This is particularly important when discussing the potential influence of such polls on voter behavior---commonly referred to as the bandwagon effect---because apparent leads may encourage support for candidates who are not actually ahead, underscoring the value of clearly communicating the uncertainty in poll-based rankings. As to Andersson et al. (1998), in institutions like hospitals that are ranked according to mortality rates for a particular ailment, failure to report uncertainties may create a misleading impression, potentially causing fear among patients and casting a negative light on hospitals that appear at the bottom of the ranking.
+Our second goal is to derive a joint confidence region for the ordered parameters \(\theta_{(1)},\theta_{(2)},\ldots,\theta_{(K)}\). In the context of senatorial elections where \(\theta_k\) denotes the proportion of votes earned by a candidate, confidence intervals on ordered parameters help determine if a candidate's lead is statistically significant. If the confidence intervals for two candidates' support levels do not overlap, it is highly likely (at the specified confidence level) that the candidate with the higher point estimate is the true winner.
 
 A mathematical definition of \(r_k\) is as follows:
 
@@ -234,12 +381,12 @@ In this chapter, we review the various approaches to solve this problem of findi
 
 \subsection{Klein's Joint Confidence Region for Overall Ranking Uncertainty}\label{sec:kleins-joint-confidence-region-for-overall-ranking-uncertainty}
 
-The study of Klein et al. (2020) assumes that \(\hat{\theta}_k\sim N(\theta_k,\sigma^2_k), k=1,2,\ldots,K\) where \(\theta_k\) is unknown but \(\sigma^2_k\) is known. Their solution hinges on the fact that the uncertainty in the ranks is determined by the uncertainty in the parameters (Mogstad et al. (2024)). We now describe their methodology.
+The study of Klein et al. (2020) assumes that \(\hat{\theta}_k\sim N(\theta_k,\sigma^2_k), k=1,2,\ldots,K\) where \(\theta_k\) is unknown but \(\sigma^2_k\) is known. We now describe their methodology.
 
 Suppose that for each \(k \in \left\{1, 2, \dots, K\right\}\) there exists values \(L_k\) and \(U_k\) such that
 
 \begin{equation}
-  \theta_k \in \left( L_k, U_k \right), k=1,2,\ldots,K.
+  \theta_k \in \left( L_k, U_k \right), \qquad U_k, L_k \in \mathbb{R}
   \label{eq:theta_int}
 \end{equation}
 Moreover, define the quantities \(I_k\), \(\Lambda_{Lk}\), \(\Lambda_{Rk}\), \(\Lambda_{Ok}\) as follows:
@@ -310,7 +457,7 @@ then, by the result of Klein et al. (2020), it also follows that
   \label{eq:joint_cov2}
 \end{equation}
 
-Due to the assumption of normality on \(\hat{\theta}_k\) as well as the fact that \(\sigma_k\) is assumed known, Klein et al. (2020) set the confidence intervals \((L_k,U_k)\) for \(\theta_k\) to be of the form \(\hat \theta_k \pm t \times \sigma_k\) for \(k \in \left\{1, 2, \dots, K\right\}\). One may use the Bonferroni approach to choose \(t\). If such an approach is used, the choice of \(t\) that would satisfy (\ref{eq:joint_cov1}) is \(t = z_{\alpha/2K}\). Another choice of \(t\) is one that exploits the independence assumption on \(\hat{\theta}_k\). Such a choice is given by \(z_{\gamma/2}\) where \(\gamma=1-(1-\alpha)^{1/K}\). To see why this is the case, note that if we define \(Y_k\) as follows:
+Due to the assumption of normality on \(\hat{\theta}_k\) as well as the fact that \(\sigma_k\) is assumed known, Klein et al. (2020) set the confidence intervals \((L_k,U_k)\) for \(\theta_k\) to be of the form \(\hat \theta_k \pm t \times \sigma_k\) for \(k \in \left\{1, 2, \dots, K\right\}\). One may use the Bonferroni approach to choose \(t\) and call the resulting confidence region \(\mathfrak{R}_{\text{bonf}}\). If such an approach is used, the choice of \(t\) that would satisfy (\ref{eq:joint_cov1}) is \(t = z_{\alpha/2K}\). Another choice of \(t\) is one that exploits the independence assumption on \(\hat{\theta}_k\); denote the associated confidence region with \(\mathfrak{R}_{\text{ind}}\). Such a choice is given by \(z_{\gamma/2}\) where \(\gamma=1-(1-\alpha)^{1/K}\). To see why this is the case, note that if we define \(Y_k\) as follows:
 
 \begin{align}
 Y_k = \frac{\left( \hat{\theta}_k - \theta_k\right)}{\sigma_k} &\sim N\!(0, 1), \quad k =1,2, \dots, K \label{eq:standardized} 
@@ -328,15 +475,17 @@ then we get
 
 While Klein's approach provides one framework for constructing joint confidence regions for ranks, several other studies have explored related problems using different formulations or assumptions. These alternative methods vary in whether they account for dependence structures, rely on model-based estimation, or use resampling techniques such as the bootstrap.
 
-\subsubsection{Calculated Measure}\label{calculated-measure}
+\subsubsection{Calculated Measure}\label{sec:calculated-measure}
 
-Other studies with similar concern include that of Andersson et al. (1998) who suggest the use of a statistic \(C\) which quantifies the number of positions ranked populations would on average change their order due to random variation. They calculate the measure using a bootstrap approach. Working on risk ratios \(p_k\) of \(K\) units, Andersson et al. (1998) draw \(B\) bootstrap proportions \(\hat{p}^*_k\) from (\ref{eq:carling_bs}):
+Other studies with similar concern include that of Andersson et al. (1998) who suggest the use of a statistic \(C\) which quantifies the number of positions ranked parameters would on average change their order due to random variation. They calculate the measure using a bootstrap approach. Working on risk ratios \(p_k\) of \(K\) units, Andersson et al. (1998) draw \(B\) bootstrap proportions \(\hat{p}^*_k\) from (\ref{eq:carling_bs}):
 
 \begin{equation}
 \hat{p}^*_{bk} \sim  N \left(\hat{p}_k, \frac{\hat{p}_k(1-\hat{p}_k)}{n_k} \right), \quad k = 1,2, \dots, K; \; b = 1,2, \dots, B
   \label{eq:carling_bs}
 \end{equation}
 and \(\hat{p}_k\) and \(n_k\) are the sample proportion and sample size, respectively, corresponding to the \(k\)th unit. For each bootstrap iteration \(b\), they sort the set \(\hat{p}^*_{b1},\ldots,\hat{p}^*_{bK}\) to get the corresponding ranks \(r^*_{bk}, k=1,2,\ldots,K\). The difference \(d_{bk}\) between the original and bootstrap rank is then calculated as \(d_{bk} =\) \(\lvert \hat{r}_k - \hat{r}^*_{bk}\rvert\), where \(\hat{r}_k\) is the rank of \(\hat{p}_k\) in the set \(\{\hat{p}_1,\hat{p}_2,\ldots,\hat{p}_K\}\). In turn, \(\bar{d}_k\) is obtained by taking the average of \(d_{bk}\) across the bootstrap samples. Finally, the overall measure \(C\) is calculated as the average of \(\bar{d}_k\) across all \(K\) units.
+
+This can be applied to Pulse Asia senatorial pre-elections survey where we take \(\hat{p}_k\) as the estimated proportion of voters who opted for candidate \(k\) and \(n=1,200\) as the common sample size. The higher \(C\) is, the less we are able to clearly distinguish between the proportion of votes received by different candidates, rendering ranks uninformative.
 
 \subsubsection{Pairwise Difference}\label{sec:pairwise}
 
@@ -380,17 +529,62 @@ where \(L^{-1}(1-\alpha,S,P)\) is the \((1-\alpha)\)-quantile corresponding to t
   \label{eq:mogstadt23_quantile}
 \end{equation}
 
-They added that if the estimators \(\hat{\theta}_1, \hat{\theta}_2, \dots, \hat{\theta}_K\) are jointly asymptotically normally distributed, then the quantiles \(L^{-1}(1-\alpha, S, \hat{P})\), can be computed from the limiting distributions of the max-statistics shown in (\ref{eq:mogstadt23_quantile}), through resampling methods. Mogstad et al. (2024) show that their approach generally leads to a confidence set that is narrower than that of Klein et al. (2020).
+They added that if the estimators \(\hat{\theta}_1, \hat{\theta}_2, \dots, \hat{\theta}_K\) are jointly asymptotically normally distributed, then the quantiles \(L^{-1}(1-\alpha, S, \hat{P})\), can be computed from the limiting distributions of the max-statistics shown in (\ref{eq:mogstadt23_quantile}), through resampling methods. Their construction of confidence sets for ranks is based on hypothesis testing. Mogstad et al. (2024) show that their approach generally leads to a confidence set that is narrower than that of Klein et al. (2020).
 
-\subsubsection{Accounting for Data Dependencies}\label{accounting-for-data-dependencies}
+\subsubsection{Model-Based Uncertainty}\label{sec:modelbased}
 
-Some approaches explicitly account for dependencies in the data. Goldstein \& Spiegelhalter (1996) use multilevel models, in the context of ranking education and health institutions (e.g., schools, hospitals, medical practitioners, etc.), to address the hierarchical nature of data structures associated with institutional performance. Rank uncertainty is presented through a visualization in which non-overlap of confidence intervals conveyed a significant difference between compared institutions (Goldstein \& Healy, 1995). In an alternative approach, along with institution effect estimation through Gibbs sampling, the rank is obtained for each iteration. Their example illustrates that while the multilevel model made individual estimates more accurate, it also had the effect of making the ranks even more uncertain.
+In the context of ranking education and health institutions, Goldstein \& Spiegelhalter (1996) treat the estimators as latent variables. Estimators are not directly measured but inferred from observed variables. They describe performance indicator as a summary statistical measurement on an institution (e.g., schools, hospitals, medical practitioners, etc.) which is meant to be related to the quality of its functioning. An example of performance indicator is ``outcome'' measure such as school exam results which have been used to judge institutional effectiveness. They use multilevel models to address the hierarchical nature of data structures associated with institutional performance. In its basic form,
 
-Zhang et al. (2013) analyze U.S. age-adjusted cancer incidence and mortality rates across states and counties by computing individual and overall simultaneous confidence intervals for age-adjusted health index using the Monte Carlo method. Because many health conditions are age-dependent, they use age-adjusted rates to minimize the confounding effect of age differences when comparing different population groups. They also extend their method to handle cases where only the adjusted rates and confidence intervals are available, aligning it more closely with the approach of Klein et al. (2020). Mohamad et al. (2019) show their technique to result in joint confidence sets with very low coverage probabilities and which are only able to reach the nominal level when differences among the means are large enough.
+\begin{align}
+  y_{ik} &= \beta_0 + u_k + e_{ik} \notag \\
+  &\text{var}(\hat{u}_k) = \sigma^2_u \notag \\
+  &\text{var}(\hat{e}_{ik}) = \sigma^2_e \notag \\ \notag
+\end{align}
+where \(y_{ik}\) is the exam score for student \(i\) from school \(k\), \(u_k\) is the residual or the \(k\)th school effect, and \(e_{ik}\) is the residual effect for student \(i\) from school \(j\). This will yield posterior estimates \(\hat{u}_j\) and \(\text{var}(\hat{u}_j)\) as well as \(\text{rank}(\hat{u}_j)\) and \(\text{var}(\text{rank}(\hat{u}_j))\) which can be used to compare the institutions. They also visualize rank uncertainty and describe that the non-overlap of confidence intervals convey a significant difference between compared institutions (Goldstein \& Healy, 1995). Their example illustrates that while the multilevel model made individual estimates more accurate, it also had the effect of making the ranks even more uncertain.
+
+\subsubsection{Accounting for Data Dependencies}\label{sec:dependencies}
+
+Some approaches explicitly account for dependencies in the data. Zhang et al. (2013) analyze U.S. age-adjusted cancer incidence and mortality rates across states and counties by computing individual and overall simultaneous confidence intervals for age-adjusted health index using the Monte Carlo method. Because many health conditions are age-dependent, they use age-adjusted rates to minimize the confounding effect of age differences when comparing different population groups. They also extend their method to handle cases where only the adjusted rates and confidence intervals are available, aligning it more closely with the approach of Klein et al. (2020). Mohamad et al. (2019) show their technique to result in joint confidence sets with very low coverage probabilities and which are only able to reach the nominal level when differences among the means are large enough.
 
 Hall \& Miller (2009) mention that in some use cases such as institutions ranking, dependencies can be accommodated through conditioning, similar to the above approaches. However, in genomics where data on expression levels of different genes from the same individual are generally not independent, they suggest using an ``independent component'' version of the bootstrap on the sample, where m-out-of-n bootstrap (m \textless{} n) is applied as though the ranked variables were statistically independent. They show this to perform at its best when a reasonable level of correlation is present among the variables.
 
-Bazylik et al. (2025), in their recent study, tackle the ranking of political candidates or parties using the estimated share of support each one receives in surveys. They use the multinomial distribution to develop confidence sets for finite samples and explore the use of the bootstrap in the case of approximately large samples. They address the dependence attributed to the success probabilities of different categories by using their proposed bootstrap algorithm. Their simulations show that bootstrap-based confidence sets may have coverage probability below the nominal level despite their being excessively wide. In contrast, the finite-sample confidence sets have coverage probability at least as large as expected and may even be relatively shorter.
+Bazylik et al. (2025), in their recent study, tackle the ranking of political candidates or parties using the estimated share of support each one receives in surveys. They use the approach of Mogstad et al. (2024) but account for the dependence in the estimators through their bootstrap implementation. In their setup, they let \(X_k\) be the number of votes received by the \(k\)th party from the \(n\) voters so \(\mathbf{X} = (X_1, X_2, \dots, X_K)'\) is distributed according to the multinomial distribution with parameters \(n\) and \(\boldsymbol{\theta} = (\theta_1, \theta_2, \dots, \theta_K)'\). Their simulations show that bootstrap-based confidence sets may have coverage probability below the nominal level despite their being excessively wide. In contrast, the finite-sample confidence sets have coverage probability at least as large as expected and may even be relatively shorter.
+
+\subsection{Asymptotic Variance}\label{sec:asymptoticvar}
+
+Let \(\hat{\theta}_{k,n}\) be an estimator of \(\theta_k\) for \(k=1,2,\ldots,K\) based on a sample of size \(n\), and let \(\hat{\theta}_{(k),n}\) be the \(k\)th ordered value among \(\hat{\theta}_{1,n},\hat{\theta}_{2,n},\ldots,\hat{\theta}_{K,n}\). The estimation may be done through standard procedures such as MLE, least squares, and so forth. Moreover, suppose \(\hat{\theta}_{k,n}\)s are independent for \(k=1,2,\ldots,K\). Finally, suppose, as in the application of this thesis, that \(\hat{\theta}_{k,n}\) is a sample mean (or sample proportion) and \(\theta_k\) is a population mean (or population proportion) and both \(\hat{\theta}_{k,n}\) and \(\theta_k\) are nonnegative. In this subsection, we show that
+\begin{equation}
+V[\hat{\theta}_{(k),n}]\longrightarrow k\text{th ordered value in }\{\theta^2_1 + \sigma_{1}^2,  \theta^2_2 + \sigma_{2}^2, \dots, \theta^2_K + \sigma_{K}^2\} - \theta^2_{(k)}
+\end{equation}
+as \(n\rightarrow \infty\), where \(\sigma_{k}^2=V(\hat{\theta}_{k,n})\), which in this study is assumed to be known. The result in (2.13) gives us an expression for the asymptotic variance of \(\hat{\theta}_{(k),n}\). We shall also give an expression for an estimator of this variance.
+
+By the definition of variance, we have
+\begin{equation}
+V(\hat{\theta}_{(k),n}) = E(\hat{\theta}_{(k),n}^2) - [E(\hat{\theta}_{(k),n})]^2 
+\end{equation}
+
+We make use of Theorem 2.2 of Chen (1976) on asymptotic results for ordered estimators, which we shall now state.
+
+\begin{tcolorbox}
+\noindent \textbf{Theorem (Chen, 1976)}. Suppose that the estimator \(\hat{\delta}_{k,n}\) is a strongly consistent estimator of the parameter \(\delta_k\) for \(k = 1,2, \dots, K\) and based on a random sample of size $n$. Moreover, suppose $\hat{\delta}_{1,n},\hat{\delta}_{2,n},\dots\hat{\delta}_{K,n}$ are independent. It follows that \(\hat{\delta}_{(k),n}\) is a strongly consistent estimator of \(\delta_{(k)}\), where $\hat{\delta}_{(k),n}$ is the $k$th ordered value of $\hat{\delta}_{1,n},\hat{\delta}_{2,n},\ldots,\hat{\delta}_{K,n}$ and $\delta_{(k)}$ is the $k$th ordered value of the $\delta_1,\delta_2,\ldots,\delta_K$. 
+\end{tcolorbox}
+
+Since \(\hat{\theta}_{k,n}\), being a sample mean, is a strongly consistent estimator of \(\theta_k\), then using the result of Chen (1976), we know that \(\hat{\theta}_{(k),n}\) is a strongly consistent estimator of \(\theta_{(k)}\). This implies that
+
+\begin{equation}
+E[\hat{\theta}_{(k),n}] \longrightarrow \theta_{(k)}.
+\end{equation}
+
+Moreover, since \(E(\hat{\theta}_{k,n}^2)=\theta_k^2 + \sigma^2_{k}\) we also have
+\begin{equation}
+E[\hat{\theta}_{(k),n}^2] \longrightarrow k\text{th ordered value in }\{\theta^2_1 + \sigma_{1}^2,  \theta^2_2 + \sigma_{2}^2, \dots, \theta^2_K + \sigma_{K}^2\}.
+\end{equation}
+
+Using the results in (2.15) and (2.16) and noting the formula in (2.14), we get the result in (2.13). It also follows that we can estimate \(V[\hat{\theta}_{(k),n}]\) as follows:
+\begin{equation}
+\widehat{V[\hat{\theta}_{(k),n}]}= \text{kth ordered value among} \ \left\{ \hat{\theta}^{2}_{1,n} + \sigma_1^2, \dots, \hat{\theta}^{2}_{K,n} + \sigma_K^2 \right\} - \hat {\theta}^{2}_{(k),n}.
+\end{equation}
+In this subsection, we have included the subscript \(n\) in our estimators to indicate that the convergence occurs as \(n\) tends to infinity. In the rest of this thesis, we shall drop this subscript.
 
 \newpage
 \vspace*{1cm}
@@ -403,7 +597,7 @@ This section introduces the proposed methodologies to obtain joint confidence in
 
 \subsection{Proposed methodology to compute the joint confidence region for the unordered parameters}\label{sec:proposed-methodology-to-compute-simultaneous-confidence-intervals-for-the-unordered-parameters}
 
-In this section, we adopt the notations defined in Section \ref{sec:ranking-problem} and \ref{sec:kleins-joint-confidence-region-for-overall-ranking-uncertainty}. Moreover, we define \(\hat{\boldsymbol{\theta}}=(\hat{\theta}_1,\hat{\theta}_2,\ldots,\hat{\theta}_K)'\) and assume that \(\hat{\boldsymbol{\theta}}\sim N(\boldsymbol{\theta},\boldsymbol{\Sigma})\) where \(\boldsymbol{\theta}=(\theta_1,\theta_2,\ldots,\theta_K)'\) is unknown and \(\boldsymbol{\Sigma}\) is a known \(K \times K\) positive definite matrix. The diagonal elements of \(\boldsymbol{\Sigma}\) are \(\sigma^2_1,\ldots,\sigma^2_K\). We note that in the literature on inferences on the ranks, it is customary to assume that the variances are known. As previously mentioned, the setup in this thesis allows the estimates to be correlated, which is in contrast with that of Klein et al. (2020), which assumes independence among the estimates. In other words, in this thesis, the covariance matrix \(\boldsymbol{\Sigma}\) need not be a diagonal matrix. Similar to the study of Klein et al. (2020), we shall first derive simultaneous confidence intervals for \(\theta_1,\theta_2,\ldots,\theta_K\) of the form
+In this section, we adopt the notations defined in Section \ref{sec:ranking-problem} and \ref{sec:kleins-joint-confidence-region-for-overall-ranking-uncertainty}. Moreover, we define \(\hat{\boldsymbol{\theta}}=(\hat{\theta}_1,\hat{\theta}_2,\ldots,\hat{\theta}_K)'\) and assume that \(\hat{\boldsymbol{\theta}}\sim N(\boldsymbol{\theta},\boldsymbol{\Sigma})\) where \(\boldsymbol{\theta}=(\theta_1,\theta_2,\ldots,\theta_K)'\) is unknown and \(\boldsymbol{\Sigma}\) is a known \(K \times K\) positive definite matrix. The diagonal elements of \(\boldsymbol{\Sigma}\) are \(\sigma^2_1,\ldots,\sigma^2_K\). We note that in the literature on inferences on the ranks, it is customary to assume that the variances are known. As previously mentioned, the setup in this thesis allows the estimates to be correlated, which is in contrast with that of Klein et al. (2020), which assumes independence among the estimates. In other words, in this thesis, the covariance matrix \(\boldsymbol{\Sigma}\) need not be a diagonal matrix. Similar to the study of Klein et al. (2020), knowledge of the sampling design and estimation methodology for each population is not required; we shall first derive simultaneous confidence intervals for \(\theta_1,\theta_2,\ldots,\theta_K\) of the form
 
 \begin{equation}
 \mathfrak{R}_1 = 
@@ -506,7 +700,7 @@ Algorithm \ref{alg:rank_asymp} describes the procedure to compute the joint conf
                 \end{minipage}
         \end{minipage}
         \State Compute 
-                $t^*_b = \underset{1 \leq k \leq K}{\max} \Bigg| \frac{\hat\theta^*_{b(k)} - \hat\theta^*_{k}}{\hat\sigma^*_{b(k)}} \Bigg|$
+                $t^*_b = \underset{1 \leq k \leq K}{\max} \Bigg| \frac{\hat\theta^*_{b(k)} - \hat\theta_{(k)}}{\hat\sigma^*_{b(k)}} \Bigg|$
     \EndFor
     \State Compute the $\left(1-\alpha\right)$-sample quantile of $t^*_1, t^*_2, \dots, t^*_B$, call this $\hat{t}$.
     \State The joint confidence region of $\theta_{(1)}, \theta_{(2)}, \dots, \theta_{(K)}$ is given by
@@ -536,7 +730,7 @@ The expression for the asymptotic variance of \(\hat{\theta}_{(k)}\) has actuall
                 \State \begin{minipage}[t]{\dimexpr\linewidth-\algorithmicindent} Generate $\hat{\boldsymbol{\theta}}^{**}_{bc} = \left( \hat{\theta}^{**}_{bc1}, \hat{\theta}^{**}_{bc2}, \dots, \hat{\theta}^{**}_{bcK} \right) \sim N_K \left( \hat{\boldsymbol{\theta}}_b^*, \boldsymbol {\Sigma} \right)$ and let $\hat{\theta}^{**}_{bc(1)}, \hat{\theta}^{**}_{bc(2)}, \dots, \hat{\theta}^{**}_{bc(K)}$ be the corresponding ordered values of $\hat{\theta}^{**}_{bc1}, \hat{\theta}^{**}_{bc2}, \dots, \hat{\theta}^{**}_{bcK}$
                 \end{minipage}
                 \State \begin{minipage}[t]{\dimexpr\linewidth-\algorithmicindent} Compute
-                $\displaystyle \hat{\sigma}^*_{b(k)} = \frac{\sum^C_{c=1} \left( \hat \theta^{**}_{bc(k)} - \bar {\hat\theta}^{**}_{b \cdot (k)} \right)^2}{C-1}, \quad \bar {\hat\theta}^{**}_{b\cdot(k)} = \frac{1}{C} \sum^C_{c=1} {\hat\theta}^{**}_{bc(k)}$
+                $\displaystyle \hat{\sigma}^*_{b(k)} = \sqrt{ \frac{\sum^C_{c=1} \left( \hat \theta^{**}_{bc(k)} - \bar {\hat\theta}^{**}_{b \cdot (k)} \right)^2}{C-1}}, \quad \bar {\hat\theta}^{**}_{b\cdot(k)} = \frac{1}{C} \sum^C_{c=1} {\hat\theta}^{**}_{bc(k)}$
                 \end{minipage}
                 \EndFor
         \State Compute
@@ -551,7 +745,7 @@ The expression for the asymptotic variance of \(\hat{\theta}_{(k)}\) has actuall
         where $\hat \sigma_{(k)}$ is computed as
         \Statex \begin{minipage}{\linewidth}
     \centering
-$\displaystyle \hat \sigma_{(k)} = \frac{\sum^B_{b=1} \left( \hat \theta^*_{b(k)} - \bar {\hat\theta}^*_{\cdot (k)} \right)^2}{B-1}, \quad \bar {\hat\theta}^*_{\cdot(k)} = \frac{1}{B} \sum^B_{b=1} {\hat\theta}^*_{b(k)}$
+$\displaystyle \hat \sigma_{(k)} = \sqrt{ \frac{\sum^B_{b=1} \left( \hat \theta^*_{b(k)} - \bar {\hat\theta}^*_{\cdot (k)} \right)^2}{B-1}}, \quad \bar {\hat\theta}^*_{\cdot(k)} = \frac{1}{B} \sum^B_{b=1} {\hat\theta}^*_{b(k)}$
 \end{minipage}
     \end{algorithmic} 
 \end{algorithm}
@@ -566,7 +760,7 @@ The proposed methodologies assume that \(V(\hat{\boldsymbol{\theta}})=\boldsymbo
 \end{equation}
 The diagonal elements of \(\boldsymbol{\Sigma}\), which are \(\sigma^2_k=V(\hat{\theta}_k)\) for \(k =1,2, \ldots,K\), are treated as known quantities in practice. With large sample sizes, the variance estimates are stable enough that they are treated as the actual values. However, there is limited information to use as basis for the correlations among the estimates. In this thesis, we shall be assuming certain correlation structures among the \(\hat{\theta}\)s.
 
-One structure that may be used is an equicorrelation matrix shown in (\ref{eq:equicorrelation}). This assumes that the \(k\) variables are equally correlated, i.e., that \(\rho_{jk}=\rho\) where \(\rho \in [-1,1]\) for \(j \neq k \in \{1, \dots, K\}\).
+One structure that may be used is an equicorrelation matrix shown in (\ref{eq:equicorrelation}). This assumes that the \(K\) variables are equally correlated, i.e., that \(\rho_{jk}=\rho\) where \(\rho \in [-1,1]\) for \(j \neq k \in \{1, \dots, K\}\).
 
 \begin{equation}
   \mathbf{R}_{\text{eq}} = \left( 1-\rho \right) \mathbf{I}_K + \rho \boldsymbol{1}_K \boldsymbol{1}'_K = 
@@ -626,7 +820,7 @@ Algorithm \ref{alg:evaluation} estimates the coverage probabilities associated w
   T_3 = 1 - \frac{OP}{K^2}
   \label{eq:t3}
 \end{equation}
-In equation \ref{eq:t3}, \(OP = K + \sum^K_{k=1} \big | \Lambda_{Ok} \big|\) denotes the total number of occupied positions in a joint confidence region out of the total number of positions \(K^2\); or the sum of the differences between the upper and lower bound of the simultaneous rank intervals added by 1, for each population \(k\). Higher values of \(T_1\) and \(T_2\) indicate wider confidence intervals and are therefore less desirable, whereas higher values of \(T_3\) are preferable. \(T_3\) can range from 0, indicating no tightness, to \(\frac{K-1}{K}\), implying the confidence region only contains the estimated ranking which is likely the true ranking.
+In equation \ref{eq:t3}, \(OP = K + \sum^K_{k=1} \big | \Lambda_{Ok} \big|\) denotes the total number of occupied positions in a joint confidence region out of the total number of positions \(K^2\); or the sum of the differences between the upper and lower bound of the simultaneous rank intervals added by 1, for each \(k\). Higher values of \(T_1\) and \(T_2\) indicate wider confidence intervals and are therefore less desirable, whereas higher values of \(T_3\) are preferable. \(T_3\) can range from 0, indicating no tightness, to \(\frac{K-1}{K}\), implying the confidence region only contains the estimated ranking which is likely the true ranking.
 
 \begin{algorithm}[H]
 \fontsize{15pt}{18pt}\selectfont
@@ -636,10 +830,10 @@ In equation \ref{eq:t3}, \(OP = K + \sum^K_{k=1} \big | \Lambda_{Ok} \big|\) den
     \begin{algorithmic}[1] % Start algorithmic block
             \For {$\text{replications} = 1, 2, \dots, 5000$}
             \State Generate $\hat{\boldsymbol{\theta}} \sim N_K(\boldsymbol{\theta}, \boldsymbol{\Sigma})$
-            \State Compute the confidence region $\mathfrak{R}_1$ for the unordered parameters using Algorithm \ref{alg:nonrank_ci} and the confidence region for the ordered parameters $\mathfrak{R}_2$ using Algorithms \ref{alg:rank_asymp} and \ref{alg:rank_secondlevelbs}.
-            \State For the unordered parameters, check if $\left( \theta_1, \theta_2, \dots, \theta_K\right) \in \mathfrak{R}_1$ and compute $T_1, T_2$, and $T_3$. For the ordered parameters, check if $\left( \theta_{(1)}, \theta_{(2)}, \dots, \theta_{(K)}\right) \in \mathfrak{R}_2$
+            \State Compute the confidence region for the unordered (ordered) parameters using Algorithm \ref{alg:nonrank_ci} ($\mathfrak{R}_1$) (Algorithms \ref{alg:rank_asymp} and \ref{alg:rank_secondlevelbs} ($\mathfrak{R}_2$)), Bonferroni ($\mathfrak{R}_{\text{bonf}}$), and independence assumption ($\mathfrak{R}_{\text{ind}}$).
+            \State Check if $\left( \theta_1, \theta_2, \dots, \theta_K\right) \in \mathfrak{R}_1, \mathfrak{R}_{\text{bonf}}, \mathfrak{R}_{\text{ind}}$ $\left(\left( \theta_{(1)}, \theta_{(2)}, \dots, \theta_{(K)}\right) \in \mathfrak{R}_2\right)$ for the unordered parameters (ordered parameters) and compute $T_1, T_2$, and $T_3$.
         \EndFor
-    \State Compute the proportion of times that the condition in line 4 is satisfied and the average of $T_1, T_2$, and $T_3$.
+    \State Compute the coverage in line 4 is satisfied and the average of $T_1, T_2$, and $T_3$. Results of Algorithm \ref{alg:nonrank_ci} ($\mathfrak{R}_1$) is compared to ($\mathfrak{R}_{\text{bonf}}$ and $\mathfrak{R}_{\text{ind}}$).
     \end{algorithmic} % End algorithmic block
 \end{algorithm}
 
@@ -823,6 +1017,127 @@ $\boldsymbol{\theta}$ & $\mathbf{R}$ \\
 \newpage
 \vspace*{1cm}
 
+\section{Methodology}\label{methodology-1}
+
+\vspace*{0.8cm}
+
+\subsection{Results}\label{results}
+
+The results of nonrank-based algorithm are compared to the approaches from Klein et al. (2020): independent and Bonferroni.
+
+\begin{longtable}[t]{rrrrr}
+\caption{\label{tab:unnamed-chunk-19}Simulation results for coverage probabilities}\\
+\toprule
+K & r & Independent & Bonferroni & Nonrank-based\\
+\midrule
+\endfirsthead
+\caption[]{\label{tab:unnamed-chunk-19}Simulation results for coverage probabilities \textit{(continued)}}\\
+\toprule
+K & r & Independent & Bonferroni & Nonrank-based\\
+\midrule
+\endhead
+
+\endfoot
+\bottomrule
+\endlastfoot
+\cellcolor{gray!15}{} & \cellcolor{gray!15}{0.1} & \cellcolor{gray!15}{0.9474} & \cellcolor{gray!15}{0.9484} & \cellcolor{gray!15}{0.9464}\\
+
+\cellcolor{gray!15}{} & \cellcolor{gray!15}{0.5} & \cellcolor{gray!15}{0.9614} & \cellcolor{gray!15}{0.9620} & \cellcolor{gray!15}{0.9496}\\
+
+\cellcolor{gray!15}{\multirow{-3}{*}{\raggedleft\arraybackslash 10}} & \cellcolor{gray!15}{0.9} & \cellcolor{gray!15}{0.9840} & \cellcolor{gray!15}{0.9840} & \cellcolor{gray!15}{0.9482}\\
+
+ & 0.1 & 0.9450 & 0.9472 & 0.9438\\
+
+ & 0.5 & 0.9610 & 0.9614 & 0.9462\\
+
+\multirow{-3}{*}{\raggedleft\arraybackslash 20} & 0.9 & 0.9864 & 0.9864 & 0.9522\\
+
+\cellcolor{gray!15}{} & \cellcolor{gray!15}{0.1} & \cellcolor{gray!15}{0.9510} & \cellcolor{gray!15}{0.9522} & \cellcolor{gray!15}{0.9488}\\
+
+\cellcolor{gray!15}{} & \cellcolor{gray!15}{0.5} & \cellcolor{gray!15}{0.9646} & \cellcolor{gray!15}{0.9652} & \cellcolor{gray!15}{0.9504}\\
+
+\cellcolor{gray!15}{\multirow{-3}{*}{\raggedleft\arraybackslash 30}} & \cellcolor{gray!15}{0.9} & \cellcolor{gray!15}{0.9904} & \cellcolor{gray!15}{0.9908} & \cellcolor{gray!15}{0.9526}\\
+
+ & 0.1 & 0.9496 & 0.9506 & 0.9462\\
+
+ & 0.5 & 0.9612 & 0.9626 & 0.9442\\
+
+\multirow{-3}{*}{\raggedleft\arraybackslash 40} & 0.9 & 0.9880 & 0.9880 & 0.9462\\
+
+\cellcolor{gray!15}{} & \cellcolor{gray!15}{0.1} & \cellcolor{gray!15}{0.9508} & \cellcolor{gray!15}{0.9520} & \cellcolor{gray!15}{0.9472}\\
+
+\cellcolor{gray!15}{} & \cellcolor{gray!15}{0.5} & \cellcolor{gray!15}{0.9686} & \cellcolor{gray!15}{0.9688} & \cellcolor{gray!15}{0.9472}\\
+
+\cellcolor{gray!15}{\multirow{-3}{*}{\raggedleft\arraybackslash 50}} & \cellcolor{gray!15}{0.9} & \cellcolor{gray!15}{0.9918} & \cellcolor{gray!15}{0.9918} & \cellcolor{gray!15}{0.9488}\\*
+\end{longtable}
+
+\begin{landscape}
+
+\begingroup\fontsize{11.5}{13.5}\selectfont
+
+\begin{longtable}[t]{rrrrrrrrrrr}
+\caption{\label{tab:unnamed-chunk-20}Simulation results for tightness measure t1}\\
+\toprule
+\multicolumn{2}{c}{ } & \multicolumn{3}{c}{Low} & \multicolumn{3}{c}{Med} & \multicolumn{3}{c}{High} \\
+\cmidrule(l{3pt}r{3pt}){3-5} \cmidrule(l{3pt}r{3pt}){6-8} \cmidrule(l{3pt}r{3pt}){9-11}
+K & r & Independent & Bonferroni & Nonrank-based & Independent & Bonferroni & Nonrank-based & Independent & Bonferroni & Nonrank-based\\
+\midrule
+\endfirsthead
+\caption[]{\label{tab:unnamed-chunk-20}Simulation results for tightness measure t1 \textit{(continued)}}\\
+\toprule
+K & r & Independent & Bonferroni & Nonrank-based & Independent & Bonferroni & Nonrank-based & Independent & Bonferroni & Nonrank-based\\
+\midrule
+\endhead
+
+\endfoot
+\bottomrule
+\endlastfoot
+\cellcolor{gray!15}{10} & \cellcolor{gray!15}{0.1} & \cellcolor{gray!15}{3.44444} & \cellcolor{gray!15}{3.45052} & \cellcolor{gray!15}{3.435920} & \cellcolor{gray!15}{2.445560} & \cellcolor{gray!15}{2.450680} & \cellcolor{gray!15}{2.440200} & \cellcolor{gray!15}{1.802560} & \cellcolor{gray!15}{1.805040} & \cellcolor{gray!15}{1.801920}\\
+\cellcolor{gray!15}{10} & \cellcolor{gray!15}{0.5} & \cellcolor{gray!15}{3.43376} & \cellcolor{gray!15}{3.43964} & \cellcolor{gray!15}{3.363240} & \cellcolor{gray!15}{2.459800} & \cellcolor{gray!15}{2.463880} & \cellcolor{gray!15}{2.405360} & \cellcolor{gray!15}{1.799520} & \cellcolor{gray!15}{1.801760} & \cellcolor{gray!15}{1.775320}\\
+\cellcolor{gray!15}{10} & \cellcolor{gray!15}{0.9} & \cellcolor{gray!15}{3.41648} & \cellcolor{gray!15}{3.42316} & \cellcolor{gray!15}{3.094360} & \cellcolor{gray!15}{2.503840} & \cellcolor{gray!15}{2.508320} & \cellcolor{gray!15}{2.164800} & \cellcolor{gray!15}{1.784600} & \cellcolor{gray!15}{1.787160} & \cellcolor{gray!15}{1.676640}\\
+20 & 0.1 & 5.67294 & 5.68438 & 5.661240 & 3.645120 & 3.651960 & 3.638040 & 2.572500 & 2.575400 & 2.568080\\
+20 & 0.5 & 5.66384 & 5.67506 & 5.488720 & 3.658580 & 3.665540 & 3.556200 & 2.562460 & 2.566240 & 2.508340\\
+20 & 0.9 & 5.67722 & 5.68764 & 4.837580 & 3.679540 & 3.685680 & 3.163200 & 2.549400 & 2.553100 & 2.318540\\
+\cellcolor{gray!15}{30} & \cellcolor{gray!15}{0.1} & \cellcolor{gray!15}{10.14211} & \cellcolor{gray!15}{10.16159} & \cellcolor{gray!15}{10.115880} & \cellcolor{gray!15}{6.180720} & \cellcolor{gray!15}{6.193707} & \cellcolor{gray!15}{6.162293} & \cellcolor{gray!15}{3.999533} & \cellcolor{gray!15}{4.007147} & \cellcolor{gray!15}{3.988707}\\
+\cellcolor{gray!15}{30} & \cellcolor{gray!15}{0.5} & \cellcolor{gray!15}{10.14804} & \cellcolor{gray!15}{10.16737} & \cellcolor{gray!15}{9.796840} & \cellcolor{gray!15}{6.194267} & \cellcolor{gray!15}{6.207347} & \cellcolor{gray!15}{5.958587} & \cellcolor{gray!15}{4.001600} & \cellcolor{gray!15}{4.008733} & \cellcolor{gray!15}{3.868147}\\
+\cellcolor{gray!15}{30} & \cellcolor{gray!15}{0.9} & \cellcolor{gray!15}{10.18795} & \cellcolor{gray!15}{10.20716} & \cellcolor{gray!15}{8.519027} & \cellcolor{gray!15}{6.216440} & \cellcolor{gray!15}{6.228240} & \cellcolor{gray!15}{5.091240} & \cellcolor{gray!15}{4.005987} & \cellcolor{gray!15}{4.013373} & \cellcolor{gray!15}{3.402453}\\
+40 & 0.1 & 12.82436 & 12.84825 & 12.789230 & 7.699570 & 7.716190 & 7.676280 & 4.760430 & 4.769720 & 4.746380\\
+40 & 0.5 & 12.84452 & 12.86891 & 12.377840 & 7.716470 & 7.732850 & 7.369470 & 4.764730 & 4.773450 & 4.579730\\
+40 & 0.9 & 12.88154 & 12.90236 & 10.697260 & 7.766780 & 7.783970 & 6.075630 & 4.774930 & 4.783880 & 3.901920\\
+\cellcolor{gray!15}{50} & \cellcolor{gray!15}{0.1} & \cellcolor{gray!15}{16.64882} & \cellcolor{gray!15}{16.68181} & \cellcolor{gray!15}{16.601704} & \cellcolor{gray!15}{9.780272} & \cellcolor{gray!15}{9.799840} & \cellcolor{gray!15}{9.753936} & \cellcolor{gray!15}{6.188472} & \cellcolor{gray!15}{6.200008} & \cellcolor{gray!15}{6.171592}\\
+\cellcolor{gray!15}{50} & \cellcolor{gray!15}{0.5} & \cellcolor{gray!15}{16.68502} & \cellcolor{gray!15}{16.71798} & \cellcolor{gray!15}{15.980872} & \cellcolor{gray!15}{9.787704} & \cellcolor{gray!15}{9.807208} & \cellcolor{gray!15}{9.358392} & \cellcolor{gray!15}{6.206400} & \cellcolor{gray!15}{6.218376} & \cellcolor{gray!15}{5.943096}\\
+\cellcolor{gray!15}{50} & \cellcolor{gray!15}{0.9} & \cellcolor{gray!15}{16.73784} & \cellcolor{gray!15}{16.77114} & \cellcolor{gray!15}{13.436976} & \cellcolor{gray!15}{9.823712} & \cellcolor{gray!15}{9.843216} & \cellcolor{gray!15}{7.813736} & \cellcolor{gray!15}{6.232280} & \cellcolor{gray!15}{6.244280} & \cellcolor{gray!15}{4.976224}\\*
+\end{longtable}
+\endgroup{}
+
+\end{landscape}
+
+\begin{table}
+\centering
+\caption{\label{tab:unnamed-chunk-21}Merged Rows with 3 Value States}
+\centering
+\begin{tabular}[t]{ll}
+\toprule
+Combined & Value\\
+\midrule
+\cellcolor{gray!10}{} & \cellcolor{gray!10}{High}\\
+\cmidrule{2-2}
+\multirow[t]{-2}{*}{\raggedright\arraybackslash A - X} & High\\
+\cmidrule{1-2}
+\cellcolor{gray!10}{A - Y} & \cellcolor{gray!10}{Low}\\
+\cmidrule{1-2}
+ & \vphantom{1} Mid\\
+\cmidrule{2-2}
+\cellcolor{gray!10}{} & \cellcolor{gray!10}{Mid}\\
+\cmidrule{2-2}
+\multirow[t]{-3}{*}{\raggedright\arraybackslash B - Z} & Mid\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\newpage
+\vspace*{1cm}
+
 \section*{Bibliography}\label{bibliography}
 
 \vspace*{0.8cm}
@@ -839,10 +1154,7 @@ Archakova, I., \& Hansen, P. R. (2020). \emph{A canonical representation of bloc
 Bazylik, S., Mogstad, M., Romano, J. P., Shaikh, A. M., \& Wilhelm, D. (2025). Simultaneous confidence regions for ranks. \emph{Journal of Econometrics}. https://doi.org/\url{https://doi.org/10.1016/j.jeconom.2025.106010}
 
 \bibitem[\citeproctext]{ref-chen}
-Chen, H. J. (1976). Strong consistency and asymptotic unbiasedness of a natural estimator for a ranked parameter. \emph{Sankhyā: The Indian Journal of Statistics}, \emph{38}(1), 92--94.
-
-\bibitem[\citeproctext]{ref-legara}
-David, C., \& Legara, E. F. (2015). \emph{How voters combine candidates on the ballot: The case of the philippine senatorial elections}.
+Chen, H. J. (1976). Strong consistency and asymptotic unbiasedness of a natural estimator for a ranked parameter. \emph{Sankhyā: The Indian Journal of Statistics, B}, \emph{38}(1), 92--94.
 
 \bibitem[\citeproctext]{ref-dudewicz}
 Dudewicz, E. J. (1972). Point estimation of ordered parameters: The general location parameter case. \emph{Tamkang Journal of Mathematics}, \emph{3}(2), 101--114.
@@ -866,13 +1178,16 @@ Klein, M., Wright, T., \& Wieczorek, J. (2020). A joint confidence region for an
 Krainski, E. T., Gómez-Rubio, V., Bakka, H., Lenzi, A., Castro-Camilo, D., Simpson, D., Lindgren, F., \& Rue, H. (2019). \emph{Advanced spatial modeling with stochastic partial differential equations using r and INLA}. Chapman \& Hall/CRC Press.
 
 \bibitem[\citeproctext]{ref-johan}
-Lyhagen, J., \& Ahlgren, P. (2020). Uncertainty and the ranking of economics journals. \emph{Scientometrics}, \emph{125}, 2545--2560. https://doi.org/\url{https://doi.org/10.1007/s11192-020-03681-5}
+Lyhagen, J., \& Ahlgren, P. (2020). Uncertainty and the ranking of economics journals. \emph{Scientometrics}, (125), 2545--2560. https://doi.org/\url{https://doi.org/10.1007/s11192-020-03681-5}
 
 \bibitem[\citeproctext]{ref-mogstadt23}
 Mogstad, M., Romano, J. P., Shaikh, A. M., \& Wilhelm, D. (2024). Inference for ranks with applications to mobility across neighbourhoods and academic achievement across countries. \emph{The Review of Economic Studies}, \emph{91}(1), 476--518.
 
 \bibitem[\citeproctext]{ref-jelle}
 Mohamad, D. A., Zwet, E. W. van, \& Goeman, J. J. (2019). Simultaneous confidence intervals for ranks with application to ranking institutions. \emph{Journal of the International Biometric Society}.
+
+\bibitem[\citeproctext]{ref-pulseasia2025}
+Pulse Asia Research, Inc. (2025). Pulso ng bayan pre-electoral survey: May 6 -- 9, 2025 / philippines general report. \emph{Pulse Asia Research, Inc. Official Reports}. \url{https://pulseasia.ph/wp-content/uploads/2025/05/PB-May-2025-Media-Release-and-General-Report.pdf}
 
 \bibitem[\citeproctext]{ref-pork}
 Ravanilla, N., \& Hicken, A. (2023). \emph{When legislators don't bring home the pork: The case of philippine senators}.
@@ -890,5 +1205,755 @@ Wright, T. (2025). \emph{Optimal tightening of the KWW joint confidence region f
 Zhang, S., Luo, J., Zhu, L., Stinchcomb, D. G., Campbell, D., Carter, G., Gilkesone, S., \& Feuerc, E. J. (2013). \emph{Confidence intervals for ranks of age-adjusted rates across states or counties}.
 
 \end{CSLReferences}
+
+\section{Appendices}\label{appendices}
+
+\vspace*{0.8cm}
+
+\subsection{\texorpdfstring{True \(\theta\) Values Used in the Simulation}{True \textbackslash theta Values Used in the Simulation}}\label{true-theta-values-used-in-the-simulation}
+
+The actual \(\theta\) values used in the simulation are shown in Table \ref{tab:true-theta-table}. Figure \ref{fig:true-theta-boxplot} shows how the spread of the \(\theta\) varies in the cases considered.
+
+\begin{longtable}[t]{>{\raggedleft\arraybackslash}p{1cm}>{\raggedright\arraybackslash}p{2cm}>{\raggedright\arraybackslash}p{12cm}}
+\caption{\label{tab:true-theta-table}True $\theta$ values used in the simulation have different levels of variability.}\\
+\toprule
+K & Variability & $\boldsymbol{\theta}$\\
+\midrule
+\endfirsthead
+\caption[]{\label{tab:true-theta-table}True $\theta$ values used in the simulation have different levels of variability. \textit{(continued)}}\\
+\toprule
+K & Variability & $\boldsymbol{\theta}$\\
+\midrule
+\endhead
+
+\endfoot
+\bottomrule
+\endlastfoot
+\cellcolor{gray!15}{10} & \cellcolor{gray!15}{low} & \cellcolor{gray!15}{22.5, 24.9, 27.5, 24.3, 24.8, 23.2, 23, 21.6, 25.1, 19}\\
+10 & med & 21.5, 25.7, 30.5, 24.7, 25.5, 22.6, 22.3, 19.9, 26.1, 15.2\\
+\cellcolor{gray!15}{10} & \cellcolor{gray!15}{high} & \cellcolor{gray!15}{19.9, 27, 34.9, 25.3, 26.7, 21.9, 21.3, 17.3, 27.7, 9.4}\\
+20 & low & 22.5, 24.9, 27.5, 24.3, 24.8, 23.2, 23, 21.6, 25.1, 19, 21.3, 24.1, 26.5, 26.9, 23.2, 25.8, 21.8, 21.6, 25.6, 21.2\\
+\cellcolor{gray!15}{20} & \cellcolor{gray!15}{med} & \cellcolor{gray!15}{21.5, 25.7, 30.5, 24.7, 25.5, 22.6, 22.3, 19.9, 26.1, 15.2, 19.3, 24.3, 28.7, 29.3, 22.7, 27.5, 20.1, 19.9, 27.1, 19.1}\\
+20 & high & 19.9, 27, 34.9, 25.3, 26.7, 21.9, 21.3, 17.3, 27.7, 9.4, 16.2, 24.6, 31.9, 33, 21.9, 29.9, 17.7, 17.3, 29.3, 16\\
+\cellcolor{gray!15}{30} & \cellcolor{gray!15}{low} & \cellcolor{gray!15}{22.5, 24.9, 27.5, 24.3, 24.8, 23.2, 23, 21.6, 25.1, 19, 21.3, 24.1, 26.5, 26.9, 23.2, 25.8, 21.8, 21.6, 25.6, 21.2, 25.7, 22.2, 22.7, 22.6, 21.9, 24.2, 23.6, 22, 24.5, 25}\\
+30 & med & 21.5, 25.7, 30.5, 24.7, 25.5, 22.6, 22.3, 19.9, 26.1, 15.2, 19.3, 24.3, 28.7, 29.3, 22.7, 27.5, 20.1, 19.9, 27.1, 19.1, 27.2, 20.9, 21.8, 21.7, 20.4, 24.5, 23.5, 20.5, 25.1, 26\\
+\cellcolor{gray!15}{30} & \cellcolor{gray!15}{high} & \cellcolor{gray!15}{19.9, 27, 34.9, 25.3, 26.7, 21.9, 21.3, 17.3, 27.7, 9.4, 16.2, 24.6, 31.9, 33, 21.9, 29.9, 17.7, 17.3, 29.3, 16, 29.4, 19, 20.4, 20.3, 18.2, 25, 23.3, 18.3, 26, 27.4}\\
+40 & low & 22.5, 24.9, 27.5, 24.3, 24.8, 23.2, 23, 21.6, 25.1, 19, 21.3, 24.1, 26.5, 26.9, 23.2, 25.8, 21.8, 21.6, 25.6, 21.2, 25.7, 22.2, 22.7, 22.6, 21.9, 24.2, 23.6, 22, 24.5, 25, 26.5, 25.1, 25.2, 27.1, 25.3, 22.8, 20.6, 21.1, 26, 26\\
+\cellcolor{gray!15}{40} & \cellcolor{gray!15}{med} & \cellcolor{gray!15}{21.5, 25.7, 30.5, 24.7, 25.5, 22.6, 22.3, 19.9, 26.1, 15.2, 19.3, 24.3, 28.7, 29.3, 22.7, 27.5, 20.1, 19.9, 27.1, 19.1, 27.2, 20.9, 21.8, 21.7, 20.4, 24.5, 23.5, 20.5, 25.1, 26, 28.6, 26.1, 26.4, 29.7, 26.5, 22.1, 18, 18.9, 27.8, 27.8}\\
+40 & high & 19.9, 27, 34.9, 25.3, 26.7, 21.9, 21.3, 17.3, 27.7, 9.4, 16.2, 24.6, 31.9, 33, 21.9, 29.9, 17.7, 17.3, 29.3, 16, 29.4, 19, 20.4, 20.3, 18.2, 25, 23.3, 18.3, 26, 27.4, 31.9, 27.7, 28.1, 33.6, 28.2, 20.9, 14.1, 15.6, 30.5, 30.5\\
+\cellcolor{gray!15}{50} & \cellcolor{gray!15}{low} & \cellcolor{gray!15}{22.5, 24.9, 27.5, 24.3, 24.8, 23.2, 23, 21.6, 25.1, 19, 21.3, 24.1, 26.5, 26.9, 23.2, 25.8, 21.8, 21.6, 25.6, 21.2, 25.7, 22.2, 22.7, 22.6, 21.9, 24.2, 23.6, 22, 24.5, 25, 26.5, 25.1, 25.2, 27.1, 25.3, 22.8, 20.6, 21.1, 26, 26, 22.1, 21.4, 23.2, 22.3, 22.4, 23.1, 21.4, 24.8, 27, 23.4}\\
+50 & med & 21.5, 25.7, 30.5, 24.7, 25.5, 22.6, 22.3, 19.9, 26.1, 15.2, 19.3, 24.3, 28.7, 29.3, 22.7, 27.5, 20.1, 19.9, 27.1, 19.1, 27.2, 20.9, 21.8, 21.7, 20.4, 24.5, 23.5, 20.5, 25.1, 26, 28.6, 26.1, 26.4, 29.7, 26.5, 22.1, 18, 18.9, 27.8, 27.8, 20.8, 19.5, 22.8, 21.2, 21.3, 22.5, 19.5, 25.5, 29.6, 23\\
+\cellcolor{gray!15}{50} & \cellcolor{gray!15}{high} & \cellcolor{gray!15}{19.9, 27, 34.9, 25.3, 26.7, 21.9, 21.3, 17.3, 27.7, 9.4, 16.2, 24.6, 31.9, 33, 21.9, 29.9, 17.7, 17.3, 29.3, 16, 29.4, 19, 20.4, 20.3, 18.2, 25, 23.3, 18.3, 26, 27.4, 31.9, 27.7, 28.1, 33.6, 28.2, 20.9, 14.1, 15.6, 30.5, 30.5, 18.8, 16.6, 22.1, 19.4, 19.6, 21.6, 16.7, 26.7, 33.5, 22.5}\\*
+\end{longtable}
+
+\begin{figure}
+\centering
+\includegraphics{proposal_files/figure-latex/true-theta-boxplot-1.pdf}
+\caption{\label{fig:true-theta-boxplot}True \(\theta\) values used in the simulation have different levels of variability.}
+\end{figure}
+
+\subsection*{Codes for algorithm 1}\label{codes-for-algorithm-1}
+\addcontentsline{toc}{subsection}{Codes for algorithm 1}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+ 
+\NormalTok{get\_ci\_independent }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(theta\_hat,}
+\NormalTok{                               S,}
+\NormalTok{                               alpha)\{}
+\NormalTok{  K }\OtherTok{\textless{}{-}} \FunctionTok{length}\NormalTok{(theta\_hat)}
+\NormalTok{  gamma }\OtherTok{=} \DecValTok{1}\SpecialCharTok{{-}}\NormalTok{(}\DecValTok{1}\SpecialCharTok{{-}}\NormalTok{alpha)}\SpecialCharTok{\^{}}\NormalTok{(}\DecValTok{1}\SpecialCharTok{/}\NormalTok{K)}
+\NormalTok{  z }\OtherTok{=} \FunctionTok{qnorm}\NormalTok{(}\DecValTok{1}\SpecialCharTok{{-}}\NormalTok{gamma}\SpecialCharTok{/}\DecValTok{2}\NormalTok{)}
+\NormalTok{  ci\_lower }\OtherTok{\textless{}{-}}\NormalTok{ theta\_hat }\SpecialCharTok{{-}}\NormalTok{ z}\SpecialCharTok{*}\NormalTok{S}
+\NormalTok{  ci\_upper }\OtherTok{\textless{}{-}}\NormalTok{ theta\_hat }\SpecialCharTok{+}\NormalTok{ z}\SpecialCharTok{*}\NormalTok{S}
+  \FunctionTok{return}\NormalTok{(}\FunctionTok{list}\NormalTok{(}
+    \AttributeTok{ci\_lower =}\NormalTok{ ci\_lower,}
+    \AttributeTok{ci\_upper =}\NormalTok{ ci\_upper}
+\NormalTok{  ))}
+\NormalTok{\}}
+
+\NormalTok{get\_ci\_bonferroni }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(theta\_hat,}
+\NormalTok{                              S,}
+\NormalTok{                              alpha)\{}
+\NormalTok{  K }\OtherTok{\textless{}{-}} \FunctionTok{length}\NormalTok{(theta\_hat)}
+\NormalTok{  z }\OtherTok{=} \FunctionTok{qnorm}\NormalTok{(}\DecValTok{1}\SpecialCharTok{{-}}\NormalTok{(alpha}\SpecialCharTok{/}\NormalTok{K)}\SpecialCharTok{/}\DecValTok{2}\NormalTok{)}
+\NormalTok{  ci\_lower }\OtherTok{\textless{}{-}}\NormalTok{ theta\_hat }\SpecialCharTok{{-}}\NormalTok{ z}\SpecialCharTok{*}\NormalTok{S}
+\NormalTok{  ci\_upper }\OtherTok{\textless{}{-}}\NormalTok{ theta\_hat }\SpecialCharTok{+}\NormalTok{ z}\SpecialCharTok{*}\NormalTok{S}
+  \FunctionTok{return}\NormalTok{(}\FunctionTok{list}\NormalTok{(}
+    \AttributeTok{ci\_lower =}\NormalTok{ ci\_lower,}
+    \AttributeTok{ci\_upper =}\NormalTok{ ci\_upper}
+\NormalTok{  ))}
+\NormalTok{\}}
+
+\NormalTok{get\_ci\_rankbased\_asymptotic }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(B,}
+\NormalTok{                                        theta\_hat,}
+\NormalTok{                                        varcovar\_matrix,}
+\NormalTok{                                        alpha) \{}
+
+\NormalTok{  K }\OtherTok{\textless{}{-}} \FunctionTok{length}\NormalTok{(theta\_hat)}
+  
+  \CommentTok{\# generate\_data \textless{}{-} function()\{MASS::mvrnorm(n = 1,}
+  \CommentTok{\#                                           mu = theta\_hat,}
+  \CommentTok{\#                                           Sigma = varcovar\_matrix)\}}
+  \CommentTok{\# \# line 2 \textasciitilde{}\textasciitilde{}\textasciitilde{}}
+  \CommentTok{\# thetahat\_star \textless{}{-} t(replicate(B, generate\_data())) \# B x K}
+  
+  \CommentTok{\# line 2 \textasciitilde{}\textasciitilde{}\textasciitilde{}}
+\NormalTok{  thetahat\_star }\OtherTok{\textless{}{-}}\NormalTok{ MASS}\SpecialCharTok{::}\FunctionTok{mvrnorm}\NormalTok{(}\AttributeTok{n =}\NormalTok{ B,}
+                                 \AttributeTok{mu =}\NormalTok{ theta\_hat,}
+                                 \AttributeTok{Sigma =}\NormalTok{ varcovar\_matrix) }\CommentTok{\# B x K}
+  \FunctionTok{print}\NormalTok{(}\StringTok{"theta\_hat"}\NormalTok{)}
+  \FunctionTok{print}\NormalTok{(theta\_hat)}
+  \FunctionTok{print}\NormalTok{(}\StringTok{"thetahat\_star"}\NormalTok{)}
+  \FunctionTok{print}\NormalTok{(}\FunctionTok{cat}\NormalTok{(}\StringTok{"shape: "}\NormalTok{, }\FunctionTok{dim}\NormalTok{(thetahat\_star)))}
+  \FunctionTok{print}\NormalTok{(thetahat\_star[}\FunctionTok{c}\NormalTok{(}\DecValTok{1}\SpecialCharTok{:}\DecValTok{3}\NormalTok{),])}
+  
+  \CommentTok{\# sorted counterpart line 2}
+\NormalTok{  sorted\_thetahat\_star }\OtherTok{\textless{}{-}} \FunctionTok{t}\NormalTok{(}\FunctionTok{apply}\NormalTok{(thetahat\_star, }\DecValTok{1}\NormalTok{, sort))}
+  \FunctionTok{print}\NormalTok{(}\StringTok{"sorted\_thetahat\_star"}\NormalTok{)}
+  \FunctionTok{print}\NormalTok{(}\FunctionTok{cat}\NormalTok{(}\StringTok{"shape: "}\NormalTok{, }\FunctionTok{dim}\NormalTok{(thetahat\_star)))}
+  \FunctionTok{print}\NormalTok{(sorted\_thetahat\_star[}\FunctionTok{c}\NormalTok{(}\DecValTok{1}\SpecialCharTok{:}\DecValTok{3}\NormalTok{),])}
+
+\NormalTok{  variance\_vector }\OtherTok{\textless{}{-}} \FunctionTok{diag}\NormalTok{(varcovar\_matrix)}
+  \FunctionTok{print}\NormalTok{(}\StringTok{"Variance vec:"}\NormalTok{)}
+  \FunctionTok{print}\NormalTok{(variance\_vector)}
+  \FunctionTok{print}\NormalTok{(}\StringTok{"Variance mat:"}\NormalTok{)}
+  \FunctionTok{print}\NormalTok{(}\FunctionTok{matrix}\NormalTok{(variance\_vector, B, K, }\AttributeTok{byrow =} \ConstantTok{TRUE}\NormalTok{)[}\FunctionTok{c}\NormalTok{(}\DecValTok{1}\SpecialCharTok{:}\DecValTok{3}\NormalTok{),])}
+  \FunctionTok{print}\NormalTok{(}\StringTok{"thetahat\_star:"}\NormalTok{)}
+  \FunctionTok{print}\NormalTok{(thetahat\_star[}\FunctionTok{c}\NormalTok{(}\DecValTok{1}\SpecialCharTok{:}\DecValTok{3}\NormalTok{),])}
+  \FunctionTok{print}\NormalTok{(}\StringTok{"thetahat\_star squared:"}\NormalTok{)}
+  \FunctionTok{print}\NormalTok{((thetahat\_star}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{)[}\FunctionTok{c}\NormalTok{(}\DecValTok{1}\SpecialCharTok{:}\DecValTok{3}\NormalTok{),])}
+  \FunctionTok{print}\NormalTok{(}\StringTok{"minuend:"}\NormalTok{)}
+  
+  \CommentTok{\# line 3 \textasciitilde{}\textasciitilde{}\textasciitilde{}}
+\NormalTok{  minuend }\OtherTok{\textless{}{-}}\NormalTok{ thetahat\_star}\SpecialCharTok{\^{}}\DecValTok{2} \SpecialCharTok{+} \FunctionTok{matrix}\NormalTok{(variance\_vector, B, K, }\AttributeTok{byrow =} \ConstantTok{TRUE}\NormalTok{)}
+  \FunctionTok{print}\NormalTok{(minuend[}\FunctionTok{c}\NormalTok{(}\DecValTok{1}\SpecialCharTok{:}\DecValTok{3}\NormalTok{),])}
+  \FunctionTok{print}\NormalTok{(}\StringTok{"sorted minuend:"}\NormalTok{)}
+  \FunctionTok{print}\NormalTok{(}\FunctionTok{t}\NormalTok{(}\FunctionTok{apply}\NormalTok{(minuend, }\DecValTok{1}\NormalTok{, sort))[}\FunctionTok{c}\NormalTok{(}\DecValTok{1}\SpecialCharTok{:}\DecValTok{3}\NormalTok{),])}
+  \FunctionTok{print}\NormalTok{(}\StringTok{"sorted\_thetahat\_star\^{}2"}\NormalTok{)}
+  \FunctionTok{print}\NormalTok{((sorted\_thetahat\_star}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{)[}\FunctionTok{c}\NormalTok{(}\DecValTok{1}\SpecialCharTok{:}\DecValTok{3}\NormalTok{),])}
+    \CommentTok{\#(matrix(rep(variance\_vector, each = B),nrow = B, byrow = FALSE))}
+  \FunctionTok{print}\NormalTok{(}\StringTok{"their difference"}\NormalTok{)}
+  \FunctionTok{print}\NormalTok{((}\FunctionTok{t}\NormalTok{(}\FunctionTok{apply}\NormalTok{(minuend, }\DecValTok{1}\NormalTok{, sort)) }\SpecialCharTok{{-}}\NormalTok{ sorted\_thetahat\_star}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{)[}\FunctionTok{c}\NormalTok{(}\DecValTok{1}\SpecialCharTok{:}\DecValTok{3}\NormalTok{),])}
+
+\NormalTok{  sigma\_hat\_star }\OtherTok{\textless{}{-}} \FunctionTok{sqrt}\NormalTok{(}
+    \FunctionTok{t}\NormalTok{(}\FunctionTok{apply}\NormalTok{(minuend, }\DecValTok{1}\NormalTok{, sort)) }\SpecialCharTok{{-}}\NormalTok{ sorted\_thetahat\_star}\SpecialCharTok{\^{}}\DecValTok{2}
+\NormalTok{    )}
+  \CommentTok{\# step 1c ====================================}
+  \FunctionTok{print}\NormalTok{(}\StringTok{"sigma\_hat\_star"}\NormalTok{)}
+  \FunctionTok{print}\NormalTok{(sigma\_hat\_star)}
+
+\NormalTok{  sorted\_theta\_hat }\OtherTok{\textless{}{-}} \FunctionTok{sort}\NormalTok{(theta\_hat)}
+  \FunctionTok{print}\NormalTok{(}\StringTok{"sorted theta hat"}\NormalTok{)}
+  \FunctionTok{print}\NormalTok{(sorted\_theta\_hat)}
+  \CommentTok{\# print((matrix(rep(sorted\_theta\_hat, each = B),}
+  \CommentTok{\#              nrow = B, byrow = FALSE)))}
+  \CommentTok{\# t\_star \textless{}{-} apply(}
+  \CommentTok{\#   abs(}
+  \CommentTok{\#     (}
+  \CommentTok{\#       sorted\_thetahat\_star {-} matrix(sorted\_theta\_hat, B, K, byrow = TRUE)}
+  \CommentTok{\#       \# (matrix(rep(sorted\_theta\_hat, each = B),}
+  \CommentTok{\#       \#                               nrow = B, byrow = FALSE))}
+  \CommentTok{\#       )/sigma\_hat\_star}
+  \CommentTok{\#     ),}
+  \CommentTok{\#   1,}
+  \CommentTok{\#   max)}
+
+  \CommentTok{\# line 4 \textasciitilde{}\textasciitilde{}\textasciitilde{}}
+\NormalTok{  compute\_max }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(b) \{}
+\NormalTok{    t\_b }\OtherTok{\textless{}{-}} \FunctionTok{max}\NormalTok{(}\FunctionTok{abs}\NormalTok{(}
+\NormalTok{      (sorted\_thetahat\_star[b, ] }\SpecialCharTok{{-}}\NormalTok{ sorted\_theta\_hat) }\SpecialCharTok{/}
+\NormalTok{        sigma\_hat\_star[b,]}
+\NormalTok{    ))}
+    \FunctionTok{return}\NormalTok{(t\_b)}
+\NormalTok{  \}}
+  \FunctionTok{print}\NormalTok{(sorted\_thetahat\_star[}\DecValTok{1}\NormalTok{, ])}
+  \FunctionTok{print}\NormalTok{(sorted\_theta\_hat)}
+  \FunctionTok{print}\NormalTok{(sigma\_hat\_star[}\DecValTok{1}\NormalTok{,])}
+  \FunctionTok{print}\NormalTok{(}\StringTok{"compute max for b = 1"}\NormalTok{)}
+  \FunctionTok{print}\NormalTok{(sigma\_hat\_star[}\DecValTok{1}\NormalTok{,])}
+  \FunctionTok{print}\NormalTok{(sorted\_thetahat\_star[}\DecValTok{1}\NormalTok{, ] }\SpecialCharTok{{-}}\NormalTok{ sorted\_theta\_hat)}
+  \FunctionTok{print}\NormalTok{((sorted\_thetahat\_star[}\DecValTok{1}\NormalTok{, ] }\SpecialCharTok{{-}}\NormalTok{ sorted\_theta\_hat)}\SpecialCharTok{/}\NormalTok{sigma\_hat\_star[}\DecValTok{1}\NormalTok{,])}
+  \FunctionTok{print}\NormalTok{(}\FunctionTok{max}\NormalTok{(}\FunctionTok{abs}\NormalTok{(}
+\NormalTok{    (sorted\_thetahat\_star[}\DecValTok{1}\NormalTok{, ] }\SpecialCharTok{{-}}\NormalTok{ sorted\_theta\_hat) }\SpecialCharTok{/}
+\NormalTok{      sigma\_hat\_star[}\DecValTok{1}\NormalTok{,]}
+\NormalTok{  )))}
+  \FunctionTok{print}\NormalTok{(}\FunctionTok{compute\_max}\NormalTok{(}\DecValTok{1}\NormalTok{))}
+
+\NormalTok{  t\_star }\OtherTok{\textless{}{-}} \FunctionTok{sapply}\NormalTok{(}\DecValTok{1}\SpecialCharTok{:}\NormalTok{B, compute\_max)}
+
+  \CommentTok{\# line 6 \textasciitilde{}\textasciitilde{}\textasciitilde{}}
+\NormalTok{  t\_hat }\OtherTok{\textless{}{-}} \FunctionTok{quantile}\NormalTok{(t\_star, }\AttributeTok{probs =} \DecValTok{1} \SpecialCharTok{{-}}\NormalTok{ alpha)}
+
+  \CommentTok{\# line 7 \textasciitilde{}\textasciitilde{}\textasciitilde{}}
+\NormalTok{  sigma\_hat }\OtherTok{\textless{}{-}} \FunctionTok{sqrt}\NormalTok{(}
+    \FunctionTok{sort}\NormalTok{(theta\_hat}\SpecialCharTok{\^{}}\DecValTok{2} \SpecialCharTok{+}\NormalTok{ variance\_vector) }\SpecialCharTok{{-}}\NormalTok{ sorted\_theta\_hat}\SpecialCharTok{\^{}}\DecValTok{2}
+\NormalTok{    )}
+\NormalTok{  ci\_lower }\OtherTok{\textless{}{-}}\NormalTok{ sorted\_theta\_hat }\SpecialCharTok{{-}}\NormalTok{ t\_hat}\SpecialCharTok{*}\NormalTok{sigma\_hat}
+\NormalTok{  ci\_upper }\OtherTok{\textless{}{-}}\NormalTok{ sorted\_theta\_hat }\SpecialCharTok{+}\NormalTok{ t\_hat}\SpecialCharTok{*}\NormalTok{sigma\_hat}
+
+  \FunctionTok{return}\NormalTok{(}\FunctionTok{list}\NormalTok{(}
+    \AttributeTok{ci\_lower =}\NormalTok{ ci\_lower,}
+    \AttributeTok{ci\_upper =}\NormalTok{ ci\_upper}
+\NormalTok{  ))}
+\NormalTok{\}}
+
+\NormalTok{get\_ci\_rankbased\_level2bs }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(B,}
+\NormalTok{                                      C,}
+\NormalTok{                                      theta\_hat,}
+\NormalTok{                                      varcovar\_matrix,}
+\NormalTok{                                      alpha) \{}
+  \FunctionTok{print}\NormalTok{(}\StringTok{"ci\_rankbased\_level2bs ==================================="}\NormalTok{)}
+\NormalTok{  K }\OtherTok{\textless{}{-}} \FunctionTok{length}\NormalTok{(theta\_hat)}
+\NormalTok{  sorted\_theta\_hat }\OtherTok{\textless{}{-}} \FunctionTok{sort}\NormalTok{(theta\_hat)}
+
+  \CommentTok{\# generate\_data \textless{}{-} function()\{MASS::mvrnorm(n = 1,}
+  \CommentTok{\#                                           mu = theta\_hat,}
+  \CommentTok{\#                                           Sigma = varcovar\_matrix)\}}
+  \CommentTok{\# \# line 2 \textasciitilde{}\textasciitilde{}\textasciitilde{}}
+  \CommentTok{\# thetahat\_star \textless{}{-} t(replicate(B, generate\_data())) \# B x K}
+
+  \CommentTok{\# line 2 \textasciitilde{}\textasciitilde{}\textasciitilde{}}
+\NormalTok{  thetahat\_star }\OtherTok{\textless{}{-}}\NormalTok{ MASS}\SpecialCharTok{::}\FunctionTok{mvrnorm}\NormalTok{(}\AttributeTok{n =}\NormalTok{ B,}
+                                 \AttributeTok{mu =}\NormalTok{ theta\_hat,}
+                                 \AttributeTok{Sigma =}\NormalTok{ varcovar\_matrix) }\CommentTok{\# B x K}
+  \CommentTok{\# print("theta\_hat")}
+  \CommentTok{\# print(theta\_hat)}
+  \CommentTok{\# print("thetahat\_star")}
+  \CommentTok{\# print(cat("shape: ", dim(thetahat\_star)))}
+  \CommentTok{\# print(thetahat\_star)}
+  
+  \CommentTok{\# sorted counterpart line 2}
+\NormalTok{  sorted\_thetahat\_star }\OtherTok{\textless{}{-}} \FunctionTok{t}\NormalTok{(}\FunctionTok{apply}\NormalTok{(thetahat\_star, }\DecValTok{1}\NormalTok{, sort)) }\CommentTok{\# B x K}
+  \FunctionTok{print}\NormalTok{(}\StringTok{"sorted\_thetahat\_star"}\NormalTok{)}
+  \FunctionTok{print}\NormalTok{(}\FunctionTok{cat}\NormalTok{(}\StringTok{"sorted\_shape: "}\NormalTok{, }\FunctionTok{dim}\NormalTok{(thetahat\_star)))}
+  \FunctionTok{print}\NormalTok{(sorted\_thetahat\_star)}
+
+  \CommentTok{\# for each b row in level 1, generate a K x C matrix, }
+\NormalTok{  generate\_level2\_data }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(mu)\{MASS}\SpecialCharTok{::}\FunctionTok{mvrnorm}\NormalTok{(}\AttributeTok{n =} \DecValTok{1}\NormalTok{,}
+\NormalTok{                                                     mu,}
+                                                     \AttributeTok{Sigma =}\NormalTok{ varcovar\_matrix)\}}
+
+  \CommentTok{\# line 4 \textasciitilde{}\textasciitilde{}\textasciitilde{}}
+\NormalTok{  thetahat\_double\_star }\OtherTok{\textless{}{-}} \CommentTok{\# list of length B, each a K x C matrix}
+    \FunctionTok{apply}\NormalTok{(thetahat\_star,}
+          \DecValTok{1}\NormalTok{,}
+          \ControlFlowTok{function}\NormalTok{(thetahat\_b) \{}\FunctionTok{replicate}\NormalTok{(C, }\CommentTok{\# expected is a K x C matrix}
+                                          \FunctionTok{generate\_level2\_data}\NormalTok{(}\AttributeTok{mu=}\NormalTok{thetahat\_b))\},}
+          \AttributeTok{simplify =} \ConstantTok{FALSE}
+\NormalTok{          )}
+
+  \CommentTok{\# print("Bootstrap 1")}
+  \CommentTok{\# print(thetahat\_star[5,])}
+  \CommentTok{\# print("thetahat\_double\_star")}
+  \CommentTok{\# \# print(length(thetahat\_double\_star))}
+  \CommentTok{\# print(dim(thetahat\_double\_star[[5]]))}
+  \CommentTok{\# print(thetahat\_double\_star[[5]])}
+  
+  \CommentTok{\# sorted counterpart line 4}
+\NormalTok{  sorted\_thetahat\_double\_star }\OtherTok{\textless{}{-}} \FunctionTok{lapply}\NormalTok{(thetahat\_double\_star, }
+                                        \ControlFlowTok{function}\NormalTok{(x)}\FunctionTok{apply}\NormalTok{(x, }\DecValTok{2}\NormalTok{, sort))}
+  \CommentTok{\# print(dim(sorted\_thetahat\_double\_star[[5]]))}
+  \CommentTok{\# print(sorted\_thetahat\_double\_star[[5]])}
+
+  \CommentTok{\# line 5 \textasciitilde{}\textasciitilde{}\textasciitilde{}}
+  \CommentTok{\# for each matrix b and for each row k}
+  \CommentTok{\# K x C matrix arg}
+\NormalTok{  compute\_sigma\_hat }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(mat, n)\{}
+    \CommentTok{\# outputs a vector of length K}
+    \FunctionTok{apply}\NormalTok{(mat, }
+          \DecValTok{1}\NormalTok{, }\CommentTok{\# done for each k}
+          \ControlFlowTok{function}\NormalTok{(row)\{}
+            \FunctionTok{sqrt}\NormalTok{(}
+              \FunctionTok{sum}\NormalTok{((row }\SpecialCharTok{{-}} \FunctionTok{mean}\NormalTok{(row))}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{)}\SpecialCharTok{/}\NormalTok{(n}\DecValTok{{-}1}\NormalTok{))}
+\NormalTok{            \})\}}
+  
+  \CommentTok{\# output must be B lists, each a vector of length K}
+\NormalTok{  sigma\_hat\_star }\OtherTok{\textless{}{-}} \FunctionTok{lapply}\NormalTok{(sorted\_thetahat\_double\_star, }\CommentTok{\# K by C }
+                           \ControlFlowTok{function}\NormalTok{(x) }\FunctionTok{compute\_sigma\_hat}\NormalTok{(x, C) }
+\NormalTok{                           )}
+  \CommentTok{\# print(length(sigma\_hat\_star)) \# = B}
+  \FunctionTok{print}\NormalTok{(}\FunctionTok{length}\NormalTok{(sorted\_thetahat\_star[}\DecValTok{5}\NormalTok{, ])) }\CommentTok{\# = K}
+  \FunctionTok{print}\NormalTok{(}\FunctionTok{length}\NormalTok{(sorted\_theta\_hat)) }\CommentTok{\# = K}
+  \FunctionTok{print}\NormalTok{(}\FunctionTok{length}\NormalTok{(sigma\_hat\_star[[}\DecValTok{5}\NormalTok{]])) }\CommentTok{\# = K}
+
+\NormalTok{  compute\_max }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(b) \{}
+\NormalTok{    t\_b }\OtherTok{\textless{}{-}} \FunctionTok{abs}\NormalTok{(}
+\NormalTok{      (sorted\_thetahat\_star[b, ] }\SpecialCharTok{{-}}\NormalTok{ sorted\_theta\_hat) }\SpecialCharTok{/}
+\NormalTok{        sigma\_hat\_star[[b]]}
+\NormalTok{    )}
+    \FunctionTok{max}\NormalTok{(t\_b)}
+\NormalTok{  \}}
+
+  \CommentTok{\# line 7 \textasciitilde{}\textasciitilde{}\textasciitilde{}}
+\NormalTok{  t\_star }\OtherTok{\textless{}{-}} \FunctionTok{sapply}\NormalTok{(}\DecValTok{1}\SpecialCharTok{:}\NormalTok{B, compute\_max)}
+  \CommentTok{\# print(cat("t\_star: ",t\_star)) }
+  \CommentTok{\# print(cat("length t\_star: ",length(t\_star))) \# = B}
+
+  \CommentTok{\# line 9 \textasciitilde{}\textasciitilde{}\textasciitilde{}}
+\NormalTok{  t\_hat }\OtherTok{\textless{}{-}} \FunctionTok{quantile}\NormalTok{(t\_star, }\AttributeTok{probs =} \DecValTok{1} \SpecialCharTok{{-}}\NormalTok{ alpha)}
+
+  \CommentTok{\# line 10 \textasciitilde{}\textasciitilde{}\textasciitilde{}}
+  \CommentTok{\# print("transposed")}
+  \CommentTok{\# print(dim(t(sorted\_thetahat\_star)))}
+\NormalTok{  sigma\_hat }\OtherTok{\textless{}{-}} \FunctionTok{compute\_sigma\_hat}\NormalTok{(}\FunctionTok{t}\NormalTok{(sorted\_thetahat\_star),B)}
+  \CommentTok{\# print(\textquotesingle{}sigma\_hat\textquotesingle{})}
+  \CommentTok{\# print(sigma\_hat)}
+  \CommentTok{\# print(length(sigma\_hat))}
+
+\NormalTok{  ci\_lower }\OtherTok{\textless{}{-}}\NormalTok{ sorted\_theta\_hat }\SpecialCharTok{{-}}\NormalTok{ t\_hat}\SpecialCharTok{*}\NormalTok{sigma\_hat}
+\NormalTok{  ci\_upper }\OtherTok{\textless{}{-}}\NormalTok{ sorted\_theta\_hat }\SpecialCharTok{+}\NormalTok{ t\_hat}\SpecialCharTok{*}\NormalTok{sigma\_hat}
+
+  \FunctionTok{return}\NormalTok{(}\FunctionTok{list}\NormalTok{(}
+    \AttributeTok{ci\_lower =}\NormalTok{ ci\_lower,}
+    \AttributeTok{ci\_upper =}\NormalTok{ ci\_upper}
+\NormalTok{  ))}
+\NormalTok{\}}
+
+\NormalTok{get\_ci\_nonrankbased }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(B, }
+\NormalTok{                                theta\_hat,}
+\NormalTok{                                alpha, }
+\NormalTok{                                varcovar\_matrix) \{}
+  \FunctionTok{print}\NormalTok{(}\StringTok{"ci\_nonrankbased ==================================="}\NormalTok{)}
+\NormalTok{  K }\OtherTok{\textless{}{-}} \FunctionTok{length}\NormalTok{(theta\_hat)}
+  \CommentTok{\# step 1a ===================================}
+  \CommentTok{\# generate\_data \textless{}{-} function()\{MASS::mvrnorm(n = 1,}
+  \CommentTok{\#                                           mu = theta\_hat,}
+  \CommentTok{\#                                           Sigma = varcovar\_matrix)\}}
+  \CommentTok{\# \# line 2 \textasciitilde{}\textasciitilde{}\textasciitilde{}}
+  \CommentTok{\# thetahat\_star \textless{}{-} t(replicate(B, generate\_data())) \# B x K}
+
+
+  \CommentTok{\# line 2 \textasciitilde{}\textasciitilde{}\textasciitilde{}}
+\NormalTok{  thetahat\_star }\OtherTok{\textless{}{-}}\NormalTok{ MASS}\SpecialCharTok{::}\FunctionTok{mvrnorm}\NormalTok{(}\AttributeTok{n =}\NormalTok{ B,}
+                                 \AttributeTok{mu =}\NormalTok{ theta\_hat,}
+                                 \AttributeTok{Sigma =}\NormalTok{ varcovar\_matrix) }\CommentTok{\# B x K}
+  
+  \CommentTok{\# line 3 \textasciitilde{}\textasciitilde{}\textasciitilde{}}
+\NormalTok{  t\_star }\OtherTok{\textless{}{-}} \FunctionTok{apply}\NormalTok{(thetahat\_star, }
+                  \DecValTok{1}\NormalTok{, }
+                  \ControlFlowTok{function}\NormalTok{(x) }\FunctionTok{max}\NormalTok{(}
+                    \FunctionTok{abs}\NormalTok{(}
+\NormalTok{                    (x }\SpecialCharTok{{-}}\NormalTok{ theta\_hat) }\SpecialCharTok{/} \FunctionTok{sqrt}\NormalTok{(}\FunctionTok{diag}\NormalTok{(varcovar\_matrix))}
+\NormalTok{                    )}
+\NormalTok{                    ))  }
+  \CommentTok{\# line 5 \textasciitilde{}\textasciitilde{}\textasciitilde{}}
+\NormalTok{  t\_hat }\OtherTok{\textless{}{-}} \FunctionTok{quantile}\NormalTok{(t\_star, }\AttributeTok{probs =} \DecValTok{1} \SpecialCharTok{{-}}\NormalTok{ alpha)}
+  \CommentTok{\# step 3 ====================================}
+\NormalTok{  ci\_lower }\OtherTok{\textless{}{-}}\NormalTok{ theta\_hat }\SpecialCharTok{{-}}\NormalTok{ t\_hat}\SpecialCharTok{*}\FunctionTok{sqrt}\NormalTok{(}\FunctionTok{diag}\NormalTok{(varcovar\_matrix))}
+\NormalTok{  ci\_upper }\OtherTok{\textless{}{-}}\NormalTok{ theta\_hat }\SpecialCharTok{+}\NormalTok{ t\_hat}\SpecialCharTok{*}\FunctionTok{sqrt}\NormalTok{(}\FunctionTok{diag}\NormalTok{(varcovar\_matrix))}
+  \FunctionTok{return}\NormalTok{(}\FunctionTok{list}\NormalTok{(}
+    \AttributeTok{ci\_lower =}\NormalTok{ ci\_lower,}
+    \AttributeTok{ci\_upper =}\NormalTok{ ci\_upper}
+\NormalTok{  ))}
+\NormalTok{\} }
+\end{Highlighting}
+\end{Shaded}
+
+\subsection*{Codes for algorithm 2}\label{codes-for-algorithm-2}
+\addcontentsline{toc}{subsection}{Codes for algorithm 2}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+ \FunctionTok{source}\NormalTok{(}\StringTok{"R/compute\_ci.R"}\NormalTok{)}
+\FunctionTok{library}\NormalTok{(}\StringTok{"doRNG"}\NormalTok{)}
+
+\NormalTok{get\_ranks }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(k, tuple\_list)\{}
+\NormalTok{  Lambda\_lk }\OtherTok{\textless{}{-}} \FunctionTok{which}\NormalTok{(}
+\NormalTok{    tuple\_list[,}\DecValTok{2}\NormalTok{]}\SpecialCharTok{\textless{}=}\NormalTok{tuple\_list[k,}\DecValTok{1}\NormalTok{])}
+\NormalTok{  Lambda\_lk }\OtherTok{\textless{}{-}}\NormalTok{ Lambda\_lk[Lambda\_lk }\SpecialCharTok{!=}\NormalTok{ k]}
+\NormalTok{  Lambda\_Ok }\OtherTok{\textless{}{-}} \FunctionTok{which}\NormalTok{(}
+\NormalTok{    tuple\_list[,}\DecValTok{2}\NormalTok{]}\SpecialCharTok{\textgreater{}}\NormalTok{tuple\_list[k,}\DecValTok{1}\NormalTok{] }\SpecialCharTok{\&}\NormalTok{ tuple\_list[k,}\DecValTok{2}\NormalTok{] }\SpecialCharTok{\textgreater{}}\NormalTok{ tuple\_list[,}\DecValTok{1}\NormalTok{])}
+\NormalTok{  Lambda\_Ok }\OtherTok{\textless{}{-}}\NormalTok{ Lambda\_Ok[Lambda\_Ok }\SpecialCharTok{!=}\NormalTok{ k]}
+\NormalTok{  ranks }\OtherTok{\textless{}{-}} \FunctionTok{seq}\NormalTok{(}
+    \FunctionTok{length}\NormalTok{(}\FunctionTok{unique}\NormalTok{(Lambda\_lk)) }\SpecialCharTok{+} \DecValTok{1}\NormalTok{,}
+    \FunctionTok{length}\NormalTok{(}\FunctionTok{unique}\NormalTok{(Lambda\_lk)) }\SpecialCharTok{+} \FunctionTok{length}\NormalTok{(}\FunctionTok{unique}\NormalTok{(Lambda\_Ok)) }\SpecialCharTok{+} \DecValTok{1}\NormalTok{,}
+    \DecValTok{1}
+\NormalTok{  )}
+  \FunctionTok{return}\NormalTok{(}\FunctionTok{list}\NormalTok{(}
+    \AttributeTok{ranks =}\NormalTok{ ranks,}
+    \AttributeTok{Lambda\_Ok =}\NormalTok{ Lambda\_Ok}
+\NormalTok{  ))}
+\NormalTok{\}}
+
+\NormalTok{get\_t1 }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(v) }\FunctionTok{mean}\NormalTok{(v)}
+
+\NormalTok{get\_t2 }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(v) }\FunctionTok{prod}\NormalTok{(v)}\SpecialCharTok{\^{}}\NormalTok{(}\DecValTok{1}\SpecialCharTok{/}\FunctionTok{length}\NormalTok{(v))}
+
+\NormalTok{get\_t3 }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(v) \{}
+  \DecValTok{1} \SpecialCharTok{{-}}\NormalTok{ ((}\FunctionTok{length}\NormalTok{(v)}\SpecialCharTok{+}\FunctionTok{sum}\NormalTok{(v))}\SpecialCharTok{/}\NormalTok{(}\FunctionTok{length}\NormalTok{(v)}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{))}
+\NormalTok{\}}
+
+\NormalTok{get\_coverage }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(ci\_lower,}
+\NormalTok{                         ci\_upper,}
+\NormalTok{                         true\_theta,}
+                         \AttributeTok{rank\_theta=}\ConstantTok{TRUE}\NormalTok{) \{}
+  
+  \ControlFlowTok{if}\NormalTok{ (rank\_theta) \{}
+    \FunctionTok{return}\NormalTok{(}\FunctionTok{all}\NormalTok{(ci\_lower}\SpecialCharTok{\textless{}=}\FunctionTok{sort}\NormalTok{(true\_theta)) }\SpecialCharTok{\&} \FunctionTok{all}\NormalTok{(}\FunctionTok{sort}\NormalTok{(true\_theta)}\SpecialCharTok{\textless{}=}\NormalTok{ci\_upper))}
+\NormalTok{  \} }\ControlFlowTok{else}\NormalTok{ \{}
+    \FunctionTok{return}\NormalTok{(}\FunctionTok{all}\NormalTok{(ci\_lower}\SpecialCharTok{\textless{}=}\NormalTok{true\_theta) }\SpecialCharTok{\&} \FunctionTok{all}\NormalTok{(true\_theta}\SpecialCharTok{\textless{}=}\NormalTok{ci\_upper))}
+\NormalTok{  \}}
+  
+\NormalTok{\}}
+
+\NormalTok{implement\_algorithm2 }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(}
+\NormalTok{    true\_theta,}
+\NormalTok{    K, }
+    \AttributeTok{reps=}\DecValTok{300}\NormalTok{, }\CommentTok{\# step 4}
+    \AttributeTok{B=}\DecValTok{200}\NormalTok{, }
+    \AttributeTok{alpha=} \FloatTok{0.10}\NormalTok{,}
+    \AttributeTok{C=}\DecValTok{100}\NormalTok{,}
+\NormalTok{    varcovar\_matrix)\{}
+  \FunctionTok{foreach}\NormalTok{(}\AttributeTok{iter =} \DecValTok{1}\SpecialCharTok{:}\NormalTok{reps, }
+          \AttributeTok{.combine =}\NormalTok{ rbind,}
+          \AttributeTok{.packages =} \FunctionTok{c}\NormalTok{(}\StringTok{"foreach"}\NormalTok{, }\StringTok{"arrow"}\NormalTok{, }\StringTok{"MASS"}\NormalTok{),}
+          \AttributeTok{.export =} \FunctionTok{c}\NormalTok{(}\StringTok{"get\_ci\_nonrankbased"}\NormalTok{, }
+                      \StringTok{"get\_ci\_rankbased\_asymptotic"}\NormalTok{,}
+                      \StringTok{"get\_ci\_rankbased\_level2bs"}\NormalTok{,}
+                      \StringTok{"get\_ci\_independent"}\NormalTok{,}
+                      \StringTok{"get\_ci\_bonferroni"}\NormalTok{, }
+                      \StringTok{"get\_ranks"}\NormalTok{, }\StringTok{"get\_coverage"}\NormalTok{,}
+                      \StringTok{"get\_t1"}\NormalTok{, }\StringTok{"get\_t2"}\NormalTok{, }\StringTok{"get\_t3"}\NormalTok{)}
+\NormalTok{  ) }\SpecialCharTok{\%do\%}\NormalTok{ \{}
+    \FunctionTok{print}\NormalTok{(true\_theta)}
+    \CommentTok{\# step 1 =======}
+\NormalTok{    theta\_hat }\OtherTok{\textless{}{-}} \FunctionTok{mvrnorm}\NormalTok{(}\AttributeTok{n =} \DecValTok{1}\NormalTok{, }
+                         \AttributeTok{mu =}\NormalTok{ true\_theta, }
+                         \AttributeTok{Sigma =}\NormalTok{ varcovar\_matrix)}
+    
+    \CommentTok{\# print("true theta")}
+    \CommentTok{\# print(true\_theta)}
+    \CommentTok{\# }
+    \CommentTok{\# print("sample theta")}
+    \CommentTok{\# print(theta\_hat)}
+    
+    
+    \CommentTok{\# print(varcovar\_matrix)}
+    
+    \CommentTok{\# step 2 =======}
+\NormalTok{    S }\OtherTok{\textless{}{-}} \FunctionTok{sqrt}\NormalTok{(}\FunctionTok{diag}\NormalTok{(varcovar\_matrix))}
+    
+\NormalTok{    ci\_methods }\OtherTok{\textless{}{-}} \FunctionTok{list}\NormalTok{(}
+      \AttributeTok{nonrankbased =} \ControlFlowTok{function}\NormalTok{() }\FunctionTok{get\_ci\_nonrankbased}\NormalTok{(B, }
+\NormalTok{                                                    theta\_hat,}
+\NormalTok{                                                    alpha, }
+\NormalTok{                                                    varcovar\_matrix),}
+      \AttributeTok{rankbased\_asymptotic =} \ControlFlowTok{function}\NormalTok{() }\FunctionTok{get\_ci\_rankbased\_asymptotic}\NormalTok{(B, }
+\NormalTok{                                                                    theta\_hat,}
+\NormalTok{                                                                    varcovar\_matrix,}
+\NormalTok{                                                                    alpha),}
+      \AttributeTok{rankbased\_level2bs =} \ControlFlowTok{function}\NormalTok{() }\FunctionTok{get\_ci\_rankbased\_level2bs}\NormalTok{(B,}
+\NormalTok{                                                                C,}
+\NormalTok{                                                                theta\_hat,}
+\NormalTok{                                                                varcovar\_matrix,}
+\NormalTok{                                                                alpha),}
+      \AttributeTok{independent  =} \ControlFlowTok{function}\NormalTok{() }\FunctionTok{get\_ci\_independent}\NormalTok{(theta\_hat, S, alpha),}
+      \AttributeTok{bonferroni   =} \ControlFlowTok{function}\NormalTok{() }\FunctionTok{get\_ci\_bonferroni}\NormalTok{(theta\_hat, S, alpha)}
+\NormalTok{    )}
+    \CommentTok{\# print("REACHED 0 ===================================")}
+\NormalTok{    ci\_results }\OtherTok{\textless{}{-}} \FunctionTok{lapply}\NormalTok{(ci\_methods, }\ControlFlowTok{function}\NormalTok{(f) }\FunctionTok{f}\NormalTok{())}
+    \CommentTok{\# print("REACHED 1 ===================================")}
+    
+\NormalTok{    coverages }\OtherTok{\textless{}{-}} \FunctionTok{list}\NormalTok{(}
+        \AttributeTok{nonrankbased =} \FunctionTok{get\_coverage}\NormalTok{(}
+          \AttributeTok{ci\_lower   =}\NormalTok{ ci\_results[[}\DecValTok{1}\NormalTok{]]}\SpecialCharTok{$}\NormalTok{ci\_lower,}
+          \AttributeTok{ci\_upper   =}\NormalTok{ ci\_results[[}\DecValTok{1}\NormalTok{]]}\SpecialCharTok{$}\NormalTok{ci\_upper,}
+          \AttributeTok{true\_theta =}\NormalTok{ true\_theta,}
+          \AttributeTok{rank\_theta =} \ConstantTok{FALSE}
+\NormalTok{        ),}
+        \AttributeTok{rankbased\_asymptotic =} \FunctionTok{get\_coverage}\NormalTok{(}
+          \AttributeTok{ci\_lower   =}\NormalTok{ ci\_results[[}\DecValTok{2}\NormalTok{]]}\SpecialCharTok{$}\NormalTok{ci\_lower,}
+          \AttributeTok{ci\_upper   =}\NormalTok{ ci\_results[[}\DecValTok{2}\NormalTok{]]}\SpecialCharTok{$}\NormalTok{ci\_upper,}
+          \AttributeTok{true\_theta =}\NormalTok{ true\_theta,}
+          \AttributeTok{rank\_theta =} \ConstantTok{TRUE}
+\NormalTok{        ),}
+        \AttributeTok{rankbased\_level2bs =} \FunctionTok{get\_coverage}\NormalTok{(}
+          \AttributeTok{ci\_lower   =}\NormalTok{ ci\_results[[}\DecValTok{3}\NormalTok{]]}\SpecialCharTok{$}\NormalTok{ci\_lower,}
+          \AttributeTok{ci\_upper   =}\NormalTok{ ci\_results[[}\DecValTok{3}\NormalTok{]]}\SpecialCharTok{$}\NormalTok{ci\_upper,}
+          \AttributeTok{true\_theta =}\NormalTok{ true\_theta,}
+          \AttributeTok{rank\_theta =} \ConstantTok{TRUE}
+\NormalTok{        ),}
+        \AttributeTok{independent =} \FunctionTok{get\_coverage}\NormalTok{(}
+          \AttributeTok{ci\_lower   =}\NormalTok{ ci\_results[[}\DecValTok{4}\NormalTok{]]}\SpecialCharTok{$}\NormalTok{ci\_lower,}
+          \AttributeTok{ci\_upper   =}\NormalTok{ ci\_results[[}\DecValTok{4}\NormalTok{]]}\SpecialCharTok{$}\NormalTok{ci\_upper,}
+          \AttributeTok{true\_theta =}\NormalTok{ true\_theta,}
+          \AttributeTok{rank\_theta =} \ConstantTok{FALSE}
+\NormalTok{        ),}
+        \AttributeTok{bonferroni =} \FunctionTok{get\_coverage}\NormalTok{(}
+          \AttributeTok{ci\_lower   =}\NormalTok{ ci\_results[[}\DecValTok{5}\NormalTok{]]}\SpecialCharTok{$}\NormalTok{ci\_lower,}
+          \AttributeTok{ci\_upper   =}\NormalTok{ ci\_results[[}\DecValTok{5}\NormalTok{]]}\SpecialCharTok{$}\NormalTok{ci\_upper,}
+          \AttributeTok{true\_theta =}\NormalTok{ true\_theta,}
+          \AttributeTok{rank\_theta =} \ConstantTok{FALSE}
+\NormalTok{        )}
+\NormalTok{    )}
+    
+    \CommentTok{\# print(coverages)}
+    
+    \CommentTok{\# coverages \textless{}{-} lapply(ci\_results, function(res) \{}
+    \CommentTok{\#   get\_coverage(}
+    \CommentTok{\#     ci\_lower   = res$ci\_lower,}
+    \CommentTok{\#     ci\_upper   = res$ci\_upper,}
+    \CommentTok{\#     true\_theta = true\_theta}
+    \CommentTok{\#   )}
+    \CommentTok{\# \})}
+    
+    \CommentTok{\# print("REACHED 2 ===================================")}
+    
+\NormalTok{    process\_ci\_result }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(result, K) \{}
+\NormalTok{      tuple\_list }\OtherTok{\textless{}{-}} \FunctionTok{t}\NormalTok{(}\FunctionTok{apply}\NormalTok{(}
+        \FunctionTok{data.frame}\NormalTok{(}
+          \AttributeTok{ci\_lower =}\NormalTok{ result}\SpecialCharTok{$}\NormalTok{ci\_lower,}
+          \AttributeTok{ci\_upper =}\NormalTok{ result}\SpecialCharTok{$}\NormalTok{ci\_upper}
+\NormalTok{        ), }
+        \DecValTok{1}\NormalTok{, }
+        \ControlFlowTok{function}\NormalTok{(row) }\FunctionTok{as.numeric}\NormalTok{(row)}
+\NormalTok{      ))}
+      
+\NormalTok{      rank\_range\_length }\OtherTok{\textless{}{-}} \FunctionTok{sapply}\NormalTok{(}\DecValTok{1}\SpecialCharTok{:}\NormalTok{K, }\ControlFlowTok{function}\NormalTok{(x) }
+        \FunctionTok{length}\NormalTok{(}\FunctionTok{get\_ranks}\NormalTok{(x, tuple\_list)}\SpecialCharTok{$}\NormalTok{ranks)}
+\NormalTok{      )}
+      
+      
+      \FunctionTok{list}\NormalTok{(}
+        \AttributeTok{t1 =} \FunctionTok{get\_t1}\NormalTok{(rank\_range\_length),}
+        \AttributeTok{t2 =} \FunctionTok{get\_t2}\NormalTok{(rank\_range\_length),}
+        \AttributeTok{t3 =} \FunctionTok{get\_t3}\NormalTok{(rank\_range\_length)}
+\NormalTok{      )}
+\NormalTok{    \}}
+    
+    \CommentTok{\# print("REACHED 3 ===================================")}
+\NormalTok{    processed }\OtherTok{\textless{}{-}} \FunctionTok{lapply}\NormalTok{(ci\_results, process\_ci\_result, }\AttributeTok{K =}\NormalTok{ K)}
+    \CommentTok{\# print("REACHED 4 ===================================")}
+    \FunctionTok{data.frame}\NormalTok{(}
+      \AttributeTok{t1\_nonrankbased =}\NormalTok{ processed}\SpecialCharTok{$}\NormalTok{nonrankbased}\SpecialCharTok{$}\NormalTok{t1,}
+      \AttributeTok{t2\_nonrankbased =}\NormalTok{ processed}\SpecialCharTok{$}\NormalTok{nonrankbased}\SpecialCharTok{$}\NormalTok{t2,}
+      \AttributeTok{t3\_nonrankbased =}\NormalTok{ processed}\SpecialCharTok{$}\NormalTok{nonrankbased}\SpecialCharTok{$}\NormalTok{t3,}
+      \AttributeTok{coverage\_nonrankbased =}\NormalTok{ coverages}\SpecialCharTok{$}\NormalTok{nonrankbased,}
+      \AttributeTok{t1\_rankbased\_asymptotic =}\NormalTok{ processed}\SpecialCharTok{$}\NormalTok{rankbased\_asymptotic}\SpecialCharTok{$}\NormalTok{t1,}
+      \AttributeTok{t2\_rankbased\_asymptotic =}\NormalTok{ processed}\SpecialCharTok{$}\NormalTok{rankbased\_asymptotic}\SpecialCharTok{$}\NormalTok{t2,}
+      \AttributeTok{t3\_rankbased\_asymptotic =}\NormalTok{ processed}\SpecialCharTok{$}\NormalTok{rankbased\_asymptotic}\SpecialCharTok{$}\NormalTok{t3,}
+      \AttributeTok{coverage\_rankbased\_asymptotic =}\NormalTok{ coverages}\SpecialCharTok{$}\NormalTok{rankbased\_asymptotic,}
+      \AttributeTok{t1\_rankbased\_level2bs =}\NormalTok{ processed}\SpecialCharTok{$}\NormalTok{rankbased\_level2bs}\SpecialCharTok{$}\NormalTok{t1,}
+      \AttributeTok{t2\_rankbased\_level2bs =}\NormalTok{ processed}\SpecialCharTok{$}\NormalTok{rankbased\_level2bs}\SpecialCharTok{$}\NormalTok{t2,}
+      \AttributeTok{t3\_rankbased\_level2bs =}\NormalTok{ processed}\SpecialCharTok{$}\NormalTok{rankbased\_level2bs}\SpecialCharTok{$}\NormalTok{t3,}
+      \AttributeTok{coverage\_rankbased\_level2bs =}\NormalTok{ coverages}\SpecialCharTok{$}\NormalTok{rankbased\_level2bs,}
+      \AttributeTok{t1\_independent =}\NormalTok{ processed}\SpecialCharTok{$}\NormalTok{independent}\SpecialCharTok{$}\NormalTok{t1,}
+      \AttributeTok{t2\_independent =}\NormalTok{ processed}\SpecialCharTok{$}\NormalTok{independent}\SpecialCharTok{$}\NormalTok{t2,}
+      \AttributeTok{t3\_independent =}\NormalTok{ processed}\SpecialCharTok{$}\NormalTok{independent}\SpecialCharTok{$}\NormalTok{t3,}
+      \AttributeTok{coverage\_independent =}\NormalTok{ coverages}\SpecialCharTok{$}\NormalTok{independent,}
+      \AttributeTok{t1\_bonferroni =}\NormalTok{ processed}\SpecialCharTok{$}\NormalTok{bonferroni}\SpecialCharTok{$}\NormalTok{t1,}
+      \AttributeTok{t2\_bonferroni =}\NormalTok{ processed}\SpecialCharTok{$}\NormalTok{bonferroni}\SpecialCharTok{$}\NormalTok{t2,}
+      \AttributeTok{t3\_bonferroni =}\NormalTok{ processed}\SpecialCharTok{$}\NormalTok{bonferroni}\SpecialCharTok{$}\NormalTok{t3,}
+      \AttributeTok{coverage\_bonferroni =}\NormalTok{ coverages}\SpecialCharTok{$}\NormalTok{bonferroni}
+\NormalTok{      )}
+    \CommentTok{\# print("REACHED 5 ===================================")}
+\NormalTok{  \}}
+\NormalTok{\}}
+
+
+\CommentTok{\# algo2\_parametric \textless{}{-} function(}
+\CommentTok{\#     true\_theta,}
+\CommentTok{\#     K, }
+\CommentTok{\#     reps = 5, \# step 4}
+\CommentTok{\#     B=100, }
+\CommentTok{\#     alpha= 0.10,}
+\CommentTok{\#     S)\{}
+\CommentTok{\#   foreach(iter = 1:reps, }
+\CommentTok{\#           .combine = rbind,}
+\CommentTok{\#           .packages = c("foreach", "arrow", "MASS"),}
+\CommentTok{\#           .export = c("get\_ci\_parametric","get\_ranks", "get\_coverage",}
+\CommentTok{\#                       "get\_t1", "get\_t2", "get\_t3")}
+\CommentTok{\#   ) \%dorng\% \{}
+\CommentTok{\#     }
+\CommentTok{\#     \# step 1 =======}
+\CommentTok{\#     theta\_hat \textless{}{-} rnorm(}
+\CommentTok{\#       n    = K,}
+\CommentTok{\#       mean = true\_theta,}
+\CommentTok{\#       sd   = S}
+\CommentTok{\#     )}
+\CommentTok{\#     }
+\CommentTok{\#     \# step 2 =======}
+\CommentTok{\#     result \textless{}{-} get\_parametric\_ci(B,}
+\CommentTok{\#                                 theta\_hat,}
+\CommentTok{\#                                 S,}
+\CommentTok{\#                                 alpha)}
+\CommentTok{\#     }
+\CommentTok{\#     \# step 3 =======}
+\CommentTok{\#     sorted\_true\_theta \textless{}{-} sort(true\_theta)}
+\CommentTok{\#     coverage \textless{}{-} get\_coverage(ci\_lower = result$ci\_lower,}
+\CommentTok{\#                              ci\_upper = result$ci\_upper,}
+\CommentTok{\#                              true\_theta = sorted\_true\_theta)}
+\CommentTok{\#     }
+\CommentTok{\#     tuple\_list \textless{}{-} t(apply(}
+\CommentTok{\#       data.frame(ci\_lower = result$ci\_lower,}
+\CommentTok{\#                  ci\_upper = result$ci\_upper), 1, function(row) as.numeric(row)))}
+\CommentTok{\#     rank\_range\_length \textless{}{-} sapply(1:K, function(x) length(}
+\CommentTok{\#       get\_ranks(x, tuple\_list)$ranks))}
+\CommentTok{\#     t1 \textless{}{-} get\_t1(rank\_range\_length)}
+\CommentTok{\#     t2 \textless{}{-} get\_t2(rank\_range\_length)}
+\CommentTok{\#     t3 \textless{}{-} get\_t3(rank\_range\_length)}
+\CommentTok{\#     }
+\CommentTok{\#     data.frame(}
+\CommentTok{\#       t1\_parametric = t1,}
+\CommentTok{\#       t2\_parametric = t2,}
+\CommentTok{\#       t3\_parametric = t3,}
+\CommentTok{\#       coverage\_parametric = coverage}
+\CommentTok{\#     )}
+\CommentTok{\#   \}}
+\CommentTok{\# \}}
+\CommentTok{\#  }
+\end{Highlighting}
+\end{Shaded}
+
+\subsection*{Codes for simulation}\label{codes-for-simulation}
+\addcontentsline{toc}{subsection}{Codes for simulation}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+ \CommentTok{\#3:37PM}
+\FunctionTok{print}\NormalTok{(}\FunctionTok{getwd}\NormalTok{())}
+\FunctionTok{source}\NormalTok{(}\StringTok{"R/compute\_metrics.R"}\NormalTok{)}
+\FunctionTok{library}\NormalTok{(doParallel)}
+\FunctionTok{library}\NormalTok{(foreach)}
+\FunctionTok{library}\NormalTok{(tictoc)}
+\NormalTok{mean }\OtherTok{\textless{}{-}} \FloatTok{23.8}
+\NormalTok{df }\OtherTok{\textless{}{-}} \FunctionTok{readRDS}\NormalTok{(}\StringTok{"data/mean\_travel\_time\_ranking\_2011.rds"}\NormalTok{)}
+\NormalTok{cl}\OtherTok{=}\NormalTok{parallel}\SpecialCharTok{::}\FunctionTok{makeCluster}\NormalTok{(}\DecValTok{15}\NormalTok{)}
+\FunctionTok{registerDoParallel}\NormalTok{(cl)}
+
+\NormalTok{sds }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\DecValTok{2}\NormalTok{, }\FloatTok{3.6}\NormalTok{, }\DecValTok{6}\NormalTok{)}
+\NormalTok{Ks }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\DecValTok{10}\NormalTok{)}
+\CommentTok{\#corrs \textless{}{-} c(0.1,0.5,0.9)}
+\NormalTok{alphas }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\FloatTok{0.05}\NormalTok{)}\CommentTok{\#c(0.05, 0.1, 0.15, 0.2)}
+
+
+\NormalTok{blocks }\OtherTok{\textless{}{-}} \FunctionTok{list}\NormalTok{(}\DecValTok{1}\SpecialCharTok{:}\DecValTok{3}\NormalTok{, }\DecValTok{4}\SpecialCharTok{:}\DecValTok{6}\NormalTok{, }\DecValTok{7}\SpecialCharTok{:}\DecValTok{10}\NormalTok{)          }\CommentTok{\# 3 blocks of sizes 3, 3, 4}
+\NormalTok{within\_corrs }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\FloatTok{0.1}\NormalTok{, }\FloatTok{0.5}\NormalTok{, }\FloatTok{0.9}\NormalTok{)        }\CommentTok{\# one correlation per block}
+\NormalTok{between\_corr }\OtherTok{\textless{}{-}} \FloatTok{0.1}                     \CommentTok{\# correlation between blocks}
+\NormalTok{corr\_matrix }\OtherTok{\textless{}{-}} \FunctionTok{matrix}\NormalTok{(between\_corr, Ks, Ks)}
+\ControlFlowTok{for}\NormalTok{ (i }\ControlFlowTok{in} \FunctionTok{seq\_along}\NormalTok{(blocks)) \{}
+\NormalTok{  block }\OtherTok{\textless{}{-}}\NormalTok{ blocks[[i]]}
+\NormalTok{  corr\_matrix[block, block] }\OtherTok{\textless{}{-}}\NormalTok{ within\_corrs[i]}
+\NormalTok{\}}
+\FunctionTok{diag}\NormalTok{(corr\_matrix) }\OtherTok{\textless{}{-}} \DecValTok{1}
+
+
+\ControlFlowTok{for}\NormalTok{ (sd }\ControlFlowTok{in}\NormalTok{ sds) \{}
+  \ControlFlowTok{for}\NormalTok{ (K }\ControlFlowTok{in}\NormalTok{ Ks) \{}
+    \FunctionTok{set.seed}\NormalTok{(}\DecValTok{123974}\NormalTok{)}
+\NormalTok{    true\_theta }\OtherTok{\textless{}{-}} \FunctionTok{rnorm}\NormalTok{(K, mean, sd)}
+\NormalTok{    SE }\OtherTok{\textless{}{-}}\NormalTok{ df}\SpecialCharTok{$}\NormalTok{S[}\DecValTok{1}\SpecialCharTok{:}\NormalTok{K]}
+    
+    \ControlFlowTok{for}\NormalTok{ (alpha }\ControlFlowTok{in}\NormalTok{ alphas) \{}
+      
+      \FunctionTok{tic}\NormalTok{()}
+      \CommentTok{\# for (corr in corrs) \{}
+        \CommentTok{\#corr\_matrix \textless{}{-} (1 {-} corr) * diag(K) + corr * matrix(1, K, K)}
+\NormalTok{        variance\_vector }\OtherTok{\textless{}{-}}\NormalTok{ SE}\SpecialCharTok{\^{}}\DecValTok{2}
+\NormalTok{        delta }\OtherTok{\textless{}{-}} \FunctionTok{diag}\NormalTok{(variance\_vector)}
+\NormalTok{        varcovar\_matrix }\OtherTok{\textless{}{-}}\NormalTok{ delta}\SpecialCharTok{\^{}}\NormalTok{(}\DecValTok{1}\SpecialCharTok{/}\DecValTok{2}\NormalTok{) }\SpecialCharTok{\%*\%}\NormalTok{ corr\_matrix }\SpecialCharTok{\%*\%}\NormalTok{ delta}\SpecialCharTok{\^{}}\NormalTok{(}\DecValTok{1}\SpecialCharTok{/}\DecValTok{2}\NormalTok{)}
+        
+        \FunctionTok{cat}\NormalTok{(}\StringTok{"==========================================}\SpecialCharTok{\textbackslash{}n\textbackslash{}n}\StringTok{"}\NormalTok{)}
+        \FunctionTok{cat}\NormalTok{(}\StringTok{"SIMULATION SETTINGS \textasciitilde{} K:"}\NormalTok{, K,}\StringTok{"corr:"}\NormalTok{, }\StringTok{"block"}\NormalTok{,}\StringTok{"sd:"}\NormalTok{, sd, }\StringTok{"corr:"}\NormalTok{, }\StringTok{"block"}\NormalTok{, }\StringTok{"alpha:"}\NormalTok{, alpha)}
+        \FunctionTok{cat}\NormalTok{(}\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+        \FunctionTok{cat}\NormalTok{(}\StringTok{"SORTED TRUE THETA"}\NormalTok{, }\FunctionTok{sort}\NormalTok{(true\_theta))}
+        \FunctionTok{cat}\NormalTok{(}\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\NormalTok{        case\_start }\OtherTok{\textless{}{-}} \FunctionTok{Sys.time}\NormalTok{()}
+        
+        \FunctionTok{tic}\NormalTok{()}
+\NormalTok{        coverage\_output\_df }\OtherTok{\textless{}{-}} \FunctionTok{implement\_algorithm2}\NormalTok{(}
+\NormalTok{          true\_theta,}
+\NormalTok{          K, }
+          \AttributeTok{reps =} \DecValTok{5000}\NormalTok{, }
+          \AttributeTok{B =} \DecValTok{600}\NormalTok{, }
+          \AttributeTok{alpha=}\NormalTok{alpha,}
+          \AttributeTok{C =} \DecValTok{300}\NormalTok{,}
+          \AttributeTok{varcovar\_matrix =}\NormalTok{ varcovar\_matrix)}
+        \FunctionTok{toc}\NormalTok{()}
+        
+        \CommentTok{\# saveRDS(coverage\_output\_df,  paste0("output/final\_coverage\_",}
+        \FunctionTok{saveRDS}\NormalTok{(coverage\_output\_df,  }\FunctionTok{paste0}\NormalTok{(}\StringTok{"output/blockcorr\_coverage\_"}\NormalTok{,}
+\NormalTok{                                            K,}\StringTok{"\_"}\NormalTok{, sd, }\StringTok{"\_"}\NormalTok{, }\StringTok{"block"}\NormalTok{, }\StringTok{"\_"}\NormalTok{, }
+\NormalTok{                                            alpha, }\StringTok{".rds"}\NormalTok{))}
+\NormalTok{        case\_end }\OtherTok{\textless{}{-}} \FunctionTok{Sys.time}\NormalTok{()}
+\NormalTok{        case\_runtime }\OtherTok{\textless{}{-}} \FunctionTok{as.numeric}\NormalTok{(}\FunctionTok{difftime}\NormalTok{(case\_end, case\_start, }\AttributeTok{units =} \StringTok{"mins"}\NormalTok{))}
+        \FunctionTok{cat}\NormalTok{(}\StringTok{"Finished at:"}\NormalTok{, }\FunctionTok{format}\NormalTok{(case\_end, }\StringTok{"\%I:\%M \%p"}\NormalTok{), }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+        \FunctionTok{cat}\NormalTok{(}\StringTok{"Runtime for this case:"}\NormalTok{, }\FunctionTok{round}\NormalTok{(case\_runtime, }\DecValTok{2}\NormalTok{), }\StringTok{"minutes}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+        \FunctionTok{cat}\NormalTok{(}\StringTok{"==========================================}\SpecialCharTok{\textbackslash{}n\textbackslash{}n}\StringTok{"}\NormalTok{)}
+      \CommentTok{\# \}}
+\NormalTok{    \}}
+\NormalTok{  \}}
+\NormalTok{\}}
+
+\FunctionTok{stopCluster}\NormalTok{(cl)}
+\CommentTok{\# }
+\CommentTok{\# param\_grid \textless{}{-} expand.grid(K = Ks, sd = sds, corr = corrs, alpha = alphas)}
+\CommentTok{\# }
+\CommentTok{\# results \textless{}{-} do.call(rbind, lapply(seq\_len(nrow(param\_grid)), function(i) \{}
+\CommentTok{\#   K \textless{}{-} param\_grid$K[i]}
+\CommentTok{\#   sd \textless{}{-} param\_grid$sd[i]}
+\CommentTok{\#   corr \textless{}{-} param\_grid$corr[i]}
+\CommentTok{\#   alpha \textless{}{-} param\_grid$alpha[i]}
+\CommentTok{\#   }
+\CommentTok{\#   a \textless{}{-} readRDS(paste0("output/TEST\_coverage\_", }
+\CommentTok{\#                       K, "\_", sd, "\_", corr, "\_", alpha, ".rds"))}
+\CommentTok{\#   }
+\CommentTok{\#   data.frame(}
+\CommentTok{\#     K = K,sd = sd,corr = corr,alpha = alpha,}
+\CommentTok{\#     }
+\CommentTok{\#     Cov\_nonrankbased = mean(a$coverage\_nonrankbased), }
+\CommentTok{\#     Cov\_rankbased\_asymptotic = mean(a$coverage\_rankbased\_asymptotic),}
+\CommentTok{\#     Cov\_rankbased\_level2bs = mean(a$coverage\_rankbased\_level2bs),    }
+\CommentTok{\#     Cov\_independent = mean(a$coverage\_independent),}
+\CommentTok{\#     Cov\_bonferroni = mean(a$coverage\_bonferroni),}
+\CommentTok{\# }
+\CommentTok{\#     T1\_nonrankbased = mean(a$t1\_nonrankbased),}
+\CommentTok{\#     T1\_rankbased\_asymptotic = mean(a$t1\_rankbased\_asymptotic),}
+\CommentTok{\#     T1\_rankbased\_level2bs = mean(a$t1\_rankbased\_level2bs),}
+\CommentTok{\#     T1\_independent = mean(a$t1\_independent),}
+\CommentTok{\#     T1\_bonferroni = mean(a$t1\_bonferroni),}
+\CommentTok{\# }
+\CommentTok{\#     T2\_nonrankbased = mean(a$t2\_nonrankbased),}
+\CommentTok{\#     T2\_rankbased\_asymptotic = mean(a$t2\_rankbased\_asymptotic),}
+\CommentTok{\#     T2\_rankbased\_level2bs = mean(a$t2\_rankbased\_level2bs),}
+\CommentTok{\#     T2\_independent = mean(a$t2\_independent),}
+\CommentTok{\#     T2\_bonferroni = mean(a$t2\_bonferroni),}
+\CommentTok{\# }
+\CommentTok{\#     T3\_nonrankbased = mean(a$t3\_nonrankbased),}
+\CommentTok{\#     T3\_rankbased\_asymptotic = mean(a$t3\_rankbased\_asymptotic),}
+\CommentTok{\#     T3\_rankbased\_level2bs = mean(a$t3\_rankbased\_level2bs),}
+\CommentTok{\#     T3\_independent = mean(a$t3\_independent),}
+\CommentTok{\#     T3\_bonferroni = mean(a$t3\_bonferroni)}
+\CommentTok{\#   )}
+\CommentTok{\# \}))}
+\CommentTok{\# }
+\CommentTok{\# \# param\_grid \textless{}{-} expand.grid(K = Ks, sd = sds, alpha = alphas)}
+\CommentTok{\# \# }
+\CommentTok{\# \# results1 \textless{}{-} do.call(rbind, lapply(seq\_len(nrow(param\_grid)), function(i) \{}
+\CommentTok{\# \#   K \textless{}{-} param\_grid$K[i]}
+\CommentTok{\# \#   sd \textless{}{-} param\_grid$sd[i]}
+\CommentTok{\# \#   alpha \textless{}{-} param\_grid$alpha[i]}
+\CommentTok{\# \#   }
+\CommentTok{\# \#   a \textless{}{-} readRDS(paste0("output/coverage\_parametric\_", }
+\CommentTok{\# \#                       K, "\_", sd, "\_", alpha, ".rds"))}
+\CommentTok{\# \#   }
+\CommentTok{\# \#   data.frame(}
+\CommentTok{\# \#     K = K,}
+\CommentTok{\# \#     sd = sd,}
+\CommentTok{\# \#     alpha = alpha,}
+\CommentTok{\# \#     Cov\_parametric = mean(a$coverage\_parametric),}
+\CommentTok{\# \#     T1\_parametric = mean(a$t1\_parametric),}
+\CommentTok{\# \#     T2\_parametric = mean(a$t2\_parametric),}
+\CommentTok{\# \#     T3\_parametric = mean(a$t3\_parametric)}
+\CommentTok{\# \#   )}
+\CommentTok{\# \# \}))}
+\CommentTok{\# \# }
+\CommentTok{\# \# save(results, results1, file = "simulation\_results.RData") }
+\end{Highlighting}
+\end{Shaded}
+
+\newpage
+\vspace*{1cm}
 
 \end{document}
