@@ -1,7 +1,7 @@
 library("ggplot2")
 library("dplyr")
 
-get_boxplot_for_true_theta <- function(dataset){
+create_boxplot_for_true_theta <- function(dataset){
   return(
     dataset %>%
       ggplot(.,
