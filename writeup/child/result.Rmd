@@ -9,58 +9,53 @@ output:
 
 The results of nonrank-based algorithm are compared to the approaches from @klein: independent and Bonferroni. 
 
-
 ```{r}
-library(dplyr)
-library(knitr)
-library(kableExtra)
-library(gt)
-library(dplyr)
-combined <- bind_rows(lapply(seq(from = 10, to = 50, by = 10), 
-                             function(K) read.csv(
-                               paste0("/home/realiseshewon/PDev/kde-ranking/simulation_results/summaries/summary_k",
-                                      K,
-                                      ".csv"))))
-combined$X <-NULL
-combined %>% 
-  filter(sd == 2, metric == "coverage") %>% 
-  select(-c(rankbased_asymptotic, rankbased_level2bs, metric, sd))  %>%
-  select(c(K, r, independent, bonferroni, nonrankbased)) %>%
-  kable("latex",
-        booktabs = TRUE, 
-        escape = FALSE,
-        linesep = "",
-        longtable = TRUE,
-        col.names = c("K", "r", "Independent", "Bonferroni", "Nonrank-based"),
-        caption = "Simulation results for coverage probabilities") %>%
-  collapse_rows(columns = 1,
-                valign = "middle", 
-                latex_hline = "none") %>%
-  kable_styling(latex_options = c("striped", 
-                                  "repeat_header", 
-                                  "HOLD_position"),
-             stripe_color = "gray!15",
-             stripe_index = rep(c(0, 6, 12), each = 3) + 1:3)
-```
+source("/home/realiseshewon/PDev/kde-ranking/R/preprocess_data.R")
+source("/home/realiseshewon/PDev/kde-ranking/R/create_table.R")
 
+
+equicorr <- FALSE
+
+combined <- combine_summaries(
+  "/home/realiseshewon/PDev/kde-ranking/simulation_results/summaries/summary_block",
+  equicorr
+)
+#create_table_for_coverage(preprocess_coverage(combined, 2, FALSE), FALSE)
+create_table_for_coverage(preprocess_coverage(combined, 2))
+
+create_table_for_coverage(preprocess_coverage(combined, 3.6))
+
+create_table_for_coverage(preprocess_coverage(combined, 6))
+```
 
 \blandscape
 
-```{r}
-table01 <- combined %>% 
-  filter(metric == "t1") %>% 
-  mutate(variability = ifelse(sd==2.0, 
-                              'low', 
-                              ifelse(sd == 3.6, 'med', 'high'))) %>%
-  select(c(K, r, variability, independent, bonferroni, nonrankbased)) %>%
-  tidyr::pivot_wider(names_from = variability, 
-                     values_from = c(independent, bonferroni, nonrankbased), 
-                     names_sep = "_") %>%
-  select(K, r, 
-         independent_low, bonferroni_low, nonrankbased_low,
-         independent_med, bonferroni_med, nonrankbased_med,
-         independent_high, bonferroni_high, nonrankbased_high)
 
+```{r}
+tabb <- preprocess_tightness_measure(combined, "t1", equicorr) %>% select(-r, -blocks)
+
+create_table_for_tightness_measure(
+  summary=tabb,
+  metric_type="T1", equicorr)
+```
+
+```{r}
+tabb <- preprocess_tightness_measure(combined, "t2", equicorr) %>% select(-r, -blocks)
+create_table_for_tightness_measure(
+  summary=tabb, 
+  metric_type="T2", equicorr)
+```
+
+```{r}
+tabb <- preprocess_tightness_measure(combined, "t3", equicorr) %>% select(-r, -blocks)
+create_table_for_tightness_measure(
+  summary=tabb, 
+  metric_type="T3", equicorr)
+```
+
+
+
+```{r eval=FALSE}
 table01  %>%
   kable("latex",
         booktabs = TRUE,
@@ -68,7 +63,7 @@ table01  %>%
         linesep = "",
         longtable = TRUE,
         col.names = c("K", "r", rep(c("Independent","Bonferroni","Nonrank-based"),3)),
-        caption = "Simulation results for tightness measure t1") %>%
+        caption = "Simulation Results for Tightness Measure T1") %>%
   # collapse_rows(columns = 1,
   #               valign = "middle",
   #               latex_hline = "none") %>%
@@ -83,27 +78,7 @@ table01  %>%
 
 \elandscape
 
-```{r}
-library(knitr)
-library(kableExtra)
-library(dplyr)
 
-# Sample Data
-df <- data.frame(
-  Group = c("A", "A", "A", "B", "B", "B"),
-  Subgroup = c("X", "X", "Y", "Z", "Z", "Z"),
-  Value = c("High", "High", "Low", "Mid", "Mid", "Mid")
-)
-
-# 1. Merge columns based on row values (Group + Subgroup)
-# 2. Use collapse_rows for vertical merging
-df %>%
-  mutate(Combined = paste(Group, "-", Subgroup)) %>%
-  select(Combined, Value) %>%
-  kbl(booktabs = T, caption = "Merged Rows with 3 Value States") %>%
-  collapse_rows(columns = 1, valign = "top") %>%
-  kable_styling(latex_options = "striped")
-```
 
 
 
