@@ -21,20 +21,27 @@ create_table_for_true_theta <- function(dataset){
 }
 
 
-create_table_for_tightness_measure <- function(summary, metric_type){
+create_table_for_tightness_measure <- function(summary, metric_type,
+                                               equicorrelation){
+  
+  if (equicorrelation) {
+    vector_1 <- c("K", "r")
+    striped <- rep(c(0, 6, 12), each = 3) + 1:3
+  } else {
+    vector_1 <- c("K", "r", "blocks")
+    striped <- rep(c(0, 10), each = 5) + 1:5
+  }
+
   return(summary  %>%
     kable("latex",
           booktabs = TRUE,
           escape = FALSE,
           linesep = "",
           longtable = TRUE,
-          col.names = c("K", "r", 
+          col.names = c(vector_1, 
                         rep(c("Independent","Bonferroni","Nonrank-based"),3)),
           caption = paste("Simulation Results for Tightness Measure", 
                           metric_type)) %>%
-    # collapse_rows(columns = 1,
-    #               valign = "middle",
-    #               latex_hline = "none") %>%
     kable_styling(latex_options = c("striped",
                                     "repeat_header",
                                     "HOLD_position"),

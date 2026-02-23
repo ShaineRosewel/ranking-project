@@ -42,20 +42,32 @@ preprocess_coverage <- function(dataset, sd_value, equicorrelation = TRUE){
 } 
 
 
-preprocess_tightness_measure <- function(dataset, metric_type){
+
+preprocess_tightness_measure <- function(dataset, metric_type, equicorrelation){
+  if (equicorrelation) {
+    vector1 <- c('K', 'r')
+  } else {
+    vector1 <- c('K', 'r', 'blocks')
+  }
   return(
-  dataset %>% 
-    filter(metric == metric_type) %>% 
-    mutate(variability = ifelse(sd==2.0, 
-                                'low', 
-                                ifelse(sd == 3.6, 'med', 'high'))) %>%
-    select(c(K, r, variability, independent, bonferroni, nonrankbased)) %>%
-    tidyr::pivot_wider(names_from = variability, 
-                       values_from = c(independent, bonferroni, nonrankbased), 
-                       names_sep = "_") %>%
-    select(K, r, 
-           independent_low, bonferroni_low, nonrankbased_low,
-           independent_med, bonferroni_med, nonrankbased_med,
-           independent_high, bonferroni_high, nonrankbased_high)
+    dataset %>% 
+      filter(metric == metric_type) %>% 
+      mutate(variability = ifelse(sd==2.0, 
+                                  'low', 
+                                  ifelse(sd == 3.6, 'med', 'high'))) %>%
+      select(
+        c(vector1, c(variability, independent, bonferroni, nonrankbased)
+          )
+        ) %>%
+      tidyr::pivot_wider(names_from = variability, 
+                         values_from = c(independent, bonferroni, nonrankbased), 
+                         names_sep = "_") %>%
+      select(
+        c(vector1, c(independent_low, bonferroni_low, nonrankbased_low,
+                         independent_med, bonferroni_med, nonrankbased_med,
+                         independent_high, bonferroni_high, nonrankbased_high)
+          )
+        )
   )
 } 
+
