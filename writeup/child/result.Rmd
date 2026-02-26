@@ -7,7 +7,7 @@ output:
 
 ## Results
 
-The results of nonrank-based algorithm are compared to the approaches from @klein: independent and Bonferroni. 
+The results of nonrank-based algorithm are compared to the approaches from @klein: independent and Bonferroni.
 
 ```{r}
 source("/home/realiseshewon/PDev/kde-ranking/R/preprocess_data.R")
@@ -20,19 +20,24 @@ combined <- combine_summaries(
   "/home/realiseshewon/PDev/kde-ranking/simulation_results/summaries/summary_block",
   equicorr
 )
-#create_table_for_coverage(preprocess_coverage(combined, 2, FALSE), FALSE)
-create_table_for_coverage(preprocess_coverage(combined, 2))
 
-create_table_for_coverage(preprocess_coverage(combined, 3.6))
 
-create_table_for_coverage(preprocess_coverage(combined, 6))
+tabletest <- preprocess_coverage(combined, 2, equicorrelation = equicorr)
+create_table_for_coverage(preprocess_coverage(combined, 2, equicorr), equicorr)
+
+create_table_for_coverage(preprocess_coverage(combined, 3.6, equicorr), equicorr)
+
+create_table_for_coverage(preprocess_coverage(combined, 6, equicorr), equicorr)
 ```
 
 \blandscape
 
-
 ```{r}
-tabb <- preprocess_tightness_measure(combined, "t1", equicorr) %>% select(-r, -blocks)
+tabb <- preprocess_tightness_measure(combined, "t1", equicorr)
+
+if (!equicorr) {
+  tabb <- tabb %>% select(-c(r, blocks))
+}
 
 create_table_for_tightness_measure(
   summary=tabb,
@@ -40,46 +45,28 @@ create_table_for_tightness_measure(
 ```
 
 ```{r}
-tabb <- preprocess_tightness_measure(combined, "t2", equicorr) %>% select(-r, -blocks)
+tabb <- preprocess_tightness_measure(combined, "t2", equicorr)
+
+if (!equicorr) {
+  tabb <- tabb %>% select(-c(r, blocks))
+}
+
+
 create_table_for_tightness_measure(
   summary=tabb, 
   metric_type="T2", equicorr)
 ```
 
 ```{r}
-tabb <- preprocess_tightness_measure(combined, "t3", equicorr) %>% select(-r, -blocks)
+tabb <- preprocess_tightness_measure(combined, "t3", equicorr)
+
+if (!equicorr) {
+  tabb <- tabb %>% select(-c(r, blocks))
+}
+
 create_table_for_tightness_measure(
   summary=tabb, 
   metric_type="T3", equicorr)
 ```
 
-
-
-```{r eval=FALSE}
-table01  %>%
-  kable("latex",
-        booktabs = TRUE,
-        escape = FALSE,
-        linesep = "",
-        longtable = TRUE,
-        col.names = c("K", "r", rep(c("Independent","Bonferroni","Nonrank-based"),3)),
-        caption = "Simulation Results for Tightness Measure T1") %>%
-  # collapse_rows(columns = 1,
-  #               valign = "middle",
-  #               latex_hline = "none") %>%
-  kable_styling(latex_options = c("striped",
-                                  "repeat_header",
-                                  "HOLD_position"),
-                font_size=11.5,
-             stripe_color = "gray!15",
-             stripe_index = rep(c(0, 6, 12), each = 3) + 1:3) %>%
-  add_header_above(c(" "=2,"Low" = 3, "Med" = 3, "High" = 3))
-```
-
 \elandscape
-
-
-
-
-
-
