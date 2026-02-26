@@ -43,10 +43,10 @@ header-includes:
 - \titleformat{\subsubsection}{\fontsize{16pt}{19pt}\bfseries}{\thesubsubsection}{1em}{}
 - \usepackage{caption}
 - \captionsetup[figure]{font=scriptsize}
-- \newcommand{\algfont}{\fontsize{15pt}{18pt}\selectfont}   # slightly smaller than thesis font
-- \DeclareCaptionFont{thesisalg}{\algfont\bfseries}         # caption font
+- \newcommand{\algfont}{\fontsize{15pt}{18pt}\selectfont} # slightly smaller than thesis font
+- \DeclareCaptionFont{thesisalg}{\algfont\bfseries} # caption font
 - \captionsetup[algorithm]{font=thesisalg}
-- \AtBeginEnvironment{algorithm}{\algfont}                  # algorithm body
+- \AtBeginEnvironment{algorithm}{\algfont} # algorithm body
 - \AtBeginEnvironment{algorithmic}{\algfont}   
 
 papersize: a4
@@ -141,7 +141,7 @@ knitr::opts_chunk$set(
 \vspace*{1cm}
 
 
-# Methodology
+# Result
 
 \vspace*{0.8cm}
 
