@@ -1,6 +1,6 @@
 #3:37PM
 print(getwd())
-source("R/compute_metrics.R")
+source("R/simulate/compute_metrics.R")
 library(doParallel)
 library(foreach)
 library(tictoc)

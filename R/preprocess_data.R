@@ -33,7 +33,7 @@ preprocess_coverage <- function(dataset, sd_value, equicorrelation = TRUE){
       select(c(K, r, independent, bonferroni, nonrankbased))
   } else {
     final <- partial %>%
-      select(c(K, r, blocks ,independent, bonferroni, nonrankbased))
+      select(c(K, independent, bonferroni, nonrankbased))
   }
   
   return(

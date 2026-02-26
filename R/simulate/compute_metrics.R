@@ -1,4 +1,4 @@
-source("R/compute_ci.R")
+source("R/simulate/compute_ci.R")
 library("doRNG")
 
 get_ranks <- function(k, tuple_list){
@@ -58,7 +58,7 @@ implement_algorithm2 <- function(
                       "get_ci_bonferroni", 
                       "get_ranks", "get_coverage",
                       "get_t1", "get_t2", "get_t3")
-  ) %do% {
+  ) %dorng% {
     print(true_theta)
     # step 1 =======
     theta_hat <- mvrnorm(n = 1, 
