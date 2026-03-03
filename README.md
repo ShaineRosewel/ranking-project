@@ -48,6 +48,10 @@
 
 - Each `K` needs to be ran for 3 different cases of `sd` and 5 `R` (3 for equicorrelation and 2 for block). We consider 16 for allowance. This should all be done by February, this already has (excessive) buffer.
   - [ ] for real data application, use only those with at least 1% votes; for se - use that of binomial dist 
+    - [ ] create an `rds` for the data to be used, complete with SE, and the ticket where the candidate belongs
+    - [ ] assign correlation blocks to each ticket
+    - [ ] try to see the result when considering only candidates with at least 1% garnered preference
+    - [ ] try to see the result when considering all (there is no 0 value for May 6-9 results)
   - [x] add case for 3 blocks setting should make the difference obvious - 5 days
   - [x] K=50 for 9/9 cases (~18 hours per case)
   - [x] K=40 for 9/9 cases (~13 hours per case)
