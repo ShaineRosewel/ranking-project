@@ -56,9 +56,11 @@ create_table_for_tightness_measure <- function(summary, metric_type,
   if (equicorrelation) {
     final <- formatted
   } else {
-    final <- formatted %>% pack_rows("2 balanced blocks", 1, 5) %>%
+    final <- formatted %>% 
+      pack_rows("2 balanced blocks", 1, 5) %>%
       pack_rows("2 unbalanced blocks", 6, 10) %>%
-      pack_rows("3 unbalanced blocks", 11, 15)
+      pack_rows("3 unbalanced blocks - low", 11, 15) %>%
+      pack_rows("3 unbalanced block - high", 16, 20)
   }
   return(
     final
@@ -96,9 +98,11 @@ create_table_for_coverage <- function(summary, equicorrelation = TRUE){
   if (equicorrelation) {
     final <- formatted
   } else {
-    final <- formatted %>% pack_rows("2 balanced blocks", 1, 5) %>%
+    final <- formatted %>% 
+      pack_rows("2 balanced blocks", 1, 5) %>%
       pack_rows("2 unbalanced blocks", 6, 10) %>%
-      pack_rows("3 unbalanced blocks", 11, 15)
+      pack_rows("3 unbalanced blocks - low", 11, 15) %>%
+      pack_rows("3 unbalanced block - high", 16, 20)
   }
   return(
     final

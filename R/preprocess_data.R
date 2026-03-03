@@ -11,7 +11,7 @@ combine_summaries <- function(
                paste0(directory_prefix, K, ".csv"))))
   } else {
     combined <- bind_rows(
-      lapply(list("2_balanced", "2_unbalanced", "3_unbalanced"),
+      lapply(list("2_balanced", "2_unbalanced", "3_unbalanced-low", "3_unbalanced-high"),
              function(K) {
                dat <- read.csv(paste0(directory_prefix, K, ".csv"))
                dat['blocks'] =  substr(K, start = 1, stop = 1)
