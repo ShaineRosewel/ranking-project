@@ -47,8 +47,8 @@
 # Timeline
 
 - Each `K` needs to be ran for 3 different cases of `sd` and 5 `R` (3 for equicorrelation and 2 for block). We consider 16 for allowance. This should all be done by February, this already has (excessive) buffer.
-  - [ ] add case for 3 blocks setting should make the difference obvious
   - [ ] for real data application, use only those with at least 1% votes; for se - use that of binomial dist 
+  - [x] add case for 3 blocks setting should make the difference obvious - 5 days
   - [x] K=50 for 9/9 cases (~18 hours per case)
   - [x] K=40 for 9/9 cases (~13 hours per case)
   - [x] K=30 for 9/9 cases (~8 hours per case)
