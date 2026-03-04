@@ -111,6 +111,64 @@ generate_true_theta_rd <- function(persist_df = TRUE) {
   df$`Rank LB` <- as.integer(df$`Rank LB`)
   df$`Rank UB` <- as.integer(df$`Rank UB`)
   
+  # reference: https://www.gmanetwork.com/news/topstories/nation/943845/duterte-completes-2025-senate-slate-by-adding-querubin-honasan/story/
+  df$DuterTen <- c(
+    1, 0, 0, 1,
+    0, 0, 0, 0,
+    0, 0, 1, 0,
+    0, 1, 1, 1,
+    0, 0, 0, 1,
+    0, 0, 1, 1,
+    1, 1, 1, 1,
+    1, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0
+  )
+  
+  df$Alyansa <- c(
+    0, 1, 1, 0,
+    1, 1, 1, 0,
+    1, 1, 0, 0,
+    1, 1, 1, 0,
+    0, 0, 1, 0,
+    1, 0, 0, 0,
+    0, 0, 0, 0, 
+    0, 0, 0, 0, 
+    0, 0, 0, 0,  
+    0, 0, 0, 0, 
+    0, 0, 0, 0, 
+    0, 0, 0, 0,  
+    0, 0, 0, 0, 
+    0, 0, 0, 0, 
+    0, 0, 0, 0,  
+    0, 0, 0, 0
+  )
+  
+  df$KiBam <- c(
+    0, 0, 0, 0, 
+    0, 0, 0, 1,  
+    0, 0, 0, 0, 
+    0, 0, 0, 0, 
+    1, 0, 0, 0,  
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0, 
+    0, 0, 0, 0, 
+    0, 0, 0, 0,  
+    0, 0, 0, 0, 
+    0, 0, 0, 0, 
+    0, 0, 0, 0,  
+    0, 0, 0, 0, 
+    0, 0, 0, 0, 
+    0, 0, 0, 0
+  )
+  
   if (persist_df) {
     saveRDS(df, file = "application_data.rds")
   }
