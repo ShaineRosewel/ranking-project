@@ -48,10 +48,15 @@
 
 - Each `K` needs to be ran for 3 different cases of `sd` and 5 `R` (3 for equicorrelation and 2 for block). We consider 16 for allowance. This should all be done by February, this already has (excessive) buffer.
   - [ ] for real data application, use only those with at least 1% votes; for se - use that of binomial dist 
-    - [ ] create an `rds` for the data to be used, complete with SE, and the ticket where the candidate belongs
-    - [ ] assign correlation blocks to each ticket
-    - [ ] try to see the result when considering only candidates with at least 1% garnered preference
-    - [ ] try to see the result when considering all (there is no 0 value for May 6-9 results)
+    - [x] create an `rds` for the data to be used, complete with SE, and the ticket where the candidate belongs
+    - [x] assign correlation blocks to each ticket
+    - [x] try to see the result when considering only candidates with at least 1% garnered preference
+      - seems no changes across approaches
+    - [x] try to see the result when considering all (there is no 0 value for May 6-9 results)
+      - changes noticeable
+    - Tuesday: Fix tables
+    - original dataset uses 2.8% MOE
+    - After Wed: check codes for asymptotic - on real data, NaNs appear on `t_star <- sapply(1:B, compute_max)` at `K=64` and `r = 0.1`
   - [x] add case for 3 blocks setting should make the difference obvious - 5 days
   - [x] K=50 for 9/9 cases (~18 hours per case)
   - [x] K=40 for 9/9 cases (~13 hours per case)
@@ -63,10 +68,10 @@
   - [x] K=20: 2 days for 9/16 cases done (~5 hours per case)
   - [x] K=10: 1 day for 9/16 cases done (~3 hours per case)
 - Remaining cases will take around 15 days when ran non-stop. For allowance, we set to 20 days, including studies of which block correlations will be used.
-- Write-up for results: 3 days.
-- Follow changes from overleaf to Rmarkdown: 2 days
-- Application to real data including writeup: 5 days. 
-- Submit to Sir Mike for checking: 15 days
+- [ ] Write-up for results: 3 days.
+- [ ] Follow changes from overleaf to Rmarkdown: 2 days
+- [ ] Application to real data including writeup: 5 days. 
+- [ ] Submit to Sir Mike for checking: 15 days
 - This should be done March.
   
 # To-Do
