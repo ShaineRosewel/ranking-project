@@ -3,6 +3,10 @@ title: "Code Checking"
 output: html_notebook
 ---
 
+# Results presentation
+
+
+
 ```{r}
 df <- readRDS("data/mean_travel_time_ranking_2011.rds")
 mean <- 23.8
@@ -18,6 +22,10 @@ true_sds <- df$S[1:K]
     
 true_theta
 ```
+
+# Block Diagonal Correlation
+
+## Function to create block corr
 
 ```{r}
 block_corr <- function(block_sizes, rho_within, rho_between) {
@@ -43,60 +51,556 @@ block_corr <- function(block_sizes, rho_within, rho_between) {
 }
 
 block1 <- block_corr(block_sizes=c(4,6), rho_within=c(0.85, 0.25), rho_between=0.0)
-block1
+K <- c(dim(df)[1])
+# none, mkbyn,kibam, marcos, d
+block_corr(block_sizes=c(27, 11, 2, 10, 12, 2), rho_within=c(0, 0.8, 0.8, 0.8, 0.8, 0.8), rho_between=0.0) #%>% View()
 ```
 
+List of block corrs used:
+ - `block_corr(block_sizes=c(K/2,K/2), rho_within=c(0.9, 0.1), rho_between=0.0)`
+ - `block_corr(block_sizes=c(.3*K,.7*K), rho_within=c(0.9, 0.1), rho_between=0.0)`
+ - `block_corr(block_sizes=c(.2*K,.3*K, .5*K), rho_within=c(0.9, 0.5, 0.1), rho_between=0.0)`
+ - `block_corr(block_sizes=c(.2*K,.3*K, .5*K), rho_within=c(0.1, 0.5, 0.9), rho_between=0.0)`
+ 
+## Checking Positive Definiteness
 
 ```{r}
-0.3*(c(10,20,30,40,50))
-```
+# K <- 50
+# 
+# for (K in c(10,20,30,40,50)) {
+#   block_unb <- block_corr(block_sizes=c(.2*K,.3*K, .5*K), rho_within=c(0.1, 0.5, 0.9), rho_between=0.0)
+#   tol = 1e-8
+#   eval <- eigen(block_unb)$values
+#   print(paste("PD for K=",K, ":", all(eval > -abs(tol * max(eval)))))
+# }
 
-```{r}
-0.3*(c(10,20,30,40,50))
-0.7*(c(10,20,30,40,50))
-```
+# K=64
+# block_unb <- block_corr(block_sizes=c(27, 11, 2, 10, 12, 2), rho_within=c(0, 0.8, 0.8, 0.8, 0.8, 0.8), rho_between=0.0)
+# K=18
+# corr_matrix <-block_corr(block_sizes=c(2, 2, 8, 6), rho_within=c(0, 0.9, 0.9, 0.9), rho_between=0.0)
 
-```{r}
-block_unb
-```
-
-
-
-```{r}
-block1 <- block_corr(block_sizes=c(4,6), rho_within=c(0.85, 0.25), rho_between=0.0)
-block1 <- block_corr(block_sizes=c(8,12), rho_within=c(0.85, 0.25), rho_between=0.0)
-block1 <- block_corr(block_sizes=c(15,15), rho_within=c(0.85, 0.25), rho_between=0.0)
-block1 <- block_corr(block_sizes=c(20,20), rho_within=c(0.85, 0.25), rho_between=0.0)
-block1 <- block_corr(block_sizes=c(25,25), rho_within=c(0.85, 0.25), rho_between=0.0)
-block <- block_corr(block_sizes=c(25,25), rho_within=c(0.9, 0.1), rho_between=0.0) # B2
-# block_corr(block_sizes=c(K/2,K/2), rho_within=c(0.9, 0.1), rho_between=0.0)
-# block_corr(block_sizes=c(.3*K,.7*K), rho_within=c(0.9, 0.1), rho_between=0.0)
-
-K <- 10
-block_unb <- block_corr(block_sizes=c(.2*K,.3*K, .5*K), rho_within=c(0.9, 0.5, 0.1), rho_between=0.0)
-tol = 1e-8
+K=64
+block_unb <- block_corr(block_sizes=c(27, 11, 2, 10, 12, 2), rho_within=c(0.0, 0.3, 0.3, 0.3, 0.3, 0.3), rho_between=0.0) #block_corr(block_sizes=c(27, 11, 2, 10, 12, 2), rho_within=c(0.0, 0.1, 0.1, 0.1, 0.1, 0.1), rho_between=0.0) 
 eval <- eigen(block_unb)$values
-all(eval >= -abs(tol * max(eval)))
-block_unb
+tol = 1e-8
+print(paste("PD for K=",K, ":", all(eval > -abs(tol * max(eval)))))
+```
+
+
+
+# Real Data Application
+
+
+```{r}
+source("R/generate_true_theta.R")
+
+cand <- generate_true_theta_rd(persist_df = FALSE)
+
+cand$Makabayan <- ifelse(cand$Party == 'MKBYN', 1, 0)
 ```
 
 
 ```{r}
-# corr_matrix <- (1 - corr) * diag(K) + corr * matrix(1, K, K)
+cand %>% 
+  mutate(Voting_for_dec = `Voting For`/100) %>%
+  mutate(se = sqrt((Voting_for_dec*(1-Voting_for_dec))/1200) ) %>%
+  select(-Voting_for_dec) %>% arrange(desc(`Voting For`)) %>% View()
+```
+
+
+```{r}
+cand %>% 
+  mutate(Voting_for_dec = `Voting For`/100) %>%
+  mutate(se = sqrt((Voting_for_dec*(1-Voting_for_dec))/1200) ) %>%
+  select(-Voting_for_dec) %>% arrange(desc(`Voting For`)) %>% head(18) %>% arrange(DuterTen, Alyansa, KiBam, Makabayan) 
+```
+
+```{r}
+K <- c(dim(df)[1])
+# none, mkbyn,kibam, marcos, d
+# block_corr(block_sizes=c(2, 2, 8, 6), rho_within=c(0, 0.8, 0.8, 0.8, 0.8), rho_between=0.0)
+# block_corr(block_sizes=c(27, 11, 2, 10, 12, 2), rho_within=c(0, 0.8, 0.8, 0.8, 0.8, 0.8), rho_between=0.0) #%>% View()
+```
+
+
+
+
+```{r}
+process_ci_result <- function(result, K) {
+  tuple_list <- t(apply(
+    data.frame(
+      ci_lower = result$ci_lower,
+      ci_upper = result$ci_upper
+    ), 
+    1, 
+    function(row) as.numeric(row)
+  ))
+  
+  rank_range_length <- sapply(1:K, function(x) 
+    length(get_ranks(x, tuple_list)$ranks)
+  )
+  list(
+    t1 = get_t1(rank_range_length),
+    t2 = get_t2(rank_range_length),
+    t3 = get_t3(rank_range_length)
+  )
+}
+``` 
+
+
+
+```{r}
+dim(df)[1]
+```
+
+
+
+
+```{r}
+source("R/simulate/compute_ci.R")
+source("R/simulate/compute_metrics.R")
+
+# df <- cand %>% 
+#   mutate(Voting_for_dec = `Voting For`/100) %>%
+#   mutate(se = sqrt((Voting_for_dec*(1-Voting_for_dec))/1200) ) %>%
+#   select(-Voting_for_dec) %>% arrange(desc(`Voting For`)) %>% head(18) %>% arrange(DuterTen, Alyansa, KiBam, Makabayan)
+
+
+df <- cand %>% 
+  mutate(Voting_for_dec = `Voting For`/100) %>% 
+  arrange(DuterTen, Alyansa, KiBam, Makabayan) %>%
+  mutate(se = sqrt((Voting_for_dec*(1-Voting_for_dec))/1200) ) %>%
+  select(-Voting_for_dec)
+
+#corr_matrix <-block_corr(block_sizes=c(2, 2, 8, 6), rho_within=c(0, 0.1, 0.1, 0.1), rho_between=0.0)
+corr_matrix <-block_corr(block_sizes=c(27, 11, 2, 10, 12, 2), rho_within=c(0.0, 0.2, 0.2, 0.2, 0.2, 0.2), rho_between=0.0) 
+#corr_matrix <-block_corr(block_sizes=c(27, 11, 2, 10, 12, 2), rho_within=c(0, 0.1, 0.5, 0.9, 0.9, 0.5), rho_between=0.0) 
+# corr_matrix <-block_corr(block_sizes=c(2, 2, 8, 6), rho_within=c(0, 0.5, 0.5, 0.5), rho_between=0.0)
+#corr_matrix <-block_corr(block_sizes=c(27, 11, 2, 10, 12, 2), rho_within=c(0.5, 0.9, 0.9, 0.9, 0.9, 0.9), rho_between=0.0) 
+
+set.seed(123974)
+theta_hat <- df$`Voting For`/100
+true_sds <- df$se
+#true_sds <- rep(0.028/1.96, 18)
+variance_vector <- true_sds^2
+delta <- diag(variance_vector)
+varcovar_matrix <- delta^(1/2) %*% corr_matrix %*% delta^(1/2)
+B <- 1000
+K <- dim(df)[1]
+alpha <- 0.05
+S <- sqrt(diag(varcovar_matrix))
+
+    
+ci_methods <- list(
+  nonrankbased = function() get_ci_nonrankbased(B = B,
+                                                theta_hat = theta_hat,
+                                                alpha = alpha,
+                                                varcovar_matrix = varcovar_matrix),
+  # rankbased_asymptotic = function() get_ci_rankbased_asymptotic(B = B,
+  #                                                               theta_hat = theta_hat,
+  #                                                               varcovar_matrix = varcovar_matrix,
+  #                                                               alpha = alpha),
+  rankbased_level2bs = function() get_ci_rankbased_level2bs(B = B,
+                                                            C = 300,
+                                                            theta_hat = theta_hat,
+                                                            varcovar_matrix = varcovar_matrix,
+                                                            alpha = alpha),
+  independent  = function() get_ci_independent(theta_hat = theta_hat, S = S, alpha = alpha),
+  bonferroni   = function() get_ci_bonferroni(theta_hat = theta_hat, S = S, alpha = alpha)
+)
+ci_results <- lapply(ci_methods, function(f) f())
+
+process_ci_result <- function(result, K) {
+  tuple_list <- t(apply(
+    data.frame(
+      ci_lower = result$ci_lower,
+      ci_upper = result$ci_upper
+    ), 
+    1, 
+    function(row) as.numeric(row)
+  ))
+  
+  rank_range_length <- sapply(1:K, function(x) 
+    length(get_ranks(x, tuple_list)$ranks)
+  )
+  list(
+    t1 = get_t1(rank_range_length),
+    t2 = get_t2(rank_range_length),
+    t3 = get_t3(rank_range_length)
+  )
+}
+
+# print("REACHED 3 ===================================")
+processed <- lapply(ci_results, process_ci_result, K = K)
+print("REACHED 4 ===================================")
+res <- data.frame(
+  t1_nonrankbased = processed$nonrankbased$t1,
+  t2_nonrankbased = processed$nonrankbased$t2,
+  t3_nonrankbased = processed$nonrankbased$t3,
+  #coverage_nonrankbased = coverages$nonrankbased,
+  # t1_rankbased_asymptotic = processed$rankbased_asymptotic$t1,
+  # t2_rankbased_asymptotic = processed$rankbased_asymptotic$t2,
+  # t3_rankbased_asymptotic = processed$rankbased_asymptotic$t3,
+  #coverage_rankbased_asymptotic = coverages$rankbased_asymptotic,
+  t1_rankbased_level2bs = processed$rankbased_level2bs$t1,
+  t2_rankbased_level2bs = processed$rankbased_level2bs$t2,
+  t3_rankbased_level2bs = processed$rankbased_level2bs$t3,
+  #coverage_rankbased_level2bs = coverages$rankbased_level2bs,
+  t1_independent = processed$independent$t1,
+  t2_independent = processed$independent$t2,
+  t3_independent = processed$independent$t3,
+  #coverage_independent = coverages$independent,
+  t1_bonferroni = processed$bonferroni$t1,
+  t2_bonferroni = processed$bonferroni$t2,
+  t3_bonferroni = processed$bonferroni$t3
+  #coverage_bonferroni = coverages$bonferroni
+  )
+
+summ <- as.data.frame(t(res))
+summ$names <- rownames(summ)
+rownames(summ) <- NULL
+summ %>% rename(value = 'V1') %>%
+  separate(
+    col = names,
+    into = c("metric", "approach"),
+    sep = "_",
+    extra = "merge"
+  ) %>% arrange(metric, value)# %>%
+  # filter(!(approach %in% c('rankbased_asymptotic', 'rankbased_level2bs')))
+```
+
+
+```{r}
+(sorted_thetahat_star[b, ] - sorted_theta_hat) /
+        sigma_hat_star[b,]
+```
+
+
+```{r}
+K = 64
+alpha = 0.05
+1-(1-alpha)^(1/K)
+```
+
+
+
+
+```{r}
+source("R/simulate/compute_ci.R")
+source("R/simulate/compute_metrics.R")
+
+df <- cand %>% 
+  mutate(Voting_for_dec = `Voting For`/100) %>%
+  mutate(se = sqrt((Voting_for_dec*(1-Voting_for_dec))/1200) ) %>%
+  select(-Voting_for_dec) %>% arrange(desc(`Voting For`)) %>% head(18) %>% arrange(DuterTen, Alyansa, KiBam, Makabayan)
+
+
+corr_matrix <-block_corr(block_sizes=c(2, 2, 8, 6), rho_within=c(0, 0.5, 0.5, 0.5), rho_between=0.0)
+#corr_matrix <-block_corr(block_sizes=c(27, 11, 2, 10, 12, 2), rho_within=c(0.5, 0.9, 0.9, 0.9, 0.9, 0.9), rho_between=0.0) 
+#corr_matrix <-block_corr(block_sizes=c(27, 11, 2, 10, 12, 2), rho_within=c(0, 0.1, 0.5, 0.9, 0.9, 0.5), rho_between=0.0) 
+
+set.seed(123974)
+theta_hat <- df$`Voting For`/100
+true_sds <- df$se
+variance_vector <- true_sds^2
+delta <- diag(variance_vector)
+varcovar_matrix <- delta^(1/2) %*% corr_matrix %*% delta^(1/2)
+B=5000
+K=18
+alpha=0.05
+```
+
+
+
+```{r}
+source("R/simulate/compute_metrics.R")
+library(doParallel)
+cl=parallel::makeCluster(15)
+registerDoParallel(cl)
+case_start <- Sys.time()
+
+
+df <- cand %>% arrange(DuterTen, Alyansa, KiBam, Makabayan) %>% 
+  mutate(Voting_for_dec = `Voting For`/100) %>%
+  mutate(se = sqrt((Voting_for_dec*(1-Voting_for_dec))/1200) ) %>%
+  select(-Voting_for_dec)
+# mean <- 23.8
+# sds <- c(2)#c(3.6, 6.0)
+Ks <- c(dim(df)[1])#c(40,50)
+# corr <- c(0.1, 0.5, 0.9)
+
+print(cat("RESULTS FOR SD =",sd, "; K =", K))
+
+# none, mkbyn,kibam, marcos, duterte
+corr_matrix <- block_corr(block_sizes=c(27, 11, 2, 10, 12, 2), rho_within=c(0, 0.8, 0.8, 0.8, 0.8, 0.8), rho_between=0.0) 
+#corr_matrix <-block_corr(block_sizes=c(27, 11, 2, 10, 12, 2), rho_within=c(0, 0.1, 0.5, 0.9, 0.9, 0.5), rho_between=0.0) 
+
+set.seed(123974)
+true_theta <- df$`Voting For`
+true_sds <- df$se
+variance_vector <- true_sds^2
+delta <- diag(variance_vector)
+varcovar_matrix <- delta^(1/2) %*% corr_matrix %*% delta^(1/2)
+out <- implement_algorithm2(
+    true_theta = true_theta,
+    K = K, 
+    reps=5000, # step 4
+    B=500,#700, 
+    alpha= 0.05,
+    C=300,#350,
+    varcovar_matrix = varcovar_matrix)
+case <- paste(paste0("K",gsub("\\.", "p", as.character(K))),
+        paste0("r",gsub("\\.", "p", "pulse")), #as.character(r))),
+#          paste0("r",gsub("\\.", "p", "unbalanced-block-high")), #as.character(r))),
+        sep = "_")
+case_end <- Sys.time()
+        case_runtime <- as.numeric(difftime(case_end, case_start, units = "mins"))
+        cat("Finished at:", format(case_end, "%I:%M %p"), "\n")
+        cat("Runtime for", case, round(case_runtime, 2), "minutes\n")
+
+print(colMeans(out))
+filename <- paste0(
+  case,
+  ".rds")
+
+saveRDS(out, file = filename)
+stopCluster(cl)
+```
+
+
+
+# Run Simulation from notebook
+
+```{r}
+source("R/simulate/compute_metrics.R")
+library(doParallel)
+cl=parallel::makeCluster(15)
+registerDoParallel(cl)
+case_start <- Sys.time()
+
+
+df <- readRDS("data/mean_travel_time_ranking_2011.rds")
+mean <- 23.8
+sds <- c(2)#c(3.6, 6.0)
+Ks <- c(40,50)
+# corr <- c(0.1, 0.5, 0.9)
+
+for (sd in sds) {
+  for (K in Ks) {
+  print(cat("RESULTS FOR SD =",sd, "; K =", K))
+  corr_matrix <-block_corr(block_sizes=c(.2*K,.3*K, .5*K), rho_within=c(0.1, 0.5, 0.9), rho_between=0.0)# block_corr(block_sizes=c(0.3*K,0.7*K), rho_within=c(0.9, 0.1), rho_between=0.0) #  block_corr(block_sizes=c(5,5), rho_within=c(0.75, 0.15), rho_between=0.0) #block_corr(block_sizes=c(5,5), rho_within=c(0.85, 0.25), rho_between=0.0)# (1 - r) * diag(K) + r * matrix(1, K, K)
+
+  set.seed(123974)
+  true_theta <- rnorm(K, mean, sd)
+  true_sds <- df$S[1:K]
+  variance_vector <- true_sds^2
+  delta <- diag(variance_vector)
+  varcovar_matrix <- delta^(1/2) %*% corr_matrix %*% delta^(1/2)
+  out <- implement_algorithm2(
+      true_theta = true_theta,
+      K = K, 
+      reps=5000, # step 4
+      B=500,#700, 
+      alpha= 0.05,
+      C=300,#350,
+      varcovar_matrix = varcovar_matrix)
+  case <- paste(paste0("K",gsub("\\.", "p", as.character(K))),
+          paste0("sd",gsub("\\.", "p", as.character(sd))),
+          paste0("r",gsub("\\.", "p", "unbalanced-block-high")), #as.character(r))),
+#          paste0("r",gsub("\\.", "p", "unbalanced-block-high")), #as.character(r))),
+          sep = "_")
+  case_end <- Sys.time()
+          case_runtime <- as.numeric(difftime(case_end, case_start, units = "mins"))
+          cat("Finished at:", format(case_end, "%I:%M %p"), "\n")
+          cat("Runtime for", case, round(case_runtime, 2), "minutes\n")
+  
+  print(colMeans(out))
+  filename <- paste0(
+    case,
+    ".rds")
+  
+  saveRDS(out, file = filename)
+}
+}
+stopCluster(cl)
+```
+
+
+
+
+# Create summary file per case
+
+```{r}
+# Source - https://stackoverflow.com/a/63126233
+# Posted by heds1
+# Retrieved 2026-01-05, License - CC BY-SA 4.0
+
+base_dir <- './simulation_results/unbalanced_three_high/'
+all_files <- paste0(base_dir, 
+                    list.files(base_dir, pattern = "\\.rds$", 
+                               recursive = FALSE))
+
+summarize_means <- function(file){
+  dat <- readRDS(file)
+  summary <- colMeans(dat)
+  return(summary)
+  #summary['file'] = file
+  #return(t(as.data.frame(summary)))
+}
+
+df <- as.data.frame(do.call("rbind", lapply(all_files, summarize_means)))
+df$file <-all_files
+df$file
+```
+
+
+```{r}
+library(tidyr)
+library(dplyr)
+# df %>% separate(file, sep = "_", into = c("K", "sd", 'r')) #%>% mutate(sd = sd.replace)
+```
+
+
+```{r}
+df$file <- sub("simulation_results/unbalanced_three_high/", "", df$file)
+df
+```
+
+
+```{r}
+summ <- df %>% separate(file, sep = "_", into = c("K", "sd", 'r'))
+# sub("sd", "", summ$sd)
+summ
+```
+
+```{r}
+# Source - https://stackoverflow.com/a/55986799
+# Posted by G. Grothendieck, modified by community. See post 'Timeline' for change history
+# Retrieved 2026-01-05, License - CC BY-SA 4.0
+summ <- df %>% separate(file, sep = "_", into = c("K", "sd", 'r'))
+
+summ$sd <- sub("sd", "", summ$sd) 
+summ$sd <- sub("p", ".", summ$sd) 
+summ$K <- sub("./K", "", summ$K) 
+summ$r <- sub("r", "", summ$r) 
+summ$r <- sub(".rds", "", summ$r) 
+summ$r <- sub("p", ".", summ$r) 
+summary <- summ %>%  mutate(sd = as.numeric(sd)) %>%  
+  # mutate(r = as.numeric(r)) %>%  
+  mutate(r = r) %>%  
+  mutate(K = as.numeric(K))
+
+summary
+
+# 
+summary_form <- summary %>% pivot_longer(
+    cols = `t1_nonrankbased`:`coverage_bonferroni`,
+    names_to = "metric",
+    values_to = "value"
+) %>%
+  separate(metric, into=c("metric", "approach"), extra = "merge", sep = "_") %>%
+  pivot_wider(names_from = "approach", values_from = "value")
+
+summary_form
+write.csv(summary_form, "summary_3unbalanced-high.csv")
+```
+
+# Scratch papers {.hidden}
+
+```{r}
+source("R/simulate/compute_metrics.R")
+# library(doParallel)
+# cl=parallel::makeCluster(15)
+# registerDoParallel(cl)
+# case_start <- Sys.time()
+
+library("ggplot2")
+
+df <- readRDS("data/mean_travel_time_ranking_2011.rds")
+mean <- 23.8
+sds <- c(2, 3.6, 6.0)
+Ks <- c(10, 20, 30, 40, 50)
+# corr <- c(0.1, 0.5, 0.9)
+data_list <- list()
+
+for (sd in sds) {
+  for (K in Ks) {
+  print(cat("RESULTS FOR SD =",sd, "; K =", K))
+  corr_matrix <-block_corr(block_sizes=c(.2*K,.3*K, .5*K), rho_within=c(0.1, 0.5, 0.9), rho_between=0.0)# block_corr(block_sizes=c(0.3*K,0.7*K), rho_within=c(0.9, 0.1), rho_between=0.0) #  block_corr(block_sizes=c(5,5), rho_within=c(0.75, 0.15), rho_between=0.0) #block_corr(block_sizes=c(5,5), rho_within=c(0.85, 0.25), rho_between=0.0)# (1 - r) * diag(K) + r * matrix(1, K, K)
+
+  set.seed(123974)
+  true_theta <- rnorm(K, mean, sd)
+  data_list[[length(data_list) + 1]] <- data.frame(sd = sd, K = K, true_theta = true_theta)
+  }}
+
+data_list
+```
+
+
+
+```{r}
+data_list %>% 
+  bind_rows()
+```
+
+```{r}
+library("ggplot2")
+
+df <- readRDS("data/mean_travel_time_ranking_2011.rds")
+mean <- 23.8
+sds <- c(2, 3.6, 6.0)
+Ks <- c(10, 20, 30, 40, 50)
+# corr <- c(0.1, 0.5, 0.9)
+data_list <- list()
+
+for (sd in sds) {
+  for (K in Ks) {
+  print(cat("RESULTS FOR SD =",sd, "; K =", K))
+  corr_matrix <-block_corr(block_sizes=c(.2*K,.3*K, .5*K), rho_within=c(0.9, 0.5, 0.1), rho_between=0.0)# block_corr(block_sizes=c(0.3*K,0.7*K), rho_within=c(0.9, 0.1), rho_between=0.0) #  block_corr(block_sizes=c(5,5), rho_within=c(0.75, 0.15), rho_between=0.0) #block_corr(block_sizes=c(5,5), rho_within=c(0.85, 0.25), rho_between=0.0)# (1 - r) * diag(K) + r * matrix(1, K, K)
+
+  set.seed(123974)
+  true_theta <- rnorm(K, mean, sd)
+  data_list[[length(data_list) + 1]] <- data.frame(sd = sd, K = K, true_theta = true_theta)
+  }}
+
+data_list %>% 
+  bind_rows() %>% 
+  mutate(data_spread = factor(ifelse(sd == 2, "low", 
+                              ifelse(sd == 3.6, "medium", "high")),
+                              levels =c("low", 'medium', 'high'),
+                              ordered =TRUE
+                              )) %>%
+  ggplot(.,
+         aes(x = data_spread,
+             y = true_theta)) +
+  facet_wrap(~K, ncol=5) +
+  labs(title = expression(True~theta~Values~Used~'in'~Simulation),
+       x = expression(theta~Variability),
+       y = expression(theta)) +
+  geom_boxplot() +
+  theme_bw() +
+  theme(plot.title = element_text(hjust = 0.5))
+```
+
+
+
+```{r}
+corr <- 0.9
+corr_matrix <- (1 - corr) * diag(K) + corr * matrix(1, K, K)
 # variance_vector <- true_sds^2
 # delta <- diag(variance_vector)
 # varcovar_matrix <- delta^(1/2) %*% corr_matrix %*% delta^(1/2)
 # varcovar_matrix
+
+K <- 50
+corr <- 0.1
+for (K in c(10,20,30,40,50)) {
+  block_unb <- (1 - corr) * diag(K) + corr * matrix(1, K, K)
+  tol = 1e-8
+  eval <- eigen(block_unb)$values
+  print(paste("PD for K=",K, ":", all(eval > -abs(tol * max(eval)))))
+}
 ```
-
-```{r}
-# variance_vector <- diag(varcovar_matrix)
-# sqrt(variance_vector) ==  true_sds
-```
-
-
-
-
 
 
 
@@ -159,216 +663,6 @@ block_unb
 
 
 
-```{r}
-source("R/compute_metrics.R")
-library(doParallel)
-cl=parallel::makeCluster(15)
-registerDoParallel(cl)
-case_start <- Sys.time()
 
 
-df <- readRDS("data/mean_travel_time_ranking_2011.rds")
-mean <- 23.8
-sds <- c(6.0)
-Ks <- c(50, 40, 30, 20, 10)
-# corr <- c(0.1, 0.5, 0.9)
-
-for (sd in sds) {
-  for (K in Ks) {
-  print(cat("RESULTS FOR SD =",sd, "; K =", K))
-  corr_matrix <-block_corr(block_sizes=c(.2*K,.3*K, .5*K), rho_within=c(0.9, 0.5, 0.1), rho_between=0.0)# block_corr(block_sizes=c(0.3*K,0.7*K), rho_within=c(0.9, 0.1), rho_between=0.0) #  block_corr(block_sizes=c(5,5), rho_within=c(0.75, 0.15), rho_between=0.0) #block_corr(block_sizes=c(5,5), rho_within=c(0.85, 0.25), rho_between=0.0)# (1 - r) * diag(K) + r * matrix(1, K, K)
-
-  set.seed(123974)
-  true_theta <- rnorm(K, mean, sd)
-  true_sds <- df$S[1:K]
-  variance_vector <- true_sds^2
-  delta <- diag(variance_vector)
-  varcovar_matrix <- delta^(1/2) %*% corr_matrix %*% delta^(1/2)
-  out <- implement_algorithm2(
-      true_theta = true_theta,
-      K = K, 
-      reps=5000, # step 4
-      B=500,#700, 
-      alpha= 0.05,
-      C=300,#350,
-      varcovar_matrix = varcovar_matrix)
-  case <- paste(paste0("K",gsub("\\.", "p", as.character(K))),
-          paste0("sd",gsub("\\.", "p", as.character(sd))),
-          paste0("r",gsub("\\.", "p", "unbalanced-block")), #as.character(r))),
-          sep = "_")
-  case_end <- Sys.time()
-          case_runtime <- as.numeric(difftime(case_end, case_start, units = "mins"))
-          cat("Finished at:", format(case_end, "%I:%M %p"), "\n")
-          cat("Runtime for", case, round(case_runtime, 2), "minutes\n")
-  
-  print(colMeans(out))
-  filename <- paste0(
-    case,
-    ".rds")
-  
-  saveRDS(out, file = filename)
-}
-}
-stopCluster(cl)
-```
-
-
-```{r}
-diag(K) + r * matrix(1, K, K)
-```
-
-
-
-
-
-
-
-
-
-
-
-
-```{r}
-colMeans(readRDS("K10_sd3p6_r0p1.rds"))
-```
-
-
-```{r}
-filename
-```
-
-
-
-
-
-
-
-
-```{r}
-colMeans(out) # K10_r0p5_sd3p6
-
-# # Finished at: 12:59 AM 
-# Finished at: 12:57 PM 
-# Runtime for this case: 189.97 minutes
-```
-
-```{r}
-r <- 0.9
-sd <- 2.00 
-K <- 10
-
-
-```
-
-
-```{r}
-colMeans(out) # K10_r0p1_sd3p6
-
-# # Finished at: 12:59 AM 
-# Finished at: 12:57 PM 
-# Runtime for this case: 189.97 minutes
-
-```
-
-```{r}
-colMeans(out)
-```
-
-
-```{r}
-# Runtime for this case: 189.65 minutes K10_r0p9_sd2p0
-# Runtime for this case: 195.53 minutes K10_r0p5_sd2p0
-# Runtime for this case: 189.8 minutes K10_r0p1_sd2p0
-
-colMeans(out) # K10_r0p9_sd2p0
-```
-
-```{r}
-colMeans(out) # K10_r0p5_sd2p0
-# Finished at: 12:59 AM 
-```
-
-
-
-
-```{r}
-# Source - https://stackoverflow.com/a/63126233
-# Posted by heds1
-# Retrieved 2026-01-05, License - CC BY-SA 4.0
-
-base_dir <- './balanced_two/'
-all_files <- paste0(base_dir, 
-                    list.files(base_dir, pattern = "\\.rds$", 
-                               recursive = FALSE))
-
-summarize_means <- function(file){
-  dat <- readRDS(file)
-  summary <- colMeans(dat)
-  return(summary)
-  #summary['file'] = file
-  #return(t(as.data.frame(summary)))
-}
-
-df <- as.data.frame(do.call("rbind", lapply(all_files, summarize_means)))
-df$file <-all_files
-df$file
-```
-
-
-```{r}
-library(tidyr)
-library(dplyr)
-# df %>% separate(file, sep = "_", into = c("K", "sd", 'r')) #%>% mutate(sd = sd.replace)
-```
-
-```{r}
-file
-```
-
-
-```{r}
-df$file <- sub("balanced_two/", "", df$file)
-df
-```
-
-
-```{r}
-summ <- df %>% separate(file, sep = "_", into = c("K", "sd", 'r'))
-# sub("sd", "", summ$sd)
-
-```
-
-
-
-```{r}
-# Source - https://stackoverflow.com/a/55986799
-# Posted by G. Grothendieck, modified by community. See post 'Timeline' for change history
-# Retrieved 2026-01-05, License - CC BY-SA 4.0
-summ <- df %>% separate(file, sep = "_", into = c("K", "sd", 'r'))
-
-summ$sd <- sub("sd", "", summ$sd) 
-summ$sd <- sub("p", ".", summ$sd) 
-summ$K <- sub("./K", "", summ$K) 
-summ$r <- sub("r", "", summ$r) 
-summ$r <- sub(".rds", "", summ$r) 
-summ$r <- sub("p", ".", summ$r) 
-summary <- summ %>%  mutate(sd = as.numeric(sd)) %>%  
-  # mutate(r = as.numeric(r)) %>%  
-  mutate(r = r) %>%  
-  mutate(K = as.numeric(K))
-
-summary
-
-# 
-summary_form <- summary %>% pivot_longer(
-    cols = `t1_nonrankbased`:`coverage_bonferroni`,
-    names_to = "metric",
-    values_to = "value"
-) %>%
-  separate(metric, into=c("metric", "approach"), extra = "merge", sep = "_") %>%
-  pivot_wider(names_from = "approach", values_from = "value")
-
-summary_form
-write.csv(summary_form, "summary_2balanced.csv")
-```
 
