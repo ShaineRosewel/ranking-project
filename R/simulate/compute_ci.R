@@ -43,50 +43,53 @@ get_ci_rankbased_asymptotic <- function(B,
   thetahat_star <- MASS::mvrnorm(n = B,
                                  mu = theta_hat,
                                  Sigma = varcovar_matrix) # B x K
-  print("theta_hat")
-  print(theta_hat)
-  print("thetahat_star")
-  print(cat("shape: ", dim(thetahat_star)))
-  print(thetahat_star[c(1:3),])
-  
+  # print("theta_hat")
+  # print(theta_hat)
+  # print("thetahat_star")
+  # print(cat("shape: ", dim(thetahat_star)))
+  # print(thetahat_star[c(1:3),])
+  # print("reached1=======================================================================")
   # sorted counterpart line 2
   sorted_thetahat_star <- t(apply(thetahat_star, 1, sort))
-  print("sorted_thetahat_star")
-  print(cat("shape: ", dim(thetahat_star)))
-  print(sorted_thetahat_star[c(1:3),])
+  # print("sorted_thetahat_star")
+  # print(cat("shape: ", dim(thetahat_star)))
+  # print(sorted_thetahat_star[c(1:3),])
 
   variance_vector <- diag(varcovar_matrix)
-  print("Variance vec:")
-  print(variance_vector)
-  print("Variance mat:")
-  print(matrix(variance_vector, B, K, byrow = TRUE)[c(1:3),])
-  print("thetahat_star:")
-  print(thetahat_star[c(1:3),])
-  print("thetahat_star squared:")
-  print((thetahat_star^2)[c(1:3),])
-  print("minuend:")
+  # print("Variance vec:")
+  # print(variance_vector)
+  # print("Variance mat:")
+  # print(matrix(variance_vector, B, K, byrow = TRUE)[c(1:3),])
+  # print("thetahat_star:")
+  # print(thetahat_star[c(1:3),])
+  # print("thetahat_star squared:")
+  # print((thetahat_star^2)[c(1:3),])
+  # print("minuend:")
   
   # line 3 ~~~
   minuend <- thetahat_star^2 + matrix(variance_vector, B, K, byrow = TRUE)
-  print(minuend[c(1:3),])
-  print("sorted minuend:")
-  print(t(apply(minuend, 1, sort))[c(1:3),])
-  print("sorted_thetahat_star^2")
-  print((sorted_thetahat_star^2)[c(1:3),])
+  
+  #print(minuend[!complete.cases(minuend), ]) #!!!!! not a problem!!!
+  
+  # print(minuend[c(1:3),])
+  # print("sorted minuend:")
+  # print(t(apply(minuend, 1, sort))[c(1:3),])
+  # print("sorted_thetahat_star^2")
+  # print((sorted_thetahat_star^2)[c(1:3),])
     #(matrix(rep(variance_vector, each = B),nrow = B, byrow = FALSE))
-  print("their difference")
-  print((t(apply(minuend, 1, sort)) - sorted_thetahat_star^2)[c(1:3),])
+  # print("their difference")
+  # print((t(apply(minuend, 1, sort)) - sorted_thetahat_star^2)[c(1:3),])
 
   sigma_hat_star <- sqrt(
     t(apply(minuend, 1, sort)) - sorted_thetahat_star^2
     )
   # step 1c ====================================
-  print("sigma_hat_star")
-  print(sigma_hat_star)
+  # print("sigma_hat_star")
+  # print(sigma_hat_star)
 
   sorted_theta_hat <- sort(theta_hat)
-  print("sorted theta hat")
-  print(sorted_theta_hat)
+  # print("sorted theta hat")
+  # print(sorted_theta_hat)
   # print((matrix(rep(sorted_theta_hat, each = B),
   #              nrow = B, byrow = FALSE)))
   # t_star <- apply(
@@ -101,6 +104,12 @@ get_ci_rankbased_asymptotic <- function(B,
   #   max)
 
   # line 4 ~~~
+  contains_zeros <- any(sigma_hat_star == 0)
+  #contains_zeros <- any(sorted_thetahat_star == 0) # NO NA'S HERE
+  print("======")
+  print(contains_zeros)
+  print(sigma_hat_star[!complete.cases(sigma_hat_star), ]) #!!!!! problem!!!
+  
   compute_max <- function(b) {
     t_b <- max(abs(
       (sorted_thetahat_star[b, ] - sorted_theta_hat) /
@@ -108,20 +117,21 @@ get_ci_rankbased_asymptotic <- function(B,
     ))
     return(t_b)
   }
-  print(sorted_thetahat_star[1, ])
-  print(sorted_theta_hat)
-  print(sigma_hat_star[1,])
-  print("compute max for b = 1")
-  print(sigma_hat_star[1,])
-  print(sorted_thetahat_star[1, ] - sorted_theta_hat)
-  print((sorted_thetahat_star[1, ] - sorted_theta_hat)/sigma_hat_star[1,])
-  print(max(abs(
-    (sorted_thetahat_star[1, ] - sorted_theta_hat) /
-      sigma_hat_star[1,]
-  )))
-  print(compute_max(1))
+  # print(sorted_thetahat_star[1, ])
+  # print(sorted_theta_hat)
+  # print(sigma_hat_star[1,])
+  # print("compute max for b = 1")
+  # print(sigma_hat_star[1,])
+  # print(sorted_thetahat_star[1, ] - sorted_theta_hat)
+  # print((sorted_thetahat_star[1, ] - sorted_theta_hat)/sigma_hat_star[1,])
+  # print(max(abs(
+  #   (sorted_thetahat_star[1, ] - sorted_theta_hat) /
+  #     sigma_hat_star[1,]
+  # )))
+  # print(compute_max(1))
 
   t_star <- sapply(1:B, compute_max)
+  #print(t_star)
 
   # line 6 ~~~
   t_hat <- quantile(t_star, probs = 1 - alpha)
@@ -158,6 +168,7 @@ get_ci_rankbased_level2bs <- function(B,
   thetahat_star <- MASS::mvrnorm(n = B,
                                  mu = theta_hat,
                                  Sigma = varcovar_matrix) # B x K
+  # print("ci_rankbased_level2bs 00===================================")
   # print("theta_hat")
   # print(theta_hat)
   # print("thetahat_star")
@@ -166,15 +177,16 @@ get_ci_rankbased_level2bs <- function(B,
   
   # sorted counterpart line 2
   sorted_thetahat_star <- t(apply(thetahat_star, 1, sort)) # B x K
-  print("sorted_thetahat_star")
-  print(cat("sorted_shape: ", dim(thetahat_star)))
-  print(sorted_thetahat_star)
-
+  # print("sorted_thetahat_star")
+  # print(cat("sorted_shape: ", dim(thetahat_star)))
+  # print(sorted_thetahat_star)
+  # print("ci_rankbased_level2bs 01===================================")
   # for each b row in level 1, generate a K x C matrix, 
   generate_level2_data <- function(mu){MASS::mvrnorm(n = 1,
                                                      mu,
                                                      Sigma = varcovar_matrix)}
-
+  # print("ci_rankbased_level2bs 02===================================")
+  # print(paste("thetahat_double_star", thetahat_star))
   # line 4 ~~~
   thetahat_double_star <- # list of length B, each a K x C matrix
     apply(thetahat_star,
@@ -183,7 +195,7 @@ get_ci_rankbased_level2bs <- function(B,
                                           generate_level2_data(mu=thetahat_b))},
           simplify = FALSE
           )
-
+  # print("ci_rankbased_level2bs 0===================================")
   # print("Bootstrap 1")
   # print(thetahat_star[5,])
   # print("thetahat_double_star")
@@ -213,10 +225,11 @@ get_ci_rankbased_level2bs <- function(B,
   sigma_hat_star <- lapply(sorted_thetahat_double_star, # K by C 
                            function(x) compute_sigma_hat(x, C) 
                            )
-  # print(length(sigma_hat_star)) # = B
-  print(length(sorted_thetahat_star[5, ])) # = K
-  print(length(sorted_theta_hat)) # = K
-  print(length(sigma_hat_star[[5]])) # = K
+  print("ci_rankbased_level2bs 2===================================")
+  # # print(length(sigma_hat_star)) # = B
+  # print(length(sorted_thetahat_star[5, ])) # = K
+  # print(length(sorted_theta_hat)) # = K
+  # print(length(sigma_hat_star[[5]])) # = K
 
   compute_max <- function(b) {
     t_b <- abs(
@@ -233,7 +246,7 @@ get_ci_rankbased_level2bs <- function(B,
 
   # line 9 ~~~
   t_hat <- quantile(t_star, probs = 1 - alpha)
-
+  print("ci_rankbased_level2bs 3===================================")
   # line 10 ~~~
   # print("transposed")
   # print(dim(t(sorted_thetahat_star)))
