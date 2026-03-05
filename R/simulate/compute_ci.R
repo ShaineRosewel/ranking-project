@@ -43,6 +43,17 @@ get_ci_rankbased_asymptotic <- function(B,
   thetahat_star <- MASS::mvrnorm(n = B,
                                  mu = theta_hat,
                                  Sigma = varcovar_matrix) # B x K
+  
+  num_negatives <- sum(thetahat_star < 0)
+  percent_negatives <- (num_negatives / (B * K)) * 100
+  print(paste("Total negative samples found:", num_negatives))
+  print(paste("Percentage of data that is negative:", round(percent_negatives, 4), "%"))
+  
+  
+  print("=======================================================================")
+  print("thetahat_star")
+  print(thetahat_star[c(163,203,790),])
+  
   # print("theta_hat")
   # print(theta_hat)
   # print("thetahat_star")
@@ -51,11 +62,17 @@ get_ci_rankbased_asymptotic <- function(B,
   # print("reached1=======================================================================")
   # sorted counterpart line 2
   sorted_thetahat_star <- t(apply(thetahat_star, 1, sort))
-  # print("sorted_thetahat_star")
+  
+  print("=======================================================================")
+  print("sorted_thetahat_star")
   # print(cat("shape: ", dim(thetahat_star)))
-  # print(sorted_thetahat_star[c(1:3),])
+  print(sorted_thetahat_star[c(163,203,790),])
 
   variance_vector <- diag(varcovar_matrix)
+  
+  print("=======================================================================")
+  print("variance_vector")
+  print(variance_vector)
   # print("Variance vec:")
   # print(variance_vector)
   # print("Variance mat:")
@@ -66,9 +83,23 @@ get_ci_rankbased_asymptotic <- function(B,
   # print((thetahat_star^2)[c(1:3),])
   # print("minuend:")
   
+  # print("VARIANCE")
+  # print(variance_vector == matrix(variance_vector, B, K, byrow = TRUE)[c(2:2),])
+  # print(matrix(variance_vector, B, K, byrow = TRUE)[c(1:3),])
+  
   # line 3 ~~~
   minuend <- thetahat_star^2 + matrix(variance_vector, B, K, byrow = TRUE)
-  
+  print("=======================================================================")
+  print("MINUEND")
+  print(minuend[c(163,203,790),])
+  # print(sort(minuend[c(1:1),])== t(apply(minuend, 1, sort))[c(1:1),])
+  # 
+  # print("===============paired=================")
+  # print("t(apply(minuend, 1, sort))")
+  # print(t(apply(minuend, 1, sort))[c(1:3),])
+  # 
+  # print("sorted_thetahat_star")
+  # print(dim(sorted_thetahat_star))
   #print(minuend[!complete.cases(minuend), ]) #!!!!! not a problem!!!
   
   # print(minuend[c(1:3),])
@@ -79,10 +110,36 @@ get_ci_rankbased_asymptotic <- function(B,
     #(matrix(rep(variance_vector, each = B),nrow = B, byrow = FALSE))
   # print("their difference")
   # print((t(apply(minuend, 1, sort)) - sorted_thetahat_star^2)[c(1:3),])
-
+  print("=======================================================================")
+  print("t(apply(minuend, 1, sort))")
+  print(t(apply(minuend, 1, sort))[c(163,203,790),])
+  
+  print("=======================================================================")
+  print("sorted_thetahat_star^2")
+  print((sorted_thetahat_star^2)[c(163,203,790),])
+  
+  radicand <- t(apply(minuend, 1, sort)) - sorted_thetahat_star^2
+  
+  print("=======================================================================")
+  print("radicand")
+  print(radicand[c(163,203,790),])
+  
+  
+  num_negative_radicands <- sum(radicand < 0, na.rm = TRUE)
+  print(paste("Number of times the radicand was negative (causing NaN):", num_negative_radicands))
+  
   sigma_hat_star <- sqrt(
     t(apply(minuend, 1, sort)) - sorted_thetahat_star^2
     )
+  
+
+  
+  # rows_to_print <- rowSums(
+  #   t(apply(minuend, 1, sort)) < sorted_thetahat_star^2, na.rm = TRUE) > 0
+  # print("~~~~~~~~~~")
+  # print(t(apply(minuend, 1, sort))[rows_to_print, , drop = FALSE])
+  # print("~~~~~~~~~~")
+  # print((sorted_thetahat_star^2)[rows_to_print, , drop = FALSE])
   # step 1c ====================================
   # print("sigma_hat_star")
   # print(sigma_hat_star)
@@ -109,6 +166,17 @@ get_ci_rankbased_asymptotic <- function(B,
   print("======")
   print(contains_zeros)
   print(sigma_hat_star[!complete.cases(sigma_hat_star), ]) #!!!!! problem!!!
+  
+  
+  bad_rows_logical <- !complete.cases(sigma_hat_star)
+  nan_row_indices <- which(bad_rows_logical)
+  print("======")
+  print(paste("Number of rows with NaNs:", length(nan_row_indices)))
+  print("Row numbers where NaNs occur:")
+  print(nan_row_indices)
+  
+  
+  
   
   compute_max <- function(b) {
     t_b <- max(abs(
@@ -282,6 +350,12 @@ get_ci_nonrankbased <- function(B,
   thetahat_star <- MASS::mvrnorm(n = B,
                                  mu = theta_hat,
                                  Sigma = varcovar_matrix) # B x K
+  
+  num_negatives <- sum(thetahat_star < 0)
+  percent_negatives <- (num_negatives / (B * K)) * 100
+  
+  print(paste("Total negative samples found:", num_negatives))
+  print(paste("Percentage of data that is negative:", round(percent_negatives, 4), "%"))
   
   # line 3 ~~~
   t_star <- apply(thetahat_star, 

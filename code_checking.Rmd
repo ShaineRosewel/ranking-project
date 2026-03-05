@@ -80,7 +80,7 @@ List of block corrs used:
 # corr_matrix <-block_corr(block_sizes=c(2, 2, 8, 6), rho_within=c(0, 0.9, 0.9, 0.9), rho_between=0.0)
 
 K=64
-block_unb <- block_corr(block_sizes=c(27, 11, 2, 10, 12, 2), rho_within=c(0.0, 0.3, 0.3, 0.3, 0.3, 0.3), rho_between=0.0) #block_corr(block_sizes=c(27, 11, 2, 10, 12, 2), rho_within=c(0.0, 0.1, 0.1, 0.1, 0.1, 0.1), rho_between=0.0) 
+block_unb <- block_corr(block_sizes=c(27, 11, 2, 10, 12, 2), rho_within=c(0.0, 0.1, 0.1, 0.1, 0.1, 0.1), rho_between=0.0)  #block_corr(block_sizes=c(27, 11, 2, 10, 12, 2), rho_within=c(0.0, 0.3, 0.3, 0.3, 0.3, 0.3), rho_between=0.0) #block_corr(block_sizes=c(27, 11, 2, 10, 12, 2), rho_within=c(0.0, 0.1, 0.1, 0.1, 0.1, 0.1), rho_between=0.0) 
 eval <- eigen(block_unb)$values
 tol = 1e-8
 print(paste("PD for K=",K, ":", all(eval > -abs(tol * max(eval)))))
@@ -173,7 +173,7 @@ df <- cand %>%
   select(-Voting_for_dec)
 
 #corr_matrix <-block_corr(block_sizes=c(2, 2, 8, 6), rho_within=c(0, 0.1, 0.1, 0.1), rho_between=0.0)
-corr_matrix <-block_corr(block_sizes=c(27, 11, 2, 10, 12, 2), rho_within=c(0.0, 0.2, 0.2, 0.2, 0.2, 0.2), rho_between=0.0) 
+corr_matrix <-block_corr(block_sizes=c(27, 11, 2, 10, 12, 2), rho_within=c(0.0, 0.1, 0.1, 0.1, 0.1, 0.1), rho_between=0.0) 
 #corr_matrix <-block_corr(block_sizes=c(27, 11, 2, 10, 12, 2), rho_within=c(0, 0.1, 0.5, 0.9, 0.9, 0.5), rho_between=0.0) 
 # corr_matrix <-block_corr(block_sizes=c(2, 2, 8, 6), rho_within=c(0, 0.5, 0.5, 0.5), rho_between=0.0)
 #corr_matrix <-block_corr(block_sizes=c(27, 11, 2, 10, 12, 2), rho_within=c(0.5, 0.9, 0.9, 0.9, 0.9, 0.9), rho_between=0.0) 
@@ -196,15 +196,15 @@ ci_methods <- list(
                                                 theta_hat = theta_hat,
                                                 alpha = alpha,
                                                 varcovar_matrix = varcovar_matrix),
-  # rankbased_asymptotic = function() get_ci_rankbased_asymptotic(B = B,
-  #                                                               theta_hat = theta_hat,
-  #                                                               varcovar_matrix = varcovar_matrix,
-  #                                                               alpha = alpha),
-  rankbased_level2bs = function() get_ci_rankbased_level2bs(B = B,
-                                                            C = 300,
-                                                            theta_hat = theta_hat,
-                                                            varcovar_matrix = varcovar_matrix,
-                                                            alpha = alpha),
+  rankbased_asymptotic = function() get_ci_rankbased_asymptotic(B = B,
+                                                                theta_hat = theta_hat,
+                                                                varcovar_matrix = varcovar_matrix,
+                                                                alpha = alpha),
+  # rankbased_level2bs = function() get_ci_rankbased_level2bs(B = B,
+  #                                                           C = 300,
+  #                                                           theta_hat = theta_hat,
+  #                                                           varcovar_matrix = varcovar_matrix,
+  #                                                           alpha = alpha),
   independent  = function() get_ci_independent(theta_hat = theta_hat, S = S, alpha = alpha),
   bonferroni   = function() get_ci_bonferroni(theta_hat = theta_hat, S = S, alpha = alpha)
 )
@@ -238,13 +238,13 @@ res <- data.frame(
   t2_nonrankbased = processed$nonrankbased$t2,
   t3_nonrankbased = processed$nonrankbased$t3,
   #coverage_nonrankbased = coverages$nonrankbased,
-  # t1_rankbased_asymptotic = processed$rankbased_asymptotic$t1,
-  # t2_rankbased_asymptotic = processed$rankbased_asymptotic$t2,
-  # t3_rankbased_asymptotic = processed$rankbased_asymptotic$t3,
+  t1_rankbased_asymptotic = processed$rankbased_asymptotic$t1,
+  t2_rankbased_asymptotic = processed$rankbased_asymptotic$t2,
+  t3_rankbased_asymptotic = processed$rankbased_asymptotic$t3,
   #coverage_rankbased_asymptotic = coverages$rankbased_asymptotic,
-  t1_rankbased_level2bs = processed$rankbased_level2bs$t1,
-  t2_rankbased_level2bs = processed$rankbased_level2bs$t2,
-  t3_rankbased_level2bs = processed$rankbased_level2bs$t3,
+  # t1_rankbased_level2bs = processed$rankbased_level2bs$t1,
+  # t2_rankbased_level2bs = processed$rankbased_level2bs$t2,
+  # t3_rankbased_level2bs = processed$rankbased_level2bs$t3,
   #coverage_rankbased_level2bs = coverages$rankbased_level2bs,
   t1_independent = processed$independent$t1,
   t2_independent = processed$independent$t2,
@@ -271,8 +271,7 @@ summ %>% rename(value = 'V1') %>%
 
 
 ```{r}
-(sorted_thetahat_star[b, ] - sorted_theta_hat) /
-        sigma_hat_star[b,]
+9.950774e-06-1.816841e-05
 ```
 
 
