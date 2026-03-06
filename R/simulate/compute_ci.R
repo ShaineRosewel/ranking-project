@@ -54,6 +54,10 @@ get_ci_rankbased_asymptotic <- function(B,
   print("thetahat_star")
   print(thetahat_star[c(163,203,790),])
   
+  print("=======================================================================")
+  print("thetahat_star SQUARED")
+  print(thetahat_star[c(163,203,790),]^2)
+  
   # print("theta_hat")
   # print(theta_hat)
   # print("thetahat_star")
@@ -118,7 +122,7 @@ get_ci_rankbased_asymptotic <- function(B,
   print("sorted_thetahat_star^2")
   print((sorted_thetahat_star^2)[c(163,203,790),])
   
-  radicand <- t(apply(minuend, 1, sort)) - sorted_thetahat_star^2
+  radicand <- t(apply(minuend, 1, sort)) - sorted_thetahat_star^2 # t(apply(thetahat_star^2, 1, sort)) 
   
   print("=======================================================================")
   print("radicand")
@@ -129,7 +133,7 @@ get_ci_rankbased_asymptotic <- function(B,
   print(paste("Number of times the radicand was negative (causing NaN):", num_negative_radicands))
   
   sigma_hat_star <- sqrt(
-    t(apply(minuend, 1, sort)) - sorted_thetahat_star^2
+    t(apply(minuend, 1, sort)) - sorted_thetahat_star^2 #t(apply(thetahat_star^2, 1, sort))# ^sorted_thetahat_star^2
     )
   
 
