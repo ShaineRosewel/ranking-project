@@ -4,7 +4,7 @@ knitr::opts_chunk$set(warnings = FALSE, message = FALSE)
 
 
 ```{r}
-source("/home/realiseshewon/PDev/kde-ranking/R/get_plots.R")
+source("/home/realiseshewon/PDev/kde-ranking/R/create_plot.R")
 dataset<-readRDS("/home/realiseshewon/PDev/kde-ranking/data/true_theta.rds")
 ```
 
@@ -13,8 +13,8 @@ dataset<-readRDS("/home/realiseshewon/PDev/kde-ranking/data/true_theta.rds")
 The actual $\theta$ values used in the simulation are shown in Table \@ref(tab:true-theta-table). Figure \@ref(fig:true-theta-boxplot) shows how the spread of the $\theta$ varies in the cases considered.
 
 ```{r true-theta-table, tab.cap="True $\\theta$ values used in the simulation have different levels of variability."}
-source("/home/realiseshewon/PDev/kde-ranking/R/get_tables.R")
-get_table_for_true_theta(
+source("/home/realiseshewon/PDev/kde-ranking/R/create_table.R")
+create_table_for_true_theta(
   dataset %>% 
   select(K, data_spread, true_theta) %>%
   group_by(K, data_spread)%>%
@@ -23,7 +23,7 @@ get_table_for_true_theta(
 ```
 
 ```{r true-theta-boxplot, fig.cap="True $\\theta$ values used in the simulation have different levels of variability.", message = FALSE, warning=FALSE, fig.pos='H'}
-get_boxplot_for_true_theta(dataset)
+create_boxplot_for_true_theta(dataset)
 ```
 
 
