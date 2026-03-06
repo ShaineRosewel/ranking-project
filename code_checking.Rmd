@@ -101,6 +101,12 @@ cand$Makabayan <- ifelse(cand$Party == 'MKBYN', 1, 0)
 
 
 ```{r}
+cand
+```
+
+
+
+```{r}
 cand %>% 
   mutate(Voting_for_dec = `Voting For`/100) %>%
   mutate(se = sqrt((Voting_for_dec*(1-Voting_for_dec))/1200) ) %>%
@@ -154,39 +160,55 @@ dim(df)[1]
 ```
 
 
+```{r}
+theta_hat
+```
+
+
+```{r}
+df$se
+```
+
+
+```{r}
+block_corr(block_sizes=c(27, 11, 2, 10, 12, 2), rho_within=c(0.0, 0.1, 0.1, 0.1, 0.1, 0.1), rho_between=0.0) %>% View()
+```
+
 
 
 ```{r}
 source("R/simulate/compute_ci.R")
 source("R/simulate/compute_metrics.R")
 
-# df <- cand %>% 
+# df <- cand %>%
 #   mutate(Voting_for_dec = `Voting For`/100) %>%
 #   mutate(se = sqrt((Voting_for_dec*(1-Voting_for_dec))/1200) ) %>%
 #   select(-Voting_for_dec) %>% arrange(desc(`Voting For`)) %>% head(18) %>% arrange(DuterTen, Alyansa, KiBam, Makabayan)
 
 
-df <- cand %>% 
-  mutate(Voting_for_dec = `Voting For`/100) %>% 
+df <- cand %>%
+  mutate(Voting_for_dec = `Voting For`/100) %>%
   arrange(DuterTen, Alyansa, KiBam, Makabayan) %>%
   mutate(se = sqrt((Voting_for_dec*(1-Voting_for_dec))/1200) ) %>%
   select(-Voting_for_dec)
 
-#corr_matrix <-block_corr(block_sizes=c(2, 2, 8, 6), rho_within=c(0, 0.1, 0.1, 0.1), rho_between=0.0)
-corr_matrix <-block_corr(block_sizes=c(27, 11, 2, 10, 12, 2), rho_within=c(0.0, 0.1, 0.1, 0.1, 0.1, 0.1), rho_between=0.0) 
+# corr_matrix <-block_corr(block_sizes=c(2, 2, 8, 6), rho_within=c(0, 0.9, 0.9, 0.9), rho_between=0.0)
+corr_matrix <-block_corr(block_sizes=c(27, 11, 2, 10, 12, 2), rho_within=c(0.0, 0.1, 0.1, 0.1, 0.1, 0.1), rho_between=0.0)
 #corr_matrix <-block_corr(block_sizes=c(27, 11, 2, 10, 12, 2), rho_within=c(0, 0.1, 0.5, 0.9, 0.9, 0.5), rho_between=0.0) 
 # corr_matrix <-block_corr(block_sizes=c(2, 2, 8, 6), rho_within=c(0, 0.5, 0.5, 0.5), rho_between=0.0)
 #corr_matrix <-block_corr(block_sizes=c(27, 11, 2, 10, 12, 2), rho_within=c(0.5, 0.9, 0.9, 0.9, 0.9, 0.9), rho_between=0.0) 
 
 set.seed(123974)
-theta_hat <- df$`Voting For`/100
+theta_hat <- (df$`Voting For`)/100
 true_sds <- df$se
-#true_sds <- rep(0.028/1.96, 18)
+#true_sds <- rep(0.028/1.96, K)
+K <- dim(df)[1]
+
 variance_vector <- true_sds^2
 delta <- diag(variance_vector)
 varcovar_matrix <- delta^(1/2) %*% corr_matrix %*% delta^(1/2)
 B <- 1000
-K <- dim(df)[1]
+
 alpha <- 0.05
 S <- sqrt(diag(varcovar_matrix))
 
@@ -219,6 +241,12 @@ process_ci_result <- function(result, K) {
     1, 
     function(row) as.numeric(row)
   ))
+  
+  print(
+      sapply(1:K, function(x) 
+    get_ranks(x, tuple_list)$ranks
+  )
+  )
   
   rank_range_length <- sapply(1:K, function(x) 
     length(get_ranks(x, tuple_list)$ranks)
@@ -269,11 +297,82 @@ summ %>% rename(value = 'V1') %>%
   # filter(!(approach %in% c('rankbased_asymptotic', 'rankbased_level2bs')))
 ```
 
+Result becomes affected by the sign and this case matters when there are small 
+proportions which make it more possible to sample negative values from `mvrnorm`
+
+Given `-0.1` and `0.001`
 
 ```{r}
-9.950774e-06-1.816841e-05
+# sort before square (ito yung nasa current code)
+(sort(c(-0.1, 0.001)))^2
 ```
 
+```{r}
+# square before sort
+sort(c((-0.1)^2, 0.001^2))
+```
+
+
+
+```{r}
+(0.002342546)^2 # 5.487523e-06 
+
+(0.002342546)^2 + 4.145833e-06 # 2.206456e-05
+
+(0.002342546)^2 + 4.145833e-06 - 1.085773e-04
+```
+
+
+
+```{r}
+(0.0002075621)^2 # 4.308204e-08
+
+(0.0002075621)^2+ 4.145833e-06# 2.535582e-06
+
+(0.0002075621)^2+ 2.492500e-06 -1.969182e-05
+```
+
+
+```{r}
+#(-0.0001323539)^2 + 2.492500e-06 ##- (-0.001639273)^2
+
+#1.751757e-08 = (-0.0001323539)^2
+```
+```{r}
+(-0.001639273)^2
+```
+
+
+```{r}
+(0.028/1.96)^2
+```
+
+
+
+```{r}
+process_ci_result <- function(result, K) {
+  tuple_list <- t(apply(
+    data.frame(
+      ci_lower = result$ci_lower,
+      ci_upper = result$ci_upper
+    ), 
+    1, 
+    function(row) as.numeric(row)
+  ))
+  
+  return(tuple_list)
+}
+
+process_ci_result(res, K)
+```
+
+
+
+
+```{r}
+((1.712325e-04) + (0.2596490)^2) 
+```
+0.06758881
 
 ```{r}
 K = 64
@@ -330,7 +429,7 @@ Ks <- c(dim(df)[1])#c(40,50)
 
 print(cat("RESULTS FOR SD =",sd, "; K =", K))
 
-# none, mkbyn,kibam, marcos, duterte
+# none, mkbyn,kibam, alyansa, duterte, alyansa&duterte
 corr_matrix <- block_corr(block_sizes=c(27, 11, 2, 10, 12, 2), rho_within=c(0, 0.8, 0.8, 0.8, 0.8, 0.8), rho_between=0.0) 
 #corr_matrix <-block_corr(block_sizes=c(27, 11, 2, 10, 12, 2), rho_within=c(0, 0.1, 0.5, 0.9, 0.9, 0.5), rho_between=0.0) 
 
