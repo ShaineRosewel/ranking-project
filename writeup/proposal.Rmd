@@ -52,12 +52,7 @@ header-includes:
 papersize: a4
 bibliography: /home/realiseshewon/PDev/kde-ranking/writeup/references/references.bib
 nocite: | 
-  @elias
-  @wright
-  @sidak
-  @dunn
-  @pork
-  @healy
+  @*
 csl: /home/realiseshewon/PDev/kde-ranking/writeup/references/harvard-educational-review.csl
 ---
 
