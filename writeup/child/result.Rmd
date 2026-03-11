@@ -9,11 +9,74 @@ output:
 
 The results of nonrank-based algorithm are compared to the approaches from @klein: independent and Bonferroni.
 
+### Equicorrelated matrices
+
 ```{r}
 source("/home/realiseshewon/PDev/kde-ranking/R/preprocess_data.R")
 source("/home/realiseshewon/PDev/kde-ranking/R/create_table.R")
 
 
+equicorr <- TRUE
+
+combined <- combine_summaries(
+  "/home/realiseshewon/PDev/kde-ranking/simulation_results/summaries/summary_k",
+  equicorr
+)
+
+
+tabletest <- preprocess_coverage(combined, 2, equicorrelation = equicorr)
+create_table_for_coverage(preprocess_coverage(combined, 2, equicorr), equicorr)
+
+create_table_for_coverage(preprocess_coverage(combined, 3.6, equicorr), equicorr)
+
+create_table_for_coverage(preprocess_coverage(combined, 6, equicorr), equicorr)
+```
+
+\blandscape
+
+```{r}
+tabb <- preprocess_tightness_measure(combined, "t1", equicorr)
+
+if (!equicorr) {
+  tabb <- tabb %>% select(-c(r, blocks))
+}
+
+create_table_for_tightness_measure(
+  summary=tabb,
+  metric_type="T1", equicorr)
+```
+
+```{r}
+tabb <- preprocess_tightness_measure(combined, "t2", equicorr)
+
+if (!equicorr) {
+  tabb <- tabb %>% select(-c(r, blocks))
+}
+
+
+create_table_for_tightness_measure(
+  summary=tabb, 
+  metric_type="T2", equicorr)
+```
+
+```{r}
+tabb <- preprocess_tightness_measure(combined, "t3", equicorr)
+
+if (!equicorr) {
+  tabb <- tabb %>% select(-c(r, blocks))
+}
+
+create_table_for_tightness_measure(
+  summary=tabb, 
+  metric_type="T3", equicorr)
+```
+
+\elandscape
+
+
+### Block diagonal matrices
+
+```{r}
 equicorr <- FALSE
 
 combined <- combine_summaries(
