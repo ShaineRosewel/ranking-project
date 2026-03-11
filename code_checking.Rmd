@@ -160,14 +160,8 @@ dim(df)[1]
 ```
 
 
-```{r}
-theta_hat
-```
 
 
-```{r}
-df$se
-```
 
 
 ```{r}
@@ -193,7 +187,7 @@ df <- cand %>%
   select(-Voting_for_dec)
 
 # corr_matrix <-block_corr(block_sizes=c(2, 2, 8, 6), rho_within=c(0, 0.9, 0.9, 0.9), rho_between=0.0)
-corr_matrix <-block_corr(block_sizes=c(27, 11, 2, 10, 12, 2), rho_within=c(0.0, 0.1, 0.1, 0.1, 0.1, 0.1), rho_between=0.0)
+corr_matrix <-block_corr(block_sizes=c(27, 11, 2, 10, 12, 2), rho_within=c(0.0, 0.8, 0.8, 0.8, 0.8, 0.8), rho_between=0.0) # <- sample asymptotic neg rad
 #corr_matrix <-block_corr(block_sizes=c(27, 11, 2, 10, 12, 2), rho_within=c(0, 0.1, 0.5, 0.9, 0.9, 0.5), rho_between=0.0) 
 # corr_matrix <-block_corr(block_sizes=c(2, 2, 8, 6), rho_within=c(0, 0.5, 0.5, 0.5), rho_between=0.0)
 #corr_matrix <-block_corr(block_sizes=c(27, 11, 2, 10, 12, 2), rho_within=c(0.5, 0.9, 0.9, 0.9, 0.9, 0.9), rho_between=0.0) 
@@ -218,10 +212,10 @@ ci_methods <- list(
                                                 theta_hat = theta_hat,
                                                 alpha = alpha,
                                                 varcovar_matrix = varcovar_matrix),
-  rankbased_asymptotic = function() get_ci_rankbased_asymptotic(B = B,
-                                                                theta_hat = theta_hat,
-                                                                varcovar_matrix = varcovar_matrix,
-                                                                alpha = alpha),
+  # rankbased_asymptotic = function() get_ci_rankbased_asymptotic(B = B,
+  #                                                               theta_hat = theta_hat,
+  #                                                               varcovar_matrix = varcovar_matrix,
+  #                                                               alpha = alpha),
   # rankbased_level2bs = function() get_ci_rankbased_level2bs(B = B,
   #                                                           C = 300,
   #                                                           theta_hat = theta_hat,
@@ -266,9 +260,9 @@ res <- data.frame(
   t2_nonrankbased = processed$nonrankbased$t2,
   t3_nonrankbased = processed$nonrankbased$t3,
   #coverage_nonrankbased = coverages$nonrankbased,
-  t1_rankbased_asymptotic = processed$rankbased_asymptotic$t1,
-  t2_rankbased_asymptotic = processed$rankbased_asymptotic$t2,
-  t3_rankbased_asymptotic = processed$rankbased_asymptotic$t3,
+  # t1_rankbased_asymptotic = processed$rankbased_asymptotic$t1,
+  # t2_rankbased_asymptotic = processed$rankbased_asymptotic$t2,
+  # t3_rankbased_asymptotic = processed$rankbased_asymptotic$t3,
   #coverage_rankbased_asymptotic = coverages$rankbased_asymptotic,
   # t1_rankbased_level2bs = processed$rankbased_level2bs$t1,
   # t2_rankbased_level2bs = processed$rankbased_level2bs$t2,
@@ -296,6 +290,137 @@ summ %>% rename(value = 'V1') %>%
   ) %>% arrange(metric, value)# %>%
   # filter(!(approach %in% c('rankbased_asymptotic', 'rankbased_level2bs')))
 ```
+
+
+```{r}
+cand
+```
+
+
+```{r}
+seq(1,K, 1)
+```
+
+### Default viz
+
+```{r warning = FALSE}
+# kde_result <- output[[51]]
+# df <- readRDS("../data/mean_travel_time_ranking_2011.rds")
+cand$k <- seq(1,K, 1)
+cand$sample_rank <- seq(1,K, 1)
+cand$order_index <- seq(1,K, 1)
+
+# kde_result <- merge(x = df[,c('k', 'iso', 'order_index')], y = kde_result, by = "k", all.x = TRUE)
+
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+
+to_string_seq <- function(x, y){paste(seq(x, y, 1), collapse=',')}
+
+dat_to_plot <- cand %>% 
+    # select(c(k, iso, kde_rank_lower, kde_rank_upper, sample_rank, order_index,theta_k)) %>%
+    select(c(k, `Rank LB`, `Rank UB`, sample_rank, order_index,
+Candidate)) %>%
+    mutate(string_ranks = mapply(to_string_seq, `Rank LB`, `Rank UB`)) %>%
+    separate_rows(string_ranks, sep=",") %>%
+    select(c(k, sample_rank, string_ranks, Candidate))
+
+dat_to_plot$highlight <- ifelse(dat_to_plot$sample_rank == as.numeric(dat_to_plot$string_ranks), "highlight", "normal")
+
+p <- ggplot(data = dat_to_plot, aes(x = reorder(k, Candidate),
+                               y = as.numeric(string_ranks),
+                               color = highlight)) + 
+  geom_point(size = 1) +
+  scale_color_manual(values = c("highlight" = "red", "normal" = "black")) +
+  scale_y_continuous(breaks = 1:64) +
+  labs(title='(Pulse Asia) visualization of the 95% joint confidence') + xlab('Candidate Index') + ylab('Sample rank') +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 7),
+        axis.text.y = element_text(size=4)
+        ) +
+  guides(colour="none") +
+    theme(axis.line = element_line(colour = "gray"),
+    panel.grid.minor = element_blank(),
+    panel.grid.major.x = element_blank(),)
+
+p
+```
+
+
+## Viz for nonrank
+
+
+```{r}
+process_ci_result <- function(result, K) {
+  tuple_list <- t(apply(
+    data.frame(
+      ci_lower = result$ci_lower,
+      ci_upper = result$ci_upper
+    ), 
+    1, 
+    function(row) as.numeric(row)
+  ))
+  
+  print(
+      sapply(1:K, function(x) 
+    get_ranks(x, tuple_list)$ranks
+  )
+  )
+  
+  sapply(1:K, function(x) 
+    64-get_ranks(x, tuple_list)$ranks+1
+  )
+}
+```
+
+```{r}
+process_ci_result(result = ci_results$nonrankbased, K=64)
+```
+
+
+```{r}
+ci_results
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 Result becomes affected by the sign and this case matters when there are small 
 proportions which make it more possible to sample negative values from `mvrnorm`
