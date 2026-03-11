@@ -107,18 +107,18 @@ cand
 
 
 ```{r}
-cand %>% 
-  mutate(Voting_for_dec = `Voting For`/100) %>%
-  mutate(se = sqrt((Voting_for_dec*(1-Voting_for_dec))/1200) ) %>%
-  select(-Voting_for_dec) %>% arrange(desc(`Voting For`)) %>% View()
+# cand %>% 
+#   mutate(Voting_for_dec = `Voting For`/100) %>%
+#   mutate(se = sqrt((Voting_for_dec*(1-Voting_for_dec))/1200) ) %>%
+#   select(-Voting_for_dec) %>% arrange(desc(`Voting For`)) %>% View()
 ```
 
 
 ```{r}
-cand %>% 
-  mutate(Voting_for_dec = `Voting For`/100) %>%
-  mutate(se = sqrt((Voting_for_dec*(1-Voting_for_dec))/1200) ) %>%
-  select(-Voting_for_dec) %>% arrange(desc(`Voting For`)) %>% head(18) %>% arrange(DuterTen, Alyansa, KiBam, Makabayan) 
+# cand %>% 
+#   mutate(Voting_for_dec = `Voting For`/100) %>%
+#   mutate(se = sqrt((Voting_for_dec*(1-Voting_for_dec))/1200) ) %>%
+#   select(-Voting_for_dec) %>% arrange(desc(`Voting For`)) %>%  arrange(DuterTen, Alyansa, KiBam, Makabayan) 
 ```
 
 ```{r}
@@ -132,32 +132,28 @@ K <- c(dim(df)[1])
 
 
 ```{r}
-process_ci_result <- function(result, K) {
-  tuple_list <- t(apply(
-    data.frame(
-      ci_lower = result$ci_lower,
-      ci_upper = result$ci_upper
-    ), 
-    1, 
-    function(row) as.numeric(row)
-  ))
-  
-  rank_range_length <- sapply(1:K, function(x) 
-    length(get_ranks(x, tuple_list)$ranks)
-  )
-  list(
-    t1 = get_t1(rank_range_length),
-    t2 = get_t2(rank_range_length),
-    t3 = get_t3(rank_range_length)
-  )
-}
+# process_ci_result <- function(result, K) {
+#   tuple_list <- t(apply(
+#     data.frame(
+#       ci_lower = result$ci_lower,
+#       ci_upper = result$ci_upper
+#     ), 
+#     1, 
+#     function(row) as.numeric(row)
+#   ))
+#   
+#   rank_range_length <- sapply(1:K, function(x) 
+#     length(get_ranks(x, tuple_list)$ranks)
+#   )
+#   list(
+#     t1 = get_t1(rank_range_length),
+#     t2 = get_t2(rank_range_length),
+#     t3 = get_t3(rank_range_length)
+#   )
+# }
 ``` 
 
 
-
-```{r}
-dim(df)[1]
-```
 
 
 
@@ -187,7 +183,7 @@ df <- cand %>%
   select(-Voting_for_dec)
 
 # corr_matrix <-block_corr(block_sizes=c(2, 2, 8, 6), rho_within=c(0, 0.9, 0.9, 0.9), rho_between=0.0)
-corr_matrix <-block_corr(block_sizes=c(27, 11, 2, 10, 12, 2), rho_within=c(0.0, 0.8, 0.8, 0.8, 0.8, 0.8), rho_between=0.0) # <- sample asymptotic neg rad
+corr_matrix <-block_corr(block_sizes=c(27, 11, 2, 10, 12, 2), rho_within=c(0.0, 0.1, 0.1, 0.1, 0.1, 0.1), rho_between=0.0) # <- sample asymptotic neg rad
 #corr_matrix <-block_corr(block_sizes=c(27, 11, 2, 10, 12, 2), rho_within=c(0, 0.1, 0.5, 0.9, 0.9, 0.5), rho_between=0.0) 
 # corr_matrix <-block_corr(block_sizes=c(2, 2, 8, 6), rho_within=c(0, 0.5, 0.5, 0.5), rho_between=0.0)
 #corr_matrix <-block_corr(block_sizes=c(27, 11, 2, 10, 12, 2), rho_within=c(0.5, 0.9, 0.9, 0.9, 0.9, 0.9), rho_between=0.0) 
@@ -212,10 +208,10 @@ ci_methods <- list(
                                                 theta_hat = theta_hat,
                                                 alpha = alpha,
                                                 varcovar_matrix = varcovar_matrix),
-  # rankbased_asymptotic = function() get_ci_rankbased_asymptotic(B = B,
-  #                                                               theta_hat = theta_hat,
-  #                                                               varcovar_matrix = varcovar_matrix,
-  #                                                               alpha = alpha),
+  rankbased_asymptotic = function() get_ci_rankbased_asymptotic(B = B,
+                                                                theta_hat = theta_hat,
+                                                                varcovar_matrix = varcovar_matrix,
+                                                                alpha = alpha),
   # rankbased_level2bs = function() get_ci_rankbased_level2bs(B = B,
   #                                                           C = 300,
   #                                                           theta_hat = theta_hat,
@@ -263,7 +259,7 @@ res <- data.frame(
   # t1_rankbased_asymptotic = processed$rankbased_asymptotic$t1,
   # t2_rankbased_asymptotic = processed$rankbased_asymptotic$t2,
   # t3_rankbased_asymptotic = processed$rankbased_asymptotic$t3,
-  #coverage_rankbased_asymptotic = coverages$rankbased_asymptotic,
+  # coverage_rankbased_asymptotic = coverages$rankbased_asymptotic,
   # t1_rankbased_level2bs = processed$rankbased_level2bs$t1,
   # t2_rankbased_level2bs = processed$rankbased_level2bs$t2,
   # t3_rankbased_level2bs = processed$rankbased_level2bs$t3,
@@ -362,11 +358,11 @@ process_ci_result <- function(result, K) {
     function(row) as.numeric(row)
   ))
   
-  print(
-      sapply(1:K, function(x) 
-    get_ranks(x, tuple_list)$ranks
-  )
-  )
+  # print(
+  #     sapply(1:K, function(x) 
+  #   get_ranks(x, tuple_list)$ranks
+  # )
+  # )
   
   sapply(1:K, function(x) 
     64-get_ranks(x, tuple_list)$ranks+1
@@ -374,14 +370,117 @@ process_ci_result <- function(result, K) {
 }
 ```
 
-```{r}
-process_ci_result(result = ci_results$nonrankbased, K=64)
+
+```{r warning = FALSE}
+nonrankcand <- cand %>%
+  mutate(Voting_for_dec = `Voting For`/100) %>%
+  mutate(se = sqrt((Voting_for_dec*(1-Voting_for_dec))/1200) ) %>%
+  select(-Voting_for_dec) %>% arrange(desc(`Voting For`)) %>%  arrange(DuterTen, Alyansa, KiBam, Makabayan) 
+
+nonrankcand$`Rank LB` <- sapply(process_ci_result(result = ci_results$nonrankbased, K=64), min)
+nonrankcand$`Rank UB` <- sapply(process_ci_result(result = ci_results$nonrankbased, K=64), max)
+nonrankcand <- nonrankcand %>% arrange(desc(`Voting For`))
+
+# kde_result <- output[[51]]
+K=64
+# df <- readRDS("../data/mean_travel_time_ranking_2011.rds")
+nonrankcand$k <- seq(1,K, 1)
+nonrankcand$sample_rank <- seq(1,K, 1)
+nonrankcand$order_index <- seq(1,K, 1)
+
+# kde_result <- merge(x = df[,c('k', 'iso', 'order_index')], y = kde_result, by = "k", all.x = TRUE)
+
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+
+to_string_seq <- function(x, y){paste(seq(x, y, 1), collapse=',')}
+
+dat_to_plot <- nonrankcand %>% 
+    # select(c(k, iso, kde_rank_lower, kde_rank_upper, sample_rank, order_index,theta_k)) %>%
+    select(c(k, `Rank LB`, `Rank UB`, sample_rank, order_index,
+Candidate)) %>%
+    mutate(string_ranks = mapply(to_string_seq, `Rank LB`, `Rank UB`)) %>%
+    separate_rows(string_ranks, sep=",") %>%
+    select(c(k, sample_rank, string_ranks, Candidate))
+
+dat_to_plot$highlight <- ifelse(dat_to_plot$sample_rank == as.numeric(dat_to_plot$string_ranks), "highlight", "normal")
+
+p <- ggplot(data = dat_to_plot, aes(x = reorder(k, Candidate),
+                               y = as.numeric(string_ranks),
+                               color = highlight)) + 
+  geom_point(size = 1) +
+  scale_color_manual(values = c("highlight" = "red", "normal" = "black")) +
+  scale_y_continuous(breaks = 1:64) +
+  labs(title='(Nonrank) visualization of the 95% joint confidence') + xlab('Candidate Index') + ylab('Sample rank') +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 7),
+        axis.text.y = element_text(size=4)
+        ) +
+  guides(colour="none") +
+    theme(axis.line = element_line(colour = "gray"),
+    panel.grid.minor = element_blank(),
+    panel.grid.major.x = element_blank(),)
+
+p
 ```
 
 
-```{r}
-ci_results
+```{r warning = FALSE}
+independentcand <- cand %>%
+  mutate(Voting_for_dec = `Voting For`/100) %>%
+  mutate(se = sqrt((Voting_for_dec*(1-Voting_for_dec))/1200) ) %>%
+  select(-Voting_for_dec) %>% arrange(desc(`Voting For`)) %>%  arrange(DuterTen, Alyansa, KiBam, Makabayan) 
+
+independentcand$`Rank LB` <- sapply(process_ci_result(result = ci_results$independent, K=64), min)
+independentcand$`Rank UB` <- sapply(process_ci_result(result = ci_results$independent, K=64), max)
+independentcand <- nonrankcand %>% arrange(desc(`Voting For`))
+
+# kde_result <- output[[51]]
+K=64
+# df <- readRDS("../data/mean_travel_time_ranking_2011.rds")
+independentcand$k <- seq(1,K, 1)
+independentcand$sample_rank <- seq(1,K, 1)
+independentcand$order_index <- seq(1,K, 1)
+
+# kde_result <- merge(x = df[,c('k', 'iso', 'order_index')], y = kde_result, by = "k", all.x = TRUE)
+
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+
+to_string_seq <- function(x, y){paste(seq(x, y, 1), collapse=',')}
+
+dat_to_plot <- independentcand %>% 
+    # select(c(k, iso, kde_rank_lower, kde_rank_upper, sample_rank, order_index,theta_k)) %>%
+    select(c(k, `Rank LB`, `Rank UB`, sample_rank, order_index,
+Candidate)) %>%
+    mutate(string_ranks = mapply(to_string_seq, `Rank LB`, `Rank UB`)) %>%
+    separate_rows(string_ranks, sep=",") %>%
+    select(c(k, sample_rank, string_ranks, Candidate))
+
+dat_to_plot$highlight <- ifelse(dat_to_plot$sample_rank == as.numeric(dat_to_plot$string_ranks), "highlight", "normal")
+
+p <- ggplot(data = dat_to_plot, aes(x = reorder(k, Candidate),
+                               y = as.numeric(string_ranks),
+                               color = highlight)) + 
+  geom_point(size = 1) +
+  scale_color_manual(values = c("highlight" = "red", "normal" = "black")) +
+  scale_y_continuous(breaks = 1:64) +
+  labs(title='(Pulse Asia) visualization of the 95% joint confidence') + xlab('Candidate Index') + ylab('Sample rank') +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 7),
+        axis.text.y = element_text(size=4)
+        ) +
+  guides(colour="none") +
+    theme(axis.line = element_line(colour = "gray"),
+    panel.grid.minor = element_blank(),
+    panel.grid.major.x = element_blank(),)
+
+p
 ```
+
+
 
 
 
