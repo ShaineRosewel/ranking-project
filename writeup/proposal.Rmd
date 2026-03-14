@@ -42,7 +42,8 @@ header-includes:
 - \titleformat{\subsection}{\fontsize{18pt}{20pt}\bfseries}{\thesubsection}{1em}{}
 - \titleformat{\subsubsection}{\fontsize{16pt}{19pt}\bfseries}{\thesubsubsection}{1em}{}
 - \usepackage{caption}
-- \captionsetup[figure]{font=scriptsize}
+- \captionsetup[figure]{font={large,bf}}
+- \captionsetup[table]{font={large,bf}}
 - \newcommand{\algfont}{\fontsize{15pt}{18pt}\selectfont} # slightly smaller than thesis font
 - \DeclareCaptionFont{thesisalg}{\algfont\bfseries} # caption font
 - \captionsetup[algorithm]{font=thesisalg}
