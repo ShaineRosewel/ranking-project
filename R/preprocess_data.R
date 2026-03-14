@@ -24,16 +24,28 @@ combine_summaries <- function(
   return(combined)
 }
 
-preprocess_coverage <- function(dataset, sd_value, equicorrelation = TRUE){
+preprocess_coverage <- function(dataset, 
+                                sd_value, 
+                                equicorrelation = TRUE,
+                                unordered = TRUE){
+  
+  if (unordered) {
+    deselected_columns <- c('rankbased_asymptotic', 'rankbased_level2bs', 'metric', 'sd')
+    selected_columns <- c('independent','bonferroni', 'nonrankbased')
+  } else {
+    deselected_columns <- c('independent','bonferroni', 'nonrankbased', 'metric', 'sd')
+    selected_columns <- c('rankbased_asymptotic', 'rankbased_level2bs')
+  }
+
   partial <- dataset %>%
     filter(sd == sd_value, metric == "coverage") %>% 
-    select(-c(rankbased_asymptotic, rankbased_level2bs, metric, sd))
+    select(!all_of(deselected_columns))
   if (equicorrelation) {
     final <- partial %>%
-      select(c(K, r, independent, bonferroni, nonrankbased))
+      select(c(K, r, selected_columns))
   } else {
     final <- partial %>%
-      select(c(K, independent, bonferroni, nonrankbased))
+      select(c(K, selected_columns))
   }
   
   return(
@@ -43,12 +55,22 @@ preprocess_coverage <- function(dataset, sd_value, equicorrelation = TRUE){
 
 
 
-preprocess_tightness_measure <- function(dataset, metric_type, equicorrelation){
+preprocess_tightness_measure <- function(dataset, metric_type, equicorrelation,
+                                         unordered = TRUE){
   if (equicorrelation) {
     vector1 <- c('K', 'r')
   } else {
     vector1 <- c('K', 'r', 'blocks')
   }
+  
+  levels <- c('low', 'med', "high")
+  if (unordered) {
+    selected_columns <- c('independent', 'bonferroni', 'nonrankbased')
+  } else {
+    selected_columns <- c('rankbased_asymptotic', 'rankbased_level2bs')
+  }
+  
+  
   return(
     dataset %>% 
       filter(metric == metric_type) %>% 
@@ -56,16 +78,17 @@ preprocess_tightness_measure <- function(dataset, metric_type, equicorrelation){
                                   'low', 
                                   ifelse(sd == 3.6, 'med', 'high'))) %>%
       select(
-        c(vector1, c(variability, independent, bonferroni, nonrankbased)
+        c(vector1, c(variability, selected_columns)
           )
         ) %>%
       tidyr::pivot_wider(names_from = variability, 
-                         values_from = c(independent, bonferroni, nonrankbased), 
+                         values_from = selected_columns, 
                          names_sep = "_") %>%
       select(
-        c(vector1, c(independent_low, bonferroni_low, nonrankbased_low,
-                         independent_med, bonferroni_med, nonrankbased_med,
-                         independent_high, bonferroni_high, nonrankbased_high)
+        c(vector1, unlist(lapply(levels, 
+                                 function(x) {paste(selected_columns, 
+                                                    x, 
+                                                    sep = '_')}))
           )
         )
   )
