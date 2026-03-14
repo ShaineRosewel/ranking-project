@@ -29,27 +29,27 @@ create_table_for_tightness_measure <- function(summary, metric_type,
                                                unordered = TRUE){
 
   if (unordered) {
-    selected_columns <- c("Independent","Bonferroni","Nonrank-based")
+    selected_columns <- c("Independent","Bonferroni","Nonrank")
+    colwidth  <- "2cm"
   } else {
     selected_columns <- c("Asymptotic Variance","Bootstrap Estimate")
+    colwidth  <- "3cm"
   }
-  
-  numcols <- length(selected_columns)
-  
+  num <- length(selected_columns)
   if (equicorrelation) {
     vector_1 <- c("K", "r")
     striped <- rep(c(0, 6, 12), each = 3) + 1:3
     headers <- c(" " = 2, 
-                 "Low $\\\\boldsymbol{\\\\theta}$ Variability" = numcols, 
-                 "Medium $\\\\boldsymbol{\\\\theta}$ Variability" = numcols, 
-                 "High $\\\\boldsymbol{\\\\theta}$ Variability" = numcols)
+                 "Low $\\\\boldsymbol{\\\\theta}$ Variability" = num, 
+                 "Medium $\\\\boldsymbol{\\\\theta}$ Variability" = num, 
+                 "High $\\\\boldsymbol{\\\\theta}$ Variability" = num)
   } else {
     vector_1 <- c("K")
     striped <- -1 #rep(c(0, 10), each = 5) + 1:5
     headers <- c(" "=1,
-                 "Low $\\\\boldsymbol{\\\\theta}$ Variability" = numcols, 
-                 "Medium $\\\\boldsymbol{\\\\theta}$ Variability" = numcols,
-                 "High $\\\\boldsymbol{\\\\theta}$ Variability" = numcols)
+                 "Low $\\\\boldsymbol{\\\\theta}$ Variability" = num, 
+                 "Medium $\\\\boldsymbol{\\\\theta}$ Variability" = num,
+                 "High $\\\\boldsymbol{\\\\theta}$ Variability" = num)
   }
 
   
@@ -77,9 +77,13 @@ create_table_for_tightness_measure <- function(summary, metric_type,
                     #rep(c(0, 6, 12), each = 3) + 1:3) %>%
 
   if (equicorrelation) {
-    final <- formatted
+    final <- formatted %>% 
+      column_spec(1:2, width = "1cm") %>%
+      column_spec(3:(2+3*num), width = colwidth)
   } else {
     final <- formatted %>% 
+      column_spec(1:1, width = "1cm") %>%
+      column_spec(2:(1+3*num), width = colwidth) %>%
       pack_rows("2 balanced blocks", 1, 5,
                 latex_gap_space = "0.7em") %>%
       pack_rows("2 unbalanced blocks", 6, 10,
@@ -106,7 +110,7 @@ create_table_for_coverage <- function(summary, footnote, equicorrelation = TRUE,
   }
   
   if (unordered) {
-    selected_columns <- c("Independent","Bonferroni","Nonrank-based")
+    selected_columns <- c("Independent","Bonferroni","Nonrank")
     colwidth  <- "3cm"
   } else {
     selected_columns <- c("Asymptotic Variance","Bootstrap Estimate")
