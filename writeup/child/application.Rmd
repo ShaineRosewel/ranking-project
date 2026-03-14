@@ -1,0 +1,27 @@
+```{r}
+source("/home/realiseshewon/PDev/kde-ranking/R/generate_true_theta.R")
+source("/home/realiseshewon/PDev/kde-ranking/R/simulate/compute_ci.R")
+source("/home/realiseshewon/PDev/kde-ranking/R/simulate/compute_metrics.R")
+
+# cand <- generate_true_theta_rd(persist_df = FALSE)
+# 
+# cand$Makabayan <- ifelse(cand$Party == 'MKBYN', 1, 0)
+# 
+# K <- c(dim(df)[1])
+# 
+# 
+# 
+# 
+# # df <- cand %>%
+# #   mutate(Voting_for_dec = `Voting For`/100) %>%
+# #   mutate(se = sqrt((Voting_for_dec*(1-Voting_for_dec))/1200) ) %>%
+# #   select(-Voting_for_dec) %>% arrange(desc(`Voting For`)) %>% head(18) %>% arrange(DuterTen, Alyansa, KiBam, Makabayan)
+# 
+# 
+# df <- cand %>%
+#   mutate(Voting_for_dec = `Voting For`/100) %>%
+#   arrange(DuterTen, Alyansa, KiBam, Makabayan) %>%
+#   mutate(se = sqrt((Voting_for_dec*(1-Voting_for_dec))/1200) ) %>%
+#   select(-Voting_for_dec)
+```
+
