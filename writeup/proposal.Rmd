@@ -148,6 +148,17 @@ knitr::opts_chunk$set(
 \newpage
 \vspace*{1cm}
 
+# Application
+
+\vspace*{0.8cm}
+
+```{r, child = "child/application.Rmd"}
+
+```
+
+\newpage
+\vspace*{1cm}
+
 # Bibliography {.unnumbered .unnumbered .unlisted}
 
 \vspace*{0.8cm}
@@ -159,9 +170,7 @@ knitr::opts_chunk$set(
 
 \vspace*{0.8cm}
 
-```{r, child = "child/appendix.Rmd"}
-
-```
+{r, child = "child/appendix.Rmd"}
 
 \newpage
 \vspace*{1cm}
