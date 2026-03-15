@@ -1,6 +1,5 @@
 library(dplyr)
 
-
 combine_summaries <- function(
     directory_prefix="/home/realiseshewon/PDev/kde-ranking/simulation_results/summaries/summary_k",
     equicorrelation = TRUE){
@@ -94,3 +93,114 @@ preprocess_tightness_measure <- function(dataset, metric_type, equicorrelation,
   )
 } 
 
+
+prepare_plotting_data_for_pulse <- function(ci_results, df){
+  
+  dataset_all <- df
+  
+  K <- dim(dataset_all)[1]
+  dataset_all$`Rank LB_nonrank` <- sapply(
+    get_ci_result(result = ci_results$nonrankbased, 
+                  K=K, 
+                  reverse_ranks = TRUE), 
+    min)
+  dataset_all$`Rank UB_nonrank` <- sapply(
+    get_ci_result(result = ci_results$nonrankbased, 
+                  K=K, 
+                  reverse_ranks = TRUE),
+    max)
+  
+  dataset_all$`Rank LB_independent` <- sapply(
+    get_ci_result(result = ci_results$independent, 
+                  K=K, 
+                  reverse_ranks = TRUE), 
+    min)
+  dataset_all$`Rank UB_independent` <- sapply(
+    get_ci_result(result = ci_results$independent, 
+                  K=K, 
+                  reverse_ranks = TRUE), 
+    max)
+  
+  dataset_all$`Rank LB_bonferroni` <- sapply(
+    get_ci_result(result = ci_results$bonferroni, 
+                  K=K, 
+                  reverse_ranks = TRUE), 
+    min)
+  dataset_all$`Rank UB_bonferroni` <- sapply(
+    get_ci_result(result = ci_results$bonferroni, 
+                  K=K, 
+                  reverse_ranks = TRUE), 
+    max)
+  
+  dataset_all <- dataset_all %>% arrange(desc(`Voting For`))
+  
+  # df <- readRDS("../data/mean_travel_time_ranking_2011.rds")
+  dataset_all$k <- seq(1,K, 1)
+  dataset_all$sample_rank <- seq(1,K, 1)
+  dataset_all$order_index <- seq(1,K, 1)
+  
+  dataset_all <- dataset_all %>% pivot_longer(
+    cols = starts_with("Rank"), 
+    names_to = "type",   
+    values_to = "Ranks"
+  )%>%
+    separate(
+      col = type, 
+      into = c("Rank", "Approach"),
+      sep = "_",  
+      extra = "merge"
+    ) %>% pivot_wider(
+      names_from = Rank,
+      values_from = Ranks
+    )
+  
+  to_string_seq <- function(x, y){paste(seq(x, y, 1), collapse=',')}
+  
+  dat_to_plot <- dataset_all %>% #filter(Approach == 'nonrank') %>%
+    select(c(k, `Rank LB`, `Rank UB`, sample_rank, order_index, 
+             Candidate, Approach)) %>%
+    mutate(string_ranks = mapply(to_string_seq, `Rank LB`, `Rank UB`)) %>%
+    separate_rows(string_ranks, sep=",") %>%
+    select(c(k, sample_rank, string_ranks, Candidate, Approach))
+  
+  
+  dat_to_plot$highlight0 <- ifelse(
+    dat_to_plot$sample_rank == as.numeric(dat_to_plot$string_ranks), 
+    "yes", 
+    "no")
+  
+  dsen <- unique(
+    dataset_all[dataset_all$DuterTen==1 & dataset_all$Alyansa==0,]$Candidate
+    )
+  msen <- unique(
+    dataset_all[dataset_all$Alyansa==1 & dataset_all$DuterTen==0,]$Candidate
+    )
+  ksen <- unique(dataset_all[dataset_all$KiBam==1,]$Candidate)
+  mksen <- unique(dataset_all[dataset_all$Makabayan==1,]$Candidate)
+  dmsen <- unique(
+    dataset_all[dataset_all$DuterTen==1 & dataset_all$Alyansa==1,]$Candidate
+    )
+  
+  
+  dat_to_plot$highlight1 <- ifelse(
+    dat_to_plot$Candidate %in% dsen,
+    "DuterTen",
+    ifelse(
+      dat_to_plot$Candidate %in% msen,
+      "Alyansa",
+      ifelse(
+        dat_to_plot$Candidate %in% ksen,
+        "KiBam",
+        ifelse(dat_to_plot$Candidate %in% mksen,
+               "Makabayan",
+               ifelse(
+                 dat_to_plot$Candidate %in% dmsen,
+                 "DuterTen-Alyansa","None"
+                 )
+               )
+        )
+      )
+    )
+
+  return(dat_to_plot)
+}
