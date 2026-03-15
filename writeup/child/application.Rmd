@@ -46,7 +46,8 @@ create_basic_results_table(get_tmeasures_for_app_data(ci_results),
 
 ```{r pulse-result,fig.height=5, fig.cap = "95% Joint Confidence Region for Candidates with at least 1% Votes"}
 prepared_data <- prepare_plotting_data_for_pulse(ci_results,dataset_all)
-create_plot_for_pulse(prepared_data)
+create_plot_for_app_data(prepared_data, Candidate, k, reverse=TRUE,
+                                  color_map = c("DuterTen" = "limegreen", "Alyansa" = "red", "KiBam" = "gold", "Makabayan" = "blue","DuterTen-Alyansa" = "black"))
 ```
 
 Figure \@ref(fig:pulse-result) assumes high correlations within blocks of alliances and political slates.
@@ -55,9 +56,9 @@ Figure \@ref(fig:pulse-result) assumes high correlations within blocks of allian
 
 
 ```{r}
-attempt2 <- readRDS("/home/realiseshewon/PDev/kde-ranking/data/mean_travel_time_ranking_2011.rds")
+dataset_all <- readRDS("/home/realiseshewon/PDev/kde-ranking/data/mean_travel_time_ranking_2011.rds")
 
-attempt2$density <- c(94.4, 1.2, 56.3,
+dataset_all$density <- c(94.4, 1.2, 56.3,
                       56.0, 239.1, 48.5,
                       738.1, 460.8, 9856.5,
                       350.6,168.4,211.8,
@@ -76,163 +77,206 @@ attempt2$density <- c(94.4, 1.2, 56.3,
                       77.1, 105.0, 5.8)
 
 
-attempt2 <- attempt2 %>% mutate(
+dataset_all <- dataset_all %>% mutate(
   density_group = ifelse(density > 0 & density <= 20, 1, 
                          ifelse(density > 20 & density <= 50, 2, 
                                 ifelse(density > 50 & density <= 100, 3,
                                        ifelse(density > 100 & density <= 200, 4, 5))))
 ) %>% arrange(desc(theta_k)) %>% arrange(desc(density_group))
 
-attempt2 <- attempt2 %>% arrange(desc(theta_k)) #%>% head(30)# 
-
-
-attempt2 %>% group_by(density_group) %>% count()
-```
-
-```{r}
-attempt2
+# attempt2 <- dataset_all #%>% arrange(desc(theta_k)) #%>% head(30)# 
+# 
+# 
+# #attempt2 %>% group_by(density_group) %>% count()
+# attempt2
+# dataset_all
 ```
 
 
 
 ```{r}
-corr_matrix <-block_corr(block_sizes=c(15, 11, 11, 7, 7), rho_within=c(0.75, 0.75, 0.75, 0.75, 0.75), rho_between=0.0)
-#corr_matrix <-block_corr(block_sizes=c(3,5,9,13), rho_within=c(0.9, 0.9,0.9, 0.9), rho_between=0.0)
 
-set.seed(123974)
-theta_hat <- attempt2$theta_k
-true_sds <- attempt2$S
-K <- dim(attempt2)[1]
+corr_matrix <-block_corr(block_sizes=c(15, 11, 11, 7, 7), rho_within=c(0.9, 0.9, 0.9, 0.9, 0.9), rho_between=0.0)
 
-variance_vector <- true_sds^2
-delta <- diag(variance_vector)
-varcovar_matrix <- delta^(1/2) %*% corr_matrix %*% delta^(1/2)
-B <- 500
+# dataset_all <- cand %>%
+#   mutate(Voting_for_dec = `Voting For`/100) %>%
+#   #filter(Voting_for_dec >= 0.01) %>%
+#   mutate(se = sqrt((Voting_for_dec*(1-Voting_for_dec))/1200) ) %>%
+#   select(-Voting_for_dec) %>% 
+#   arrange(desc(`Voting For`)) %>%  
+#   arrange(desc(DuterTen), desc(Alyansa),desc(KiBam), desc(Makabayan))  %>%
+#   rename(`Rank UB_pulse` = `Rank UB`, `Rank LB_pulse` = `Rank LB`)
 
-alpha <- 0.05
-S <- sqrt(diag(varcovar_matrix))
-
-    
-ci_methods <- list(
-  nonrankbased = function() get_ci_nonrankbased(B = B,
-                                                theta_hat = theta_hat,
-                                                alpha = alpha,
-                                                varcovar_matrix = varcovar_matrix),
-  # rankbased_asymptotic = function() get_ci_rankbased_asymptotic(B = B,
-  #                                                               theta_hat = theta_hat,
-  #                                                               varcovar_matrix = varcovar_matrix,
-  #                                                               alpha = alpha),
-  # rankbased_level2bs = function() get_ci_rankbased_level2bs(B = B,
-  #                                                           C = 300,
-  #                                                           theta_hat = theta_hat,
-  #                                                           varcovar_matrix = varcovar_matrix,
-  #                                                           alpha = alpha),
-  independent  = function() get_ci_independent(theta_hat = theta_hat, S = S, alpha = alpha),
-  bonferroni   = function() get_ci_bonferroni(theta_hat = theta_hat, S = S, alpha = alpha)
-)
-ci_results <- lapply(ci_methods, function(f) f())
-
-dataset_all <- attempt2
-
-dataset_all$`Rank LB_nonrank` <- sapply(process_ci_result(result = ci_results$nonrankbased, K=K), min)
-dataset_all$`Rank UB_nonrank` <- sapply(process_ci_result(result = ci_results$nonrankbased, K=K), max)
-
-dataset_all$`Rank LB_independent` <- sapply(process_ci_result(result = ci_results$independent, K=K), min)
-dataset_all$`Rank UB_independent` <- sapply(process_ci_result(result = ci_results$independent, K=K), max)
-
-dataset_all$`Rank LB_bonferroni` <- sapply(process_ci_result(result = ci_results$bonferroni, K=K), min)
-dataset_all$`Rank UB_bonferroni` <- sapply(process_ci_result(result = ci_results$bonferroni, K=K), max)
-
-#dataset_all <- dataset_all# %>% arrange(desc(`Voting For`))
-
-# df <- readRDS("../data/mean_travel_time_ranking_2011.rds")
-dataset_all$k <- seq(1,K, 1)
-dataset_all$sample_rank <- seq(1,K, 1)
-dataset_all$order_index <- seq(1,K, 1)
-
-dataset_all <- dataset_all %>% pivot_longer(
-    cols = starts_with("Rank"), # Selects columns that start with "Test"
-    names_to = "type",   # Name for the new column storing original column names
-    values_to = "Ranks"        # Name for the new column storing the values
-  )%>%
-  separate(
-    col = type,  # The column to separate
-    into = c("Rank", "Approach"), # Names for the new columns
-    sep = "_",           # The delimiter is an underscore
-    extra = "merge"      # Merges any extra parts into the last column ("rest_of_string")
-  ) %>% pivot_wider(
-    names_from = Rank,
-    values_from = Ranks
+ci_results <- get_ci_for_app_data(
+  theta_hat = dataset_all$theta_k,
+  true_sds = dataset_all$S,
+  K = dim(dataset_all)[1],
+  alpha = 0.05,
+  B <- 500,
+  corr_matrix=corr_matrix 
   )
+```
 
-dataset_all
+
+```{r}
+create_basic_results_table(get_tmeasures_for_app_data(ci_results),
+                           "Joint Confidence Region Tightness Measures: r = 0.9")
+```
+
+
+
+
+
+```{r}
+# corr_matrix <-block_corr(block_sizes=c(15, 11, 11, 7, 7), rho_within=c(0.9, 0.9, 0.9, 0.9, 0.9), rho_between=0.0)
+# #corr_matrix <-block_corr(block_sizes=c(3,5,9,13), rho_within=c(0.9, 0.9,0.9, 0.9), rho_between=0.0)
+# 
+# set.seed(123974)
+# theta_hat <- attempt2$theta_k
+# true_sds <- attempt2$S
+# K <- dim(attempt2)[1]
+# 
+# variance_vector <- true_sds^2
+# delta <- diag(variance_vector)
+# varcovar_matrix <- delta^(1/2) %*% corr_matrix %*% delta^(1/2)
+# B <- 500
+# 
+# alpha <- 0.05
+# S <- sqrt(diag(varcovar_matrix))
+# 
+#     
+# ci_methods <- list(
+#   nonrankbased = function() get_ci_nonrankbased(B = B,
+#                                                 theta_hat = theta_hat,
+#                                                 alpha = alpha,
+#                                                 varcovar_matrix = varcovar_matrix),
+#   # rankbased_asymptotic = function() get_ci_rankbased_asymptotic(B = B,
+#   #                                                               theta_hat = theta_hat,
+#   #                                                               varcovar_matrix = varcovar_matrix,
+#   #                                                               alpha = alpha),
+#   # rankbased_level2bs = function() get_ci_rankbased_level2bs(B = B,
+#   #                                                           C = 300,
+#   #                                                           theta_hat = theta_hat,
+#   #                                                           varcovar_matrix = varcovar_matrix,
+#   #                                                           alpha = alpha),
+#   independent  = function() get_ci_independent(theta_hat = theta_hat, S = S, alpha = alpha),
+#   bonferroni   = function() get_ci_bonferroni(theta_hat = theta_hat, S = S, alpha = alpha)
+# )
+# ci_results <- lapply(ci_methods, function(f) f())
+# 
+# dataset_all <- attempt2
+# 
+# dataset_all$`Rank LB_nonrank` <- sapply(process_ci_result(result = ci_results$nonrankbased, K=K), min)
+# dataset_all$`Rank UB_nonrank` <- sapply(process_ci_result(result = ci_results$nonrankbased, K=K), max)
+# 
+# dataset_all$`Rank LB_independent` <- sapply(process_ci_result(result = ci_results$independent, K=K), min)
+# dataset_all$`Rank UB_independent` <- sapply(process_ci_result(result = ci_results$independent, K=K), max)
+# 
+# dataset_all$`Rank LB_bonferroni` <- sapply(process_ci_result(result = ci_results$bonferroni, K=K), min)
+# dataset_all$`Rank UB_bonferroni` <- sapply(process_ci_result(result = ci_results$bonferroni, K=K), max)
+# 
+# #dataset_all <- dataset_all# %>% arrange(desc(`Voting For`))
+# 
+# # df <- readRDS("../data/mean_travel_time_ranking_2011.rds")
+# dataset_all$k <- seq(1,K, 1)
+# dataset_all$sample_rank <- seq(1,K, 1)
+# dataset_all$order_index <- seq(1,K, 1)
+# 
+# dataset_all <- dataset_all %>% pivot_longer(
+#     cols = starts_with("Rank"), # Selects columns that start with "Test"
+#     names_to = "type",   # Name for the new column storing original column names
+#     values_to = "Ranks"        # Name for the new column storing the values
+#   )%>%
+#   separate(
+#     col = type,  # The column to separate
+#     into = c("Rank", "Approach"), # Names for the new columns
+#     sep = "_",           # The delimiter is an underscore
+#     extra = "merge"      # Merges any extra parts into the last column ("rest_of_string")
+#   ) %>% pivot_wider(
+#     names_from = Rank,
+#     values_from = Ranks
+#   )
+# 
+# dataset_all
 ```
 
 
 
 
 ```{r}
-# kde_result <- merge(x = df[,c('k', 'iso', 'order_index')], y = kde_result, by = "k", all.x = TRUE)
-
-library(ggplot2)
-library(dplyr)
-library(tidyr)
-
-to_string_seq <- function(x, y){paste(seq(x, y, 1), collapse=',')}
-
-dat_to_plot <- dataset_all %>% #filter(Approach == 'nonrank') %>%
-    # select(c(k, iso, kde_rank_lower, kde_rank_upper, sample_rank, order_index,theta_k)) %>%
-    select(c(iso, `Rank LB`, `Rank UB`, rhat_k, order_index,
-theta_k, Approach)) %>%
-    mutate(string_ranks = mapply(to_string_seq, `Rank LB`, `Rank UB`)) %>%
-    separate_rows(string_ranks, sep=",") %>%
-    select(c(iso, rhat_k, string_ranks, theta_k, Approach))
-
-dat_to_plot$highlight0 <- ifelse(dat_to_plot$rhat_k == as.numeric(dat_to_plot$string_ranks), "yes", "no")
-dat_to_plot$highlight1 <- ifelse(dat_to_plot$theta_k %in% attempt2[attempt2$density_group==1,]$theta_k, 
-                                 "1", 
-                                 ifelse(dat_to_plot$theta_k %in% attempt2[attempt2$density_group==2,]$theta_k, 
-                                        "2",
-                                        ifelse(dat_to_plot$theta_k %in% attempt2[attempt2$density_group==3,]$theta_k,
-                                               "3",
-                                               ifelse(dat_to_plot$theta_k %in% attempt2[attempt2$density_group==4,]$theta_k,
-                                                      "4",
-                                                      ifelse(dat_to_plot$theta_k %in% attempt2[attempt2$density_group==5,]$theta_k,
-                                                      "5", "None"
-                                               )))
-                                        
-  
-))
-dat_to_plot
-
+prepared_data <- prepare_plotting_data_for_traveltime(ci_results,dataset_all)
 ```
 
 
 
+```{r traveltime-result,fig.height=5, fig.cap = "95% Joint Confidence Region for Mean Travel Times in the US"}
+create_plot_for_app_data(prepared_data, iso, theta_k, reverse=FALSE,
+                                  color_map = c("1" = "limegreen", "2" = "red", "3" = "gold", "4" = "blue","5" = "violet"))
+```
+
+
+
+
+
 ```{r}
-pd <- position_dodge(width = 0.8) 
+# prepared_data <- prepare_plotting_data_for_traveltime(ci_results,dataset_all)#dat_to_plot %>% filter(Approach != 'pulse') #%>% filter(Approach != 'independent')
+# data_to_plot$Approach <- factor(data_to_plot$Approach, levels = c('independent', 'bonferroni', 'nonrank'))
+# 
+# cap_first <- function(x) {
+#   paste0(toupper(substring(x, 1, 1)), substring(x, 2))
+# }
+# 
+# 
+# p <- ggplot(data = data_to_plot, aes(x = reorder(iso, theta_k),
+#                                      y = as.numeric(string_ranks))) + 
+#   geom_point(data = subset(data_to_plot, highlight0 == "yes"), shape = 16, size = 1, color = "black") +
+#   geom_point(data = subset(data_to_plot, highlight0 == "no"), shape = 4, size = 0.25, aes(color = highlight1)) + 
+#   scale_color_manual(values = c("1" = "limegreen", "2" = "red", "3" = "gold", "4" = "blue","5" = "violet"))+
+#   scale_y_continuous(breaks = seq(1, max(prepared_data$k), by = 4)) +
+#   labs(title='95% Joint Confidence Region for Candidates with at least 1% Votes') + xlab('Candidate') + ylab('Sample rank') +
+#   theme_bw() +
+#   theme(axis.text.x = element_text(hjust = 1, size = 5),
+#         axis.text.y = element_text(size=5)
+#   ) +
+#   guides(colour="none") +
+#   theme(axis.line = element_line(colour = "gray"),
+#         panel.grid.minor = element_blank(),
+#         panel.grid.major.x = element_blank(),
+#         text = element_text(family = "serif")) +
+#   facet_wrap(~Approach, ncol=length(unique(data_to_plot$Approach)), 
+#              labeller = as_labeller(cap_first)) + coord_flip()
+# 
+# p
+```
 
 
-dat_to_plot <- dat_to_plot %>% filter(Approach %in% c('bonferroni', 'nonrank'))
-p <- ggplot(data = dat_to_plot, aes(x = reorder(iso, theta_k),
-                               y = as.numeric(string_ranks))) + 
-  geom_point(data = subset(dat_to_plot, highlight0 == "yes"), shape = 16, size = 1, color = "black", position = pd) +
-  geom_point(data = subset(dat_to_plot, highlight0 == "no"), shape = 4, size = 0.25, position = pd) +#, aes(color = highlight1)) + 
-  #scale_color_manual(values = c("1" = "limegreen", "2" = "red", "3" = "gold", "4" = "blue","5" = "violet"))+
-  scale_y_continuous(breaks = seq(1, K, by = 4)) +
-  labs(title='Visualization of the 95% joint confidence') + xlab('theta_k') + ylab('Sample rank') +
-  theme_bw() +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1, size = 6),
-        axis.text.y = element_text(size=6)
-        ) +
- # guides(colour="none") +
-  theme(axis.line = element_line(colour = "gray"),
-    panel.grid.minor = element_blank(),
-    panel.grid.major.x = element_blank(),
-    text = element_text(family = "serif")) +
-  facet_wrap(~Approach, ncol=2) #+ coord_flip()
 
-p
+
+
+```{r}
+# pd <- position_dodge(width = 0.8) 
+# 
+# 
+# dat_to_plot <- dat_to_plot %>% filter(Approach %in% c('bonferroni', 'nonrank'))
+# p <- ggplot(data = dat_to_plot, aes(x = reorder(iso, theta_k),
+#                                y = as.numeric(string_ranks))) + 
+#   geom_point(data = subset(dat_to_plot, highlight0 == "yes"), shape = 16, size = 1, color = "black", position = pd) +
+#   geom_point(data = subset(dat_to_plot, highlight0 == "no"), shape = 4, size = 0.25, position = pd) +#, aes(color = highlight1)) + 
+#   #scale_color_manual(values = c("1" = "limegreen", "2" = "red", "3" = "gold", "4" = "blue","5" = "violet"))+
+#   scale_y_continuous(breaks = seq(1, K, by = 4)) +
+#   labs(title='Visualization of the 95% joint confidence') + xlab('theta_k') + ylab('Sample rank') +
+#   theme_bw() +
+#   theme(axis.text.x = element_text(angle = 90, hjust = 1, size = 6),
+#         axis.text.y = element_text(size=6)
+#         ) +
+#  # guides(colour="none") +
+#   theme(axis.line = element_line(colour = "gray"),
+#     panel.grid.minor = element_blank(),
+#     panel.grid.major.x = element_blank(),
+#     text = element_text(family = "serif")) +
+#   facet_wrap(~Approach, ncol=2) #+ coord_flip()
+# 
+# p
 ```
 
 
