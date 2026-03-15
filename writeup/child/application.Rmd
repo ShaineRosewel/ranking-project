@@ -1,4 +1,87 @@
-## Joint Confidence Regions for Pulse Asia Results
+---
+number_sections: true
+fig_caption: yes
+output:
+  bookdown::pdf_document2:
+    keep_tex: true
+    toc: false
+indent: true
+header-includes:
+- \PassOptionsToPackage{colorlinks=true,linkcolor=blue,citecolor=black,urlcolor=black}{hyperref}
+- \usepackage{amsmath}
+- \numberwithin{equation}{section}
+- \usepackage{setspace}\onehalfspacing
+- \usepackage{pdflscape}
+- \newcommand{\blandscape}{\begin{landscape}}
+- \newcommand{\elandscape}{\end{landscape}}
+- \usepackage{indentfirst}
+- \usepackage{xparse}
+- \usepackage{tcolorbox}
+- \usepackage{algorithm}
+- \usepackage{algpseudocode}
+- \usepackage{float}
+- \floatplacement{figure}{H}
+- \usepackage{placeins}
+- \renewcommand{\ttfamily}{\rmfamily}
+- \usepackage{etoolbox}
+- \usepackage{multirow}
+- \usepackage{makecell}
+- \usepackage{booktabs}
+- \AtBeginEnvironment{algorithmic}{\setstretch{1.5}} 
+- \renewcommand{\arraystretch}{0.75}
+- \renewcommand{\multirowsetup}{\raggedright}
+# --- Thesis font definition (change here once, affects everything) ---
+- \usepackage{anyfontsize}
+- \newcommand{\thesisfont}{\fontsize{20pt}{19pt}\selectfont}
+- \thesisfont
+- \usepackage{xcolor}
+- \usepackage[colorlinks=true,linkcolor=blue,urlcolor=black,citecolor=black]{hyperref}
+- \AtBeginDocument{\hypersetup{colorlinks=true,linkcolor=blue,citecolor=black,urlcolor=black}}
+- \usepackage{titlesec}
+- \titleformat{\section}{\fontsize{20pt}{22pt}\bfseries}{\thesection}{1em}{}
+- \titleformat{\subsection}{\fontsize{18pt}{20pt}\bfseries}{\thesubsection}{1em}{}
+- \titleformat{\subsubsection}{\fontsize{16pt}{19pt}\bfseries}{\thesubsubsection}{1em}{}
+- \usepackage{caption}
+- \captionsetup[figure]{font={large,bf}}
+- \captionsetup[table]{font={large,bf}}
+- \newcommand{\algfont}{\fontsize{15pt}{18pt}\selectfont} # slightly smaller than thesis font
+- \DeclareCaptionFont{thesisalg}{\algfont\bfseries} # caption font
+- \captionsetup[algorithm]{font=thesisalg}
+- \AtBeginEnvironment{algorithm}{\algfont} # algorithm body
+- \AtBeginEnvironment{algorithmic}{\algfont}   
+
+papersize: a4
+---
+
+```{r echo = FALSE}
+knitr::opts_chunk$set(
+  echo    = FALSE,
+  message = FALSE,
+  warning = FALSE
+)
+```
+
+## Pulse Asia Results
+
+For the Pulse Asia results, correlations are assumed to be induced by alliances or political slates formed for the purpose of elections. Slates campaigned by the incumbent president (Alyansa) and his former allies, the vice-president and former president (DuterTen), are considered. Imee Marcos and Villar are both endorsed by these rival factions and are given a separate block. Makabayan is also given its own block as it has a relatively large set of 11 candidates. Another popular alliance that emerged is that of Pangilinan and Aquino (KiBam). The remaining candidates are collapsed into a single block.
+
+
+```{r}
+
+library(kableExtra)
+library(tidyr)
+library(dplyr)
+
+generate_corr_mat <- function(r, appdata){
+  if (appdata == 'pulse') {
+    cormat <- block_corr(block_sizes=c(2, 12, 10, 2, 11, 27), rho_within=rep(r, 6), rho_between=0.0)
+  } else if (appdata == 'traveltime') {
+    cormat <- block_corr(block_sizes=c(15, 11, 11, 7, 7), rho_within=rep(r, 5), rho_between=0.0)
+  }
+  return(cormat)
+}
+
+```
 
 
 ```{r}
@@ -14,8 +97,7 @@ cand <- generate_true_theta_rd(persist_df = FALSE)
 
 cand$Makabayan <- ifelse(cand$Party == 'MKBYN', 1, 0)
 
-#corr_matrix <-block_corr(block_sizes=c(2, 12, 10, 2, 7, 18), rho_within=c(0.9, 0.9, 0.9, 0.9, 0.9, 0.1), rho_between=0.0)
-corr_matrix <-block_corr(block_sizes=c(2, 12, 10, 2, 11, 27), rho_within=c(0.9, 0.9, 0.9, 0.9, 0.9, 0.1), rho_between=0.0)
+corr_matrix <-generate_corr_mat(0.9, "pulse")
 
 dataset_all <- cand %>%
   mutate(Voting_for_dec = `Voting For`/100) %>%
@@ -27,32 +109,85 @@ dataset_all <- cand %>%
   rename(`Rank UB_pulse` = `Rank UB`, `Rank LB_pulse` = `Rank LB`)
 
 ci_results <- get_ci_for_app_data(
-  theta_hat = (dataset_all$`Voting For`)/100,
-  true_sds = dataset_all$se,
-  K = dim(dataset_all)[1],
-  alpha = 0.05,
-  B <- 500,
-  corr_matrix=corr_matrix 
-  )
-
+    theta_hat = (dataset_all$`Voting For`)/100,
+    true_sds = dataset_all$se,
+    K = dim(dataset_all)[1],
+    alpha = 0.05,
+    B <- 500,
+    corr_matrix=corr_matrix 
+    )
 ```
+
+
+```{r pulse-table}
+all_ci <- lapply(seq(0,0.9,0.1), function(r){
+  
+  corr_matrix <- generate_corr_mat(r, "pulse")
+  
+  ci_results <- get_ci_for_app_data(
+    theta_hat = (dataset_all$`Voting For`)/100,
+    true_sds = dataset_all$se,
+    K = dim(dataset_all)[1],
+    alpha = 0.05,
+    B <- 500,
+    corr_matrix=corr_matrix 
+    )
+  
+  out <- get_tmeasures_for_app_data(ci_results)
+  out$r <- r
+  
+  return(out %>% select(r, Measure, Independent, Bonferroni, Nonrank))
+  })
+
+allcases <- do.call(rbind, all_ci)
+
+to_table <- allcases %>% 
+  pivot_longer(cols = c(Independent, Bonferroni, Nonrank), 
+                          names_to = "Approach", 
+                          values_to = "Value") %>% 
+  distinct() %>%
+  pivot_wider(names_from = 'Measure',values_from = "Value") %>% 
+  filter(!((Approach == 'Bonferroni' | Approach == 'Independent') & r != 0 ))#%>% 
+  #distinct(Approach, T1, T2, T3, .keep_all = TRUE)
+
+create_basic_results_table(to_table, "Joint Confidence Region Tightness Measures")
+```
+
+
+
+
 
 ```{r}
-create_basic_results_table(get_tmeasures_for_app_data(ci_results),
-                           "Joint Confidence Region Tightness Measures: r = 0.9")
+# ci_results <- get_ci_for_app_data(
+#   theta_hat = (dataset_all$`Voting For`)/100,
+#   true_sds = dataset_all$se,
+#   K = dim(dataset_all)[1],
+#   alpha = 0.05,
+#   B <- 500,
+#   corr_matrix=corr_matrix 
+#   )
+# 
+# get_tmeasures_for_app_data(ci_results)
 ```
 
 
+```{r}
+# create_basic_results_table(get_tmeasures_for_app_data(ci_results),
+#                            "Joint Confidence Region Tightness Measures: r = 0.9")
+```
 
-```{r pulse-result,fig.height=5, fig.cap = "95% Joint Confidence Region for Candidates with at least 1% Votes"}
+Table \@ref(tab:pulse-table) shows that higher within-block correlation leads to better T1, T2, and T3. This means that overall, the intervals in the joint confidence region are generally narrower. Figure \@ref(fig:pulse-result) assumes high correlations within blocks of alliances and political slates. The joint confidence regions for Independent, Bonferroni, and Nonrank are shown respectively. For this use case, lower rank corresponds to highly preferred candidates.
+
+```{r pulse-result,fig.height=6, fig.cap = "95% Joint Confidence Region for Candidates with at least 1% Votes"}
 prepared_data <- prepare_plotting_data_for_pulse(ci_results,dataset_all)
 create_plot_for_app_data(prepared_data, Candidate, k, reverse=TRUE,
                                   color_map = c("DuterTen" = "limegreen", "Alyansa" = "red", "KiBam" = "gold", "Makabayan" = "blue","DuterTen-Alyansa" = "black"))
 ```
 
-Figure \@ref(fig:pulse-result) assumes high correlations within blocks of alliances and political slates.
 
-## Joint Confidence Regions for Mean Travel Time to Work
+## 2011 Mean Travel Time to Work in the US
+
+Block diagonal correlation structure is assumed according to 2010 population density in each corresponding state (https://www.energy.gov/cmei/vehicles/fact-661-february-7-2011-population-density). Five blocks are used wherein the first has population density from 0 to 20 people per square mile, the second has 20 to 50, the third has 50 to 100, the fourth has 100 to 200 and the fifth has more than 200. 
 
 
 ```{r}
@@ -93,10 +228,46 @@ dataset_all <- dataset_all %>% mutate(
 ```
 
 
+```{r}
+all_ci <- lapply(seq(0,0.9,0.1), function(r){
+  
+  corr_matrix <- generate_corr_mat(r, "traveltime")
+  
+  ci_results <- get_ci_for_app_data(
+    theta_hat = dataset_all$theta_k,
+    true_sds = dataset_all$S,
+    K = dim(dataset_all)[1],
+    alpha = 0.05,
+    B <- 500,
+    corr_matrix=corr_matrix 
+    )
+  
+  out <- get_tmeasures_for_app_data(ci_results)
+  out$r <- r
+  
+  return(out %>% select(r, Measure, Independent, Bonferroni, Nonrank))
+  })
+
+allcases <- do.call(rbind, all_ci)
+
+to_table <- allcases %>% 
+  pivot_longer(cols = c(Independent, Bonferroni, Nonrank), 
+                          names_to = "Approach", 
+                          values_to = "Value") %>% 
+  distinct() %>%
+  pivot_wider(names_from = 'Measure',values_from = "Value") %>% 
+  filter(!((Approach == 'Bonferroni' | Approach == 'Independent') & r != 0 ))
+
+create_basic_results_table(to_table, "Joint Confidence Region Tightness Measures")
+```
+
+
 
 ```{r}
 
-corr_matrix <-block_corr(block_sizes=c(15, 11, 11, 7, 7), rho_within=c(0.9, 0.9, 0.9, 0.9, 0.9), rho_between=0.0)
+# corr_matrix <-block_corr(block_sizes=c(15, 11, 11, 7, 7), rho_within=c(0.9, 0.9, 0.9, 0.9, 0.9), rho_between=0.0)
+
+corr_matrix <-generate_corr_mat(0.9, "traveltime")
 
 # dataset_all <- cand %>%
 #   mutate(Voting_for_dec = `Voting For`/100) %>%
@@ -119,8 +290,8 @@ ci_results <- get_ci_for_app_data(
 
 
 ```{r}
-create_basic_results_table(get_tmeasures_for_app_data(ci_results),
-                           "Joint Confidence Region Tightness Measures: r = 0.9")
+# create_basic_results_table(get_tmeasures_for_app_data(ci_results),
+#                            "Joint Confidence Region Tightness Measures: r = 0.9")
 ```
 
 
@@ -207,12 +378,13 @@ create_basic_results_table(get_tmeasures_for_app_data(ci_results),
 prepared_data <- prepare_plotting_data_for_traveltime(ci_results,dataset_all)
 ```
 
+Figure \@ref(fig:traveltime-result) assumes high correlations within blocks with different population densities. Only joint confidence regions for Bonferroni and Nonrank are since Independent result is similar to Bonferroni. For this use case, lower rank corresponds to states with lower mean travel time.
 
-
-```{r traveltime-result,fig.height=5, fig.cap = "95% Joint Confidence Region for 2011 Mean Travel Times in the US"}
-create_plot_for_app_data(prepared_data, iso, theta_k, reverse=FALSE,xlab = "State",
+```{r traveltime-result,fig.height=6, fig.cap = "95% Joint Confidence Region for 2011 Mean Travel Times in the US"}
+create_plot_for_app_data(prepared_data %>% filter(Approach != 'independent'), iso, theta_k, reverse=FALSE,xlab = "State",
                          title = "95% Joint Confidence Region for 2011 Mean Travel Times in the US",
-                                  color_map = c("1" = "limegreen", "2" = "red", "3" = "gold", "4" = "blue","5" = "violet"))
+                         legend_title ="Density group",
+                                  color_map = c("1" = "limegreen", "2" = "red", "3" = "gold", "4" = "blue","5" = "maroon"))
 ```
 
 
