@@ -19,6 +19,32 @@ get_ranks <- function(k, tuple_list){
   ))
 }
 
+process_ci_result <- function(result, K) {
+  tuple_list <- t(apply(
+    data.frame(
+      ci_lower = result$ci_lower,
+      ci_upper = result$ci_upper
+    ), 
+    1, 
+    function(row) as.numeric(row)
+  ))
+  
+  # print(
+  #   sapply(1:K, function(x) 
+  #     get_ranks(x, tuple_list)$ranks
+  #   )
+  # )
+  
+  rank_range_length <- sapply(1:K, function(x) 
+    length(get_ranks(x, tuple_list)$ranks)
+  )
+  list(
+    t1 = get_t1(rank_range_length),
+    t2 = get_t2(rank_range_length),
+    t3 = get_t3(rank_range_length)
+  )
+}
+
 get_t1 <- function(v) mean(v)
 
 get_t2 <- function(v) prod(v)^(1/length(v))
@@ -57,9 +83,10 @@ implement_algorithm2 <- function(
                       "get_ci_independent",
                       "get_ci_bonferroni", 
                       "get_ranks", "get_coverage",
-                      "get_t1", "get_t2", "get_t3")
+                      "get_t1", "get_t2", "get_t3",
+                      "process_ci_result")
   ) %dorng% {
-    print(true_theta)
+    # print(true_theta)
     # step 1 =======
     theta_hat <- mvrnorm(n = 1, 
                          mu = true_theta, 
@@ -143,27 +170,27 @@ implement_algorithm2 <- function(
     
     # print("REACHED 2 ===================================")
     
-    process_ci_result <- function(result, K) {
-      tuple_list <- t(apply(
-        data.frame(
-          ci_lower = result$ci_lower,
-          ci_upper = result$ci_upper
-        ), 
-        1, 
-        function(row) as.numeric(row)
-      ))
-      
-      rank_range_length <- sapply(1:K, function(x) 
-        length(get_ranks(x, tuple_list)$ranks)
-      )
-      
-      
-      list(
-        t1 = get_t1(rank_range_length),
-        t2 = get_t2(rank_range_length),
-        t3 = get_t3(rank_range_length)
-      )
-    }
+    # process_ci_result <- function(result, K) {
+    #   tuple_list <- t(apply(
+    #     data.frame(
+    #       ci_lower = result$ci_lower,
+    #       ci_upper = result$ci_upper
+    #     ), 
+    #     1, 
+    #     function(row) as.numeric(row)
+    #   ))
+    #   
+    #   rank_range_length <- sapply(1:K, function(x) 
+    #     length(get_ranks(x, tuple_list)$ranks)
+    #   )
+    #   
+    #   
+    #   list(
+    #     t1 = get_t1(rank_range_length),
+    #     t2 = get_t2(rank_range_length),
+    #     t3 = get_t3(rank_range_length)
+    #   )
+    # }
     
     # print("REACHED 3 ===================================")
     processed <- lapply(ci_results, process_ci_result, K = K)
