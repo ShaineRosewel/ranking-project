@@ -52,11 +52,11 @@ get_ci_rankbased_asymptotic <- function(B,
   
   print("=======================================================================")
   print("thetahat_star")
-  print(thetahat_star[c(163,203,790),])
+  # print(thetahat_star[c(163,203,790),])
   
   print("=======================================================================")
   print("thetahat_star SQUARED")
-  print(thetahat_star[c(163,203,790),]^2)
+  # print(thetahat_star[c(163,203,790),]^2)
   
   # print("theta_hat")
   # print(theta_hat)
@@ -70,7 +70,7 @@ get_ci_rankbased_asymptotic <- function(B,
   print("=======================================================================")
   print("sorted_thetahat_star")
   # print(cat("shape: ", dim(thetahat_star)))
-  print(sorted_thetahat_star[c(163,203,790),])
+  # print(sorted_thetahat_star[c(163,203,790),])
 
   variance_vector <- diag(varcovar_matrix)
   
@@ -95,7 +95,7 @@ get_ci_rankbased_asymptotic <- function(B,
   minuend <- thetahat_star^2 + matrix(variance_vector, B, K, byrow = TRUE)
   print("=======================================================================")
   print("MINUEND")
-  print(minuend[c(163,203,790),])
+  # print(minuend[c(163,203,790),])
   # print(sort(minuend[c(1:1),])== t(apply(minuend, 1, sort))[c(1:1),])
   # 
   # print("===============paired=================")
@@ -116,17 +116,17 @@ get_ci_rankbased_asymptotic <- function(B,
   # print((t(apply(minuend, 1, sort)) - sorted_thetahat_star^2)[c(1:3),])
   print("=======================================================================")
   print("t(apply(minuend, 1, sort))")
-  print(t(apply(minuend, 1, sort))[c(163,203,790),])
+  # print(t(apply(minuend, 1, sort))[c(163,203,790),])
   
   print("=======================================================================")
   print("sorted_thetahat_star^2")
-  print((sorted_thetahat_star^2)[c(163,203,790),])
+  # print((sorted_thetahat_star^2)[c(163,203,790),])
   
   radicand <- t(apply(minuend, 1, sort)) - sorted_thetahat_star^2 # t(apply(thetahat_star^2, 1, sort)) 
   
   print("=======================================================================")
   print("radicand")
-  print(radicand[c(163,203,790),])
+  # print(radicand[c(163,203,790),])
   
   
   num_negative_radicands <- sum(radicand < 0, na.rm = TRUE)
@@ -340,7 +340,7 @@ get_ci_nonrankbased <- function(B,
                                 theta_hat,
                                 alpha, 
                                 varcovar_matrix) {
-  print("ci_nonrankbased ===================================")
+  # print("ci_nonrankbased ===================================")
   K <- length(theta_hat)
   # step 1a ===================================
   # generate_data <- function(){MASS::mvrnorm(n = 1,
@@ -358,8 +358,8 @@ get_ci_nonrankbased <- function(B,
   num_negatives <- sum(thetahat_star < 0)
   percent_negatives <- (num_negatives / (B * K)) * 100
   
-  print(paste("Total negative samples found:", num_negatives))
-  print(paste("Percentage of data that is negative:", round(percent_negatives, 4), "%"))
+  # print(paste("Total negative samples found:", num_negatives))
+  # print(paste("Percentage of data that is negative:", round(percent_negatives, 4), "%"))
   
   # line 3 ~~~
   t_star <- apply(thetahat_star, 
