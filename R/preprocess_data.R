@@ -204,3 +204,100 @@ prepare_plotting_data_for_pulse <- function(ci_results, df){
 
   return(dat_to_plot)
 }
+
+
+prepare_plotting_data_for_traveltime <- function(ci_results, df){
+  
+  dataset_all <- df
+  
+  K <- dim(dataset_all)[1]
+  dataset_all$`Rank LB_nonrank` <- sapply(
+    get_ci_result(result = ci_results$nonrankbased, 
+                  K=K, 
+                  reverse_ranks = FALSE), 
+    min)
+  dataset_all$`Rank UB_nonrank` <- sapply(
+    get_ci_result(result = ci_results$nonrankbased, 
+                  K=K, 
+                  reverse_ranks = FALSE),
+    max)
+  
+  dataset_all$`Rank LB_independent` <- sapply(
+    get_ci_result(result = ci_results$independent, 
+                  K=K, 
+                  reverse_ranks = FALSE), 
+    min)
+  dataset_all$`Rank UB_independent` <- sapply(
+    get_ci_result(result = ci_results$independent, 
+                  K=K, 
+                  reverse_ranks = FALSE), 
+    max)
+  
+  dataset_all$`Rank LB_bonferroni` <- sapply(
+    get_ci_result(result = ci_results$bonferroni, 
+                  K=K, 
+                  reverse_ranks = FALSE), 
+    min)
+  dataset_all$`Rank UB_bonferroni` <- sapply(
+    get_ci_result(result = ci_results$bonferroni, 
+                  K=K, 
+                  reverse_ranks = FALSE), 
+    max)
+  
+  dataset_all <- dataset_all %>% arrange(desc(theta_k))
+  
+  # df <- readRDS("../data/mean_travel_time_ranking_2011.rds")
+  dataset_all$k <- seq(1,K, 1)
+  dataset_all$sample_rank <- seq(1,K, 1)
+  dataset_all$order_index <- seq(1,K, 1)
+  
+  dataset_all <- dataset_all %>% pivot_longer(
+    cols = starts_with("Rank"), 
+    names_to = "type",   
+    values_to = "Ranks"
+  )%>%
+    separate(
+      col = type, 
+      into = c("Rank", "Approach"),
+      sep = "_",  
+      extra = "merge"
+    ) %>% pivot_wider(
+      names_from = Rank,
+      values_from = Ranks
+    )
+  
+  to_string_seq <- function(x, y){paste(seq(x, y, 1), collapse=',')}
+  
+  dat_to_plot <- dataset_all %>% #filter(Approach == 'nonrank') %>%
+    select(c(iso, `Rank LB`, `Rank UB`, rhat_k, order_index, theta_k, Approach)) %>%
+    mutate(string_ranks = mapply(to_string_seq, `Rank LB`, `Rank UB`)) %>%
+    separate_rows(string_ranks, sep=",") %>%
+    select(c(iso, rhat_k, string_ranks, theta_k, Approach))
+  
+  
+  dat_to_plot$highlight0 <- ifelse(dat_to_plot$rhat_k == as.numeric(dat_to_plot$string_ranks), "yes", "no")
+  
+  
+  d1 <- unique(dataset_all[dataset_all$density_group==1,]$theta_k)
+  d2 <- unique(dataset_all[dataset_all$density_group==2,]$theta_k)
+  d3 <- unique(dataset_all[dataset_all$density_group==3,]$theta_k)
+  d4 <- unique(dataset_all[dataset_all$density_group==4,]$theta_k)
+  d5 <- unique(dataset_all[dataset_all$density_group==5,]$theta_k)
+  
+  dat_to_plot$highlight1 <- ifelse(dat_to_plot$theta_k %in% d1, 
+                                   "1", 
+                                   ifelse(dat_to_plot$theta_k %in% d2, 
+                                          "2",
+                                          ifelse(dat_to_plot$theta_k %in% d3,
+                                                 "3",
+                                                 ifelse(dat_to_plot$theta_k %in% d4,
+                                                        "4",
+                                                        ifelse(dat_to_plot$theta_k %in% d5,
+                                                               "5", "None"
+                                                        )))
+                                          
+                                          
+                                   ))
+  
+  return(dat_to_plot)
+}
