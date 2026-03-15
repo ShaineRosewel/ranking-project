@@ -22,6 +22,7 @@ create_plot_for_app_data <- function(dat_to_plot, elements, order_identifier, re
                                      title ='95% Joint Confidence Region for Candidates with at least 1% Votes', 
                                      xlab = 'Candidate',
                                      ylab = 'Sample rank',
+                                     legend_title = 'Alliance',
                                      color_map = c("DuterTen" = "limegreen", "Alyansa" = "red", 
                                                    "KiBam" = "gold", "Makabayan" = "blue",
                                                    "DuterTen-Alyansa" = "black")){
@@ -47,11 +48,12 @@ create_plot_for_app_data <- function(dat_to_plot, elements, order_identifier, re
     theme(axis.text.x = element_text(hjust = 1, size = 5),
           axis.text.y = element_text(size=5)
     ) +
-    guides(colour="none") +
+    guides(color = guide_legend(title = legend_title)) +
     theme(axis.line = element_line(colour = "gray"),
           panel.grid.minor = element_blank(),
           panel.grid.major.x = element_blank(),
-          text = element_text(family = "serif")) +
+          text = element_text(family = "serif"),
+          legend.position = "top") +
     facet_wrap(~Approach, ncol=length(unique(data_to_plot$Approach)), 
                labeller = as_labeller(cap_first)) + coord_flip()
   return(p)
