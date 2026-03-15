@@ -1,3 +1,26 @@
+block_corr <- function(block_sizes, rho_within, rho_between) {
+  B <- length(block_sizes)
+  N <- sum(block_sizes)
+  
+  if (length(rho_within) == 1) {
+    rho_within <- rep(rho_within, B)
+  }
+  
+  Sigma <- matrix(rho_between, nrow = N, ncol = N)
+  diag(Sigma) <- 1
+  
+  idx <- 1
+  for (b in seq_len(B)) {
+    block_idx <- idx:(idx + block_sizes[b] - 1)
+    Sigma[block_idx, block_idx] <- rho_within[b]
+    diag(Sigma[block_idx, block_idx]) <- 1
+    idx <- idx + block_sizes[b]
+  }
+  
+  return(Sigma)
+}
+
+
 generate_true_theta <- function()
   df <- readRDS("/home/realiseshewon/PDev/kde-ranking/data/mean_travel_time_ranking_2011.rds")
   mean <- 23.8
