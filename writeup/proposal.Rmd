@@ -57,10 +57,6 @@ nocite: |
 csl: /home/realiseshewon/PDev/kde-ranking/writeup/references/harvard-educational-review.csl
 ---
 
-```{r, child = "child/revisions.Rmd"}
-
-```
-
 \newpage
 
 \fontsize{15pt}{18pt}\selectfont
