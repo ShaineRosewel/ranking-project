@@ -4,19 +4,37 @@ FONT_SIZE <- 11.75
 
 
 create_basic_results_table <- function(dataset, caption){
-  kable(
-  get_tmeasures_for_app_data(ci_results),
-  "latex",
-  booktabs = TRUE,
-  escape = FALSE,
-  linesep = "",
-  longtable = TRUE,
-  caption = caption) %>%
-  kable_styling(
-    latex_options = c("striped", "repeat_header", "HOLD_position"),
-    stripe_color = "gray!15",
-    font_size=FONT_SIZE
-  )
+  # kable(
+  # get_tmeasures_for_app_data(ci_results),
+  # "latex",
+  # booktabs = TRUE,
+  # escape = FALSE,
+  # linesep = "",
+  # longtable = TRUE,
+  # caption = caption) %>%
+  # kable_styling(
+  #   latex_options = c("striped", "repeat_header", "HOLD_position"),
+  #   stripe_color = "gray!15",
+  #   font_size=FONT_SIZE
+  # )
+  dataset %>% kable("latex",
+                     booktabs = TRUE,
+                     escape = FALSE,
+                     linesep = "",
+                     longtable = TRUE,
+                     align = "c",
+                     # col.names = c(vector_1,
+                     #               selected_columns),
+                     caption = caption) %>%
+    collapse_rows(columns = c(1,2),
+                  valign = "middle", 
+                  latex_hline = "major")%>%
+    kable_styling(latex_options = c(
+      "repeat_header", 
+      "HOLD_position"),
+      #stripe_color = "gray!15",
+      #stripe_index = striped,
+      font_size=FONT_SIZE)
 }
 
 create_table_for_true_theta <- function(dataset){
