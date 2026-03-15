@@ -209,8 +209,9 @@ prepared_data <- prepare_plotting_data_for_traveltime(ci_results,dataset_all)
 
 
 
-```{r traveltime-result,fig.height=5, fig.cap = "95% Joint Confidence Region for Mean Travel Times in the US"}
-create_plot_for_app_data(prepared_data, iso, theta_k, reverse=FALSE,
+```{r traveltime-result,fig.height=5, fig.cap = "95% Joint Confidence Region for 2011 Mean Travel Times in the US"}
+create_plot_for_app_data(prepared_data, iso, theta_k, reverse=FALSE,xlab = "State",
+                         title = "95% Joint Confidence Region for 2011 Mean Travel Times in the US",
                                   color_map = c("1" = "limegreen", "2" = "red", "3" = "gold", "4" = "blue","5" = "violet"))
 ```
 
