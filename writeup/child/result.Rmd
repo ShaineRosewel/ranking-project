@@ -25,13 +25,11 @@ create_table_for_coverage(preprocess_coverage(combined, 2, equicorr),
                           equicorr)
 ```
 
-
-Average tightness measures are also calculated to show how the overall width of the from the proposed algorithm compares to those of independent approach and Bonferroni. 
-
+The harmonic mean ($T_1$) as average tightness measure, shown in Table \ref{tab:nonrank-eq-t1}, indicates that the proposed algorithm yields narrower intervals than both the independent and Bonferroni approaches. This improvement is visible at low $r$ and becomes more pronounced as $r$ grows. While the average range of ranks widens as $K$ increases, this effect is dampened by the spread of the estimates. When $\hat{\theta}$ values are more dispersed, the intervals are narrower; however, as they get closer to each other, ranks tend to interchange more resulting in wider ranges. This aligns with the intuition that intervals are most precise when the estimates being ranked have greater separation.
 
 \blandscape
 
-```{r}
+```{r nonrank-eq-t1}
 tabb <- preprocess_tightness_measure(combined, "t1", equicorr)
 
 if (!equicorr) {

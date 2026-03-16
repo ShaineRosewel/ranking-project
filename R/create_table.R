@@ -106,7 +106,7 @@ create_table_for_tightness_measure <- function(summary, metric_type,
     kable_styling(latex_options = c("striped",
                                     "repeat_header",
                                     "HOLD_position"),
-                  font_size=FONT_SIZE,
+                  font_size=FONT_SIZE-0.5,
                   stripe_color = "gray!15",
                   stripe_index = striped)
                     #rep(c(0, 6, 12), each = 3) + 1:3) %>%
