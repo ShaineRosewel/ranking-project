@@ -48,7 +48,7 @@ preprocess_coverage <- function(dataset,
   }
   
   return(
-     final
+     final %>% mutate(across(c(selected_columns), round, 3))
   )
 } 
 
@@ -71,7 +71,8 @@ preprocess_tightness_measure <- function(dataset, metric_type, equicorrelation,
   
   
   return(
-    dataset %>% 
+    dataset %>%
+      mutate(across(c(selected_columns), round, 3)) %>% 
       filter(metric == metric_type) %>% 
       mutate(variability = ifelse(sd==2.0, 
                                   'low', 
