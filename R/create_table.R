@@ -1,6 +1,6 @@
 library(kableExtra)
 
-FONT_SIZE <- 11.75
+FONT_SIZE <- 12
 
 
 create_basic_results_table <- function(dataset, caption){
@@ -76,14 +76,14 @@ create_table_for_tightness_measure <- function(summary, metric_type,
     striped <- rep(c(0, 6, 12), each = 3) + 1:3
     headers <- c(" " = 2, 
                  "Low $\\\\boldsymbol{\\\\theta}$ Variability" = num, 
-                 "Medium $\\\\boldsymbol{\\\\theta}$ Variability" = num, 
+                 "Moderate $\\\\boldsymbol{\\\\theta}$ Variability" = num, 
                  "High $\\\\boldsymbol{\\\\theta}$ Variability" = num)
   } else {
     vector_1 <- c("K")
     striped <- -1 #rep(c(0, 10), each = 5) + 1:5
     headers <- c(" "=1,
                  "Low $\\\\boldsymbol{\\\\theta}$ Variability" = num, 
-                 "Medium $\\\\boldsymbol{\\\\theta}$ Variability" = num,
+                 "Moderate $\\\\boldsymbol{\\\\theta}$ Variability" = num,
                  "High $\\\\boldsymbol{\\\\theta}$ Variability" = num)
   }
 
