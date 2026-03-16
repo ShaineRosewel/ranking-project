@@ -1,10 +1,14 @@
 ## Joint confidence region for the unordered parameters
 
-The results of nonrank-based algorithm are compared to the approaches from @klein: independent and Bonferroni.
+The resulting joint confidence regions for the unordered parameters obtained through Algorithm \ref{alg:nonrank_ci} are compared to those from Klein's independent and Bonferroni approaches. This is to show the advantage of using the said algorithm in the presence of correlation among ranked estimates. The results of the simulation studies are organized into Sections \ref{sec:nonrank-eq-corr} and \ref{sec:nonrank-bl-corr} which employ equicorrelated and block diagonal correlation matrices to induce correlation.
 
-### Equicorrelated matrices
+### Equicorrelated matrices {#sec:nonrank-eq-corr}
 
-```{r}
+To illustrate how different levels of correlation across different number ($K$) and variability of estimates ($\hat{\theta}$) can influence the coverage and tightness measures of the resulting joint confidence regions, the correlation coefficient ($r$) is set to three levels: $0.1$ (low), $0.5$ (moderate), $0.9$ (high).
+
+Table \ref{tab:nonrank-eq-cov} shows that coverage values for both independent and Bonferroni joint confidence regions increase with higher $r$, irrespective of $K$, reflecting the conservative nature of these regions. Meanwhile, the proposed algorithm consistently produces coverages that are close to the nominal level. The advantage in using the approach is evident at moderate to high $r$. The same coverage values are observed across different levels of $\hat{\theta}$ variability.
+
+```{r nonrank-eq-cov}
 source("/home/realiseshewon/PDev/kde-ranking/R/preprocess_data.R")
 source("/home/realiseshewon/PDev/kde-ranking/R/create_table.R")
 
@@ -15,11 +19,15 @@ combined <- combine_summaries(
   equicorr
 )
 
-tabletest <- preprocess_coverage(combined, 2, equicorrelation = equicorr)
+# tabletest <- preprocess_coverage(combined, 2, equicorrelation = equicorr)
 create_table_for_coverage(preprocess_coverage(combined, 2, equicorr),
                           "The coverage for $\\\\theta$s with different variability remain the same",
                           equicorr)
 ```
+
+
+Average tightness measures are also calculated to show how the overall width of the from the proposed algorithm compares to those of independent approach and Bonferroni. 
+
 
 \blandscape
 
@@ -32,7 +40,7 @@ if (!equicorr) {
 
 create_table_for_tightness_measure(
   summary=tabb,
-  metric_type="T1", equicorr)
+  metric_type="$T_1$", equicorr)
 ```
 
 ```{r}
@@ -45,7 +53,7 @@ if (!equicorr) {
 
 create_table_for_tightness_measure(
   summary=tabb, 
-  metric_type="T2", equicorr)
+  metric_type="$T_2$", equicorr)
 ```
 
 ```{r}
@@ -57,13 +65,13 @@ if (!equicorr) {
 
 create_table_for_tightness_measure(
   summary=tabb, 
-  metric_type="T3", equicorr)
+  metric_type="$T_3$", equicorr)
 ```
 
 \elandscape
 
 
-### Block diagonal matrices
+### Block diagonal matrices {#sec:nonrank-bl-corr}
 
 ```{r}
 equicorr <- FALSE
