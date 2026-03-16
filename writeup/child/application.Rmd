@@ -147,7 +147,8 @@ to_table <- allcases %>%
                           values_to = "Value") %>% 
   distinct() %>%
   pivot_wider(names_from = 'Measure',values_from = "Value") %>% 
-  filter(!((Approach == 'Bonferroni' | Approach == 'Independent') & r != 0 ))#%>% 
+  filter(!((Approach == 'Bonferroni' | Approach == 'Independent') & r != 0 )) %>% 
+  mutate(across(c(T1, T2, T3), round, 3)) #%>%#%>% 
   #distinct(Approach, T1, T2, T3, .keep_all = TRUE)
 
 create_basic_results_table(to_table, "Joint Confidence Region Tightness Measures")
@@ -256,7 +257,8 @@ to_table <- allcases %>%
                           values_to = "Value") %>% 
   distinct() %>%
   pivot_wider(names_from = 'Measure',values_from = "Value") %>% 
-  filter(!((Approach == 'Bonferroni' | Approach == 'Independent') & r != 0 ))
+  filter(!((Approach == 'Bonferroni' | Approach == 'Independent') & r != 0 )) %>% 
+  mutate(across(c(T1, T2, T3), round, 3))
 
 create_basic_results_table(to_table, "Joint Confidence Region Tightness Measures")
 ```
