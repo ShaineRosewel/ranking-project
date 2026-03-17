@@ -6,7 +6,7 @@ The resulting joint confidence regions for the unordered parameters obtained thr
 
 To illustrate how different levels of correlation across different number ($K$) and variability of estimates ($\hat{\theta}$) can influence the coverage and tightness measures of the resulting joint confidence regions, the correlation coefficient ($r$) is set to three levels: $0.1$ (low), $0.5$ (moderate), $0.9$ (high).
 
-Table \ref{tab:nonrank-eq-cov} shows that coverage values for both independent and Bonferroni joint confidence regions increase with higher $r$, irrespective of $K$, reflecting the conservative nature of these regions. Meanwhile, the proposed algorithm consistently produces coverages that are close to the nominal level. The advantage in using the approach is evident at moderate to high $r$. The same coverage values are observed across different levels of $\hat{\theta}$ variability.
+Table \ref{tab:nonrank-eq-cov} shows that coverage values for both independent and Bonferroni joint confidence regions increase with higher $r$, irrespective of $K$, reflecting the conservative nature of these regions. Meanwhile, the proposed algorithm consistently produces coverages that are close to the nominal level, 0.95. The advantage in using the approach is evident at moderate to high $r$. The same coverage values are observed across different levels of $\hat{\theta}$ variability.
 
 ```{r nonrank-eq-cov}
 source("/home/realiseshewon/PDev/kde-ranking/R/preprocess_data.R")
@@ -25,36 +25,83 @@ create_table_for_coverage(preprocess_coverage(combined, 2, equicorr),
                           equicorr)
 ```
 
-The harmonic mean ($T_1$) as average tightness measure, shown in Table \ref{tab:nonrank-eq-t1}, indicates that the proposed algorithm yields narrower intervals than both the independent and Bonferroni approaches. This improvement is visible at low $r$ and becomes more pronounced as $r$ grows. While the average range of ranks widens as $K$ increases, this effect is dampened by the spread of the estimates. When $\hat{\theta}$ values are more dispersed, the intervals are narrower; however, as they get closer to each other, ranks tend to interchange more resulting in wider ranges. This aligns with the intuition that intervals are most precise when the estimates being ranked have greater separation.
+Results for $T_1$ and $T_2$ tightness measure, shown in Tables \ref{tab:nonrank-eq-t1} and \ref{tab:nonrank-eq-t2}, indicate that the proposed algorithm yields narrower intervals than both the independent and Bonferroni approaches. This improvement is visible at low $r$ and becomes more pronounced as $r$ grows. While the average range of ranks widens as $K$ increases, this effect is dampened by the spread of the estimates. When $\hat{\theta}$ values are more dispersed, the intervals are narrower; however, as they get closer to each other, ranks tend to interchange more resulting in wider ranges. This aligns with the intuition that intervals are most precise when the estimates being ranked have greater separation.
+
+Similarly, $T_3$ in Table \ref{tab:nonrank-eq-t3} produces higher values at low $r$ and increases with higher $r$, making the proposed algorithm a better option in the presence of correlation. 
+
+```{r fig.height=7}
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+t1 <- preprocess_tightness_measure(combined, "t1", equicorr) %>% pivot_longer(cols = contains("_"),names_to = "Approach", values_to = "Values") %>% separate(Approach, into = c('Approach','Variability'))
+t1$Metric <- "t1"
+
+t2 <- preprocess_tightness_measure(combined, "t2", equicorr) %>% pivot_longer(cols = contains("_"),names_to = "Approach", values_to = "Values") %>% separate(Approach, into = c('Approach','Variability'))
+t2$Metric <- "t2"
+
+t3 <- preprocess_tightness_measure(combined, "t3", equicorr) %>% pivot_longer(cols = contains("_"),names_to = "Approach", values_to = "Values") %>% separate(Approach, into = c('Approach','Variability'))
+t3$Metric <- "t3"
+
+
+rbind(t1, t2, t3) %>% 
+  mutate(Variability = factor(Variability, 
+                              levels = c("low", "med", "high"), 
+                              ordered = TRUE)) %>%
+  ggplot(aes(x = Approach, y = Values, color = factor(r), shape = Variability,group = interaction(Variability,r))) +
+  geom_point(alpha = 0.5) + geom_line(color = 'black', size = 0.05) +
+  facet_grid(Metric~K, scales = "free_y") +
+    #labs(title=title) + xlab(xlab) + ylab(ylab) +
+    theme_bw() +
+    theme(axis.text.x = element_text(hjust = 1, size = 7, angle = 90),
+          axis.text.y = element_text(size=7)
+    ) +
+    guides(color = guide_legend(title = "t")) +
+    theme(axis.line = element_line(colour = "gray"),
+          panel.grid.minor = element_blank(),
+          panel.grid.major.x = element_blank(),
+          text = element_text(family = "serif"),
+          legend.position = "top")#+ coord_flip()
+```
 
 \blandscape
 
-```{r nonrank-eq-t1}
-tabb <- preprocess_tightness_measure(combined, "t1", equicorr)
+```{r nonrank-eq-t1, include = FALSE}
+tabb1 <- preprocess_tightness_measure(combined, "t1", equicorr)
 
 if (!equicorr) {
-  tabb <- tabb %>% select(-c(r, blocks))
+  tabb1 <- tabb1 %>% select(-c(r, blocks))
 }
 
 create_table_for_tightness_measure(
-  summary=tabb,
+  summary=tabb1,
   metric_type="$T_1$", equicorr)
 ```
 
-```{r}
-tabb <- preprocess_tightness_measure(combined, "t2", equicorr)
+
+
+
+
+
+
+
+
+
+
+
+```{r nonrank-eq-t2, include = FALSE}
+tabb2 <- preprocess_tightness_measure(combined, "t2", equicorr)
 
 if (!equicorr) {
-  tabb <- tabb %>% select(-c(r, blocks))
+  tabb2 <- tabb2 %>% select(-c(r, blocks))
 }
 
 
 create_table_for_tightness_measure(
-  summary=tabb, 
+  summary=tabb2, 
   metric_type="$T_2$", equicorr)
 ```
 
-```{r}
+```{r nonrank-eq-t3, include = FALSE}
 tabb <- preprocess_tightness_measure(combined, "t3", equicorr)
 
 if (!equicorr) {
