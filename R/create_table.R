@@ -67,7 +67,7 @@ create_table_for_tightness_measure <- function(summary, metric_type,
     selected_columns <- c("Independent","Bonferroni","Nonrank")
     colwidth  <- "2cm"
   } else {
-    selected_columns <- c("Asymptotic Variance","Bootstrap Estimate")
+    selected_columns <- c("Asymptotic Var","Bootstrap Est")
     colwidth  <- "3cm"
   }
   num <- length(selected_columns)
@@ -120,13 +120,13 @@ create_table_for_tightness_measure <- function(summary, metric_type,
       column_spec(1:1, width = "1cm") %>%
       column_spec(2:(1+3*num), width = colwidth) %>%
       pack_rows("2 balanced blocks", 1, 5,
-                latex_gap_space = "0.7em") %>%
+                latex_gap_space = "0.3em") %>%
       pack_rows("2 unbalanced blocks", 6, 10,
-                latex_gap_space = "0.7em") %>%
+                latex_gap_space = "0.3em") %>%
       pack_rows("3 unbalanced blocks - low", 11, 15,
-                latex_gap_space = "0.7em") %>%
+                latex_gap_space = "0.3em") %>%
       pack_rows("3 unbalanced block - high", 16, 20,
-                latex_gap_space = "0.7em")
+                latex_gap_space = "0.3em")
   }
   return(
     final
