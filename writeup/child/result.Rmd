@@ -40,7 +40,6 @@ tabletest <- preprocess_coverage(eq_nonrank, 2, equicorrelation = TRUE)
 
 \newpage
 
-
 ```{r}
 eq <- preprocess_coverage(eq_nonrank, 2, TRUE)%>% mutate(`Correlation structure` = "Equicorrelated")
 bl <- bl_nonrank %>% filter(metric == "coverage" & sd == 2) %>% select(-c(metric,sd,rankbased_asymptotic,rankbased_level2bs)) %>%
@@ -55,13 +54,15 @@ bl <- bl_nonrank %>% filter(metric == "coverage" & sd == 2) %>% select(-c(metric
 
 library(kableExtra)
 rbind(eq, bl) %>% select(`Correlation structure`,K ,r, independent, bonferroni, nonrankbased)  %>%
-    kable("latex",
+    kable(format = "latex",
           booktabs = TRUE,
           escape = FALSE,
           linesep = "",
           longtable = TRUE,
-          repeat_header_text = "\\textit{(Continued)}",
           caption = "Simulation Results for Tightness Measure") %>%
+  kable_styling(latex_options = "repeat_header", 
+                repeat_header_text = "\\textit{(Continued)}",
+                font_size = 11.5) %>% 
   column_spec(c(2:3), width = "1cm")%>%
   column_spec(c(1,4:6), width = "2.75cm")%>%
   collapse_rows(columns = c(1,2,3),
@@ -69,7 +70,7 @@ rbind(eq, bl) %>% select(`Correlation structure`,K ,r, independent, bonferroni, 
                   latex_hline = "none") %>% 
   footnote(general_title = "\\\\footnotesize\\\\textit{Note: }", 
              footnote_as_chunk = TRUE, # using the "general" footnote option "Note." and the "Footnote...." text start on the same line
-             threeparttable = TRUE,
+             # threeparttable = TRUE,
              general = "\\\\footnotesize{B2: balanced-block-2; U2: unbalanced-block-2; U3: unbalanced-block-3; UH3: unbalanced-block-high-3}",
              escape =FALSE)
 ```
