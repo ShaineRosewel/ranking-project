@@ -218,7 +218,7 @@ rbind(t_eq_unordered, t_bl_unordered) %>%
   ggplot(aes(x = Approach, y = Values, color = factor(r), 
              #linetype = `Correlation structure`,
              shape = Variability,group = interaction(Variability,r))) +
-  geom_point(alpha = 0.75) + geom_line(color = 'black', size = 0.05) +
+  geom_point(alpha = 0.75) + geom_line(color = 'black', size = 0.04) +
   # facet_grid(Metric ~ K ,scales = "free") +
   facet_grid(`Correlation structure` + Metric ~ K ,scales = "free",
             labeller = labeller(
@@ -450,6 +450,10 @@ t_eq_ordered <- rbind(t1_ordered, t2_ordered, t3_ordered) %>% mutate(`Correlatio
 ```
 
 
+```{r}
+t_eq_ordered 
+```
+
 
 
 ```{r rank-plot, fig.cap = "Simulation Result for Tightness Measure for Ordered Parameters", fig.height=7}
@@ -472,6 +476,11 @@ rbind(t_eq_ordered, t_bl_ordered) %>%
                               levels = c("low", "med", "high"), 
                               labels = c("Low", "Moderate", "High"),
                               ordered = TRUE),
+         Approach = factor(Approach,
+                           levels = c("rankbased_asymptotic","rankbased_level2bs"),
+                           labels = c("asymptotic", "level2bs"),
+                           ordered = TRUE),
+         
          `Correlation structure` = factor(`Correlation structure`,
                                           levels =c("Equicorrelated", "Block diagonal"),
                                           labels =c("Equicorr", "Block diag")),
@@ -483,12 +492,12 @@ rbind(t_eq_ordered, t_bl_ordered) %>%
                          levels = c('t1', 't2', 't3'),
                          labels = c("T[1]", "T[2]", "T[3]"),
                          ordered = TRUE)) %>%
-  ggplot(aes(x = Approach, y = Values, color = factor(r), 
+  ggplot(aes(x = `Correlation structure`, y = Values, color = factor(r), 
              #linetype = `Correlation structure`,
              shape = Variability,group = interaction(Variability,r))) +
   geom_point(alpha = 0.75) +# geom_line(color = 'black', size = 0.05) +
   # facet_grid(Metric ~ K ,scales = "free") +
-  facet_grid(`Correlation structure` + Metric ~ K ,scales = "free",
+  facet_grid(Approach + Metric ~ K ,scales = "free",
             labeller = labeller(
                Metric = label_parsed, # Interprets "T[1]" as math
                #K = label_value        # Keeps "K = 10" as literal text
