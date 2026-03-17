@@ -179,7 +179,7 @@ create_basic_results_table(to_table, "Joint Confidence Region Tightness Measures
 
 Table \@ref(tab:pulse-table) shows that higher within-block correlation leads to better T1, T2, and T3. This means that overall, the intervals in the joint confidence region are generally narrower. Figure \@ref(fig:pulse-result) assumes high correlations within blocks of alliances and political slates. The joint confidence regions for Independent, Bonferroni, and Nonrank are shown respectively. For this use case, lower rank corresponds to highly preferred candidates.
 
-```{r pulse-result,fig.height=6, fig.cap = "95% Joint Confidence Region for Candidates with at least 1% Votes"}
+```{r pulse-result,fig.cap = "95% Joint Confidence Region for Candidates with at least 1% Votes"}
 prepared_data <- prepare_plotting_data_for_pulse(ci_results,dataset_all)
 create_plot_for_app_data(prepared_data, Candidate, k, reverse=TRUE,
                                   color_map = c("DuterTen" = "limegreen", "Alyansa" = "red", "KiBam" = "gold", "Makabayan" = "blue","DuterTen-Alyansa" = "black"))
@@ -382,7 +382,7 @@ prepared_data <- prepare_plotting_data_for_traveltime(ci_results,dataset_all)
 
 Figure \@ref(fig:traveltime-result) assumes high correlations within blocks with different population densities. Only joint confidence regions for Bonferroni and Nonrank are since Independent result is similar to Bonferroni. For this use case, lower rank corresponds to states with lower mean travel time.
 
-```{r traveltime-result,fig.height=6, fig.cap = "95% Joint Confidence Region for 2011 Mean Travel Times in the US"}
+```{r traveltime-result, fig.cap = "95% Joint Confidence Region for 2011 Mean Travel Times in the US"}
 create_plot_for_app_data(prepared_data %>% filter(Approach != 'independent'), iso, theta_k, reverse=FALSE,xlab = "State",
                          title = "95% Joint Confidence Region for 2011 Mean Travel Times in the US",
                          legend_title ="Density group",
