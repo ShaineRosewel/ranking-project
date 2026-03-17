@@ -1,8 +1,11 @@
+---
+output:
+  pdf_document: default
+  html_document: default
+---
 ## Joint confidence region for the unordered parameters
 
 The resulting joint confidence regions for the unordered parameters obtained through Algorithm \ref{alg:nonrank_ci} are compared to those from Klein's independent and Bonferroni approaches. This is to show the advantage of using the said algorithm in the presence of correlation among ranked estimates. The results of the simulation studies are organized into Sections \ref{sec:nonrank-eq-corr} and \ref{sec:nonrank-bl-corr} which employ equicorrelated and block diagonal correlation matrices to induce correlation.
-
-### Equicorrelated matrices {#sec:nonrank-eq-corr}
 
 To illustrate how different levels of correlation across different number ($K$) and variability of estimates ($\hat{\theta}$) can influence the coverage and tightness measures of the resulting joint confidence regions, the correlation coefficient ($r$) is set to three levels: $0.1$ (low), $0.5$ (moderate), $0.9$ (high).
 
@@ -12,34 +15,81 @@ Table \ref{tab:nonrank-eq-cov} shows that coverage values for both independent a
 source("/home/realiseshewon/PDev/kde-ranking/R/preprocess_data.R")
 source("/home/realiseshewon/PDev/kde-ranking/R/create_table.R")
 
-equicorr <- TRUE
 
-combined <- combine_summaries(
+eq_nonrank <- combine_summaries(
   "/home/realiseshewon/PDev/kde-ranking/simulation_results/summaries/summary_k",
-  equicorr
+  TRUE
 )
 
+
+bl_nonrank <- combine_summaries(
+  "/home/realiseshewon/PDev/kde-ranking/simulation_results/summaries/summary_block",
+  FALSE
+)
+
+tabletest <- preprocess_coverage(eq_nonrank, 2, equicorrelation = TRUE)
+
 # tabletest <- preprocess_coverage(combined, 2, equicorrelation = equicorr)
-create_table_for_coverage(preprocess_coverage(combined, 2, equicorr),
-                          "The coverage for $\\\\theta$s with different variability remain the same",
-                          equicorr)
+# create_table_for_coverage(preprocess_coverage(combined, 2, equicorr),
+#                           "The coverage for $\\\\theta$s with different variability remain the same",
+#                           equicorr)
+
+
+
 ```
 
-Results for $T_1$ and $T_2$ tightness measure, shown in Tables \ref{tab:nonrank-eq-t1} and \ref{tab:nonrank-eq-t2}, indicate that the proposed algorithm yields narrower intervals than both the independent and Bonferroni approaches. This improvement is visible at low $r$ and becomes more pronounced as $r$ grows. While the average range of ranks widens as $K$ increases, this effect is dampened by the spread of the estimates. When $\hat{\theta}$ values are more dispersed, the intervals are narrower; however, as they get closer to each other, ranks tend to interchange more resulting in wider ranges. This aligns with the intuition that intervals are most precise when the estimates being ranked have greater separation.
+\newpage
 
-Similarly, $T_3$ in Table \ref{tab:nonrank-eq-t3} produces higher values at low $r$ and increases with higher $r$, making the proposed algorithm a better option in the presence of correlation. 
 
-```{r fig.height=7}
+```{r}
+eq <- preprocess_coverage(eq_nonrank, 2, TRUE)%>% mutate(`Correlation structure` = "Equicorrelated")
+bl <- bl_nonrank %>% filter(metric == "coverage" & sd == 2) %>% select(-c(metric,sd,rankbased_asymptotic,rankbased_level2bs)) %>%
+  mutate(r = paste(r, blocks, sep = '-')) %>%
+  mutate(r = case_when(
+    r == "balanced-block-2" ~ "B2",
+    r == "unbalanced-block-2" ~ "U2",
+    r == "unbalanced-block-3" ~ "U3",
+    r == "unbalanced-block-high-3" ~ "UH3",
+    TRUE ~ r
+  )) %>% select(-c(blocks)) %>% mutate(`Correlation structure` = "Block diagonal") %>% arrange(K, r)
+
+library(kableExtra)
+rbind(eq, bl) %>% select(`Correlation structure`,K ,r, independent, bonferroni, nonrankbased)  %>%
+    kable("latex",
+          booktabs = TRUE,
+          escape = FALSE,
+          linesep = "",
+          longtable = TRUE,
+          repeat_header_text = "\\textit{(Continued)}",
+          caption = "Simulation Results for Tightness Measure") %>%
+  column_spec(c(2:3), width = "1cm")%>%
+  column_spec(c(1,4:6), width = "2.75cm")%>%
+  collapse_rows(columns = c(1,2,3),
+                  valign = "middle", 
+                  latex_hline = "none") %>% 
+  footnote(general_title = "\\\\footnotesize\\\\textit{Note: }", 
+             footnote_as_chunk = TRUE, # using the "general" footnote option "Note." and the "Footnote...." text start on the same line
+             threeparttable = TRUE,
+             general = "\\\\footnotesize{B2: balanced-block-2; U2: unbalanced-block-2; U3: unbalanced-block-3; UH3: unbalanced-block-high-3}",
+             escape =FALSE)
+```
+Results for $T_1$ and $T_2$ tightness measure, shown in rows 1 and 2 of Figure \ref{fig:nonrank-plot}, indicate that the proposed algorithm yields narrower intervals than both the independent and Bonferroni approaches. This improvement is visible at low $r$ and becomes more pronounced as $r$ grows. While the average range of ranks widens as $K$ increases, this effect is dampened by the spread of the estimates. When $\hat{\theta}$ values are more dispersed, the intervals are narrower; however, as they get closer to each other, ranks tend to interchange more resulting in wider ranges. This aligns with the intuition that intervals are most precise when the estimates being ranked have greater separation.
+
+Similarly, $T_3$ in row 3 of Figure \ref{fig:nonrank-plot} produces higher values at low $r$ and increases with higher $r$, making the proposed algorithm a better option in the presence of correlation. 
+
+
+```{r nonrank-plot, fig.cap = "caption"}
 library(ggplot2)
 library(dplyr)
 library(tidyr)
-t1 <- preprocess_tightness_measure(combined, "t1", equicorr) %>% pivot_longer(cols = contains("_"),names_to = "Approach", values_to = "Values") %>% separate(Approach, into = c('Approach','Variability'))
+equicorr = TRUE
+t1 <- preprocess_tightness_measure(eq_nonrank, "t1", equicorr) %>% pivot_longer(cols = contains("_"),names_to = "Approach", values_to = "Values") %>% separate(Approach, into = c('Approach','Variability'))
 t1$Metric <- "t1"
 
-t2 <- preprocess_tightness_measure(combined, "t2", equicorr) %>% pivot_longer(cols = contains("_"),names_to = "Approach", values_to = "Values") %>% separate(Approach, into = c('Approach','Variability'))
+t2 <- preprocess_tightness_measure(eq_nonrank, "t2", equicorr) %>% pivot_longer(cols = contains("_"),names_to = "Approach", values_to = "Values") %>% separate(Approach, into = c('Approach','Variability'))
 t2$Metric <- "t2"
 
-t3 <- preprocess_tightness_measure(combined, "t3", equicorr) %>% pivot_longer(cols = contains("_"),names_to = "Approach", values_to = "Values") %>% separate(Approach, into = c('Approach','Variability'))
+t3 <- preprocess_tightness_measure(eq_nonrank, "t3", equicorr) %>% pivot_longer(cols = contains("_"),names_to = "Approach", values_to = "Values") %>% separate(Approach, into = c('Approach','Variability'))
 t3$Metric <- "t3"
 
 
@@ -48,7 +98,7 @@ rbind(t1, t2, t3) %>%
                               levels = c("low", "med", "high"), 
                               ordered = TRUE)) %>%
   ggplot(aes(x = Approach, y = Values, color = factor(r), shape = Variability,group = interaction(Variability,r))) +
-  geom_point(alpha = 0.5) + geom_line(color = 'black', size = 0.05) +
+  geom_point(alpha = 0.75) + geom_line(color = 'black', size = 0.05) +
   facet_grid(Metric~K, scales = "free_y") +
     #labs(title=title) + xlab(xlab) + ylab(ylab) +
     theme_bw() +
@@ -63,18 +113,17 @@ rbind(t1, t2, t3) %>%
           legend.position = "top")#+ coord_flip()
 ```
 
-\blandscape
 
 ```{r nonrank-eq-t1, include = FALSE}
-tabb1 <- preprocess_tightness_measure(combined, "t1", equicorr)
-
-if (!equicorr) {
-  tabb1 <- tabb1 %>% select(-c(r, blocks))
-}
-
-create_table_for_tightness_measure(
-  summary=tabb1,
-  metric_type="$T_1$", equicorr)
+# tabb1 <- preprocess_tightness_measure(combined, "t1", equicorr)
+# 
+# if (!equicorr) {
+#   tabb1 <- tabb1 %>% select(-c(r, blocks))
+# }
+# 
+# create_table_for_tightness_measure(
+#   summary=tabb1,
+#   metric_type="$T_1$", equicorr)
 ```
 
 
@@ -89,86 +138,88 @@ create_table_for_tightness_measure(
 
 
 ```{r nonrank-eq-t2, include = FALSE}
-tabb2 <- preprocess_tightness_measure(combined, "t2", equicorr)
-
-if (!equicorr) {
-  tabb2 <- tabb2 %>% select(-c(r, blocks))
-}
-
-
-create_table_for_tightness_measure(
-  summary=tabb2, 
-  metric_type="$T_2$", equicorr)
+# tabb2 <- preprocess_tightness_measure(combined, "t2", equicorr)
+# 
+# if (!equicorr) {
+#   tabb2 <- tabb2 %>% select(-c(r, blocks))
+# }
+# 
+# 
+# create_table_for_tightness_measure(
+#   summary=tabb2, 
+#   metric_type="$T_2$", equicorr)
 ```
 
 ```{r nonrank-eq-t3, include = FALSE}
-tabb <- preprocess_tightness_measure(combined, "t3", equicorr)
-
-if (!equicorr) {
-  tabb <- tabb %>% select(-c(r, blocks))
-}
-
-create_table_for_tightness_measure(
-  summary=tabb, 
-  metric_type="$T_3$", equicorr)
+# tabb <- preprocess_tightness_measure(combined, "t3", equicorr)
+# 
+# if (!equicorr) {
+#   tabb <- tabb %>% select(-c(r, blocks))
+# }
+# 
+# create_table_for_tightness_measure(
+#   summary=tabb, 
+#   metric_type="$T_3$", equicorr)
 ```
 
-\elandscape
-
-
-### Block diagonal matrices {#sec:nonrank-bl-corr}
 
 ```{r}
-equicorr <- FALSE
+# equicorr <- FALSE
+# 
+# combined <- combine_summaries(
+#   "/home/realiseshewon/PDev/kde-ranking/simulation_results/summaries/summary_block",
+#   equicorr
+# )
+# 
+# tabletest <- preprocess_coverage(combined, 2, equicorrelation = equicorr)
+# 
 
-combined <- combine_summaries(
-  "/home/realiseshewon/PDev/kde-ranking/simulation_results/summaries/summary_block",
-  equicorr
-)
-
-tabletest <- preprocess_coverage(combined, 2, equicorrelation = equicorr)
-create_table_for_coverage(preprocess_coverage(combined, 2, equicorr),
-                          "The coverage for $\theta$s with different variability remain the same",
-                          equicorr)
+# create_table_for_coverage(preprocess_coverage(combined, 2, equicorr),
+#                           "The coverage for $\theta$s with different variability remain the same",
+#                           equicorr)
+# tabletest
 ```
+
+
+
 
 \blandscape
 
 ```{r}
-tabb <- preprocess_tightness_measure(combined, "t1", equicorr)
-
-if (!equicorr) {
-  tabb <- tabb %>% select(-c(r, blocks))
-}
-
-create_table_for_tightness_measure(
-  summary=tabb,
-  metric_type="T1", equicorr)
+# tabb <- preprocess_tightness_measure(combined, "t1", equicorr)
+# 
+# if (!equicorr) {
+#   tabb <- tabb %>% select(-c(r, blocks))
+# }
+# 
+# create_table_for_tightness_measure(
+#   summary=tabb,
+#   metric_type="T1", equicorr)
 ```
 
 ```{r}
-tabb <- preprocess_tightness_measure(combined, "t2", equicorr)
-
-if (!equicorr) {
-  tabb <- tabb %>% select(-c(r, blocks))
-}
-
-
-create_table_for_tightness_measure(
-  summary=tabb, 
-  metric_type="T2", equicorr)
+# tabb <- preprocess_tightness_measure(combined, "t2", equicorr)
+# 
+# if (!equicorr) {
+#   tabb <- tabb %>% select(-c(r, blocks))
+# }
+# 
+# 
+# create_table_for_tightness_measure(
+#   summary=tabb, 
+#   metric_type="T2", equicorr)
 ```
 
 ```{r}
-tabb <- preprocess_tightness_measure(combined, "t3", equicorr)
-
-if (!equicorr) {
-  tabb <- tabb %>% select(-c(r, blocks))
-}
-
-create_table_for_tightness_measure(
-  summary=tabb, 
-  metric_type="T3", equicorr)
+# tabb <- preprocess_tightness_measure(combined, "t3", equicorr)
+# 
+# if (!equicorr) {
+#   tabb <- tabb %>% select(-c(r, blocks))
+# }
+# 
+# create_table_for_tightness_measure(
+#   summary=tabb, 
+#   metric_type="T3", equicorr)
 ```
 
 \elandscape
@@ -176,9 +227,7 @@ create_table_for_tightness_measure(
 
 ## Joint confidence region for the ordered parameters
 
-### Equicorrelated matrices
-
-```{r}
+```{r include = FALSE}
 equicorr <- TRUE
 
 combined <- combine_summaries(
@@ -195,9 +244,7 @@ create_table_for_coverage(preprocess_coverage(combined, 2, equicorr, FALSE),
 ```
 
 
-\blandscape
-
-```{r}
+```{r include = FALSE}
 tabb <- preprocess_tightness_measure(combined, "t1", equicorr, FALSE)
 
 if (!equicorr) {
@@ -209,7 +256,7 @@ create_table_for_tightness_measure(
   metric_type="T1", equicorr, FALSE)
 ```
 
-```{r}
+```{r include = FALSE}
 tabb <- preprocess_tightness_measure(combined, "t2", equicorr, FALSE)
 
 if (!equicorr) {
@@ -222,7 +269,7 @@ create_table_for_tightness_measure(
   metric_type="T2", equicorr, FALSE)
 ```
 
-```{r}
+```{r include = FALSE}
 tabb <- preprocess_tightness_measure(combined, "t3", equicorr, FALSE)
 
 if (!equicorr) {
@@ -234,14 +281,8 @@ create_table_for_tightness_measure(
   metric_type="T3", equicorr, FALSE)
 ```
 
-\elandscape
 
-
-
-
-### Block diagonal matrices
-
-```{r}
+```{r include = FALSE}
 equicorr <- FALSE
 
 combined <- combine_summaries(
@@ -257,7 +298,7 @@ create_table_for_coverage(preprocess_coverage(combined, 2, equicorr, FALSE),
 
 \blandscape
 
-```{r}
+```{r include = FALSE}
 tabb <- preprocess_tightness_measure(combined, "t1", equicorr, FALSE)
 
 if (!equicorr) {
@@ -269,7 +310,7 @@ create_table_for_tightness_measure(
   metric_type="T1", equicorr, FALSE)
 ```
 
-```{r}
+```{r include = FALSE}
 tabb <- preprocess_tightness_measure(combined, "t2", equicorr, FALSE)
 
 if (!equicorr) {
@@ -282,7 +323,7 @@ create_table_for_tightness_measure(
   metric_type="T2", equicorr, FALSE)
 ```
 
-```{r}
+```{r include = FALSE}
 tabb <- preprocess_tightness_measure(combined, "t3", equicorr, FALSE)
 
 if (!equicorr) {
