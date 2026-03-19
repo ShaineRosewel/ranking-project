@@ -12,7 +12,7 @@ create_boxplot_for_true_theta <- function(dataset){
       labs(title = expression(True~theta~Values~Used~'in'~Simulation),
            x = expression(Variability),
            y = expression(theta)) +
-      geom_boxplot() +
+      geom_boxplot(outlier.shape = NA) +
       theme_bw() +
       theme(plot.title = element_text(hjust = 0.5))
   )
