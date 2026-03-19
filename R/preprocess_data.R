@@ -110,7 +110,27 @@ prepare_t_facet_plot_data <- function(
 }
 
 
-
+prepare_appendix_t_measure_table <- function(eq_data, bl_data, unordered, tmeasure = "t1"){
+  partial <- prepare_t_facet_plot_data(
+    eq_data = eq_data,
+    bl_data = bl_data,
+    unordered = unordered) %>% 
+    unite("app", Approach, Variability, sep = "_", remove =TRUE) %>%
+    pivot_wider(names_from = app,
+                values_from = Values) %>% 
+    filter(Metric == tmeasure) %>%
+    select(-c(Metric))
+  
+  
+  eq_padded_ordered<-partial %>% filter(`Correlation structure` == 'Equicorrelated') %>% select(-c(`Correlation structure`)) %>%
+    group_by(K) %>%
+    group_modify(~ add_row(.x)) %>% 
+    ungroup()
+  
+  bl_test <- partial %>% filter(`Correlation structure` == 'Block diagonal') %>% select(-c(`Correlation structure`, K))
+  
+  return(cbind(eq_padded_ordered, bl_test))
+}
 
 
 preprocess_tightness_measure <- function(dataset, metric_type, equicorrelation){
