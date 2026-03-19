@@ -251,181 +251,41 @@ In equation \ref{eq:t3}, $OP = K + \sum^K_{k=1} \big | \Lambda_{Ok} \big|$ denot
 For the simulation settings to be used in evaluating the performance of the proposed methodologies, we shall be varying the settings for the population mean $\boldsymbol{\theta}$, population variances $\sigma^2_1, \sigma^2_2,\ldots,\sigma^2_K$, population correlation matrix $\mathbf{R}$, and number of populations being ranked $K$. In carrying out the simulations, a nominal level of $1-\alpha=0.95$ will be used. The table below summarizes the simulation settings.
 
 
-\begin{table}[H]
-\centering
-{\fontsize{13pt}{17pt}\selectfont 
-\begin{tabular}{p{11cm} p{4cm}}
-\hline
-$\boldsymbol{\theta}$ & $\mathbf{R}$ \\
-\hline
-\hline
+```{r true-theta-table, tab.cap="True $\\theta$ values"}
+source("/home/realiseshewon/PDev/kde-ranking/R/create_plot.R")
+dataset<-readRDS("/home/realiseshewon/PDev/kde-ranking/data/true_theta.rds")
+source("/home/realiseshewon/PDev/kde-ranking/R/create_table.R")
+create_table_for_true_theta(
+dataset %>% 
+  select(K, data_spread, true_theta) %>%
+  group_by(K, data_spread) %>%
+  summarise(true_theta = paste(round(true_theta, 1), collapse = ", "), .groups = "drop") %>%
+  mutate(R = "$\\mathbf{R}_{eq, \\rho} = 0.1, 0.5, 0.9$ $\\mathbf{R}_{block} - 2, 3$ blocks"),
+column_names = c("K", "Variability",'$\\boldsymbol{\\theta}$', "R"),
+main = TRUE
+)
+```
 
-\multicolumn{2}{c}{\textbf{K = 10}} \\
-\hline
-\multirow{3}{11cm}{(22.5, 24.9, 27.5, 24.3, 24.8, 23.2, 23, 21.6, 25.1, 19)$'$} 
-& $\mathbf{R}_{\text{eq}}, \rho = 0.1, 0.5, 0.9$ \\
-& $\mathbf{R}_{\text{block}}$ - \text{2, 3 blocks} \\
-\hline
-\multirow{3}{11cm}{(21.5, 25.7, 30.5, 24.7, 25.5, 22.6, 22.3, 19.9, 26.1, 15.2)$'$} 
-& $\mathbf{R}_{\text{eq}}, \rho = 0.1, 0.5, 0.9$ \\
-& $\mathbf{R}_{\text{block}}$ - \text{2, 3 blocks} \\
 
-\hline
-\multirow{3}{11cm}{(19.9, 27, 34.9, 25.3, 26.7, 21.9, 21.3, 17.3, 27.7, 9.4)$'$} 
-& $\mathbf{R}_{\text{eq}}, \rho = 0.1, 0.5, 0.9$ \\
-& $\mathbf{R}_{\text{block}}$ - \text{2, 3 blocks} \\
-\hline
-\multicolumn{2}{c}{\textbf{K = 20}} \\
-\hline
-\multirow{3}{11cm}{(22.5, 24.9, 27.5, 24.3, 24.8, 23.2, 23, 21.6, 25.1, 19, 21.3, 24.1, 26.5, 26.9, 23.2, 25.8, 21.8, 21.6, 25.6, 21.2)$'$} 
-& $\mathbf{R}_{\text{eq}}, \rho = 0.1, 0.5, 0.9$ \\
-& $\mathbf{R}_{\text{block}}$ - \text{2, 3 blocks} \\
-& \\
-\hline
-\multirow{3}{11cm}{(21.5, 25.7, 30.5, 24.7, 25.5, 22.6, 22.3, 19.9, 26.1, 15.2, 19.3, 24.3, 28.7, 29.3, 22.7, 27.5, 20.1, 19.9, 27.1, 19.1)$'$} 
-& $\mathbf{R}_{\text{eq}}, \rho = 0.1, 0.5, 0.9$ \\
-& $\mathbf{R}_{\text{block}}$ - \text{2, 3 blocks} \\
-& \\
-\hline
-\multirow{3}{11cm}{(19.9, 27, 34.9, 25.3, 26.7, 21.9, 21.3, 17.3, 27.7, 9.4, 16.2, 24.6, 31.9, 33, 21.9, 29.9, 17.7, 17.3, 29.3, 16)$'$} 
-& $\mathbf{R}_{\text{eq}}, \rho = 0.1, 0.5, 0.9$ \\
-& $\mathbf{R}_{\text{block}}$ - \text{2, 3 blocks} \\
-& \\
-\hline
-\multicolumn{2}{c}{\textbf{K = 30}} \\
-\hline
-\multirow{4}{*}{%
-  \parbox{11cm}{%
-  \vspace{0.2cm}
-    (22.5, 24.9, 27.5, 24.3, 24.8, 23.2, 23, 21.6, 25.1, 19, 
-    21.3, 24.1, 26.5, 26.9, 23.2, 25.8, 21.8, 21.6, 25.6, 21.2, 
-    25.7, 22.2, 22.7, 22.6, 21.9, 24.2, 23.6, 22, 24.5, 25)$'$
-    \vspace{0.2cm}
-  }%
-} 
-& $\mathbf{R}_{\text{eq}}, \rho = 0.1, 0.5, 0.9$ \\
-& $\mathbf{R}_{\text{block}}$ - \text{2, 3 blocks} \\
-& \\
-& \\
-\hline
-\multirow{4}{*}{%
-  \parbox{11cm}{%
-  \vspace{0.2cm}
-  (21.5, 25.7, 30.5, 24.7, 25.5, 22.6, 22.3, 19.9, 26.1, 15.2, 19.3, 24.3, 28.7, 29.3, 22.7, 27.5, 20.1, 19.9, 27.1, 19.1, 27.2, 20.9, 21.8, 21.7, 20.4, 24.5, 23.5, 20.5, 25.1, 26)$'$
-    \vspace{0.2cm}
-  }%
-} 
-& $\mathbf{R}_{\text{eq}}, \rho = 0.1, 0.5, 0.9$ \\
-& $\mathbf{R}_{\text{block}}$ - \text{2, 3 blocks} \\
-& \\
-& \\
-\hline
-\multirow{4}{*}{%
-  \parbox{11cm}{%
-  \vspace{0.2cm}
-  (19.9, 27, 34.9, 25.3, 26.7, 21.9, 21.3, 17.3, 27.7, 9.4, 16.2, 24.6, 31.9, 33, 21.9, 29.9, 17.7, 17.3, 29.3, 16, 29.4, 19, 20.4, 20.3, 18.2, 25, 23.3, 18.3, 26, 27.4)$'$
-    \vspace{0.2cm}
-  }%
-} 
-& $\mathbf{R}_{\text{eq}}, \rho = 0.1, 0.5, 0.9$ \\
-& $\mathbf{R}_{\text{block}}$ - \text{2, 3 blocks} \\
-& \\
-& \\
-\hline
-\end{tabular}
-}
-\end{table}
+
+
+```{r sigma-table, tab.cap="$\\sigma$ Values."}
+sds<-readRDS("/home/realiseshewon/PDev/kde-ranking/data/mean_travel_time_ranking_2011.rds")
+
+
+ks <-seq(10,50,10)
+sd_setup <- data.frame(K=ks, sigma = sapply(ks, function(x) paste(sds$S[1:x], collapse = ", ")))
+
+
+create_table_for_true_theta(sd_setup,
+                            column_names = c("K", '$\\sigma$'),
+                            main = FALSE)
+```
 
 
 
 
 
-\begin{table}[H]
-\centering
-{\fontsize{13pt}{17pt}\selectfont 
-\begin{tabular}{p{11cm} p{4cm}}
-\hline
-$\boldsymbol{\theta}$ & $\mathbf{R}$ \\
-\hline
-\hline
-\multicolumn{2}{c}{\textbf{K = 40}} \\
-\hline
-\multirow{6}{11cm}{(22.5, 24.9, 27.5, 24.3, 24.8, 23.2, 23, 21.6, 25.1, 19, 21.3, 24.1, 26.5, 26.9, 23.2, 25.8, 21.8, 21.6, 25.6, 21.2, 25.7, 22.2, 22.7, 22.6, 21.9, 24.2, 23.6, 22, 24.5, 25, 26.5, 25.1, 25.2, 27.1, 25.3, 22.8, 20.6, 21.1, 26, 26)$'$}
-&  \\
-& $\mathbf{R}_{\text{eq}}, \rho = 0.1, 0.5, 0.9$ \\
-& $\mathbf{R}_{\text{block}}$ - \text{2, 3 blocks} \\
-&  \\
-&  \\
-&  \\
-\hline
-\multirow{6}{11cm}{(21.5, 25.7, 30.5, 24.7, 25.5, 22.6, 22.3, 19.9, 26.1, 15.2, 19.3, 24.3, 28.7, 29.3, 22.7, 27.5, 20.1, 19.9, 27.1, 19.1, 27.2, 20.9, 21.8, 21.7, 20.4, 24.5, 23.5, 20.5, 25.1, 26, 28.6, 26.1, 26.4, 29.7, 26.5, 22.1, 18, 18.9, 27.8, 27.8)$'$}
-&  \\
-& $\mathbf{R}_{\text{eq}}, \rho = 0.1, 0.5, 0.9$ \\
-& $\mathbf{R}_{\text{block}}$ - \text{2, 3 blocks} \\
-&  \\
-&  \\
-&  \\
-\hline
-\multirow{6}{11cm}{(19.9, 27, 34.9, 25.3, 26.7, 21.9, 21.3, 17.3, 27.7, 9.4, 16.2, 24.6, 31.9, 33, 21.9, 29.9, 17.7, 17.3, 29.3, 16, 29.4, 19, 20.4, 20.3, 18.2, 25, 23.3, 18.3, 26, 27.4, 31.9, 27.7, 28.1, 33.6, 28.2, 20.9, 14.1, 15.6, 30.5, 30.5)$'$}
-&  \\
-& $\mathbf{R}_{\text{eq}}, \rho = 0.1, 0.5, 0.9$ \\
-& $\mathbf{R}_{\text{block}}$ - \text{2, 3 blocks} \\
-&  \\
-&  \\
-&  \\
-\hline
-\multicolumn{2}{c}{\textbf{K = 50}} \\
-\hline
-\multirow{6}{11cm}{(22.5, 24.9, 27.5, 24.3, 24.8, 23.2, 23, 21.6, 25.1, 19, 21.3, 24.1, 26.5, 26.9, 23.2, 25.8, 21.8, 21.6, 25.6, 21.2, 25.7, 22.2, 22.7, 22.6, 21.9, 24.2, 23.6, 22, 24.5, 25, 26.5, 25.1, 25.2, 27.1, 25.3, 22.8, 20.6, 21.1, 26, 26, 22.1, 21.4, 23.2, 22.3, 22.4, 23.1, 21.4, 24.8, 27, 23.4)$'$}
-&  \\
-& $\mathbf{R}_{\text{eq}}, \rho = 0.1, 0.5, 0.9$ \\
-& $\mathbf{R}_{\text{block}}$ - \text{2, 3 blocks} \\
-&  \\
-&  \\
-&  \\
-&  \\
-\hline
-\multirow{6}{11cm}{(21.5, 25.7, 30.5, 24.7, 25.5, 22.6, 22.3, 19.9, 26.1, 15.2, 19.3, 24.3, 28.7, 29.3, 22.7, 27.5, 20.1, 19.9, 27.1, 19.1, 27.2, 20.9, 21.8, 21.7, 20.4, 24.5, 23.5, 20.5, 25.1, 26, 28.6, 26.1, 26.4, 29.7, 26.5, 22.1, 18, 18.9, 27.8, 27.8, 20.8, 19.5, 22.8, 21.2, 21.3, 22.5, 19.5, 25.5, 29.6, 23)$'$}
-&  \\
-& $\mathbf{R}_{\text{eq}}, \rho = 0.1, 0.5, 0.9$ \\
-& $\mathbf{R}_{\text{block}}$ - \text{2, 3 blocks} \\
-&  \\
-&  \\
-&  \\
-&  \\
-\hline
-\multirow{6}{11cm}{(19.9, 27, 34.9, 25.3, 26.7, 21.9, 21.3, 17.3, 27.7, 9.4, 16.2, 24.6, 31.9, 33, 21.9, 29.9, 17.7, 17.3, 29.3, 16, 29.4, 19, 20.4, 20.3, 18.2, 25, 23.3, 18.3, 26, 27.4, 31.9, 27.7, 28.1, 33.6, 28.2, 20.9, 14.1, 15.6, 30.5, 30.5, 18.8, 16.6, 22.1, 19.4, 19.6, 21.6, 16.7, 26.7, 33.5, 22.5)$'$}
-&  \\
-& $\mathbf{R}_{\text{eq}}, \rho = 0.1, 0.5, 0.9$ \\
-& $\mathbf{R}_{\text{block}}$ - \text{2, 3 blocks} \\
-&  \\
-&  \\
-&  \\
-&  \\
-\hline
-\end{tabular}
-}
-\end{table}
 
 
 
-\begin{table}[H]
-\centering
-\fontsize{13pt}{20pt}\selectfont
-\begin{tabular}{p{1cm} p{14cm}}
-\hline
-\textbf{K} & \textbf{$\boldsymbol \sigma$} \\
-\hline
-\hline
-10 & (0.14, 0.33, 0.15, 0.23, 0.07, 0.19, 0.19, 0.37, 0.32, 0.11)$'$ \\
-\hline
-20 & (0.14, 0.33, 0.15, 0.23, 0.07, 0.19, 0.19, 0.37, 0.32, 0.11, 0.17, 0.27, 0.24, 0.11, 0.11, 0.13, 0.16, 0.15, 0.15, 0.25)$'$ \\
-\hline
-30 & (0.14, 0.33, 0.15, 0.23, 0.07, 0.19, 0.19, 0.37, 0.32, 0.11, 0.17, 0.27, 0.24, 0.11, 0.11, 0.13, 0.16, 0.15, 0.15, 0.25, 0.15, 0.13, 0.1, 0.1, 0.24, 0.13, 0.32, 0.19, 0.27, 0.3)$'$ \\
-\hline
-40 & (0.14, 0.33, 0.15, 0.23, 0.07, 0.19, 0.19, 0.37, 0.32, 0.11, 0.17, 0.27, 0.24, 0.11, 0.11, 0.13, 0.16, 0.15, 0.15, 0.25, 0.15, 0.13, 0.1, 0.1, 0.24, 0.13, 0.32, 0.19, 0.27, 0.3, 0.12, 0.27, 0.09, 0.12, 0.36, 0.09, 0.15, 0.16, 0.09, 0.29)$'$ \\
-\hline
-50 & (0.14, 0.33, 0.15, 0.23, 0.07, 0.19, 0.19, 0.37, 0.32, 0.11, 0.17, 0.27, 0.24, 0.11, 0.11, 0.13, 0.16, 0.15, 0.15, 0.25, 0.15, 0.13, 0.1, 0.1, 0.24, 0.13, 0.32, 0.19, 0.27, 0.3, 0.12, 0.27, 0.09, 0.12, 0.36, 0.09, 0.15, 0.16, 0.09, 0.29, 0.16, 0.28, 0.14, 0.07, 0.2, 0.31, 0.13, 0.14, 0.31, 0.11)$'$ \\
-\hline
-\end{tabular}
-\end{table}
