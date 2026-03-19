@@ -89,6 +89,68 @@ create_table_for_true_theta <- function(dataset,
 }
 
 
+create_side_by_side_table_within_main <- function(eq_data,
+                                                  bl_data,
+                                                  num_variability=1,
+                                                  unordered = TRUE,
+                                                  metric = "Coverage"
+){
+  
+  padded_eq <- eq_data %>%
+    group_by(K) %>%
+    group_modify(~ add_row(.x, .after = dim(eq_data %>% filter(K==10))[1])) %>% 
+    ungroup() %>% arrange(K, r)
+  
+  formatted_bl <- bl_data %>% 
+    mutate(r = case_when(
+      r == "balanced-block-2" ~ "B2",
+      r == "unbalanced-block-2" ~ "U2",
+      r == "unbalanced-block-3" ~ "UL3",
+      r == "unbalanced-block-high-3" ~ "UH3",
+      TRUE ~ r)) %>% 
+    arrange(K, r)
+  
+  summary <- cbind(padded_eq %>% select(-c(K, `Correlation structure`)), 
+                   formatted_bl %>% select(-c(K, `Correlation structure`))) 
+  
+  if (unordered) {
+    selected_columns <- c("Ind","Bonf","NR")
+    colwidth  <- "1cm"
+    parameter <- "Unordered"
+  } else {
+    selected_columns <- c("Asymp","Boot")
+    colwidth  <- "1.25cm"
+    parameter <- "Ordered"
+  }
+  num <- length(selected_columns)
+  
+  return(
+    summary %>%
+      kable("latex", 
+            booktabs = TRUE,
+            escape = FALSE,
+            align = rep("c", (num_variability*num*2 + 1),collapse=""), 
+            linesep = "",
+            col.names = rep(c("r", rep(selected_columns, num_variability)),2), 
+            caption = paste("Simulation Results for", metric, "of", parameter, "Parameters"),
+            na.character = "") %>%
+      column_spec(1:(num_variability*num*2 + 1) , width = colwidth) %>%
+      add_header_above(c("Equicorrelated" = num_variability*num + 1,
+                         "Block diagonal" = num_variability*num + 1), 
+                       escape = FALSE) %>%
+      pack_rows("K = 10", 1, 4, latex_gap_space = "0.5em") %>%
+      pack_rows("K = 20", 5, 8, latex_gap_space = "0.5em") %>%
+      pack_rows("K = 30", 9, 12, latex_gap_space = "0.5em") %>%
+      pack_rows("K = 40", 13, 16, latex_gap_space = "0.5em") %>%
+      pack_rows("K = 50", 17, 20,latex_gap_space = "0.5em") %>%
+      kable_styling(latex_options = c("scale_down","HOLD_position"),
+                    font_size = 11.5)%>%
+      footnote(general_title = "\\\\textit{Note: }", 
+               general = "B2: balanced-block-2; U2: unbalanced-block-2; U3: unbalanced-block-3; UH3: unbalanced-block-high-3",
+               threeparttable = TRUE,
+               escape = FALSE) 
+  )
+}
 
 
 create_table_for_tightness_measure <- function(summary, metric_type,
