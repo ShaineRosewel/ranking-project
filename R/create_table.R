@@ -1,7 +1,6 @@
 library(kableExtra)
 
-FONT_SIZE <- 12
-
+FONT_SIZE <- 11
 
 create_basic_results_table <- function(dataset, caption){
   # kable(
@@ -37,55 +36,127 @@ create_basic_results_table <- function(dataset, caption){
       font_size=FONT_SIZE)
 }
 
-create_table_for_true_theta <- function(dataset){
-  return(kable(
-    dataset %>% 
-      select(K, data_spread, true_theta), 
-    "latex",
-    booktabs = TRUE,
-    escape = FALSE,
-    linesep = "",
-    longtable = TRUE,
-    col.names = c("K", 'Variability', '$\\boldsymbol{\\theta}$')) %>%
-      column_spec(1, width = "1cm") %>%
-      column_spec(2, width = "2cm") %>%
-      column_spec(3, width = "12cm") %>%
-      kable_styling(
-        latex_options = c("striped", "repeat_header", "HOLD_position"),
-        stripe_color = "gray!15",
-        font_size=FONT_SIZE
-    )
+create_table_for_true_theta <- function(dataset,
+                                        column_names = c("K", "Variability",'$\\boldsymbol{\\theta}$', "R"),
+                                        main = TRUE){
+  if (main){
+  formatted_data <- dataset %>%
+    mutate(K = as.character(K)) %>%
+    mutate(K = ifelse(duplicated(K), "", K)) %>% 
+    mutate(data_spread = case_match(as.character(data_spread),
+                                    "low"    ~ "Low",
+                                    "med" ~ "Moderate",
+                                    "high"   ~ "High",
+                                    .default = as.character(data_spread))) %>%
+    select(K, data_spread, true_theta, R)
+  } else {
+    formatted_data <- dataset
+  }
+  
+  partial <- formatted_data %>%
+    kable(
+      "latex",
+      booktabs = TRUE,
+      escape = FALSE,
+      linesep = "\\addlinespace[0.6em]", 
+      longtable = TRUE,
+      col.names = column_names,
+      align = paste(rep("l", length(column_names), collapse = ""))
+    ) %>%
+  kable_styling(
+    latex_options = c("striped", 
+                      "repeat_header"),
+    stripe_color = "gray!15",
+    font_size = FONT_SIZE
   )
+  
+  if (main) {
+    return(
+    partial %>% 
+      column_spec(1, width = "1cm") %>%
+      column_spec(2, width = "1.5cm") %>%
+      column_spec(3, width = "9cm") %>%
+      column_spec(4, width = "3.5cm")
+    )
+  } else {
+    return(
+    partial %>% 
+      column_spec(1, width = "1cm") %>%
+      column_spec(2, width = "15cm")
+    )
+  }
+
 }
 
 
-create_table_for_tightness_measure <- function(summary, metric_type,
-                                               equicorrelation,
-                                               unordered = TRUE){
 
-  if (unordered) {
-    selected_columns <- c("Independent","Bonferroni","Nonrank")
-    colwidth  <- "2cm"
-  } else {
-    selected_columns <- c("Asymptotic Var","Bootstrap Est")
-    colwidth  <- "3cm"
-  }
-  num <- length(selected_columns)
+
+create_table_for_tightness_measure <- function(summary, metric_type,
+                                               equicorrelation){
+  
+  # if (unordered) {
+  unord <- c("Ind","Bonf","NR")
+  ord <- c("Asymp","Boot")
+  colwidth  <- "0.8cm"
+  # } else {
+  #   selected_columns <- c("Asymptotic Var","Bootstrap Est")
+  #   colwidth  <- "3cm"
+  # }
+  
+  num <- length(c(ord,unord))
+  
+  # sd <- c("Low $\\\\boldsymbol{\\\\theta}$ Variability" = 3, 
+  #         "Moderate $\\\\boldsymbol{\\\\theta}$ Variability" = 3, 
+  #         "High $\\\\boldsymbol{\\\\theta}$ Variability" = 3,
+  #         "Low $\\\\boldsymbol{\\\\theta}$ Variability" = 2, 
+  #         "Moderate $\\\\boldsymbol{\\\\theta}$ Variability" = 2, 
+  #         "High $\\\\boldsymbol{\\\\theta}$ Variability" = 2)
+  
+  sd <- c("Low" = 3, 
+          "Moderate" = 3, 
+          "High" = 3,
+          "Low" = 2, 
+          "Moderate" = 2, 
+          "High" = 2)
+  approach <- c(" " = 2,c("Unordered" = 9, "Ordered" = 6))
+  
   if (equicorrelation) {
     vector_1 <- c("K", "r")
-    striped <- rep(c(0, 6, 12), each = 3) + 1:3
-    headers <- c(" " = 2, 
-                 "Low $\\\\boldsymbol{\\\\theta}$ Variability" = num, 
-                 "Moderate $\\\\boldsymbol{\\\\theta}$ Variability" = num, 
-                 "High $\\\\boldsymbol{\\\\theta}$ Variability" = num)
+    striped <- c(2:4, 8:10, 14:16)#rep(c(0, 6, 12), each = 3) + 1:3
+    headers <- c(" " = 2, sd)
   } else {
     vector_1 <- c("K")
     striped <- -1 #rep(c(0, 10), each = 5) + 1:5
-    headers <- c(" "=1,
-                 "Low $\\\\boldsymbol{\\\\theta}$ Variability" = num, 
-                 "Moderate $\\\\boldsymbol{\\\\theta}$ Variability" = num,
-                 "High $\\\\boldsymbol{\\\\theta}$ Variability" = num)
+    headers <- c(" "= 1, sd)
   }
+
+# create_table_for_tightness_measure <- function(summary, metric_type,
+#                                                equicorrelation,
+#                                                unordered = TRUE){
+# 
+#   if (unordered) {
+#     selected_columns <- c("Independent","Bonferroni","Nonrank")
+#     colwidth  <- "2cm"
+#   } else {
+#     selected_columns <- c("Asymptotic Var","Bootstrap Est")
+#     colwidth  <- "3cm"
+#   }
+#   num <- length(selected_columns)
+#   if (equicorrelation) {
+#     vector_1 <- c("K", "r")
+#     striped <- rep(c(0, 6, 12), each = 3) + 1:3
+#     headers <- c(" " = 2, 
+#                  "Low $\\\\boldsymbol{\\\\theta}$ Variability" = num, 
+#                  "Moderate $\\\\boldsymbol{\\\\theta}$ Variability" = num, 
+#                  "High $\\\\boldsymbol{\\\\theta}$ Variability" = num)
+#   } else {
+#     vector_1 <- c("K")
+#     striped <- -1 #rep(c(0, 10), each = 5) + 1:5
+#     headers <- c(" "=1,
+#                  "Low $\\\\boldsymbol{\\\\theta}$ Variability" = num, 
+#                  "Moderate $\\\\boldsymbol{\\\\theta}$ Variability" = num,
+#                  "High $\\\\boldsymbol{\\\\theta}$ Variability" = num)
+#   }
 
   
   formatted <- summary %>%
@@ -95,7 +166,7 @@ create_table_for_tightness_measure <- function(summary, metric_type,
           linesep = "",
           longtable = TRUE,
           col.names = c(vector_1, 
-                        rep(selected_columns,3)),
+                        c(rep(unord,3),rep(ord,3))),
           caption = paste("Simulation Results for Tightness Measure", 
                           metric_type)) %>%
     collapse_rows(columns = 1,
@@ -103,17 +174,18 @@ create_table_for_tightness_measure <- function(summary, metric_type,
                   latex_hline = "none",
                   row_group_label_position = "first") %>%
     add_header_above(headers, escape = FALSE) %>%
+    add_header_above(approach, escape = FALSE) %>%
     kable_styling(latex_options = c("striped",
                                     "repeat_header",
                                     "HOLD_position"),
-                  font_size=FONT_SIZE-0.5,
+                  font_size=FONT_SIZE-1,
                   stripe_color = "gray!15",
                   stripe_index = striped)
                     #rep(c(0, 6, 12), each = 3) + 1:3) %>%
 
   if (equicorrelation) {
     final <- formatted %>% 
-      column_spec(1:2, width = "1cm") %>%
+      column_spec(1:2, width = "0.5cm") %>%
       column_spec(3:(2+3*num), width = colwidth)
   } else {
     final <- formatted %>% 
