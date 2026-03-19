@@ -153,73 +153,152 @@ create_side_by_side_table_within_main <- function(eq_data,
 }
 
 
-create_table_for_tightness_measure <- function(summary, metric_type,
-                                               equicorrelation){
-  
-  # if (unordered) {
-  unord <- c("Ind","Bonf","NR")
-  ord <- c("Asymp","Boot")
-  colwidth  <- "0.8cm"
-  # } else {
-  #   selected_columns <- c("Asymptotic Var","Bootstrap Est")
-  #   colwidth  <- "3cm"
-  # }
-  
-  num <- length(c(ord,unord))
-  
-  # sd <- c("Low $\\\\boldsymbol{\\\\theta}$ Variability" = 3, 
-  #         "Moderate $\\\\boldsymbol{\\\\theta}$ Variability" = 3, 
-  #         "High $\\\\boldsymbol{\\\\theta}$ Variability" = 3,
-  #         "Low $\\\\boldsymbol{\\\\theta}$ Variability" = 2, 
-  #         "Moderate $\\\\boldsymbol{\\\\theta}$ Variability" = 2, 
-  #         "High $\\\\boldsymbol{\\\\theta}$ Variability" = 2)
-  
-  sd <- c("Low" = 3, 
-          "Moderate" = 3, 
-          "High" = 3,
-          "Low" = 2, 
-          "Moderate" = 2, 
-          "High" = 2)
-  approach <- c(" " = 2,c("Unordered" = 9, "Ordered" = 6))
-  
-  if (equicorrelation) {
-    vector_1 <- c("K", "r")
-    striped <- c(2:4, 8:10, 14:16)#rep(c(0, 6, 12), each = 3) + 1:3
-    headers <- c(" " = 2, sd)
-  } else {
-    vector_1 <- c("K")
-    striped <- -1 #rep(c(0, 10), each = 5) + 1:5
-    headers <- c(" "= 1, sd)
-  }
-
 # create_table_for_tightness_measure <- function(summary, metric_type,
-#                                                equicorrelation,
-#                                                unordered = TRUE){
-# 
-#   if (unordered) {
-#     selected_columns <- c("Independent","Bonferroni","Nonrank")
-#     colwidth  <- "2cm"
-#   } else {
-#     selected_columns <- c("Asymptotic Var","Bootstrap Est")
-#     colwidth  <- "3cm"
-#   }
-#   num <- length(selected_columns)
+#                                                equicorrelation){
+#   
+#   # if (unordered) {
+#   unord <- c("Ind","Bonf","NR")
+#   ord <- c("Asymp","Boot")
+#   colwidth  <- "0.8cm"
+#   # } else {
+#   #   selected_columns <- c("Asymptotic Var","Bootstrap Est")
+#   #   colwidth  <- "3cm"
+#   # }
+#   
+#   num <- length(c(ord,unord))
+#   
+#   # sd <- c("Low $\\\\boldsymbol{\\\\theta}$ Variability" = 3, 
+#   #         "Moderate $\\\\boldsymbol{\\\\theta}$ Variability" = 3, 
+#   #         "High $\\\\boldsymbol{\\\\theta}$ Variability" = 3,
+#   #         "Low $\\\\boldsymbol{\\\\theta}$ Variability" = 2, 
+#   #         "Moderate $\\\\boldsymbol{\\\\theta}$ Variability" = 2, 
+#   #         "High $\\\\boldsymbol{\\\\theta}$ Variability" = 2)
+#   
+#   sd <- c("Low" = 3, 
+#           "Moderate" = 3, 
+#           "High" = 3,
+#           "Low" = 2, 
+#           "Moderate" = 2, 
+#           "High" = 2)
+#   approach <- c(" " = 2,c("Unordered" = 9, "Ordered" = 6))
+#   
 #   if (equicorrelation) {
 #     vector_1 <- c("K", "r")
-#     striped <- rep(c(0, 6, 12), each = 3) + 1:3
-#     headers <- c(" " = 2, 
-#                  "Low $\\\\boldsymbol{\\\\theta}$ Variability" = num, 
-#                  "Moderate $\\\\boldsymbol{\\\\theta}$ Variability" = num, 
-#                  "High $\\\\boldsymbol{\\\\theta}$ Variability" = num)
+#     striped <- c(2:4, 8:10, 14:16)#rep(c(0, 6, 12), each = 3) + 1:3
+#     headers <- c(" " = 2, sd)
 #   } else {
 #     vector_1 <- c("K")
 #     striped <- -1 #rep(c(0, 10), each = 5) + 1:5
-#     headers <- c(" "=1,
-#                  "Low $\\\\boldsymbol{\\\\theta}$ Variability" = num, 
-#                  "Moderate $\\\\boldsymbol{\\\\theta}$ Variability" = num,
-#                  "High $\\\\boldsymbol{\\\\theta}$ Variability" = num)
+#     headers <- c(" "= 1, sd)
 #   }
+# 
+# # create_table_for_tightness_measure <- function(summary, metric_type,
+# #                                                equicorrelation,
+# #                                                unordered = TRUE){
+# # 
+# #   if (unordered) {
+# #     selected_columns <- c("Independent","Bonferroni","Nonrank")
+# #     colwidth  <- "2cm"
+# #   } else {
+# #     selected_columns <- c("Asymptotic Var","Bootstrap Est")
+# #     colwidth  <- "3cm"
+# #   }
+# #   num <- length(selected_columns)
+# #   if (equicorrelation) {
+# #     vector_1 <- c("K", "r")
+# #     striped <- rep(c(0, 6, 12), each = 3) + 1:3
+# #     headers <- c(" " = 2, 
+# #                  "Low $\\\\boldsymbol{\\\\theta}$ Variability" = num, 
+# #                  "Moderate $\\\\boldsymbol{\\\\theta}$ Variability" = num, 
+# #                  "High $\\\\boldsymbol{\\\\theta}$ Variability" = num)
+# #   } else {
+# #     vector_1 <- c("K")
+# #     striped <- -1 #rep(c(0, 10), each = 5) + 1:5
+# #     headers <- c(" "=1,
+# #                  "Low $\\\\boldsymbol{\\\\theta}$ Variability" = num, 
+# #                  "Moderate $\\\\boldsymbol{\\\\theta}$ Variability" = num,
+# #                  "High $\\\\boldsymbol{\\\\theta}$ Variability" = num)
+# #   }
+# 
+#   
+#   formatted <- summary %>%
+#     kable("latex",
+#           booktabs = TRUE,
+#           escape = FALSE,
+#           linesep = "",
+#           longtable = TRUE,
+#           col.names = c(vector_1, 
+#                         c(rep(unord,3),rep(ord,3))),
+#           caption = paste("Simulation Results for Tightness Measure", 
+#                           metric_type)) %>%
+#     collapse_rows(columns = 1,
+#                   valign = "middle", 
+#                   latex_hline = "none",
+#                   row_group_label_position = "first") %>%
+#     add_header_above(headers, escape = FALSE) %>%
+#     add_header_above(approach, escape = FALSE) %>%
+#     kable_styling(latex_options = c("striped",
+#                                     "repeat_header",
+#                                     "HOLD_position"),
+#                   font_size=FONT_SIZE-1,
+#                   stripe_color = "gray!15",
+#                   stripe_index = striped)
+#                     #rep(c(0, 6, 12), each = 3) + 1:3) %>%
+# 
+#   if (equicorrelation) {
+#     final <- formatted %>% 
+#       column_spec(1:2, width = "0.5cm") %>%
+#       column_spec(3:(2+3*num), width = colwidth)
+#   } else {
+#     final <- formatted %>% 
+#       column_spec(1:1, width = "1cm") %>%
+#       column_spec(2:(1+3*num), width = colwidth) %>%
+#       pack_rows("2 balanced blocks", 1, 5,
+#                 latex_gap_space = "0.3em") %>%
+#       pack_rows("2 unbalanced blocks", 6, 10,
+#                 latex_gap_space = "0.3em") %>%
+#       pack_rows("3 unbalanced blocks - low", 11, 15,
+#                 latex_gap_space = "0.3em") %>%
+#       pack_rows("3 unbalanced block - high", 16, 20,
+#                 latex_gap_space = "0.3em")
+#   }
+#   return(
+#     final
+#   )
+# }
 
+
+create_table_for_tightness_measure <- function(summary, metric_type,
+                                               unordered = TRUE){
+  
+  if (unordered) {
+    selected_columns <- c("Ind","Bonf","NR")
+    colwidth  <- "0.82cm"
+  } else {
+    selected_columns <- c("Asymp","Boot")
+    colwidth  <- "1cm"
+  }
+  
+  num <- length(selected_columns)
+  
+  vector_1 <- c("K", "r")
+  striped <- rep(c(0, 8, 16), each = 4) + 1:4  #rep(c(0, 6, 12), each = 3) + 1:3
+  # headers <- c(" " = 2,
+  #              "Low $\\\\boldsymbol{\\\\theta}$ Variability" = num,
+  #              "Moderate $\\\\boldsymbol{\\\\theta}$ Variability" = num,
+  #              "High $\\\\boldsymbol{\\\\theta}$ Variability" = num,
+  #              " " = 1,
+  #              "Low $\\\\boldsymbol{\\\\theta}$ Variability" = num,
+  #              "Moderate $\\\\boldsymbol{\\\\theta}$ Variability" = num,
+  #              "High $\\\\boldsymbol{\\\\theta}$ Variability" = num)
+  headers <- c(" " = 2,
+               "Low" = num,
+               "Moderate" = num,
+               "High" = num,
+               " " = 1,
+               "Low" = num,
+               "Moderate" = num,
+               "High" = num)
   
   formatted <- summary %>%
     kable("latex",
@@ -228,44 +307,42 @@ create_table_for_tightness_measure <- function(summary, metric_type,
           linesep = "",
           longtable = TRUE,
           col.names = c(vector_1, 
-                        c(rep(unord,3),rep(ord,3))),
+                        rep(selected_columns, 3), 
+                        'r', 
+                        rep(selected_columns, 3)),
           caption = paste("Simulation Results for Tightness Measure", 
-                          metric_type)) %>%
-    collapse_rows(columns = 1,
-                  valign = "middle", 
-                  latex_hline = "none",
-                  row_group_label_position = "first") %>%
-    add_header_above(headers, escape = FALSE) %>%
-    add_header_above(approach, escape = FALSE) %>%
+                          metric_type),
+          na.character = "") %>%
+    # collapse_rows(columns = 1,
+    #               valign = "middle", 
+    #               latex_hline = "none",
+    #               row_group_label_position = "first") %>%
+    add_header_above(c(" " = 2,
+                       "Low" = num, "Moderate" = num, "High" = num,
+                       " " = 1, # The 'r' spacer
+                       "Low" = num, "Moderate" = num, "High" = num), escape = FALSE) %>%
+    add_header_above(c(" " = 2, 
+                       "Equicorrelated" = (num * 3), 
+                       "Block diagonal" = (num * 3 + 1)), escape = FALSE) %>%
     kable_styling(latex_options = c("striped",
                                     "repeat_header",
                                     "HOLD_position"),
-                  font_size=FONT_SIZE-1,
+                  font_size=FONT_SIZE-2,
                   stripe_color = "gray!15",
                   stripe_index = striped)
-                    #rep(c(0, 6, 12), each = 3) + 1:3) %>%
-
-  if (equicorrelation) {
-    final <- formatted %>% 
-      column_spec(1:2, width = "0.5cm") %>%
-      column_spec(3:(2+3*num), width = colwidth)
-  } else {
-    final <- formatted %>% 
-      column_spec(1:1, width = "1cm") %>%
-      column_spec(2:(1+3*num), width = colwidth) %>%
-      pack_rows("2 balanced blocks", 1, 5,
-                latex_gap_space = "0.3em") %>%
-      pack_rows("2 unbalanced blocks", 6, 10,
-                latex_gap_space = "0.3em") %>%
-      pack_rows("3 unbalanced blocks - low", 11, 15,
-                latex_gap_space = "0.3em") %>%
-      pack_rows("3 unbalanced block - high", 16, 20,
-                latex_gap_space = "0.3em")
-  }
+  #rep(c(0, 6, 12), each = 3) + 1:3) %>%
+  
+  
+  final <- formatted #%>% 
+  #column_spec(c(1:2,12), width = "0.5cm") %>%
+  #column_spec(c(3:11, 13:21), width = colwidth)
+  
   return(
     final
   )
 }
+
+
 
 create_table_for_coverage <- function(summary, footnote, equicorrelation = TRUE,
                                       unordered = TRUE){
