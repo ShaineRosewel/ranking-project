@@ -59,6 +59,80 @@ create_plot_for_app_data <- function(dat_to_plot, elements, order_identifier, re
   return(p)
 }
 
+
+create_plot_for_t <- function(prepared_data, unordered = TRUE){
+  
+  if (unordered) {
+    app_levels = c("independent", "bonferroni", "nonrankbased")
+    app_labels = c("Independent", 'Bonferroni', 'Nonrank')
+    x = "Approach"
+    facet_str <- "`Correlation structure` + Metric ~ K"
+  } else {
+    app_levels = c("rankbased_asymptotic","rankbased_level2bs")
+    app_labels = c("Asymptotic", "Boostrap")
+    x = "Correlation structure"
+    facet_str <- "Approach + Metric ~ K"
+  }
+  
+  p <- prepared_data %>%
+    mutate(Variability = factor(Variability, 
+                                levels = c("low", "med", "high"), 
+                                labels = c("Low", "Moderate", "High"),
+                                ordered = TRUE),
+           `Correlation structure` = factor(`Correlation structure`,
+                                            levels =c("Equicorrelated", "Block diagonal"),
+                                            labels =c("Equicorr", "Block diag")),
+           Approach = factor(Approach,
+                             levels = app_levels,
+                             labels = app_labels,
+                             ordered = TRUE),
+           K = factor(K, 
+                      levels = c('10','20','30','40',"50"), 
+                      labels = paste("K =",c('10','20','30','40',"50")),
+                      ordered = TRUE),
+           Metric = factor(Metric,
+                           levels = c('t1', 't2', 't3'),
+                           labels = c("T[1]", "T[2]", "T[3]"),
+                           ordered = TRUE)) %>%
+    ggplot(aes(x = .data[[x]], 
+               y = Values, 
+               color = factor(r), 
+               #linetype = `Correlation structure`,
+               shape = Variability,
+               group = interaction(Variability,r))) +
+    
+    geom_point(alpha = 0.75) + 
+    #================================
+  facet_grid(as.formula(facet_str),
+             scales = "free",
+             labeller = labeller(Metric = label_parsed)) +
+    #================================
+  theme_bw() +
+    theme(axis.text.x = element_text(hjust = 1, size = 7, angle = 90),
+          axis.text.y = element_text(size=7)
+    ) +
+    guides(color = guide_legend(title = "r", ncol = 7)) +
+    theme(axis.line = element_line(colour = "gray"),
+          panel.grid.minor = element_blank(),
+          panel.grid.major.x = element_blank(),
+          text = element_text(family = "serif"),
+          legend.position = "top",
+          legend.box = "vertical",
+          legend.spacing.y = unit(0.05, "cm"), 
+          legend.box.just = "left",
+          legend.margin = margin(t=.15, b=0.15,l=0.5, r=0.5, "cm"),
+          legend.background = element_blank(),
+          legend.box.background = element_rect(colour = "black"))
+  
+  if (unordered) {
+    p <-p + geom_line(color = 'black', size = 0.04)
+  }
+  return(p)
+}
+
+
+
+
 # create_plot_for_pulse <- function(dat_to_plot){
 #   
 #   data_to_plot <- dat_to_plot %>% filter(Approach != 'pulse') #%>% filter(Approach != 'independent')
