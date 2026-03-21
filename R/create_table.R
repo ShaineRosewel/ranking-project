@@ -274,9 +274,11 @@ create_table_for_tightness_measure <- function(summary, metric_type,
   if (unordered) {
     selected_columns <- c("Ind","Bonf","NR")
     colwidth  <- "0.82cm"
+    parameter <- "Unordered"
   } else {
     selected_columns <- c("Asymp","Boot")
     colwidth  <- "1cm"
+    parameter <- "Ordered"
   }
   
   num <- length(selected_columns)
@@ -310,8 +312,7 @@ create_table_for_tightness_measure <- function(summary, metric_type,
                         rep(selected_columns, 3), 
                         'r', 
                         rep(selected_columns, 3)),
-          caption = paste("Simulation Results for Tightness Measure", 
-                          metric_type),
+          caption = paste("Simulation Results for", metric_type, "of", parameter, "Parameters"),,
           na.character = "") %>%
     # collapse_rows(columns = 1,
     #               valign = "middle", 
