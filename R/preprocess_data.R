@@ -56,7 +56,6 @@ preprocess_coverage <- function(dataset,
 } 
 
 
-
 prepare_t_facet_plot_data <- function(
     eq_data = eq_res,
     bl_data = bl_res,
@@ -125,10 +124,12 @@ prepare_appendix_t_measure_table <- function(eq_data, bl_data, unordered, tmeasu
   eq_padded_ordered<-partial %>% filter(`Correlation structure` == 'Equicorrelated') %>% select(-c(`Correlation structure`)) %>%
     group_by(K) %>%
     group_modify(~ add_row(.x)) %>% 
-    ungroup()
+    ungroup() %>% 
+    mutate(K = as.character(K)) %>%
+    mutate(K = ifelse(duplicated(K), "", K))
   
   bl_test <- partial %>% filter(`Correlation structure` == 'Block diagonal') %>% select(-c(`Correlation structure`, K))
-  
+
   return(cbind(eq_padded_ordered, bl_test))
 }
 
