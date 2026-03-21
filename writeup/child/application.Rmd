@@ -404,10 +404,6 @@ create_plot_for_app_data(prepared_data %>% filter(Approach != 'independent'), is
 
 
 
-```{r}
-length(c("0-20", "20-50", "50-100", "100-200","200+"))
-```
-
 
 
 
