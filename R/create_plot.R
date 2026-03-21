@@ -167,7 +167,7 @@ create_plot_for_t <- function(prepared_data, unordered = TRUE){
                                                )
   
   if (unordered) {
-    p <-p + geom_line(color = 'gray33', size = 0.01)
+    p <-p + geom_line(color = 'gray33', lwd = 0.1)
   }
   return(p)
 }
