@@ -50,7 +50,7 @@ generate_true_theta <- function()
 generate_true_theta_rd <- function(persist_df = TRUE) {
   long_vector <- c(
       "Go, Bong Go", "PDPLBN", 59.5, 1, 1, 
-      "Tulfo, Erwin", "LAKAS", 48.7, 2,4,  
+      "Tulfo.E, Erwin", "LAKAS", 48.7, 2,4,  
       "Sotto, Tito", "NPC", 44.1, 2, 4,
       "Dela Rosa, Bato", "PDPLBN", 42.9, 2,5,
       "Lapid, Lito", "NPC", 38, 4, 8,
@@ -60,7 +60,7 @@ generate_true_theta_rd <- function(persist_df = TRUE) {
       "Bong Revilla, Ramon, Jr.", "LAKAS", 32.3, 6,15,
       "Binay, Abby", "NPC", 30.5, 6, 16,
       "Marcoleta, Rodante", "IND", 28.9, 6, 18,
-      "Tulfo, Ben Bitag", "IND", 28.9, 6, 19,
+      "Tulfo.B, Ben Bitag", "IND", 28.9, 6, 19,
       "Pacquiao, Manny Pacman", "PFP", 28.4, 7, 19,
       "Marcos, Imee R.", "NP", 27.6, 8, 19,
       "Villar, Camille", "NP", 27.6, 8, 19,
