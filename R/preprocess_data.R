@@ -79,28 +79,28 @@ prepare_t_facet_plot_data <- function(
       r == "unbalanced-block-high-3" ~ "UH3",
       TRUE ~ r
     ))%>%
-    mutate(Variability =ifelse(sd==2.0, "low", ifelse(sd==3.6, "med", "high"))) %>% 
+    mutate(Variance =ifelse(sd==2.0, "low", ifelse(sd==3.6, "med", "high"))) %>% 
     select(-c(blocks, sd)) %>% 
     mutate(`Correlation structure` = "Block diagonal") %>% 
     arrange(K, r) %>% 
     pivot_longer(cols =cols_select , names_to = "Approach", values_to = "Values") %>% 
     rename(Metric = metric) %>%
-    select(c(K,r,Approach,Variability,Values,Metric,`Correlation structure`))
+    select(c(K,r,Approach,Variance,Values,Metric,`Correlation structure`))
   
   equicorr = TRUE
   t1 <- preprocess_tightness_measure_OG(eq_res, "t1", equicorr,unordered = unordered) %>% 
     pivot_longer(cols = contains("-"),names_to = "Approach", values_to = "Values") %>% 
-    separate(Approach, into = c('Approach','Variability'), sep = "-")
+    separate(Approach, into = c('Approach','Variance'), sep = "-")
   t1$Metric <- "t1"
   
   t2 <- preprocess_tightness_measure_OG(eq_res, "t2", equicorr,unordered = unordered) %>% 
     pivot_longer(cols = contains("-"),names_to = "Approach", values_to = "Values") %>% 
-    separate(Approach, into = c('Approach','Variability'), sep = "-")
+    separate(Approach, into = c('Approach','Variance'), sep = "-")
   t2$Metric <- "t2"
   
   t3 <- preprocess_tightness_measure_OG(eq_res, "t3", equicorr,unordered = unordered) %>% 
     pivot_longer(cols = contains("-"),names_to = "Approach", values_to = "Values") %>% 
-    separate(Approach, into = c('Approach','Variability'), sep = "-")
+    separate(Approach, into = c('Approach','Variance'), sep = "-")
   t3$Metric <- "t3"
   
   t_eq <- rbind(t1, t2, t3) %>% 
@@ -115,7 +115,7 @@ prepare_appendix_t_measure_table <- function(eq_data, bl_data, unordered, tmeasu
     eq_data = eq_data,
     bl_data = bl_data,
     unordered = unordered) %>% 
-    unite("app", Approach, Variability, sep = "_", remove =TRUE) %>%
+    unite("app", Approach, Variance, sep = "_", remove =TRUE) %>%
     pivot_wider(names_from = app,
                 values_from = Values) %>% 
     filter(Metric == tmeasure) %>%
@@ -153,14 +153,14 @@ preprocess_tightness_measure <- function(dataset, metric_type, equicorrelation){
     dataset %>%
       mutate(across(c(selected_columns), round, 3)) %>% 
       filter(metric == metric_type) %>% 
-      mutate(variability = ifelse(sd==2.0, 
+      mutate(Variance = ifelse(sd==2.0, 
                                   'low', 
                                   ifelse(sd == 3.6, 'med', 'high'))) %>%
       select(
-        c(vector1, c(variability, selected_columns)
+        c(vector1, c(Variance, selected_columns)
         )
       ) %>%
-      tidyr::pivot_wider(names_from = variability, 
+      tidyr::pivot_wider(names_from = Variance, 
                          values_from = selected_columns, 
                          names_sep = "_") %>%
       select(
@@ -195,14 +195,14 @@ preprocess_tightness_measure_OG <- function(dataset, metric_type, equicorrelatio
     dataset %>%
       mutate(across(c(selected_columns), round, 3)) %>%
       filter(metric == metric_type) %>%
-      mutate(variability = ifelse(sd==2.0,
+      mutate(Variance = ifelse(sd==2.0,
                                   'low',
                                   ifelse(sd == 3.6, 'med', 'high'))) %>%
       select(
-        c(vector1, c(variability, selected_columns)
+        c(vector1, c(Variance, selected_columns)
           )
         ) %>%
-      tidyr::pivot_wider(names_from = variability,
+      tidyr::pivot_wider(names_from = Variance,
                          values_from = selected_columns,
                          names_sep = "-") %>%
       select(
