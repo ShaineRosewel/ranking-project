@@ -285,6 +285,15 @@ create_table_for_tightness_measure <- function(summary, metric_type,
     colcount <- 1:15
   }
   
+  if (metric_type == "t1") {
+    metric_title = "$T_1$"
+  } else if (metric_type == "t2") {
+    metric_title = "$T_2$"
+  } else if (metric_type == "t3") {
+    metric_title = "$T_2$"
+  }
+    
+  
   num <- length(selected_columns)
   
   vector_1 <- c("K", "r")
@@ -316,7 +325,7 @@ create_table_for_tightness_measure <- function(summary, metric_type,
                         rep(selected_columns, 3), 
                         'r', 
                         rep(selected_columns, 3)),
-          caption = paste("Simulation Results for", metric_type, "of", parameter, "Parameters"),,
+          caption = paste("Simulation Results for", metric_title, "of", parameter, "Parameters"),,
           na.character = "") %>%
     # collapse_rows(columns = 1,
     #               valign = "middle", 
