@@ -106,7 +106,7 @@ knitr::opts_chunk$set(
 
 \vspace*{0.8cm}
 
-```{r, child = "child/introduction.Rmd", echo = FALSE}
+```{r, child = "child/00_introduction.Rmd", echo = FALSE}
 
 ```
 
@@ -117,7 +117,7 @@ knitr::opts_chunk$set(
 
 \vspace*{0.8cm}
 
-```{r, child = "child/rrl.Rmd", echo = FALSE}
+```{r, child = "child/01_rrl.Rmd", echo = FALSE}
 
 ```
 
@@ -128,7 +128,7 @@ knitr::opts_chunk$set(
 
 \vspace*{0.8cm}
 
-```{r, child = "child/methodology.Rmd"}
+```{r, child = "child/02_methodology.Rmd"}
 
 ```
 
@@ -140,7 +140,7 @@ knitr::opts_chunk$set(
 
 \vspace*{0.8cm}
 
-```{r, child = "child/result.Rmd"}
+```{r, child = "child/03_result.Rmd"}
 
 ```
 
@@ -151,7 +151,7 @@ knitr::opts_chunk$set(
 
 \vspace*{0.8cm}
 
-```{r, child = "child/application.Rmd"}
+```{r, child = "child/04_application.Rmd"}
 
 ```
 
@@ -179,8 +179,5 @@ knitr::opts_chunk$set(
 \renewcommand{\thetable}{A.\arabic{table}}
 \renewcommand{\thefigure}{A.\arabic{figure}}
 
-```{r, child = "child/appendix.Rmd"}
+```{r, child = "child/06_appendix.Rmd"}
 ```
-
-\newpage
-\vspace*{1cm}
