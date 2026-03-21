@@ -1,0 +1,707 @@
+
+\begin{table}[H]
+\centering
+{\fontsize{13pt}{17pt}\selectfont 
+\begin{tabular}{p{11cm} p{4cm}}
+\hline
+$\boldsymbol{\theta}$ & $\mathbf{R}$ \\
+\hline
+\hline
+
+\multicolumn{2}{c}{\textbf{K = 10}} \\
+\hline
+\multirow{3}{11cm}{(22.5, 24.9, 27.5, 24.3, 24.8, 23.2, 23, 21.6, 25.1, 19)$'$} 
+& $\mathbf{R}_{\text{eq}}, \rho = 0.1, 0.5, 0.9$ \\
+& $\mathbf{R}_{\text{block}}$ - \text{2, 3 blocks} \\
+\hline
+\multirow{3}{11cm}{(21.5, 25.7, 30.5, 24.7, 25.5, 22.6, 22.3, 19.9, 26.1, 15.2)$'$} 
+& $\mathbf{R}_{\text{eq}}, \rho = 0.1, 0.5, 0.9$ \\
+& $\mathbf{R}_{\text{block}}$ - \text{2, 3 blocks} \\
+
+\hline
+\multirow{3}{11cm}{(19.9, 27, 34.9, 25.3, 26.7, 21.9, 21.3, 17.3, 27.7, 9.4)$'$} 
+& $\mathbf{R}_{\text{eq}}, \rho = 0.1, 0.5, 0.9$ \\
+& $\mathbf{R}_{\text{block}}$ - \text{2, 3 blocks} \\
+\hline
+\multicolumn{2}{c}{\textbf{K = 20}} \\
+\hline
+\multirow{3}{11cm}{(22.5, 24.9, 27.5, 24.3, 24.8, 23.2, 23, 21.6, 25.1, 19, 21.3, 24.1, 26.5, 26.9, 23.2, 25.8, 21.8, 21.6, 25.6, 21.2)$'$} 
+& $\mathbf{R}_{\text{eq}}, \rho = 0.1, 0.5, 0.9$ \\
+& $\mathbf{R}_{\text{block}}$ - \text{2, 3 blocks} \\
+& \\
+\hline
+\multirow{3}{11cm}{(21.5, 25.7, 30.5, 24.7, 25.5, 22.6, 22.3, 19.9, 26.1, 15.2, 19.3, 24.3, 28.7, 29.3, 22.7, 27.5, 20.1, 19.9, 27.1, 19.1)$'$} 
+& $\mathbf{R}_{\text{eq}}, \rho = 0.1, 0.5, 0.9$ \\
+& $\mathbf{R}_{\text{block}}$ - \text{2, 3 blocks} \\
+& \\
+\hline
+\multirow{3}{11cm}{(19.9, 27, 34.9, 25.3, 26.7, 21.9, 21.3, 17.3, 27.7, 9.4, 16.2, 24.6, 31.9, 33, 21.9, 29.9, 17.7, 17.3, 29.3, 16)$'$} 
+& $\mathbf{R}_{\text{eq}}, \rho = 0.1, 0.5, 0.9$ \\
+& $\mathbf{R}_{\text{block}}$ - \text{2, 3 blocks} \\
+& \\
+\hline
+\multicolumn{2}{c}{\textbf{K = 30}} \\
+\hline
+\multirow{4}{*}{%
+  \parbox{11cm}{%
+  \vspace{0.2cm}
+    (22.5, 24.9, 27.5, 24.3, 24.8, 23.2, 23, 21.6, 25.1, 19, 
+    21.3, 24.1, 26.5, 26.9, 23.2, 25.8, 21.8, 21.6, 25.6, 21.2, 
+    25.7, 22.2, 22.7, 22.6, 21.9, 24.2, 23.6, 22, 24.5, 25)$'$
+    \vspace{0.2cm}
+  }%
+} 
+& $\mathbf{R}_{\text{eq}}, \rho = 0.1, 0.5, 0.9$ \\
+& $\mathbf{R}_{\text{block}}$ - \text{2, 3 blocks} \\
+& \\
+& \\
+\hline
+\multirow{4}{*}{%
+  \parbox{11cm}{%
+  \vspace{0.2cm}
+  (21.5, 25.7, 30.5, 24.7, 25.5, 22.6, 22.3, 19.9, 26.1, 15.2, 19.3, 24.3, 28.7, 29.3, 22.7, 27.5, 20.1, 19.9, 27.1, 19.1, 27.2, 20.9, 21.8, 21.7, 20.4, 24.5, 23.5, 20.5, 25.1, 26)$'$
+    \vspace{0.2cm}
+  }%
+} 
+& $\mathbf{R}_{\text{eq}}, \rho = 0.1, 0.5, 0.9$ \\
+& $\mathbf{R}_{\text{block}}$ - \text{2, 3 blocks} \\
+& \\
+& \\
+\hline
+\multirow{4}{*}{%
+  \parbox{11cm}{%
+  \vspace{0.2cm}
+  (19.9, 27, 34.9, 25.3, 26.7, 21.9, 21.3, 17.3, 27.7, 9.4, 16.2, 24.6, 31.9, 33, 21.9, 29.9, 17.7, 17.3, 29.3, 16, 29.4, 19, 20.4, 20.3, 18.2, 25, 23.3, 18.3, 26, 27.4)$'$
+    \vspace{0.2cm}
+  }%
+} 
+& $\mathbf{R}_{\text{eq}}, \rho = 0.1, 0.5, 0.9$ \\
+& $\mathbf{R}_{\text{block}}$ - \text{2, 3 blocks} \\
+& \\
+& \\
+\hline
+\end{tabular}
+}
+\end{table}
+
+
+
+
+
+\begin{table}[H]
+\centering
+{\fontsize{13pt}{17pt}\selectfont 
+\begin{tabular}{p{11cm} p{4cm}}
+\hline
+$\boldsymbol{\theta}$ & $\mathbf{R}$ \\
+\hline
+\hline
+\multicolumn{2}{c}{\textbf{K = 40}} \\
+\hline
+\multirow{6}{11cm}{(22.5, 24.9, 27.5, 24.3, 24.8, 23.2, 23, 21.6, 25.1, 19, 21.3, 24.1, 26.5, 26.9, 23.2, 25.8, 21.8, 21.6, 25.6, 21.2, 25.7, 22.2, 22.7, 22.6, 21.9, 24.2, 23.6, 22, 24.5, 25, 26.5, 25.1, 25.2, 27.1, 25.3, 22.8, 20.6, 21.1, 26, 26)$'$}
+&  \\
+& $\mathbf{R}_{\text{eq}}, \rho = 0.1, 0.5, 0.9$ \\
+& $\mathbf{R}_{\text{block}}$ - \text{2, 3 blocks} \\
+&  \\
+&  \\
+&  \\
+\hline
+\multirow{6}{11cm}{(21.5, 25.7, 30.5, 24.7, 25.5, 22.6, 22.3, 19.9, 26.1, 15.2, 19.3, 24.3, 28.7, 29.3, 22.7, 27.5, 20.1, 19.9, 27.1, 19.1, 27.2, 20.9, 21.8, 21.7, 20.4, 24.5, 23.5, 20.5, 25.1, 26, 28.6, 26.1, 26.4, 29.7, 26.5, 22.1, 18, 18.9, 27.8, 27.8)$'$}
+&  \\
+& $\mathbf{R}_{\text{eq}}, \rho = 0.1, 0.5, 0.9$ \\
+& $\mathbf{R}_{\text{block}}$ - \text{2, 3 blocks} \\
+&  \\
+&  \\
+&  \\
+\hline
+\multirow{6}{11cm}{(19.9, 27, 34.9, 25.3, 26.7, 21.9, 21.3, 17.3, 27.7, 9.4, 16.2, 24.6, 31.9, 33, 21.9, 29.9, 17.7, 17.3, 29.3, 16, 29.4, 19, 20.4, 20.3, 18.2, 25, 23.3, 18.3, 26, 27.4, 31.9, 27.7, 28.1, 33.6, 28.2, 20.9, 14.1, 15.6, 30.5, 30.5)$'$}
+&  \\
+& $\mathbf{R}_{\text{eq}}, \rho = 0.1, 0.5, 0.9$ \\
+& $\mathbf{R}_{\text{block}}$ - \text{2, 3 blocks} \\
+&  \\
+&  \\
+&  \\
+\hline
+\multicolumn{2}{c}{\textbf{K = 50}} \\
+\hline
+\multirow{6}{11cm}{(22.5, 24.9, 27.5, 24.3, 24.8, 23.2, 23, 21.6, 25.1, 19, 21.3, 24.1, 26.5, 26.9, 23.2, 25.8, 21.8, 21.6, 25.6, 21.2, 25.7, 22.2, 22.7, 22.6, 21.9, 24.2, 23.6, 22, 24.5, 25, 26.5, 25.1, 25.2, 27.1, 25.3, 22.8, 20.6, 21.1, 26, 26, 22.1, 21.4, 23.2, 22.3, 22.4, 23.1, 21.4, 24.8, 27, 23.4)$'$}
+&  \\
+& $\mathbf{R}_{\text{eq}}, \rho = 0.1, 0.5, 0.9$ \\
+& $\mathbf{R}_{\text{block}}$ - \text{2, 3 blocks} \\
+&  \\
+&  \\
+&  \\
+&  \\
+\hline
+\multirow{6}{11cm}{(21.5, 25.7, 30.5, 24.7, 25.5, 22.6, 22.3, 19.9, 26.1, 15.2, 19.3, 24.3, 28.7, 29.3, 22.7, 27.5, 20.1, 19.9, 27.1, 19.1, 27.2, 20.9, 21.8, 21.7, 20.4, 24.5, 23.5, 20.5, 25.1, 26, 28.6, 26.1, 26.4, 29.7, 26.5, 22.1, 18, 18.9, 27.8, 27.8, 20.8, 19.5, 22.8, 21.2, 21.3, 22.5, 19.5, 25.5, 29.6, 23)$'$}
+&  \\
+& $\mathbf{R}_{\text{eq}}, \rho = 0.1, 0.5, 0.9$ \\
+& $\mathbf{R}_{\text{block}}$ - \text{2, 3 blocks} \\
+&  \\
+&  \\
+&  \\
+&  \\
+\hline
+\multirow{6}{11cm}{(19.9, 27, 34.9, 25.3, 26.7, 21.9, 21.3, 17.3, 27.7, 9.4, 16.2, 24.6, 31.9, 33, 21.9, 29.9, 17.7, 17.3, 29.3, 16, 29.4, 19, 20.4, 20.3, 18.2, 25, 23.3, 18.3, 26, 27.4, 31.9, 27.7, 28.1, 33.6, 28.2, 20.9, 14.1, 15.6, 30.5, 30.5, 18.8, 16.6, 22.1, 19.4, 19.6, 21.6, 16.7, 26.7, 33.5, 22.5)$'$}
+&  \\
+& $\mathbf{R}_{\text{eq}}, \rho = 0.1, 0.5, 0.9$ \\
+& $\mathbf{R}_{\text{block}}$ - \text{2, 3 blocks} \\
+&  \\
+&  \\
+&  \\
+&  \\
+\hline
+\end{tabular}
+}
+\end{table}
+
+
+
+
+
+
+
+
+
+library(kableExtra)
+
+FONT_SIZE <- 11
+
+
+create_basic_results_table <- function(dataset, caption){
+  # kable(
+  # get_tmeasures_for_app_data(ci_results),
+  # "latex",
+  # booktabs = TRUE,
+  # escape = FALSE,
+  # linesep = "",
+  # longtable = TRUE,
+  # caption = caption) %>%
+  # kable_styling(
+  #   latex_options = c("striped", "repeat_header", "HOLD_position"),
+  #   stripe_color = "gray!15",
+  #   font_size=FONT_SIZE
+  # )
+  dataset %>% kable("latex",
+                     booktabs = TRUE,
+                     escape = FALSE,
+                     linesep = "",
+                     longtable = TRUE,
+                     align = "c",
+                     # col.names = c(vector_1,
+                     #               selected_columns),
+                     caption = caption) %>%
+    collapse_rows(columns = c(1,2),
+                  valign = "middle", 
+                  latex_hline = "major")%>%
+    kable_styling(latex_options = c(
+      "repeat_header", 
+      "HOLD_position"),
+      #stripe_color = "gray!15",
+      #stripe_index = striped,
+      font_size=FONT_SIZE)
+}
+
+# create_table_for_true_theta <- function(dataset){
+#   return(kable(
+#     dataset %>% 
+#       select(K, true_theta, R), 
+#     "latex",
+#     booktabs = TRUE,
+#     escape = FALSE,
+#     linesep = "",
+#     longtable = TRUE,
+#     col.names = c("K", '$\\boldsymbol{\\theta}$', "R")) %>%
+#       column_spec(1, width = "0.75cm") %>%
+#       column_spec(3, width = "4cm") %>%
+#       column_spec(2, width = "11cm") %>%
+#       kable_styling(
+#         latex_options = c("striped", "repeat_header", "HOLD_position"),
+#         stripe_color = "gray!15",
+#         font_size=FONT_SIZE
+#     )
+#   )
+# }
+
+create_table_for_true_theta <- function(dataset){
+  # 1. Remove K from the display but keep it for logic
+  display_data <- dataset %>% select(true_theta, R)
+  
+  # 2. Identify where to pack (every 3 rows)
+  # This assumes your data is already sorted by K
+  k_values <- unique(dataset$K)
+  num_k <- length(k_values)
+  
+  tbl <- kable(
+    display_data, 
+    "latex",
+    booktabs = TRUE,
+    escape = FALSE,
+    linesep = "\\addlinespace[0.5em]\\midrule\\addlinespace[0.5em]",
+    longtable = TRUE,
+    col.names = c('$\\boldsymbol{\\theta}$', "R") # Removed K from header
+  ) %>%
+    # Adjust widths (removed spec for col 1 since K is gone)
+    column_spec(1, width = "12cm") %>%
+    column_spec(2, width = "4cm") %>%
+    kable_styling(
+      latex_options = c("repeat_header"), # Removed HOLD_position (incompatible with longtable)
+      # stripe_color = "gray!15",
+      font_size = FONT_SIZE
+    )
+  
+  # 3. Dynamically pack rows in batches of 3
+  for(i in 1:num_k) {
+    start_row <- (i - 1) * 3 + 1
+    end_row <- i * 3
+    label <- paste0("K = ", k_values[i])
+    tbl <- tbl %>% pack_rows(label, start_row, end_row, 
+                                   latex_align = "l",        # Left-align headers (usually cleaner)
+                                   indent = FALSE,           # NO indents for cell content
+                                   latex_gap_space = "0em",  # Extra air between groups
+                                   bold = TRUE,              # Make K stand out
+                                   background = "#eeeeee")   # Subtle gray bar for the group header
+  }
+  
+  return(tbl)
+}
+
+
+create_table_for_tightness_measure <- function(summary, metric_type,
+                                               equicorrelation){
+  
+  # if (unordered) {
+  unord <- c("Ind","Bonf","NR")
+  ord <- c("Asymp","Boot")
+  colwidth  <- "0.8cm"
+  # } else {
+  #   selected_columns <- c("Asymptotic Var","Bootstrap Est")
+  #   colwidth  <- "3cm"
+  # }
+  
+  num <- length(c(ord,unord))
+  
+  # sd <- c("Low $\\\\boldsymbol{\\\\theta}$ Variability" = 3, 
+  #         "Moderate $\\\\boldsymbol{\\\\theta}$ Variability" = 3, 
+  #         "High $\\\\boldsymbol{\\\\theta}$ Variability" = 3,
+  #         "Low $\\\\boldsymbol{\\\\theta}$ Variability" = 2, 
+  #         "Moderate $\\\\boldsymbol{\\\\theta}$ Variability" = 2, 
+  #         "High $\\\\boldsymbol{\\\\theta}$ Variability" = 2)
+  
+  sd <- c("Low" = 3, 
+          "Moderate" = 3, 
+          "High" = 3,
+          "Low" = 2, 
+          "Moderate" = 2, 
+          "High" = 2)
+  approach <- c(" " = 2,c("Unordered" = 9, "Ordered" = 6))
+  
+  if (equicorrelation) {
+    vector_1 <- c("K", "r")
+    striped <- c(2:4, 8:10, 14:16)#rep(c(0, 6, 12), each = 3) + 1:3
+    headers <- c(" " = 2, sd)
+  } else {
+    vector_1 <- c("K")
+    striped <- -1 #rep(c(0, 10), each = 5) + 1:5
+    headers <- c(" "= 1, sd)
+  }
+
+# create_table_for_tightness_measure <- function(summary, metric_type,
+#                                                equicorrelation,
+#                                                unordered = TRUE){
+# 
+#   if (unordered) {
+#     selected_columns <- c("Independent","Bonferroni","Nonrank")
+#     colwidth  <- "2cm"
+#   } else {
+#     selected_columns <- c("Asymptotic Var","Bootstrap Est")
+#     colwidth  <- "3cm"
+#   }
+#   num <- length(selected_columns)
+#   if (equicorrelation) {
+#     vector_1 <- c("K", "r")
+#     striped <- rep(c(0, 6, 12), each = 3) + 1:3
+#     headers <- c(" " = 2, 
+#                  "Low $\\\\boldsymbol{\\\\theta}$ Variability" = num, 
+#                  "Moderate $\\\\boldsymbol{\\\\theta}$ Variability" = num, 
+#                  "High $\\\\boldsymbol{\\\\theta}$ Variability" = num)
+#   } else {
+#     vector_1 <- c("K")
+#     striped <- -1 #rep(c(0, 10), each = 5) + 1:5
+#     headers <- c(" "=1,
+#                  "Low $\\\\boldsymbol{\\\\theta}$ Variability" = num, 
+#                  "Moderate $\\\\boldsymbol{\\\\theta}$ Variability" = num,
+#                  "High $\\\\boldsymbol{\\\\theta}$ Variability" = num)
+#   }
+
+  
+  formatted <- summary %>%
+    kable("latex",
+          booktabs = TRUE,
+          escape = FALSE,
+          linesep = "",
+          longtable = TRUE,
+          col.names = c(vector_1, 
+                        c(rep(unord,3),rep(ord,3))),
+          caption = paste("Simulation Results for Tightness Measure", 
+                          metric_type)) %>%
+    collapse_rows(columns = 1,
+                  valign = "middle", 
+                  latex_hline = "none",
+                  row_group_label_position = "first") %>%
+    add_header_above(headers, escape = FALSE) %>%
+    add_header_above(approach, escape = FALSE) %>%
+    kable_styling(latex_options = c("striped",
+                                    "repeat_header",
+                                    "HOLD_position"),
+                  font_size=FONT_SIZE-1,
+                  stripe_color = "gray!15",
+                  stripe_index = striped)
+                    #rep(c(0, 6, 12), each = 3) + 1:3) %>%
+
+  if (equicorrelation) {
+    final <- formatted %>% 
+      column_spec(1:2, width = "0.5cm") %>%
+      column_spec(3:(2+3*num), width = colwidth)
+  } else {
+    final <- formatted %>% 
+      column_spec(1:1, width = "1cm") %>%
+      column_spec(2:(1+3*num), width = colwidth) %>%
+      pack_rows("2 balanced blocks", 1, 5,
+                latex_gap_space = "0.3em") %>%
+      pack_rows("2 unbalanced blocks", 6, 10,
+                latex_gap_space = "0.3em") %>%
+      pack_rows("3 unbalanced blocks - low", 11, 15,
+                latex_gap_space = "0.3em") %>%
+      pack_rows("3 unbalanced block - high", 16, 20,
+                latex_gap_space = "0.3em")
+  }
+  return(
+    final
+  )
+}
+
+create_table_for_coverage <- function(summary, footnote, equicorrelation = TRUE,
+                                      unordered = TRUE){
+  
+  if (equicorrelation) {
+    vector_1 <- c("K", "r")
+    striped <- rep(c(0, 6, 12), each = 3) + 1:3
+  } else {
+    vector_1 <- c("K")
+    striped <- -1
+  }
+  
+  if (unordered) {
+    selected_columns <- c("Independent","Bonferroni","Nonrank")
+    colwidth  <- "3cm"
+  } else {
+    selected_columns <- c("Asymptotic Variance","Bootstrap Estimate")
+    colwidth  <- "4cm"
+  }
+  num <- length(selected_columns)
+  formatted <- summary %>%
+    kable("latex",
+          booktabs = TRUE,
+          escape = FALSE,
+          linesep = "",
+          longtable = TRUE,
+          align = "c",
+          col.names = c(vector_1,
+                        selected_columns),
+          caption = "Simulation Results for Coverage Probabilities")
+
+  if (equicorrelation) {
+    final <- formatted %>% 
+      column_spec(1:2, width = "1cm") %>%
+      column_spec(3:(2+num), width = colwidth)
+  } else {
+    final <- formatted %>% 
+      column_spec(1:1, width = "1cm") %>%
+      column_spec(2:(1+num), width = colwidth) %>%
+      pack_rows("2 balanced blocks", 1, 5) %>%
+      pack_rows("2 unbalanced blocks", 6, 10) %>%
+      pack_rows("3 unbalanced blocks - low", 11, 15) %>%
+      pack_rows("3 unbalanced block - high", 16, 20) 
+  }
+  
+  return(
+    final %>% 
+      collapse_rows(columns = 1,
+                    valign = "middle", 
+                    latex_hline = "none",
+                    row_group_label_position = "first") %>%
+      kable_styling(latex_options = c("striped", 
+                                      "repeat_header", 
+                                      "HOLD_position"),
+                    stripe_color = "gray!15",
+                    stripe_index = striped,
+                    font_size=FONT_SIZE) %>%
+    footnote(general_title = "\\\\footnotesize\\\\textit{Note: }", 
+             footnote_as_chunk = TRUE, # using the "general" footnote option "Note." and the "Footnote...." text start on the same line
+             threeparttable = TRUE,
+             general = paste0("\\\\footnotesize{",footnote,"}"),
+             escape =FALSE)
+  )
+}
+
+# https://stackoverflow.com/questions/66472411/how-to-reduce-size-of-footnote-in-kableextra-latex
+
+
+
+
+\begin{table}[H]
+\centering
+\fontsize{13pt}{20pt}\selectfont
+\begin{tabular}{p{1cm} p{14cm}}
+\hline
+\textbf{K} & \textbf{$\boldsymbol \sigma$} \\
+\hline
+\hline
+10 & (0.14, 0.33, 0.15, 0.23, 0.07, 0.19, 0.19, 0.37, 0.32, 0.11)$'$ \\
+\hline
+20 & (0.14, 0.33, 0.15, 0.23, 0.07, 0.19, 0.19, 0.37, 0.32, 0.11, 0.17, 0.27, 0.24, 0.11, 0.11, 0.13, 0.16, 0.15, 0.15, 0.25)$'$ \\
+\hline
+30 & (0.14, 0.33, 0.15, 0.23, 0.07, 0.19, 0.19, 0.37, 0.32, 0.11, 0.17, 0.27, 0.24, 0.11, 0.11, 0.13, 0.16, 0.15, 0.15, 0.25, 0.15, 0.13, 0.1, 0.1, 0.24, 0.13, 0.32, 0.19, 0.27, 0.3)$'$ \\
+\hline
+40 & (0.14, 0.33, 0.15, 0.23, 0.07, 0.19, 0.19, 0.37, 0.32, 0.11, 0.17, 0.27, 0.24, 0.11, 0.11, 0.13, 0.16, 0.15, 0.15, 0.25, 0.15, 0.13, 0.1, 0.1, 0.24, 0.13, 0.32, 0.19, 0.27, 0.3, 0.12, 0.27, 0.09, 0.12, 0.36, 0.09, 0.15, 0.16, 0.09, 0.29)$'$ \\
+\hline
+50 & (0.14, 0.33, 0.15, 0.23, 0.07, 0.19, 0.19, 0.37, 0.32, 0.11, 0.17, 0.27, 0.24, 0.11, 0.11, 0.13, 0.16, 0.15, 0.15, 0.25, 0.15, 0.13, 0.1, 0.1, 0.24, 0.13, 0.32, 0.19, 0.27, 0.3, 0.12, 0.27, 0.09, 0.12, 0.36, 0.09, 0.15, 0.16, 0.09, 0.29, 0.16, 0.28, 0.14, 0.07, 0.2, 0.31, 0.13, 0.14, 0.31, 0.11)$'$ \\
+\hline
+\end{tabular}
+\end{table}
+
+
+
+
+```{r}
+# tabb1 <- preprocess_tightness_measure(eq_res, "t2", equicorr, TRUE)
+# 
+# if (!equicorr) {
+#   tabb1 <- tabb1 %>% select(-c(r, blocks))
+# }
+# 
+# tabb1 <- tabb1 %>% select(K, r,
+#     independent_low, bonferroni_low, nonrankbased_low,
+#     independent_med, bonferroni_med, nonrankbased_med,
+#     independent_high, bonferroni_high, nonrankbased_high,
+#     rankbased_asymptotic_low, rankbased_level2bs_low,
+#     rankbased_asymptotic_med, rankbased_level2bs_med,
+#     rankbased_asymptotic_high, rankbased_level2bs_high)
+# create_table_for_tightness_measure(
+#   summary=tabb1,
+#   metric_type="$T_2$",
+#   equicorr)
+```
+
+```{r}
+# tabb1 <- preprocess_tightness_measure(eq_res, "t2", equicorr, TRUE)
+# 
+# if (!equicorr) {
+#   tabb1 <- tabb1 %>% select(-c(r, blocks))
+# }
+# 
+# tabb1 <- tabb1 %>% select(K, r,
+#     independent_low, bonferroni_low, nonrankbased_low,
+#     independent_med, bonferroni_med, nonrankbased_med,
+#     independent_high, bonferroni_high, nonrankbased_high,
+#     rankbased_asymptotic_low, rankbased_level2bs_low,
+#     rankbased_asymptotic_med, rankbased_level2bs_med,
+#     rankbased_asymptotic_high, rankbased_level2bs_high)
+# create_table_for_tightness_measure(
+#   summary=tabb1,
+#   metric_type="$T_3$",
+#   equicorr)
+```
+
+
+```{r include = FALSE}
+# tabb <- preprocess_tightness_measure(combined, "t1", equicorr, FALSE)
+# 
+# if (!equicorr) {
+#   tabb <- tabb %>% select(-c(r, blocks))
+# }
+
+# create_table_for_tightness_measure(
+#   summary=tabb,
+#   metric_type="T1", equicorr, FALSE)
+```
+
+```{r include = FALSE}
+# tabb <- preprocess_tightness_measure(combined, "t2", equicorr, FALSE)
+# 
+# if (!equicorr) {
+#   tabb <- tabb %>% select(-c(r, blocks))
+# }
+
+
+# create_table_for_tightness_measure(
+#   summary=tabb, 
+#   metric_type="T2", equicorr, FALSE)
+```
+
+```{r include = FALSE}
+# tabb <- preprocess_tightness_measure(combined, "t3", equicorr, FALSE)
+# 
+# if (!equicorr) {
+#   tabb <- tabb %>% select(-c(r, blocks))
+# }
+
+# create_table_for_tightness_measure(
+#   summary=tabb, 
+#   metric_type="T3", equicorr, FALSE)
+```
+
+
+\elandscape
+
+
+```{r simulation-table1, results='asis', include=FALSE}
+library(dplyr)
+library(tidyr)
+mean <- 23.8
+sds <-c('low', 'medium', 'high')# c(2, 3.6, 6)
+Ks <- c(10, 20, 30, 40, 50)
+#corrs <- c(0.1,0.5,0.9)
+alphas <- c(0.05)#c(0.05, 0.1, 0.15, 0.2)
+
+theta <- c()
+std <- c()
+K <- c()
+i <-1   # initialize index
+
+for (k in Ks) {
+  for (sd in sds) {
+
+    set.seed(123974)
+    true_theta <- sd #rnorm(k, mean, sd)
+    value_to_add <- true_theta#paste(round(true_theta,1), collapse = ", ")
+    theta[i] <- value_to_add
+    std[i] <- sd
+    K[i] <- k
+    i <- i + 1
+  }
+}
+
+reals <- data.frame(theta, K, std)
+
+
+# grid <- grid %>%
+
+# grid#dplyr::inner_join(grid, reals, by = c("std", "K"))
+
+reals <- data.frame(theta, K, std)
+
+K <- c(10, 20, 30, 40, 50)
+sd <-c(2.0, 3.6, 6.0)# my_list
+R_type <- c("R_eq", "R_block")
+
+reals$R <- rep(list(R_type), nrow(reals))
+table_to_plot <- reals %>%
+  unnest(R) %>%
+  mutate(
+    `$\\mathbf{R}$` = case_when(
+      R == "R_eq" ~ "$\\mathbf{R}_{\\text{eq}}, \\rho = 0.1, 0.5, 0.9$",
+      R == "R_block" ~ "$\\mathbf{R}_{\\text{block}} \\text{(2 or 3 blocks)}$"
+    )
+  ) %>%
+  select(theta, `$\\mathbf{R}$`, K)
+```
+
+```{r asis = TRUE, include = FALSE}
+library(kableExtra)
+
+
+kable(table_to_plot, "latex", booktabs = TRUE, escape = FALSE,linesep = "",
+      longtable = TRUE) %>%
+  column_spec(1, width = "10cm") %>%    # wrap column 1
+  column_spec(2, width = "5cm") %>%
+  kable_styling(
+    latex_options = c("striped", "repeat_header", "HOLD_position"),
+    stripe_color = "gray!15"  # light gray, can change
+  )
+```
+
+```{r simulation-table, results='asis', include=FALSE}
+library(dplyr)
+library(tidyr)
+mean <- 23.8
+sds <- c(2, 3.6, 6)
+Ks <- c(10, 20, 30, 40, 50)
+#corrs <- c(0.1,0.5,0.9)
+alphas <- c(0.05)#c(0.05, 0.1, 0.15, 0.2)
+
+theta <- c()
+std <- c()
+K <- c()
+i <- 1   # initialize index
+
+for (k in Ks) {
+  for (sd in sds) {
+
+    set.seed(123974)
+    true_theta <- rnorm(k, mean, sd)
+    value_to_add <- paste(round(true_theta,1), collapse = ", ")
+    theta[i] <- value_to_add
+    std[i] <- sd
+    K[i] <- k
+    i <- i + 1
+  }
+}
+
+reals <- data.frame(theta, K, std)
+
+
+# grid <- grid %>%
+
+# grid#dplyr::inner_join(grid, reals, by = c("std", "K"))
+
+reals <- data.frame(theta, K, std)
+
+K <- c(10, 20, 30, 40, 50)
+sd <-c(2.0, 3.6, 6.0)# my_list
+R_type <- c("R_eq", "R_block")
+
+reals$R <- rep(list(R_type), nrow(reals))
+table_to_plot <- reals %>%
+  unnest(R) %>%
+  mutate(
+    `$\\mathbf{R}$` = case_when(
+      R == "R_eq" ~ "$\\mathbf{R}_{\\text{eq}}, \\rho = 0.1, 0.5, 0.9$",
+      R == "R_block" ~ "$\\mathbf{R}_{\\text{block}} \\text{(2 or 3 blocks)}$"
+    )
+  ) %>%
+  select(theta, `$\\mathbf{R}$`)
+```
+
+```{r asis = TRUE, include = FALSE}
+library(kableExtra)
+
+
+kable(table_to_plot, "latex", booktabs = TRUE, escape = FALSE,linesep = "",
+      longtable = TRUE) %>%
+  column_spec(1, width = "10cm") %>%    # wrap column 1
+  column_spec(2, width = "5cm") %>%
+  kable_styling(
+    latex_options = c("striped", "repeat_header", "HOLD_position"),
+    stripe_color = "gray!15"  # light gray, can change
+  )
+```
+
+```{r, results='asis', echo=FALSE, warning=FALSE, include=FALSE}
+code <- readLines("../../R/simulate/compute_ci.R")
+cat("```r\n", paste(code, collapse = "\n"), "\n```")
+```
+
+```{r, results='asis', echo=FALSE, warning=FALSE, include=FALSE}
+code <- readLines("../../R/simulate/compute_metrics.R")
+cat("```r\n", paste(code, collapse = "\n"), "\n```")
+```
+
+
+```{r, results='asis', echo=FALSE, warning=FALSE, include=FALSE}
+code <- readLines("../../R/simulate/implement.R")
+cat("```r\n", paste(code, collapse = "\n"), "\n```")
+```
+
+

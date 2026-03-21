@@ -1,0 +1,210 @@
+## Pulse Asia Results
+
+For the Pulse Asia results, correlations are assumed to be induced by alliances or political slates formed for the purpose of elections. Slates campaigned by the incumbent president (Alyansa) and his former allies, the vice-president and former president (DuterTen), are considered. Imee Marcos and Villar are both endorsed by these rival factions and are given a separate block. Makabayan is also given its own block as it has a relatively large set of 11 candidates. Another popular alliance that emerged is that of Pangilinan and Aquino (KiBam). The remaining candidates are collapsed into a single block.
+
+
+```{r}
+
+library(kableExtra)
+library(tidyr)
+library(dplyr)
+
+generate_corr_mat <- function(r, appdata){
+  if (appdata == 'pulse') {
+    cormat <- block_corr(block_sizes=c(2, 12, 10, 2, 11, 27), rho_within=rep(r, 6), rho_between=0.0)
+  } else if (appdata == 'traveltime') {
+    cormat <- block_corr(block_sizes=c(15, 11, 11, 7, 7), rho_within=rep(r, 5), rho_between=0.0)
+  }
+  return(cormat)
+}
+
+```
+
+
+```{r}
+source("/home/realiseshewon/PDev/kde-ranking/R/generate_true_theta.R")
+source("/home/realiseshewon/PDev/kde-ranking/R/simulate/compute_ci.R")
+source("/home/realiseshewon/PDev/kde-ranking/R/simulate/compute_metrics.R")
+source("/home/realiseshewon/PDev/kde-ranking/R/calculate_ci_application.R")
+source("/home/realiseshewon/PDev/kde-ranking/R/preprocess_data.R")
+source("/home/realiseshewon/PDev/kde-ranking/R/create_plot.R")
+source("/home/realiseshewon/PDev/kde-ranking/R/create_table.R")
+  
+cand <- generate_true_theta_rd(persist_df = FALSE)
+
+cand$Makabayan <- ifelse(cand$Party == 'MKBYN', 1, 0)
+
+corr_matrix <-generate_corr_mat(0.9, "pulse")
+
+dataset_all <- cand %>%
+  mutate(Voting_for_dec = `Voting For`/100) %>%
+  #filter(Voting_for_dec >= 0.01) %>%
+  mutate(se = sqrt((Voting_for_dec*(1-Voting_for_dec))/1200) ) %>%
+  select(-Voting_for_dec) %>% 
+  arrange(desc(`Voting For`)) %>%  
+  arrange(desc(DuterTen), desc(Alyansa),desc(KiBam), desc(Makabayan))  %>%
+  rename(`Rank UB_pulse` = `Rank UB`, `Rank LB_pulse` = `Rank LB`)
+
+ci_results <- get_ci_for_app_data(
+    theta_hat = (dataset_all$`Voting For`)/100,
+    true_sds = dataset_all$se,
+    K = dim(dataset_all)[1],
+    alpha = 0.05,
+    B <- 500,
+    corr_matrix=corr_matrix 
+    )
+```
+
+
+```{r pulse-table}
+all_ci <- lapply(seq(0,0.9,0.1), function(r){
+  
+  corr_matrix <- generate_corr_mat(r, "pulse")
+  
+  ci_results <- get_ci_for_app_data(
+    theta_hat = (dataset_all$`Voting For`)/100,
+    true_sds = dataset_all$se,
+    K = dim(dataset_all)[1],
+    alpha = 0.05,
+    B <- 500,
+    corr_matrix=corr_matrix 
+    )
+  
+  out <- get_tmeasures_for_app_data(ci_results)
+  out$r <- r
+  
+  return(out %>% select(r, Measure, Independent, Bonferroni, Nonrank))
+  })
+
+allcases <- do.call(rbind, all_ci)
+
+to_table <- allcases %>% 
+  pivot_longer(cols = c(Independent, Bonferroni, Nonrank), 
+                          names_to = "Approach", 
+                          values_to = "Value") %>% 
+  distinct() %>%
+  pivot_wider(names_from = 'Measure',values_from = "Value") %>% 
+  filter(!((Approach == 'Bonferroni' | Approach == 'Independent') & r != 0 )) %>% 
+  mutate(across(c(T1, T2, T3), round, 3)) #%>%#%>% 
+  #distinct(Approach, T1, T2, T3, .keep_all = TRUE)
+
+create_basic_results_table(to_table, "Joint Confidence Region Tightness Measures")
+```
+
+
+
+Table \@ref(tab:pulse-table) shows that higher within-block correlation leads to better T1, T2, and T3. This means that overall, the intervals in the joint confidence region are generally narrower. Figure \@ref(fig:pulse-result) assumes high correlations within blocks of alliances and political slates. The joint confidence regions for Independent, Bonferroni, and Nonrank are shown respectively. For this use case, lower rank corresponds to highly preferred candidates.
+
+```{r pulse-result,fig.cap = "95% Joint Confidence Region for Candidates with at least 1% Votes", fig.height = 5.75}
+prepared_data <- prepare_plotting_data_for_pulse(ci_results,dataset_all)%>%
+  separate(
+    col = Candidate,           
+    into = c("Candidate", "FirstName"),
+    sep = ",",    
+    extra = "merge"
+  ) %>% filter(Approach != "bonferroni")
+
+create_plot_for_app_data(prepared_data, Candidate, k, reverse=TRUE,
+                        shape_map = c("DuterTen" = 1, "Alyansa" = 2, "KiBam" = 3, "Makabayan" = 4,"DuterTen-Alyansa" = 5, "None" = 6))
+```
+
+
+## 2011 Mean Travel Time to Work in the US
+
+Block diagonal correlation structure is assumed according to 2010 population density in each corresponding state (https://www.energy.gov/cmei/vehicles/fact-661-february-7-2011-population-density). Five blocks are used wherein the first has population density from 0 to 20 people per square mile, the second has 20 to 50, the third has 50 to 100, the fourth has 100 to 200 and the fifth has more than 200. 
+
+
+```{r}
+dataset_all <- readRDS("/home/realiseshewon/PDev/kde-ranking/data/mean_travel_time_ranking_2011.rds")
+
+dataset_all$density <- c(94.4, 1.2, 56.3,
+                      56.0, 239.1, 48.5,
+                      738.1, 460.8, 9856.5,
+                      350.6,168.4,211.8,
+                      19.0,	231.1,181.0,
+                      54.5,34.9,109.9,
+                      104.9,43.1,594.8,
+                      839.4,174.8,66.6,
+                      63.2,87.1, 6.8,
+                      23.8, 24.6, 147.0, 
+                      1195.5,17.0, 411.2,
+                      196.1, 9.7, 282.3, 
+                      54.7, 39.9, 283.9,
+                      1018.1,153.9,10.7,
+                      153.9,96.3,	33.6,
+                      67.9, 202.6, 101.2,
+                      77.1, 105.0, 5.8)
+
+
+dataset_all <- dataset_all %>% mutate(
+  density_group = ifelse(density > 0 & density <= 20, 1, 
+                         ifelse(density > 20 & density <= 50, 2, 
+                                ifelse(density > 50 & density <= 100, 3,
+                                       ifelse(density > 100 & density <= 200, 4, 5))))
+) %>% arrange(desc(theta_k)) %>% arrange(desc(density_group))
+```
+
+
+```{r}
+all_ci <- lapply(seq(0,0.9,0.1), function(r){
+  
+  corr_matrix <- generate_corr_mat(r, "traveltime")
+  
+  ci_results <- get_ci_for_app_data(
+    theta_hat = dataset_all$theta_k,
+    true_sds = dataset_all$S,
+    K = dim(dataset_all)[1],
+    alpha = 0.05,
+    B <- 500,
+    corr_matrix=corr_matrix 
+    )
+  
+  out <- get_tmeasures_for_app_data(ci_results)
+  out$r <- r
+  
+  return(out %>% select(r, Measure, Independent, Bonferroni, Nonrank))
+  })
+
+allcases <- do.call(rbind, all_ci)
+
+to_table <- allcases %>% 
+  pivot_longer(cols = c(Independent, Bonferroni, Nonrank), 
+                          names_to = "Approach", 
+                          values_to = "Value") %>% 
+  distinct() %>%
+  pivot_wider(names_from = 'Measure',values_from = "Value") %>% 
+  filter(!((Approach == 'Bonferroni' | Approach == 'Independent') & r != 0 )) %>% 
+  mutate(across(c(T1, T2, T3), round, 3))
+
+create_basic_results_table(to_table, "Joint Confidence Region Tightness Measures")
+```
+
+
+
+```{r}
+corr_matrix <-generate_corr_mat(0.9, "traveltime")
+
+ci_results <- get_ci_for_app_data(
+  theta_hat = dataset_all$theta_k,
+  true_sds = dataset_all$S,
+  K = dim(dataset_all)[1],
+  alpha = 0.05,
+  B <- 500,
+  corr_matrix=corr_matrix 
+  )
+```
+
+
+```{r}
+prepared_data <- prepare_plotting_data_for_traveltime(ci_results,dataset_all)
+```
+
+Figure \@ref(fig:traveltime-result) assumes high correlations within blocks with different population densities. Only joint confidence regions for Bonferroni and Nonrank are since Independent result is similar to Bonferroni. For this use case, lower rank corresponds to states with lower mean travel time.
+
+```{r traveltime-result, fig.cap = "95% Joint Confidence Region for 2011 Mean Travel Times in the US"}
+create_plot_for_app_data(prepared_data %>% filter(Approach != 'independent'), iso, theta_k, reverse=FALSE,xlab = "State",
+                         title = "95% Joint Confidence Region for 2011 Mean Travel Times in the US",
+                         shape_legend_title ="Density\n(in people\nper sq mile)",
+                         shape_labels = c("0-20", "20-50", "50-100", "100-200","200+"),
+                         shape_map = c("1" = 1, "2" = 2, "3" = 3, "4" = 4,"5" = 5))
+```
