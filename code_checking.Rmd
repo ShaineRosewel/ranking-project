@@ -5,8 +5,6 @@ output: html_notebook
 
 # Results presentation
 
-
-
 ```{r}
 df <- readRDS("data/mean_travel_time_ranking_2011.rds")
 mean <- 23.8
@@ -80,11 +78,32 @@ List of block corrs used:
 # corr_matrix <-block_corr(block_sizes=c(2, 2, 8, 6), rho_within=c(0, 0.9, 0.9, 0.9), rho_between=0.0)
 
 K=64
-block_unb <- block_corr(block_sizes=c(27, 11, 2, 10, 12, 2), rho_within=c(0.0, 0.1, 0.1, 0.1, 0.1, 0.1), rho_between=0.0)  #block_corr(block_sizes=c(27, 11, 2, 10, 12, 2), rho_within=c(0.0, 0.3, 0.3, 0.3, 0.3, 0.3), rho_between=0.0) #block_corr(block_sizes=c(27, 11, 2, 10, 12, 2), rho_within=c(0.0, 0.1, 0.1, 0.1, 0.1, 0.1), rho_between=0.0) 
-eval <- eigen(block_unb)$values
-tol = 1e-8
-print(paste("PD for K=",K, ":", all(eval > -abs(tol * max(eval)))))
+block_unb <- block_corr(block_sizes=c(27, 11, 2, 10, 12, 2), rho_within=c(0.0, 0.9, 0.9, 0.9, 0.9, 0.9), rho_between=0.0)  #block_corr(block_sizes=c(27, 11, 2, 10, 12, 2), rho_within=c(0.0, 0.3, 0.3, 0.3, 0.3, 0.3), rho_between=0.0) #block_corr(block_sizes=c(27, 11, 2, 10, 12, 2), rho_within=c(0.0, 0.1, 0.1, 0.1, 0.1, 0.1), rho_between=0.0) 
+
+
+corr_matrix <-block_corr(block_sizes=c(2, 12, 10, 2, 11, 27), rho_within=c(0.9, 0.9, 0.9, 0.9, 0.9, 0.1), rho_between=0.0) 
+
+
+generate_corr_mat <- function(r){
+  block_corr(block_sizes=c(2, 12, 10, 2, 11, 27), rho_within=rep(r, 6), rho_between=0.0)
+}
+
+
+for (corr_matrix in lapply(c(0.0, 0.1, 0.3, 0.5, 0.7, 0.9), generate_corr_mat)){
+  eval <- eigen(corr_matrix)$values
+  tol = 1e-8
+  print(paste("PD for K=",K, ":", all(eval > -abs(tol * max(eval)))))
+}
+
 ```
+
+```{r}
+selected_columns <- c('independent', 'bonferroni', 'nonrankbased')
+test <- c('low', 'med', "high")
+
+unlist(lapply(test, function(x) {paste(selected_columns, x, sep = '_')}))
+```
+
 
 
 
@@ -183,7 +202,7 @@ df <- cand %>%
   select(-Voting_for_dec)
 
 # corr_matrix <-block_corr(block_sizes=c(2, 2, 8, 6), rho_within=c(0, 0.9, 0.9, 0.9), rho_between=0.0)
-corr_matrix <-block_corr(block_sizes=c(27, 11, 2, 10, 12, 2), rho_within=c(0.0, 0.1, 0.1, 0.1, 0.1, 0.1), rho_between=0.0) # <- sample asymptotic neg rad
+corr_matrix <-block_corr(block_sizes=c(27, 11, 2, 10, 12, 2), rho_within=c(0.0, 0.9, 0.9, 0.9, 0.9, 0.9), rho_between=0.0) # <- sample asymptotic neg rad
 #corr_matrix <-block_corr(block_sizes=c(27, 11, 2, 10, 12, 2), rho_within=c(0, 0.1, 0.5, 0.9, 0.9, 0.5), rho_between=0.0) 
 # corr_matrix <-block_corr(block_sizes=c(2, 2, 8, 6), rho_within=c(0, 0.5, 0.5, 0.5), rho_between=0.0)
 #corr_matrix <-block_corr(block_sizes=c(27, 11, 2, 10, 12, 2), rho_within=c(0.5, 0.9, 0.9, 0.9, 0.9, 0.9), rho_between=0.0) 
@@ -208,10 +227,10 @@ ci_methods <- list(
                                                 theta_hat = theta_hat,
                                                 alpha = alpha,
                                                 varcovar_matrix = varcovar_matrix),
-  rankbased_asymptotic = function() get_ci_rankbased_asymptotic(B = B,
-                                                                theta_hat = theta_hat,
-                                                                varcovar_matrix = varcovar_matrix,
-                                                                alpha = alpha),
+  # rankbased_asymptotic = function() get_ci_rankbased_asymptotic(B = B,
+  #                                                               theta_hat = theta_hat,
+  #                                                               varcovar_matrix = varcovar_matrix,
+  #                                                               alpha = alpha),
   # rankbased_level2bs = function() get_ci_rankbased_level2bs(B = B,
   #                                                           C = 300,
   #                                                           theta_hat = theta_hat,
@@ -370,6 +389,14 @@ process_ci_result <- function(result, K) {
 }
 ```
 
+```{r}
+nonrankcand
+```
+
+
+
+
+
 
 ```{r warning = FALSE}
 nonrankcand <- cand %>%
@@ -432,8 +459,8 @@ independentcand <- cand %>%
   mutate(se = sqrt((Voting_for_dec*(1-Voting_for_dec))/1200) ) %>%
   select(-Voting_for_dec) %>% arrange(desc(`Voting For`)) %>%  arrange(DuterTen, Alyansa, KiBam, Makabayan) 
 
-independentcand$`Rank LB` <- sapply(process_ci_result(result = ci_results$independent, K=64), min)
-independentcand$`Rank UB` <- sapply(process_ci_result(result = ci_results$independent, K=64), max)
+independentcand$`Rank LB` <- sapply(process_ci_result(result = ci_results$bonferroni, K=64), min)
+independentcand$`Rank UB` <- sapply(process_ci_result(result = ci_results$bonferroni, K=64), max)
 independentcand <- nonrankcand %>% arrange(desc(`Voting For`))
 
 # kde_result <- output[[51]]
@@ -878,7 +905,10 @@ data_list <- list()
 for (sd in sds) {
   for (K in Ks) {
   print(cat("RESULTS FOR SD =",sd, "; K =", K))
-  corr_matrix <-block_corr(block_sizes=c(.2*K,.3*K, .5*K), rho_within=c(0.9, 0.5, 0.1), rho_between=0.0)# block_corr(block_sizes=c(0.3*K,0.7*K), rho_within=c(0.9, 0.1), rho_between=0.0) #  block_corr(block_sizes=c(5,5), rho_within=c(0.75, 0.15), rho_between=0.0) #block_corr(block_sizes=c(5,5), rho_within=c(0.85, 0.25), rho_between=0.0)# (1 - r) * diag(K) + r * matrix(1, K, K)
+  corr_matrix <-block_corr(block_sizes=c(.2*K,.3*K, .5*K), rho_within=c(0.9, 0.5, 0.1), rho_between=0.0)
+  # block_corr(block_sizes=c(0.3*K,0.7*K), rho_within=c(0.9, 0.1), rho_between=0.0) 
+  #  block_corr(block_sizes=c(5,5), rho_within=c(0.75, 0.15), rho_between=0.0) 
+  #block_corr(block_sizes=c(5,5), rho_within=c(0.85, 0.25), rho_between=0.0)# (1 - r) * diag(K) + r * matrix(1, K, K)
 
   set.seed(123974)
   true_theta <- rnorm(K, mean, sd)
