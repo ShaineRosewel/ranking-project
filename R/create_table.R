@@ -1,6 +1,6 @@
 library(kableExtra)
 
-FONT_SIZE <- 11
+FONT_SIZE <- 12
 
 create_basic_results_table <- function(dataset, caption){
   # kable(
@@ -273,12 +273,16 @@ create_table_for_tightness_measure <- function(summary, metric_type,
   
   if (unordered) {
     selected_columns <- c("Ind","Bonf","NR")
-    colwidth  <- "0.82cm"
+    colwidth  <- "0.83cm"
+    colwidth1 <- "0.65cm"
     parameter <- "Unordered"
+    colcount1 <- 1:2
+    colcount <- 3:21
   } else {
     selected_columns <- c("Asymp","Boot")
-    colwidth  <- "1cm"
+    colwidth  <- "1.3cm"
     parameter <- "Ordered"
+    colcount <- 1:15
   }
   
   num <- length(selected_columns)
@@ -328,15 +332,19 @@ create_table_for_tightness_measure <- function(summary, metric_type,
     kable_styling(latex_options = c("striped",
                                     "repeat_header",
                                     "HOLD_position"),
-                  font_size=FONT_SIZE-2,
+                  font_size=FONT_SIZE-1,
                   stripe_color = "gray!15",
                   stripe_index = striped)
   #rep(c(0, 6, 12), each = 3) + 1:3) %>%
   
   
-  final <- formatted #%>% 
-  #column_spec(c(1:2,12), width = "0.5cm") %>%
-  #column_spec(c(3:11, 13:21), width = colwidth)
+  final <- formatted %>% 
+    column_spec(colcount, width = colwidth)# %>%
+    #column_spec(c(3:11, 13:21), width = colwidth)
+  
+  if (unordered){
+    final <- final %>% column_spec(colcount1, width = colwidth1)
+  }
   
   return(
     final
