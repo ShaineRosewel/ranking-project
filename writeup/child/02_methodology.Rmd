@@ -248,25 +248,33 @@ In equation \ref{eq:t3}, $OP = K + \sum^K_{k=1} \big | \Lambda_{Ok} \big|$ denot
 
 ## Simulation settings {#sec:simulation-settings}
 
-For the simulation settings to be used in evaluating the performance of the proposed methodologies, we shall be varying the settings for the population mean $\boldsymbol{\theta}$, population variances $\sigma^2_1, \sigma^2_2,\ldots,\sigma^2_K$, population correlation matrix $\mathbf{R}$, and number of populations being ranked $K$. In carrying out the simulations, a nominal level of $1-\alpha=0.95$ will be used. The table below summarizes the simulation settings.
+For the simulation settings to be used in evaluating the performance of the proposed methodologies, we shall be varying the settings for the population mean $\boldsymbol{\theta}$, population variances $\sigma^2_1, \sigma^2_2,\ldots,\sigma^2_K$, population correlation matrix $\mathbf{R}$, and number of populations being ranked $K$. In carrying out the simulations, a nominal level of $1-\alpha=0.95$ will be used. Table \ref{tab:true-theta-table} summarizes the simulation settings.
 
 
-```{r true-theta-table, tab.cap="True $\\theta$ values"}
+```{r true-theta-table, tab.cap="True $\\boldsymbol{\\theta}$ values"}
 source("/home/realiseshewon/PDev/kde-ranking/R/create_plot.R")
 dataset<-readRDS("/home/realiseshewon/PDev/kde-ranking/data/true_theta.rds")
 source("/home/realiseshewon/PDev/kde-ranking/R/create_table.R")
+source("/home/realiseshewon/PDev/kde-ranking/R/preprocess_data.R")
 create_table_for_true_theta(
 dataset %>% 
   select(K, data_spread, true_theta) %>%
   group_by(K, data_spread) %>%
   summarise(true_theta = paste(round(true_theta, 1), collapse = ", "), .groups = "drop") %>%
   mutate(R = "$\\mathbf{R}_{eq, \\rho} = 0.1, 0.5, 0.9$ $\\mathbf{R}_{block} - 2, 3$ blocks"),
-column_names = c("K", "Variability",'$\\boldsymbol{\\theta}$', "R"),
+column_names = c("K", "Variance",'$\\boldsymbol{\\theta}$', "$\\mathbf{R}$"),
 main = TRUE
 )
 ```
 
 
+The following configurations are used for $\mathbf{R}_{block}$:
+```{r}
+options(knitr.kable.NA = '')
+source("/home/realiseshewon/PDev/kde-ranking/R/generate_true_theta.R")
+df <- log_block_corrs(persist = FALSE)
+prepare_block_corrs(df) %>% create_block_corr_table
+```
 
 
 ```{r sigma-table, tab.cap="$\\sigma$ Values."}
