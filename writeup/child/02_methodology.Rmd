@@ -86,7 +86,7 @@ V(\hat{\theta}_{(k)})= \text{kth ordered value among} \ \left\{ \theta^{2}_{1} +
 \end{equation}
 Consequently, we get an estimate of the asymptotic variance of $\hat{\theta}_{(k)}$, given by:
 \begin{equation}
-\widehat{V(\hat{\theta}_{(k)})}= \text{kth ordered value among} \ \left\{ \hat{\theta}^{2}_{1} + \sigma_1^2, \hat{\theta}^{2}_{2} + \sigma_2^2, \dots, \hat{\theta}^{2}_{K} + \sigma_K^2 \right\} - \hat {\theta}^{2}_{(k)}.
+\widehat{V(\hat{\theta}_{(k)})}= \text{kth ordered value among} \ \left\{ \hat{\theta}^{2}_{1} + \sigma_1^2, \hat{\theta}^{2}_{2} + \sigma_2^2, \dots, \hat{\theta}^{2}_{K} + \sigma_K^2 \right\} - \hat {\theta}^{2}_{b(k)}.
 \label{eq:rev6}
 \end{equation}
 
