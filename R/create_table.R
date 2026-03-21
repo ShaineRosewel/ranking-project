@@ -37,7 +37,7 @@ create_basic_results_table <- function(dataset, caption){
 }
 
 create_table_for_true_theta <- function(dataset,
-                                        column_names = c("K", "Variability",'$\\boldsymbol{\\theta}$', "R"),
+                                        column_names = c("K", "Variance",'$\\boldsymbol{\\theta}$', "R"),
                                         main = TRUE){
   if (main){
   formatted_data <- dataset %>%
@@ -91,7 +91,7 @@ create_table_for_true_theta <- function(dataset,
 
 create_side_by_side_table_within_main <- function(eq_data,
                                                   bl_data,
-                                                  num_variability=1,
+                                                  num_variance=1,
                                                   unordered = TRUE,
                                                   metric = "Coverage"
 ){
@@ -129,14 +129,14 @@ create_side_by_side_table_within_main <- function(eq_data,
       kable("latex", 
             booktabs = TRUE,
             escape = FALSE,
-            align = rep("c", (num_variability*num*2 + 1),collapse=""), 
+            align = rep("c", (num_variance*num*2 + 1),collapse=""), 
             linesep = "",
-            col.names = rep(c("r", rep(selected_columns, num_variability)),2), 
+            col.names = rep(c("r", rep(selected_columns, num_variance)),2), 
             caption = paste("Simulation Results for", metric, "of", parameter, "Parameters"),
             na.character = "") %>%
-      column_spec(1:(num_variability*num*2 + 1) , width = colwidth) %>%
-      add_header_above(c("Equicorrelated" = num_variability*num + 1,
-                         "Block diagonal" = num_variability*num + 1), 
+      column_spec(1:(num_variance*num*2 + 1) , width = colwidth) %>%
+      add_header_above(c("Equicorrelated" = num_variance*num + 1,
+                         "Block diagonal" = num_variance*num + 1), 
                        escape = FALSE) %>%
       pack_rows("K = 10", 1, 4, latex_gap_space = "0.5em") %>%
       pack_rows("K = 20", 5, 8, latex_gap_space = "0.5em") %>%
@@ -167,12 +167,12 @@ create_side_by_side_table_within_main <- function(eq_data,
 #   
 #   num <- length(c(ord,unord))
 #   
-#   # sd <- c("Low $\\\\boldsymbol{\\\\theta}$ Variability" = 3, 
-#   #         "Moderate $\\\\boldsymbol{\\\\theta}$ Variability" = 3, 
-#   #         "High $\\\\boldsymbol{\\\\theta}$ Variability" = 3,
-#   #         "Low $\\\\boldsymbol{\\\\theta}$ Variability" = 2, 
-#   #         "Moderate $\\\\boldsymbol{\\\\theta}$ Variability" = 2, 
-#   #         "High $\\\\boldsymbol{\\\\theta}$ Variability" = 2)
+#   # sd <- c("Low $\\\\boldsymbol{\\\\theta}$ Variance" = 3, 
+#   #         "Moderate $\\\\boldsymbol{\\\\theta}$ Variance" = 3, 
+#   #         "High $\\\\boldsymbol{\\\\theta}$ Variance" = 3,
+#   #         "Low $\\\\boldsymbol{\\\\theta}$ Variance" = 2, 
+#   #         "Moderate $\\\\boldsymbol{\\\\theta}$ Variance" = 2, 
+#   #         "High $\\\\boldsymbol{\\\\theta}$ Variance" = 2)
 #   
 #   sd <- c("Low" = 3, 
 #           "Moderate" = 3, 
@@ -208,16 +208,16 @@ create_side_by_side_table_within_main <- function(eq_data,
 # #     vector_1 <- c("K", "r")
 # #     striped <- rep(c(0, 6, 12), each = 3) + 1:3
 # #     headers <- c(" " = 2, 
-# #                  "Low $\\\\boldsymbol{\\\\theta}$ Variability" = num, 
-# #                  "Moderate $\\\\boldsymbol{\\\\theta}$ Variability" = num, 
-# #                  "High $\\\\boldsymbol{\\\\theta}$ Variability" = num)
+# #                  "Low $\\\\boldsymbol{\\\\theta}$ Variance" = num, 
+# #                  "Moderate $\\\\boldsymbol{\\\\theta}$ Variance" = num, 
+# #                  "High $\\\\boldsymbol{\\\\theta}$ Variance" = num)
 # #   } else {
 # #     vector_1 <- c("K")
 # #     striped <- -1 #rep(c(0, 10), each = 5) + 1:5
 # #     headers <- c(" "=1,
-# #                  "Low $\\\\boldsymbol{\\\\theta}$ Variability" = num, 
-# #                  "Moderate $\\\\boldsymbol{\\\\theta}$ Variability" = num,
-# #                  "High $\\\\boldsymbol{\\\\theta}$ Variability" = num)
+# #                  "Low $\\\\boldsymbol{\\\\theta}$ Variance" = num, 
+# #                  "Moderate $\\\\boldsymbol{\\\\theta}$ Variance" = num,
+# #                  "High $\\\\boldsymbol{\\\\theta}$ Variance" = num)
 # #   }
 # 
 #   
@@ -284,13 +284,13 @@ create_table_for_tightness_measure <- function(summary, metric_type,
   vector_1 <- c("K", "r")
   striped <- rep(c(0, 8, 16), each = 4) + 1:4  #rep(c(0, 6, 12), each = 3) + 1:3
   # headers <- c(" " = 2,
-  #              "Low $\\\\boldsymbol{\\\\theta}$ Variability" = num,
-  #              "Moderate $\\\\boldsymbol{\\\\theta}$ Variability" = num,
-  #              "High $\\\\boldsymbol{\\\\theta}$ Variability" = num,
+  #              "Low $\\\\boldsymbol{\\\\theta}$ Variance" = num,
+  #              "Moderate $\\\\boldsymbol{\\\\theta}$ Variance" = num,
+  #              "High $\\\\boldsymbol{\\\\theta}$ Variance" = num,
   #              " " = 1,
-  #              "Low $\\\\boldsymbol{\\\\theta}$ Variability" = num,
-  #              "Moderate $\\\\boldsymbol{\\\\theta}$ Variability" = num,
-  #              "High $\\\\boldsymbol{\\\\theta}$ Variability" = num)
+  #              "Low $\\\\boldsymbol{\\\\theta}$ Variance" = num,
+  #              "Moderate $\\\\boldsymbol{\\\\theta}$ Variance" = num,
+  #              "High $\\\\boldsymbol{\\\\theta}$ Variance" = num)
   headers <- c(" " = 2,
                "Low" = num,
                "Moderate" = num,
