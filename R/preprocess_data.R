@@ -424,3 +424,19 @@ prepare_plotting_data_for_traveltime <- function(ci_results, df){
   
   return(dat_to_plot)
 }
+
+
+prepare_block_corrs <- function(df){
+  b2 <- df %>% filter(blocks == 2) %>%
+    group_modify(~ add_row(.x, .after = 2)) %>% 
+    group_modify(~ add_row(.x, .after = 5)) %>% 
+    mutate(label = ifelse(duplicated(label), "", label))%>% 
+    mutate(blocks = ifelse(duplicated(blocks), "", blocks)) %>% select(-blocks)
+
+  b3 <- df %>% filter(blocks == 3) %>% 
+    mutate(label = ifelse(duplicated(label), "", label))%>% 
+    mutate(blocks = ifelse(duplicated(blocks), "", blocks)) %>% select(-blocks)
+
+  return(cbind(b2, b3))
+}
+
