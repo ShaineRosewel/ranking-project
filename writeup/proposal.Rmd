@@ -155,22 +155,27 @@ knitr::opts_chunk$set(
 
 ```
 
-\newpage
+\clearpage
 \vspace*{1cm}
-
-# Bibliography
+\phantomsection
+# Bibliography {-}
 
 \vspace*{0.8cm}
 
 ::: {#refs}
 :::
 
-\newpage
+\clearpage
 \vspace*{1cm}
 
-# Appendix
+\phantomsection 
+\appendix
 
-\vspace*{0.8cm}
+
+# Appendix {-}
+
+\setcounter{table}{0}
+\setcounter{figure}{0}
 \renewcommand{\thetable}{A.\arabic{table}}
 \renewcommand{\thefigure}{A.\arabic{figure}}
 
