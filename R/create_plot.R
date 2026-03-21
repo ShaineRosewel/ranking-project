@@ -2,6 +2,24 @@ library(ggplot2)
 library(dplyr)
 library(tidyr)
 
+COMMON_THEME <- theme(axis.line = element_line(colour = "gray"),
+                          panel.grid.minor = element_blank(),
+                          panel.grid.major.x = element_blank(),
+                          text = element_text(family = "serif"),
+                          legend.position = "right",
+                          #legend.box = "vertical",
+                          #legend.position = c(1, 1), # Coordinates (bottom-left is 0,0; top-right is 1,1)
+                          #legend.justification = c(1, 1),
+                          legend.spacing.y = unit(0.05, "cm"), 
+                          legend.box.just = "left",
+                          # legend.margin = margin(t=.15, b=0.15,l=0.5, r=0.5, "cm"),
+                          legend.margin = margin(t = 0, r = 0, b = 0, l = 0, unit = "mm"),
+                          legend.key.width = unit(0.5, "cm"),  # Reduce key width
+                          legend.spacing.x = unit(0.1, "cm"),
+                          legend.background = element_blank()#,
+                          # legend.box.background = element_rect(colour = "black"
+)
+
 create_boxplot_for_true_theta <- function(dataset){
   return(
     dataset %>%
@@ -24,7 +42,6 @@ create_plot_for_app_data <- function(dat_to_plot, elements, order_identifier, re
                                      ylab = 'Sample rank',
                                      shape_legend_title = 'Alliance',
                                      shape_labels = "",
-                                     # legend_title = 'Alliance',
                                      shape_map = c("DuterTen" = 1, "Alyansa" = 2, 
                                                    "KiBam" = 3, "Makabayan" = 4,
                                                    "DuterTen-Alyansa" = 5)){
@@ -64,24 +81,7 @@ create_plot_for_app_data <- function(dat_to_plot, elements, order_identifier, re
     #       panel.grid.major.x = element_blank(),
     #       text = element_text(family = "serif"),
     #       legend.position = "top") +
-    theme(axis.line = element_line(colour = "gray"),
-          panel.grid.minor = element_blank(),
-          panel.grid.major.x = element_blank(),
-          text = element_text(family = "serif"),
-          legend.position = "right",
-          legend.title = element_text(lineheight = 0.8),
-          #legend.box = "vertical",
-          #legend.position = c(1, 1), # Coordinates (bottom-left is 0,0; top-right is 1,1)
-          #legend.justification = c(1, 1),
-          legend.spacing.y = unit(0.05, "cm"), 
-          legend.box.just = "left",
-          # legend.margin = margin(t=.15, b=0.15,l=0.5, r=0.5, "cm"),
-          legend.margin = margin(t = 0, r = 0, b = 0, l = 0, unit = "mm"),
-          legend.key.width = unit(0.5, "cm"),  # Reduce key width
-          legend.spacing.x = unit(0.1, "cm"),
-          legend.background = element_blank()#,
-          # legend.box.background = element_rect(colour = "black"
-    ) +
+    COMMON_THEME +
     facet_wrap(~Approach, ncol=length(unique(data_to_plot$Approach)), 
                labeller = as_labeller(cap_first)) + coord_flip()
   return(p)
@@ -147,24 +147,8 @@ create_plot_for_t <- function(prepared_data, unordered = TRUE){
       name = "r",
       # labels = c(""), # Assign custom labels
       values = c(15, 16, 17, 15, 16, 17, 18)
-    ) +
-    theme(axis.line = element_line(colour = "gray"),
-          panel.grid.minor = element_blank(),
-          panel.grid.major.x = element_blank(),
-          text = element_text(family = "serif"),
-          legend.position = "right",
-          #legend.box = "vertical",
-          #legend.position = c(1, 1), # Coordinates (bottom-left is 0,0; top-right is 1,1)
-          #legend.justification = c(1, 1),
-          legend.spacing.y = unit(0.05, "cm"), 
-          legend.box.just = "left",
-          # legend.margin = margin(t=.15, b=0.15,l=0.5, r=0.5, "cm"),
-          legend.margin = margin(t = 0, r = 0, b = 0, l = 0, unit = "mm"),
-          legend.key.width = unit(0.5, "cm"),  # Reduce key width
-          legend.spacing.x = unit(0.1, "cm"),
-          legend.background = element_blank()#,
-         # legend.box.background = element_rect(colour = "black"
-                                               )
+    ) + 
+    COMMON_THEME
   
   if (unordered) {
     p <-p + geom_line(color = 'gray33', lwd = 0.1)
@@ -172,36 +156,3 @@ create_plot_for_t <- function(prepared_data, unordered = TRUE){
   return(p)
 }
 
-
-
-
-# create_plot_for_pulse <- function(dat_to_plot){
-#   
-#   data_to_plot <- dat_to_plot %>% filter(Approach != 'pulse') #%>% filter(Approach != 'independent')
-#   data_to_plot$Approach <- factor(data_to_plot$Approach, levels = c('independent', 'bonferroni', 'nonrank'))
-#   
-#   cap_first <- function(x) {
-#     paste0(toupper(substring(x, 1, 1)), substring(x, 2))
-#   }
-#   
-#   
-#   p <- ggplot(data = data_to_plot, aes(x = reorder(Candidate, -k),
-#                                        y = as.numeric(string_ranks))) + 
-#     geom_point(data = subset(data_to_plot, highlight0 == "yes"), shape = 16, size = 1, color = "black") +
-#     geom_point(data = subset(data_to_plot, highlight0 == "no"), shape = 4, size = 0.25, aes(color = highlight1)) + 
-#     scale_color_manual(values = c("DuterTen" = "limegreen", "Alyansa" = "red", "KiBam" = "gold", "Makabayan" = "blue","DuterTen-Alyansa" = "black")) +
-#     scale_y_continuous(breaks = seq(1, max(prepared_data$k), by = 4)) +
-#     labs(title='95% Joint Confidence Region for Candidates with at least 1% Votes') + xlab('Candidate') + ylab('Sample rank') +
-#     theme_bw() +
-#     theme(axis.text.x = element_text(hjust = 1, size = 5),
-#           axis.text.y = element_text(size=5)
-#     ) +
-#     guides(colour="none") +
-#     theme(axis.line = element_line(colour = "gray"),
-#           panel.grid.minor = element_blank(),
-#           panel.grid.major.x = element_blank(),
-#           text = element_text(family = "serif")) +
-#     facet_wrap(~Approach, ncol=length(unique(data_to_plot$Approach)), 
-#                labeller = as_labeller(cap_first)) + coord_flip()
-#   return(p)
-# }
