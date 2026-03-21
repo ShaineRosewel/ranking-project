@@ -9,7 +9,9 @@ indent: true
 header-includes:
 - \PassOptionsToPackage{colorlinks=true,linkcolor=blue,citecolor=black,urlcolor=black}{hyperref}
 - \usepackage{amsmath}
-- \numberwithin{equation}{section}
+- \numberwithin{equation}{subsection}
+- \numberwithin{figure}{subsection}
+- \numberwithin{table}{subsection}
 - \usepackage{setspace}\onehalfspacing
 - \usepackage{pdflscape}
 - \newcommand{\blandscape}{\begin{landscape}}
@@ -156,16 +158,21 @@ knitr::opts_chunk$set(
 \newpage
 \vspace*{1cm}
 
-# Bibliography {.unnumbered .unnumbered .unlisted}
+# Bibliography
 
 \vspace*{0.8cm}
 
 ::: {#refs}
 :::
 
-# Appendices
+\newpage
+\vspace*{1cm}
+
+# Appendix
 
 \vspace*{0.8cm}
+\renewcommand{\thetable}{A.\arabic{table}}
+\renewcommand{\thefigure}{A.\arabic{figure}}
 
 ```{r, child = "child/appendix.Rmd"}
 ```
