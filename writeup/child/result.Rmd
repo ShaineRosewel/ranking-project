@@ -49,7 +49,7 @@ Results for $T_1$ and $T_2$ tightness measure, shown in rows 1 and 2 of Figure \
 
 Similarly, $T_3$ in row 3 of Figure \ref{fig:nonrank-plot} produces higher values at low $r$ and increases with higher $r$, making the proposed algorithm a better option in the presence of correlation. 
 
-```{r nonrank-plot, fig.cap = "Simulation Result for Tightness Measure for Unordered Parameters", fig.height=7}
+```{r nonrank-plot, fig.cap = "Simulation Result for Tightness Measure of Unordered Parameters", fig.height=7}
 # prepare_t_facet_plot_data(
 #     eq_data = eq_res,
 #     bl_data = bl_res,
@@ -200,7 +200,7 @@ create_side_by_side_table_within_main(eq_data = eq_coverage_ordered,
 
 
 
-```{r rank-plot, fig.cap = "Simulation Result for Tightness Measure for Ordered Parameters", fig.height=7}
+```{r rank-plot, fig.cap = "Simulation Result for Tightness Measure of Ordered Parameters", fig.height=7}
 # prepare_t_facet_plot_data(
 #     eq_data = eq_res,
 #     bl_data = bl_res,
