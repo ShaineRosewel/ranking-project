@@ -108,6 +108,9 @@ create_side_by_side_table_within_main <- function(eq_data,
       r == "unbalanced-block-3" ~ "UL3",
       r == "unbalanced-block-high-3" ~ "UH3",
       TRUE ~ r)) %>% 
+    mutate(r = factor(r,
+                      levels = c("B2", "U2", "UL3", "UH3"),
+                      ordered = TRUE)) %>%
     arrange(K, r)
   
   summary <- cbind(padded_eq %>% select(-c(K, `Correlation structure`)), 
@@ -129,7 +132,7 @@ create_side_by_side_table_within_main <- function(eq_data,
       kable("latex", 
             booktabs = TRUE,
             escape = FALSE,
-            align = rep("c", (num_variance*num*2 + 1),collapse=""), 
+            align = paste(rep(c("l", rep("c", num_variance*num,collapse="")), num), collapse = ''), 
             linesep = "",
             col.names = rep(c("r", rep(selected_columns, num_variance)),2), 
             caption = paste("Simulation Results for", metric, "of", parameter, "Parameters"),
@@ -144,11 +147,11 @@ create_side_by_side_table_within_main <- function(eq_data,
       pack_rows("K = 40", 13, 16, latex_gap_space = "0.5em") %>%
       pack_rows("K = 50", 17, 20,latex_gap_space = "0.5em") %>%
       kable_styling(latex_options = c("scale_down","HOLD_position"),
-                    font_size = 11.5)%>%
-      footnote(general_title = "\\\\textit{Note: }", 
-               general = "B2: balanced-block-2; U2: unbalanced-block-2; U3: unbalanced-block-3; UH3: unbalanced-block-high-3",
-               threeparttable = TRUE,
-               escape = FALSE) 
+                    font_size = FONT_SIZE) #%>%
+      # footnote(general_title = "\\\\textit{Note: }", 
+      #          general = "B2: balanced-block-2; U2: unbalanced-block-2; U3: unbalanced-block-3; UH3: unbalanced-block-high-3",
+      #          threeparttable = TRUE,
+      #          escape = FALSE) 
   )
 }
 
@@ -308,4 +311,24 @@ create_table_for_coverage <- function(summary, footnote, equicorrelation = TRUE,
              general = paste0("\\\\footnotesize{",footnote,"}"),
              escape =FALSE)
   )
+}
+
+
+create_block_corr_table <- function(df){
+  df %>% kable("latex", 
+        booktabs = TRUE,
+        escape = FALSE,
+        linesep = c("", "", "\\addlinespace[0.6em]", "", "", "\\addlinespace[0.6em]"),
+        align = "lclllcll",
+        caption = paste("Configuration for $\\mathbf{R}_{block}$"),
+        col.names = rep(c("Label", "Block No.", "Size", "$\\rho$"),2),
+        na.character = "")%>%
+    add_header_above(c("2 Blocks" = 4,"3 Blocks" = 4))  %>%
+    kable_styling(latex_options = c("striped",
+                                    "repeat_header",
+                                    "HOLD_position"),
+                  stripe_color = "gray!15",
+                  stripe_index = 1:3,
+                  font_size=FONT_SIZE
+                  ) 
 }
