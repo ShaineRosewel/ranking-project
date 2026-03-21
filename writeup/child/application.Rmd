@@ -1,66 +1,3 @@
----
-number_sections: true
-fig_caption: yes
-output:
-  bookdown::pdf_document2:
-    keep_tex: true
-    toc: false
-indent: true
-header-includes:
-- \PassOptionsToPackage{colorlinks=true,linkcolor=blue,citecolor=black,urlcolor=black}{hyperref}
-- \usepackage{amsmath}
-- \numberwithin{equation}{section}
-- \usepackage{setspace}\onehalfspacing
-- \usepackage{pdflscape}
-- \newcommand{\blandscape}{\begin{landscape}}
-- \newcommand{\elandscape}{\end{landscape}}
-- \usepackage{indentfirst}
-- \usepackage{xparse}
-- \usepackage{tcolorbox}
-- \usepackage{algorithm}
-- \usepackage{algpseudocode}
-- \usepackage{float}
-- \floatplacement{figure}{H}
-- \usepackage{placeins}
-- \renewcommand{\ttfamily}{\rmfamily}
-- \usepackage{etoolbox}
-- \usepackage{multirow}
-- \usepackage{makecell}
-- \usepackage{booktabs}
-- \AtBeginEnvironment{algorithmic}{\setstretch{1.5}} 
-- \renewcommand{\arraystretch}{0.75}
-- \renewcommand{\multirowsetup}{\raggedright}
-# --- Thesis font definition (change here once, affects everything) ---
-- \usepackage{anyfontsize}
-- \newcommand{\thesisfont}{\fontsize{20pt}{19pt}\selectfont}
-- \thesisfont
-- \usepackage{xcolor}
-- \usepackage[colorlinks=true,linkcolor=blue,urlcolor=black,citecolor=black]{hyperref}
-- \AtBeginDocument{\hypersetup{colorlinks=true,linkcolor=blue,citecolor=black,urlcolor=black}}
-- \usepackage{titlesec}
-- \titleformat{\section}{\fontsize{20pt}{22pt}\bfseries}{\thesection}{1em}{}
-- \titleformat{\subsection}{\fontsize{18pt}{20pt}\bfseries}{\thesubsection}{1em}{}
-- \titleformat{\subsubsection}{\fontsize{16pt}{19pt}\bfseries}{\thesubsubsection}{1em}{}
-- \usepackage{caption}
-- \captionsetup[figure]{font={large,bf}}
-- \captionsetup[table]{font={large,bf}}
-- \newcommand{\algfont}{\fontsize{15pt}{18pt}\selectfont} # slightly smaller than thesis font
-- \DeclareCaptionFont{thesisalg}{\algfont\bfseries} # caption font
-- \captionsetup[algorithm]{font=thesisalg}
-- \AtBeginEnvironment{algorithm}{\algfont} # algorithm body
-- \AtBeginEnvironment{algorithmic}{\algfont}   
-
-papersize: a4
----
-
-```{r echo = FALSE}
-knitr::opts_chunk$set(
-  echo    = FALSE,
-  message = FALSE,
-  warning = FALSE
-)
-```
-
 ## Pulse Asia Results
 
 For the Pulse Asia results, correlations are assumed to be induced by alliances or political slates formed for the purpose of elections. Slates campaigned by the incumbent president (Alyansa) and his former allies, the vice-president and former president (DuterTen), are considered. Imee Marcos and Villar are both endorsed by these rival factions and are given a separate block. Makabayan is also given its own block as it has a relatively large set of 11 candidates. Another popular alliance that emerged is that of Pangilinan and Aquino (KiBam). The remaining candidates are collapsed into a single block.
@@ -156,27 +93,6 @@ create_basic_results_table(to_table, "Joint Confidence Region Tightness Measures
 
 
 
-
-
-```{r}
-# ci_results <- get_ci_for_app_data(
-#   theta_hat = (dataset_all$`Voting For`)/100,
-#   true_sds = dataset_all$se,
-#   K = dim(dataset_all)[1],
-#   alpha = 0.05,
-#   B <- 500,
-#   corr_matrix=corr_matrix 
-#   )
-# 
-# get_tmeasures_for_app_data(ci_results)
-```
-
-
-```{r}
-# create_basic_results_table(get_tmeasures_for_app_data(ci_results),
-#                            "Joint Confidence Region Tightness Measures: r = 0.9")
-```
-
 Table \@ref(tab:pulse-table) shows that higher within-block correlation leads to better T1, T2, and T3. This means that overall, the intervals in the joint confidence region are generally narrower. Figure \@ref(fig:pulse-result) assumes high correlations within blocks of alliances and political slates. The joint confidence regions for Independent, Bonferroni, and Nonrank are shown respectively. For this use case, lower rank corresponds to highly preferred candidates.
 
 ```{r pulse-result,fig.cap = "95% Joint Confidence Region for Candidates with at least 1% Votes", fig.height = 5.75}
@@ -192,11 +108,6 @@ create_plot_for_app_data(prepared_data, Candidate, k, reverse=TRUE,
                         shape_map = c("DuterTen" = 1, "Alyansa" = 2, "KiBam" = 3, "Makabayan" = 4,"DuterTen-Alyansa" = 5, "None" = 6))
 ```
 
-
-
-```{r}
-
-```
 
 ## 2011 Mean Travel Time to Work in the US
 
@@ -231,13 +142,6 @@ dataset_all <- dataset_all %>% mutate(
                                 ifelse(density > 50 & density <= 100, 3,
                                        ifelse(density > 100 & density <= 200, 4, 5))))
 ) %>% arrange(desc(theta_k)) %>% arrange(desc(density_group))
-
-# attempt2 <- dataset_all #%>% arrange(desc(theta_k)) #%>% head(30)# 
-# 
-# 
-# #attempt2 %>% group_by(density_group) %>% count()
-# attempt2
-# dataset_all
 ```
 
 
@@ -278,19 +182,7 @@ create_basic_results_table(to_table, "Joint Confidence Region Tightness Measures
 
 
 ```{r}
-
-# corr_matrix <-block_corr(block_sizes=c(15, 11, 11, 7, 7), rho_within=c(0.9, 0.9, 0.9, 0.9, 0.9), rho_between=0.0)
-
 corr_matrix <-generate_corr_mat(0.9, "traveltime")
-
-# dataset_all <- cand %>%
-#   mutate(Voting_for_dec = `Voting For`/100) %>%
-#   #filter(Voting_for_dec >= 0.01) %>%
-#   mutate(se = sqrt((Voting_for_dec*(1-Voting_for_dec))/1200) ) %>%
-#   select(-Voting_for_dec) %>% 
-#   arrange(desc(`Voting For`)) %>%  
-#   arrange(desc(DuterTen), desc(Alyansa),desc(KiBam), desc(Makabayan))  %>%
-#   rename(`Rank UB_pulse` = `Rank UB`, `Rank LB_pulse` = `Rank LB`)
 
 ci_results <- get_ci_for_app_data(
   theta_hat = dataset_all$theta_k,
@@ -301,91 +193,6 @@ ci_results <- get_ci_for_app_data(
   corr_matrix=corr_matrix 
   )
 ```
-
-
-```{r}
-# create_basic_results_table(get_tmeasures_for_app_data(ci_results),
-#                            "Joint Confidence Region Tightness Measures: r = 0.9")
-```
-
-
-
-
-
-```{r}
-# corr_matrix <-block_corr(block_sizes=c(15, 11, 11, 7, 7), rho_within=c(0.9, 0.9, 0.9, 0.9, 0.9), rho_between=0.0)
-# #corr_matrix <-block_corr(block_sizes=c(3,5,9,13), rho_within=c(0.9, 0.9,0.9, 0.9), rho_between=0.0)
-# 
-# set.seed(123974)
-# theta_hat <- attempt2$theta_k
-# true_sds <- attempt2$S
-# K <- dim(attempt2)[1]
-# 
-# variance_vector <- true_sds^2
-# delta <- diag(variance_vector)
-# varcovar_matrix <- delta^(1/2) %*% corr_matrix %*% delta^(1/2)
-# B <- 500
-# 
-# alpha <- 0.05
-# S <- sqrt(diag(varcovar_matrix))
-# 
-#     
-# ci_methods <- list(
-#   nonrankbased = function() get_ci_nonrankbased(B = B,
-#                                                 theta_hat = theta_hat,
-#                                                 alpha = alpha,
-#                                                 varcovar_matrix = varcovar_matrix),
-#   # rankbased_asymptotic = function() get_ci_rankbased_asymptotic(B = B,
-#   #                                                               theta_hat = theta_hat,
-#   #                                                               varcovar_matrix = varcovar_matrix,
-#   #                                                               alpha = alpha),
-#   # rankbased_level2bs = function() get_ci_rankbased_level2bs(B = B,
-#   #                                                           C = 300,
-#   #                                                           theta_hat = theta_hat,
-#   #                                                           varcovar_matrix = varcovar_matrix,
-#   #                                                           alpha = alpha),
-#   independent  = function() get_ci_independent(theta_hat = theta_hat, S = S, alpha = alpha),
-#   bonferroni   = function() get_ci_bonferroni(theta_hat = theta_hat, S = S, alpha = alpha)
-# )
-# ci_results <- lapply(ci_methods, function(f) f())
-# 
-# dataset_all <- attempt2
-# 
-# dataset_all$`Rank LB_nonrank` <- sapply(process_ci_result(result = ci_results$nonrankbased, K=K), min)
-# dataset_all$`Rank UB_nonrank` <- sapply(process_ci_result(result = ci_results$nonrankbased, K=K), max)
-# 
-# dataset_all$`Rank LB_independent` <- sapply(process_ci_result(result = ci_results$independent, K=K), min)
-# dataset_all$`Rank UB_independent` <- sapply(process_ci_result(result = ci_results$independent, K=K), max)
-# 
-# dataset_all$`Rank LB_bonferroni` <- sapply(process_ci_result(result = ci_results$bonferroni, K=K), min)
-# dataset_all$`Rank UB_bonferroni` <- sapply(process_ci_result(result = ci_results$bonferroni, K=K), max)
-# 
-# #dataset_all <- dataset_all# %>% arrange(desc(`Voting For`))
-# 
-# # df <- readRDS("../data/mean_travel_time_ranking_2011.rds")
-# dataset_all$k <- seq(1,K, 1)
-# dataset_all$sample_rank <- seq(1,K, 1)
-# dataset_all$order_index <- seq(1,K, 1)
-# 
-# dataset_all <- dataset_all %>% pivot_longer(
-#     cols = starts_with("Rank"), # Selects columns that start with "Test"
-#     names_to = "type",   # Name for the new column storing original column names
-#     values_to = "Ranks"        # Name for the new column storing the values
-#   )%>%
-#   separate(
-#     col = type,  # The column to separate
-#     into = c("Rank", "Approach"), # Names for the new columns
-#     sep = "_",           # The delimiter is an underscore
-#     extra = "merge"      # Merges any extra parts into the last column ("rest_of_string")
-#   ) %>% pivot_wider(
-#     names_from = Rank,
-#     values_from = Ranks
-#   )
-# 
-# dataset_all
-```
-
-
 
 
 ```{r}
@@ -401,73 +208,3 @@ create_plot_for_app_data(prepared_data %>% filter(Approach != 'independent'), is
                          shape_labels = c("0-20", "20-50", "50-100", "100-200","200+"),
                          shape_map = c("1" = 1, "2" = 2, "3" = 3, "4" = 4,"5" = 5))
 ```
-
-
-
-
-
-
-```{r}
-# prepared_data <- prepare_plotting_data_for_traveltime(ci_results,dataset_all)#dat_to_plot %>% filter(Approach != 'pulse') #%>% filter(Approach != 'independent')
-# data_to_plot$Approach <- factor(data_to_plot$Approach, levels = c('independent', 'bonferroni', 'nonrank'))
-# 
-# cap_first <- function(x) {
-#   paste0(toupper(substring(x, 1, 1)), substring(x, 2))
-# }
-# 
-# 
-# p <- ggplot(data = data_to_plot, aes(x = reorder(iso, theta_k),
-#                                      y = as.numeric(string_ranks))) + 
-#   geom_point(data = subset(data_to_plot, highlight0 == "yes"), shape = 16, size = 1, color = "black") +
-#   geom_point(data = subset(data_to_plot, highlight0 == "no"), shape = 4, size = 0.25, aes(color = highlight1)) + 
-#   scale_color_manual(values = c("1" = "limegreen", "2" = "red", "3" = "gold", "4" = "blue","5" = "violet"))+
-#   scale_y_continuous(breaks = seq(1, max(prepared_data$k), by = 4)) +
-#   labs(title='95% Joint Confidence Region for Candidates with at least 1% Votes') + xlab('Candidate') + ylab('Sample rank') +
-#   theme_bw() +
-#   theme(axis.text.x = element_text(hjust = 1, size = 5),
-#         axis.text.y = element_text(size=5)
-#   ) +
-#   guides(colour="none") +
-#   theme(axis.line = element_line(colour = "gray"),
-#         panel.grid.minor = element_blank(),
-#         panel.grid.major.x = element_blank(),
-#         text = element_text(family = "serif")) +
-#   facet_wrap(~Approach, ncol=length(unique(data_to_plot$Approach)), 
-#              labeller = as_labeller(cap_first)) + coord_flip()
-# 
-# p
-```
-
-
-
-
-
-```{r}
-# pd <- position_dodge(width = 0.8) 
-# 
-# 
-# dat_to_plot <- dat_to_plot %>% filter(Approach %in% c('bonferroni', 'nonrank'))
-# p <- ggplot(data = dat_to_plot, aes(x = reorder(iso, theta_k),
-#                                y = as.numeric(string_ranks))) + 
-#   geom_point(data = subset(dat_to_plot, highlight0 == "yes"), shape = 16, size = 1, color = "black", position = pd) +
-#   geom_point(data = subset(dat_to_plot, highlight0 == "no"), shape = 4, size = 0.25, position = pd) +#, aes(color = highlight1)) + 
-#   #scale_color_manual(values = c("1" = "limegreen", "2" = "red", "3" = "gold", "4" = "blue","5" = "violet"))+
-#   scale_y_continuous(breaks = seq(1, K, by = 4)) +
-#   labs(title='Visualization of the 95% joint confidence') + xlab('theta_k') + ylab('Sample rank') +
-#   theme_bw() +
-#   theme(axis.text.x = element_text(angle = 90, hjust = 1, size = 6),
-#         axis.text.y = element_text(size=6)
-#         ) +
-#  # guides(colour="none") +
-#   theme(axis.line = element_line(colour = "gray"),
-#     panel.grid.minor = element_blank(),
-#     panel.grid.major.x = element_blank(),
-#     text = element_text(family = "serif")) +
-#   facet_wrap(~Approach, ncol=2) #+ coord_flip()
-# 
-# p
-```
-
-
-
-
