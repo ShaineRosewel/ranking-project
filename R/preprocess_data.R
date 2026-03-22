@@ -1,3 +1,10 @@
+source("/home/realiseshewon/PDev/kde-ranking/R/CONSTANTS.R")
+
+UNORD <- c(IND$RAWCHAR, BONF$RAWCHAR, NONRANK$RAWCHAR)
+ORD <- c(ASYMP$RAWCHAR, BOOT$RAWCHAR)
+
+
+
 library(dplyr)
 
 combine_summaries <- function(
@@ -10,7 +17,8 @@ combine_summaries <- function(
                paste0(directory_prefix, K, ".csv"))))
   } else {
     combined <- bind_rows(
-      lapply(list("2_balanced", "2_unbalanced", "3_unbalanced-low", "3_unbalanced-high"),
+      lapply(list("2_balanced", "2_unbalanced", 
+                  "3_unbalanced-low", "3_unbalanced-high"),
              function(K) {
                dat <- read.csv(paste0(directory_prefix, K, ".csv"))
                dat['blocks'] =  substr(K, start = 1, stop = 1)
@@ -29,25 +37,23 @@ preprocess_coverage <- function(dataset,
                                 unordered = TRUE){
   
   if (unordered) {
-    deselected_columns <- c('rankbased_asymptotic', 'rankbased_level2bs', 'metric', 'sd')
-    selected_columns <- c('independent','bonferroni', 'nonrankbased')
+    deselected_columns <- ORD
+    selected_columns <- UNORD
   } else {
-    deselected_columns <- c('independent','bonferroni', 'nonrankbased', 'metric', 'sd')
-    selected_columns <- c('rankbased_asymptotic', 'rankbased_level2bs')
+    deselected_columns <- UNORD
+    selected_columns <- ORD
   }
 
+  deselected_columns <- c(deselected_columns, c('metric', 'sd'))
   partial <- dataset %>%
-    filter(sd == sd_value, metric == "coverage") %>% 
+    filter(sd == sd_value, metric == COVERAGE$CHAR) %>% 
     select(!all_of(deselected_columns)) 
   if (equicorrelation) {
     final <- partial %>%
-      select(c(K, r, selected_columns)) %>% 
-      mutate(`Correlation structure` = "Equicorrelated")
+      select(c(K, r, selected_columns),`Correlation structure`)
   } else {
     final <- partial %>%
-      mutate(r = paste(r, blocks, sep = "-")) %>%
-      select(c(K, r, selected_columns)) %>% 
-      mutate(`Correlation structure` = "Block Correlation")
+      select(c(K, r, selected_columns), `Correlation structure`)
   }
   
   return(
@@ -62,54 +68,62 @@ prepare_t_facet_plot_data <- function(
     unordered = TRUE){
   
   if (unordered) {
-    cols_drop <- c("rankbased_asymptotic", "rankbased_level2bs")
-    cols_select <- c("nonrankbased", "independent", "bonferroni")
+    cols_drop <- ORD
+    cols_select <- UNORD
   } else {
-    cols_drop <- c("nonrankbased", "independent", "bonferroni")
-    cols_select <- c("rankbased_asymptotic", "rankbased_level2bs")
+    cols_drop <- UNORD
+    cols_select <- ORD
   }
   
-  t_bl <- bl_res %>% filter(metric != "coverage") %>% select(-cols_drop) %>%
-    mutate(r = paste(r, blocks, sep = '-')) %>%
-    mutate(r = case_when(
-      r == "balanced-block-2" ~ "B2",
-      r == "unbalanced-block-2" ~ "U2",
-      r == "unbalanced-block-3" ~ "UL3",
-      r == "unbalanced-block-high-3" ~ "UH3",
-      TRUE ~ r
-    ))%>%
-    mutate(Variance =ifelse(sd==2.0, "low", ifelse(sd==3.6, "med", "high"))) %>% 
+  t_bl <- bl_res %>% 
+    filter(metric != COVERAGE$CHAR) %>% 
+    select(-cols_drop) %>%
     select(-c(blocks, sd)) %>% 
-    mutate(`Correlation structure` = "Block diagonal") %>% 
     arrange(K, r) %>% 
-    pivot_longer(cols =cols_select , names_to = "Approach", values_to = "Values") %>% 
+    pivot_longer(cols =cols_select , 
+                 names_to = "Approach", 
+                 values_to = "Values") %>% 
     rename(Metric = metric) %>%
     select(c(K,r,Approach,Variance,Values,Metric,`Correlation structure`))
   
   equicorr = TRUE
-  t1 <- preprocess_tightness_measure_OG(eq_res, "t1", equicorr,unordered = unordered) %>% 
-    pivot_longer(cols = contains("-"),names_to = "Approach", values_to = "Values") %>% 
+  t1 <- preprocess_tightness_measure_OG(eq_res, 
+                                        T1$CHAR, 
+                                        equicorr,
+                                        unordered = unordered) %>% 
+    pivot_longer(cols = contains("-"),
+                 names_to = "Approach", 
+                 values_to = "Values") %>% 
     separate(Approach, into = c('Approach','Variance'), sep = "-")
-  t1$Metric <- "t1"
+  t1$Metric <- T1$CHAR
   
-  t2 <- preprocess_tightness_measure_OG(eq_res, "t2", equicorr,unordered = unordered) %>% 
-    pivot_longer(cols = contains("-"),names_to = "Approach", values_to = "Values") %>% 
+  t2 <- preprocess_tightness_measure_OG(eq_res, 
+                                        T2$CHAR,
+                                        equicorr,
+                                        unordered = unordered) %>% 
+    pivot_longer(cols = contains("-"),
+                 names_to = "Approach", 
+                 values_to = "Values") %>% 
     separate(Approach, into = c('Approach','Variance'), sep = "-")
-  t2$Metric <- "t2"
+  t2$Metric <- T2$CHAR
   
-  t3 <- preprocess_tightness_measure_OG(eq_res, "t3", equicorr,unordered = unordered) %>% 
-    pivot_longer(cols = contains("-"),names_to = "Approach", values_to = "Values") %>% 
+  t3 <- preprocess_tightness_measure_OG(eq_res, 
+                                        T3$CHAR, 
+                                        equicorr,
+                                        unordered = unordered) %>% 
+    pivot_longer(cols = contains("-"),
+                 names_to = "Approach", 
+                 values_to = "Values") %>% 
     separate(Approach, into = c('Approach','Variance'), sep = "-")
-  t3$Metric <- "t3"
+  t3$Metric <- T3$CHAR
   
-  t_eq <- rbind(t1, t2, t3) %>% 
-    mutate(`Correlation structure` = "Equicorrelated")
-  # print(preprocess_tightness_measure_OG(eq_res, "t3", equicorr,unordered = unordered))
-  return(rbind(t_eq, t_bl) %>% mutate(Values = round(Values, 3)))
+  t_eq <- rbind(t1, t2, t3) #%>% 
+  return(rbind(t_eq, t_bl))
 }
 
 
-prepare_appendix_t_measure_table <- function(eq_data, bl_data, unordered, tmeasure = "t1"){
+prepare_appendix_t_measure_table <- function(eq_data, bl_data, 
+                                             unordered, tmeasure = "t1"){
   partial <- prepare_t_facet_plot_data(
     eq_data = eq_data,
     bl_data = bl_data,
@@ -121,93 +135,51 @@ prepare_appendix_t_measure_table <- function(eq_data, bl_data, unordered, tmeasu
     select(-c(Metric))
   
   
-  eq_padded_ordered<-partial %>% filter(`Correlation structure` == 'Equicorrelated') %>% select(-c(`Correlation structure`)) %>%
+  eq_padded_ordered<-partial %>% 
+    filter(`Correlation structure` == EQUICORRELATED$NAME) %>% 
+    select(-c(`Correlation structure`)) %>%
     group_by(K) %>%
     group_modify(~ add_row(.x)) %>% 
     ungroup() %>% 
     mutate(K = as.character(K)) %>%
     mutate(K = ifelse(duplicated(K), "", K))
   
-  bl_test <- partial %>% filter(`Correlation structure` == 'Block diagonal') %>% select(-c(`Correlation structure`, K))
+  bl_test <- partial %>% 
+    filter(`Correlation structure` == BLOCK_DIAGONAL$NAME) %>% 
+    select(-c(`Correlation structure`, K))
 
   return(cbind(eq_padded_ordered, bl_test))
 }
 
-
-preprocess_tightness_measure <- function(dataset, metric_type, equicorrelation){
-  if (equicorrelation) {
-    vector1 <- c('K', 'r')
-  } else {
-    vector1 <- c('K', 'r', 'blocks')
-  }
-  
-  levels <- c('low', 'med', "high")
-  # if (unordered) {
-  #   selected_columns <- c('independent', 'bonferroni', 'nonrankbased')
-  # } else {
-  #   selected_columns <- c('rankbased_asymptotic', 'rankbased_level2bs')
-  # }
-  selected_columns <- c('independent', 'bonferroni', 'nonrankbased',
-                        'rankbased_asymptotic', 'rankbased_level2bs')
-  
-  return(
-    dataset %>%
-      mutate(across(c(selected_columns), round, 3)) %>% 
-      filter(metric == metric_type) %>% 
-      mutate(Variance = ifelse(sd==2.0, 
-                                  'low', 
-                                  ifelse(sd == 3.6, 'med', 'high'))) %>%
-      select(
-        c(vector1, c(Variance, selected_columns)
-        )
-      ) %>%
-      tidyr::pivot_wider(names_from = Variance, 
-                         values_from = selected_columns, 
-                         names_sep = "_") %>%
-      select(
-        c(vector1, unlist(lapply(levels, 
-                                 function(x) {paste(selected_columns, 
-                                                    x, 
-                                                    sep = '_')}))
-        )
-      )
-  )
-} 
-
-
-
-preprocess_tightness_measure_OG <- function(dataset, metric_type, equicorrelation,
-                                         unordered = TRUE){
+preprocess_tightness_measure_OG <- function(dataset, metric_type, 
+                                            equicorrelation,
+                                            unordered = TRUE){
   if (equicorrelation) {
     vector1 <- c('K', 'r')
   } else {
     vector1 <- c('K', 'r', 'blocks')
   }
 
-  levels <- c('low', 'med', "high")
+  levels <- c(LOW$NAME, MED$NAME, HIGH$NAME)
   if (unordered) {
-    selected_columns <- c('independent', 'bonferroni', 'nonrankbased')
+    selected_columns <- UNORD
   } else {
-    selected_columns <- c('rankbased_asymptotic', 'rankbased_level2bs')
+    selected_columns <- ORD
   }
 
 
   return(
     dataset %>%
-      mutate(across(c(selected_columns), round, 3)) %>%
       filter(metric == metric_type) %>%
-      mutate(Variance = ifelse(sd==2.0,
-                                  'low',
-                                  ifelse(sd == 3.6, 'med', 'high'))) %>%
       select(
-        c(vector1, c(Variance, selected_columns)
+        c(vector1, c(Variance, selected_columns,`Correlation structure`)
           )
         ) %>%
       tidyr::pivot_wider(names_from = Variance,
                          values_from = selected_columns,
                          names_sep = "-") %>%
       select(
-        c(vector1, unlist(lapply(levels,
+        c(vector1,`Correlation structure`, unlist(lapply(levels,
                                  function(x) {paste(selected_columns,
                                                     x,
                                                     sep = '-')}))
@@ -392,13 +364,15 @@ prepare_plotting_data_for_traveltime <- function(ci_results, df){
   to_string_seq <- function(x, y){paste(seq(x, y, 1), collapse=',')}
   
   dat_to_plot <- dataset_all %>% #filter(Approach == 'nonrank') %>%
-    select(c(iso, `Rank LB`, `Rank UB`, rhat_k, order_index, theta_k, Approach)) %>%
+    select(c(iso, `Rank LB`, `Rank UB`, rhat_k, 
+             order_index, theta_k, Approach)) %>%
     mutate(string_ranks = mapply(to_string_seq, `Rank LB`, `Rank UB`)) %>%
     separate_rows(string_ranks, sep=",") %>%
     select(c(iso, rhat_k, string_ranks, theta_k, Approach))
   
   
-  dat_to_plot$highlight0 <- ifelse(dat_to_plot$rhat_k == as.numeric(dat_to_plot$string_ranks), "yes", "no")
+  dat_to_plot$highlight0 <- ifelse(
+    dat_to_plot$rhat_k == as.numeric(dat_to_plot$string_ranks), "yes", "no")
   
   
   d1 <- unique(dataset_all[dataset_all$density_group==1,]$theta_k)
@@ -407,20 +381,18 @@ prepare_plotting_data_for_traveltime <- function(ci_results, df){
   d4 <- unique(dataset_all[dataset_all$density_group==4,]$theta_k)
   d5 <- unique(dataset_all[dataset_all$density_group==5,]$theta_k)
   
-  dat_to_plot$highlight1 <- ifelse(dat_to_plot$theta_k %in% d1, 
-                                   "1", 
-                                   ifelse(dat_to_plot$theta_k %in% d2, 
-                                          "2",
-                                          ifelse(dat_to_plot$theta_k %in% d3,
-                                                 "3",
-                                                 ifelse(dat_to_plot$theta_k %in% d4,
-                                                        "4",
-                                                        ifelse(dat_to_plot$theta_k %in% d5,
-                                                               "5", "None"
+  dat_to_plot$highlight1 <- ifelse(dat_to_plot$theta_k %in% d1, "1", 
+                                   ifelse(
+                                     dat_to_plot$theta_k %in% d2, "2",
+                                     ifelse(dat_to_plot$theta_k %in% d3,
+                                            "3",ifelse(
+                                              dat_to_plot$theta_k %in% d4,
+                                              "4",
+                                              ifelse(
+                                                dat_to_plot$theta_k %in% d5,
+                                                     "5", "None"
                                                         )))
-                                          
-                                          
-                                   ))
+                                     ))
   
   return(dat_to_plot)
 }
