@@ -56,8 +56,8 @@ create_table_for_true_theta <- function(dataset,
   if (main) {
     return(
     partial %>% 
-      column_spec(1, width = "1cm") %>%
-      column_spec(2, width = "1.5cm") %>%
+      column_spec(1, width = "0.75cm") %>%
+      column_spec(2, width = "1.75cm") %>%
       column_spec(3, width = "9cm") %>%
       column_spec(4, width = "3.5cm")
     )
