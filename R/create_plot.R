@@ -1,3 +1,5 @@
+source("/home/realiseshewon/PDev/kde-ranking/R/CONSTANTS.R")
+library(latex2exp)
 library(ggplot2)
 library(dplyr)
 library(tidyr)
@@ -7,17 +9,13 @@ COMMON_THEME <- theme(axis.line = element_line(colour = "gray"),
                           panel.grid.major.x = element_blank(),
                           text = element_text(family = "serif"),
                           legend.position = "right",
-                          #legend.box = "vertical",
-                          #legend.position = c(1, 1), # Coordinates (bottom-left is 0,0; top-right is 1,1)
-                          #legend.justification = c(1, 1),
                           legend.spacing.y = unit(0.05, "cm"), 
                           legend.box.just = "left",
-                          # legend.margin = margin(t=.15, b=0.15,l=0.5, r=0.5, "cm"),
-                          legend.margin = margin(t = 0, r = 0, b = 0, l = 0, unit = "mm"),
-                          legend.key.width = unit(0.5, "cm"),  # Reduce key width
+                          legend.margin = margin(t = 0, r = 0, b = 0, 
+                                                 l = 0, unit = "mm"),
+                          legend.key.width = unit(0.5, "cm"),
                           legend.spacing.x = unit(0.1, "cm"),
-                          legend.background = element_blank()#,
-                          # legend.box.background = element_rect(colour = "black"
+                          legend.background = element_blank()
 )
 
 create_boxplot_for_true_theta <- function(dataset){
@@ -36,18 +34,34 @@ create_boxplot_for_true_theta <- function(dataset){
   )
 }
 
-create_plot_for_app_data <- function(dat_to_plot, elements, order_identifier, reverse = FALSE,
-                                     title ='95% Joint Confidence Region for Candidates with at least 1% Votes', 
+create_plot_for_app_data <- function(dat_to_plot,
+                                     elements, 
+                                     title,
+                                     order_identifier, 
+                                     reverse = FALSE,
                                      xlab = 'Candidate',
                                      ylab = 'Sample rank',
                                      shape_legend_title = 'Alliance',
                                      shape_labels = "",
-                                     shape_map = c("DuterTen" = 1, "Alyansa" = 2, 
-                                                   "KiBam" = 3, "Makabayan" = 4,
+                                     shape_map = c("DuterTen" = 1, 
+                                                   "Alyansa" = 2, 
+                                                   "KiBam" = 3, 
+                                                   "Makabayan" = 4,
                                                    "DuterTen-Alyansa" = 5)){
   
-  data_to_plot <- dat_to_plot %>% filter(Approach != 'pulse') #%>% filter(Approach != 'independent')
-  data_to_plot$Approach <- factor(data_to_plot$Approach, levels = c('independent', 'bonferroni', 'nonrank'))
+  if ('pulse' %in% dat_to_plot$Approach) {
+    size <- 7
+    legendloc <- "top"
+  } else {
+    size <- 5
+    legendloc <- "right"
+  }
+  
+  data_to_plot <- dat_to_plot %>% filter(Approach != 'pulse')
+  data_to_plot$Approach <- factor(data_to_plot$Approach, 
+                                  levels = c(IND$RAWCHAR, 
+                                             BONF$RAWCHAR,
+                                             NONRANK$RAWCHAR))
   
   if (length(shape_labels)==1){
     shape_labels = sort(unique(data_to_plot$highlight1))
@@ -62,26 +76,32 @@ create_plot_for_app_data <- function(dat_to_plot, elements, order_identifier, re
   order_mult <- if(reverse) -1 else 1
   
   
-  p <- ggplot(data = data_to_plot, aes(x = reorder({{ elements }}, order_mult * {{ order_identifier }}),
-                                       y = as.numeric(string_ranks))) + 
-    geom_point(data = subset(data_to_plot, highlight0 == "yes"), shape = 16, size = 1, color = "black") +
-    geom_point(data = subset(data_to_plot, highlight0 == "no"), size = 0.5, 
+  p <- ggplot(data = data_to_plot, 
+              aes(x = reorder({{ elements }}, 
+                              order_mult * {{ order_identifier }}),
+                  y = as.numeric(string_ranks))) + 
+    geom_point(data = subset(data_to_plot, highlight0 == "yes"), 
+               shape = 16, 
+               size = 1.25, 
+               color = "black") +
+    geom_point(data = subset(data_to_plot, highlight0 == "no"), 
+               size = 1, 
                aes(shape = highlight1), 
                stroke = 0.2) + 
-    scale_shape_manual(values = shape_map, name = shape_legend_title, labels = shape_labels) +
-    scale_y_continuous(breaks = seq(1, length(dat_to_plot %>% pull({{ elements }}) %>% unique()), by = 4)) +
+    scale_shape_manual(values = shape_map, 
+                       name = shape_legend_title, 
+                       labels = shape_labels) +
+    scale_y_continuous(breaks = seq(1, length(dat_to_plot %>% 
+                                                pull({{ elements }}) %>% 
+                                                unique()), by = 4)) +
     labs(title=title) + xlab(xlab) + ylab(ylab) +
     theme_bw() +
-    theme(axis.text.x = element_text(hjust = 1, size = 5),
-          axis.text.y = element_text(size=5)
+    theme(axis.text.x = element_text(hjust = 1, size = 8),
+          axis.text.y = element_text(size=size)
     ) +
-    #guides(shape = guide_legend(title = str_wrap(shape_legend_title, width = 20))) +
-    # theme(axis.line = element_line(colour = "gray"),
-    #       panel.grid.minor = element_blank(),
-    #       panel.grid.major.x = element_blank(),
-    #       text = element_text(family = "serif"),
-    #       legend.position = "top") +
-    COMMON_THEME +
+    guides(shape = guide_legend(override.aes = list(size = 1.25))) +
+    COMMON_THEME + 
+    theme(legend.position = legendloc) +
     facet_wrap(~Approach, ncol=length(unique(data_to_plot$Approach)), 
                labeller = as_labeller(cap_first)) + coord_flip()
   return(p)
@@ -91,61 +111,62 @@ create_plot_for_app_data <- function(dat_to_plot, elements, order_identifier, re
 create_plot_for_t <- function(prepared_data, unordered = TRUE){
   
   if (unordered) {
-    app_levels = c("independent", "bonferroni", "nonrankbased")
-    app_labels = c("Independent", 'Bonferroni', 'Nonrank')
+    app_levels = c(IND$RAWCHAR, BONF$RAWCHAR, NONRANK$RAWCHAR) 
+    app_labels = c(IND$SHORTNAME, BONF$SHORTNAME, NONRANK$SHORTNAME)
     x = "Approach"
+    label_parsedx <- function(x) x
+    rot <- 90
     facet_str <- "`Correlation structure` + Metric ~ K"
   } else {
-    app_levels = c("rankbased_asymptotic","rankbased_level2bs")
-    app_labels = c("Asymptotic", "Bootsrap")
+    app_levels = c(ASYMP$RAWCHAR,BOOT$RAWCHAR)
+    app_labels = c(ASYMP$SHORTNAME, BOOT$SHORTNAME)
     x = "Correlation structure"
     facet_str <- "Approach + Metric ~ K"
+    label_parsedx <- function(x) parse(text = as.character(x))
+    rot <- 0
   }
   
   p <- prepared_data %>%
-    mutate(Variance = factor(Variance, 
-                                levels = c("low", "med", "high"), 
-                                labels = c("Low", "Moderate", "High"),
-                                ordered = TRUE),
-           # Variance_size = as.numeric(Variance,
-           #                                   levels = c("low", "med", "high"),
-           #                                   ordered = TRUE),
-           `Correlation structure` = factor(`Correlation structure`,
-                                            levels =c("Equicorrelated", "Block diagonal"),
-                                            labels =c("Equicorr", "Block diag")),
-           Approach = factor(Approach,
-                             levels = app_levels,
-                             labels = app_labels,
-                             ordered = TRUE),
-           K = factor(K, 
-                      levels = c('10','20','30','40',"50"), 
-                      labels = paste("K =",c('10','20','30','40',"50")),
-                      ordered = TRUE),
-           Metric = factor(Metric,
-                           levels = c('t1', 't2', 't3'),
-                           labels = c("T[1]", "T[2]", "T[3]"),
-                           ordered = TRUE)) %>%
+    mutate(
+      `Correlation structure` = factor(`Correlation structure`,
+                                       levels =c(EQUICORRELATED$NAME, 
+                                                 BLOCK_DIAGONAL$NAME),
+                                       labels = c(TeX(EQUICORRELATED$GGNAME), 
+                                                  TeX(BLOCK_DIAGONAL$GGNAME))),
+      Approach = factor(Approach,
+                        levels = app_levels, 
+                        labels = app_labels,
+                        ordered = TRUE),
+      K = factor(K,
+                 levels = c('10','20','30','40',"50"),
+                 labels = paste("K =",c('10','20','30','40',"50")),
+                 ordered = TRUE),
+      Metric = factor(Metric,
+                      levels = c(T1$CHAR, T2$CHAR, T3$CHAR),
+                      labels = c(TeX(T1$MATHNAME), 
+                                 TeX(T2$MATHNAME), 
+                                 TeX(T3$MATHNAME)),
+                      ordered = TRUE)) %>%
     ggplot(aes(x = .data[[x]], 
                y = Values, 
                shape = factor(r), 
-               #linetype = `Correlation structure`,
                size = Variance,
                group = interaction(Variance,r))) +
-    geom_point(alpha = 0.35) + 
+    geom_point(alpha = 0.3) + 
     scale_size_ordinal(range = c(1, 2)) +
-    #================================
+    scale_x_discrete(labels = label_parsedx) +
   facet_grid(as.formula(facet_str),
              scales = "free",
-             labeller = labeller(Metric = label_parsed)) +
-    #================================
+             labeller = labeller(Metric = label_parsed,
+                                 `Correlation structure` = label_parsed)) +
+
   theme_bw() +
-    theme(axis.text.x = element_text(hjust = 1, size = 7, angle = 90),
+    theme(axis.text.x = element_text(hjust = 1, size = 9, angle = rot),
           axis.text.y = element_text(size=7)
     ) +
-    guides(color = guide_legend(title = "r", ncol = 7)) +
+    guides(color = guide_legend(title = TeX(CORR_MATRIX$MATHNAME), ncol = 7)) + 
     scale_shape_manual(
-      name = "r",
-      # labels = c(""), # Assign custom labels
+      name = TeX(CORR_MATRIX$MATHNAME),
       values = c(15, 16, 17, 15, 16, 17, 18)
     ) + 
     COMMON_THEME
