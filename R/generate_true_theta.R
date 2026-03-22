@@ -1,3 +1,5 @@
+source("/home/realiseshewon/PDev/kde-ranking/R/CONSTANTS.R")
+
 block_corr <- function(block_sizes, rho_within, rho_between) {
   B <- length(block_sizes)
   N <- sum(block_sizes)
@@ -34,14 +36,15 @@ generate_true_theta <- function()
       
       set.seed(123974)
       true_theta <- rnorm(K, mean, sd)
-      data_list[[length(data_list) + 1]] <- data.frame(sd = sd, K = K, true_theta = true_theta)
+      data_list[[length(data_list) + 1]] <- data.frame(sd = sd, K = K, 
+                                                       true_theta = true_theta)
     }}
   
   bplot <- data_list %>% 
     bind_rows() %>% 
-    mutate(data_spread = factor(ifelse(sd == 2, "Low", 
-                                       ifelse(sd == 3.6, "Moderate", "High")),
-                                levels =c("Low", 'Moderate', 'High'),
+    mutate(data_spread = factor(ifelse(sd == 2, LOW$NAME, 
+                                       ifelse(sd == 3.6, MED$NAME, HIGH$NAME)),
+                                levels =c(LOW$NAME, MED$NAME, HIGH$NAME),
                                 ordered =TRUE
     ))
   return(bplot)
@@ -202,7 +205,8 @@ generate_true_theta_rd <- function(persist_df = TRUE) {
 log_block_corrs <- function(persist_df = TRUE){
   blocks <- c(rep(2, 4), rep(3, 6))
   block_number <- c(rep(1:2, 2), rep(1:3, 2))
-  size <- c(rep("0.5K x 0.5K", 2), c("0.3K x 0.3K", "0.7K x 0.7K"), rep(c("0.2K x 0.2K", "0.3K x 0.3K", "0.5K x 0.5K"), 2))
+  size <- c(rep("0.5K x 0.5K", 2), c("0.3K x 0.3K", "0.7K x 0.7K"), 
+            rep(c("0.2K x 0.2K", "0.3K x 0.3K", "0.5K x 0.5K"), 2))
   rho <- c(0.9, 0.1, 0.9, 0.1, 0.9, 0.5, 0.1, 0.1, 0.5, 0.9)
   label <- c(rep("B2", 2), rep("U2", 2), rep("UL3", 3), rep("UH3", 3))
   if (persist_df) {
