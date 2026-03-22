@@ -1,3 +1,12 @@
+generate_corr_mat <- function(r, appdata){
+  if (appdata == 'pulse') {
+    cormat <- block_corr(block_sizes=c(2, 12, 10, 2, 11, 27), rho_within=rep(r, 6), rho_between=0.0)
+  } else if (appdata == 'traveltime') {
+    cormat <- block_corr(block_sizes=c(15, 11, 11, 7, 7), rho_within=rep(r, 5), rho_between=0.0)
+  }
+  return(cormat)
+}
+
 get_ci_for_app_data <- function(theta_hat = (dataset_all$`Voting For`)/100,
                                 true_sds = dataset_all$se,
                                 K = dim(df)[1],
