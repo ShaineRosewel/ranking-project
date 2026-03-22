@@ -91,9 +91,8 @@ knitr::opts_chunk$set(
   warning = FALSE,
   knitr.kable.NA = ''
 )
+# options(digits = 3)
 ```
-
-
 
 \newpage
 
@@ -134,7 +133,6 @@ knitr::opts_chunk$set(
 
 \newpage
 \vspace*{1cm}
-
 
 # Result
 
