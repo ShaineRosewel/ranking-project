@@ -18,18 +18,46 @@ library(dplyr)
 library(tidyr)
 source("/home/realiseshewon/PDev/kde-ranking/R/preprocess_data.R")
 source("/home/realiseshewon/PDev/kde-ranking/R/create_table.R")
+source("/home/realiseshewon/PDev/kde-ranking/R/create_plot.R")
+
 
 
 eq_res <- combine_summaries(
   "/home/realiseshewon/PDev/kde-ranking/simulation_results/summaries/summary_k",
   TRUE
-) #%>%  mutate(across(5:8, round, 3))
+) %>% mutate(Variance = factor(ifelse(sd == 2, 'Low', 
+                                      ifelse(sd == 3.6, "Moderate", "High")),
+                               levels = c("Low", "Moderate", "High"), 
+                               ordered = TRUE)) %>% 
+  mutate(`Correlation structure` = "Equicorrelated") %>%
+  mutate(across(c(nonrankbased,rankbased_asymptotic, rankbased_level2bs, independent, bonferroni), round, 3)) 
+  #mutate(across(5:8, round, 3))
 
 
 bl_res <- combine_summaries(
   "/home/realiseshewon/PDev/kde-ranking/simulation_results/summaries/summary_block",
   FALSE
-)# %>%  mutate(across(5:8, round, 3))
+) %>% 
+mutate(
+  Variance = factor(ifelse(sd == 2, 'Low', 
+                    ifelse(sd == 3.6, "Moderate", "High")),
+                    levels = c("Low", "Moderate", "High"), 
+                    ordered = TRUE),
+  
+  r = factor(
+    case_when(
+      r == "balanced-block" & blocks == 2 ~ "B2",
+      r == "unbalanced-block" & blocks == 2 ~ "U2",
+      r == "unbalanced-block" & blocks == 3 ~ "UL3",
+      r == "unbalanced-block-high" & blocks == 3 ~ "UH3",
+      TRUE ~ r
+    ),
+    levels = c("B2", "U2", "UL3", "UH3"),
+    ordered = TRUE
+  )
+) %>% 
+    mutate(`Correlation structure` = "Block Diagonal") %>%
+  mutate(across(c(nonrankbased,rankbased_asymptotic, rankbased_level2bs, independent, bonferroni), round, 3)) 
 ```
 
 
@@ -46,9 +74,11 @@ create_side_by_side_table_within_main(eq_data = eq_coverage_unordered,
 ```
 
 
-Results for $T_1$ and $T_2$ tightness measure, shown in rows 1 and 2 of Figure \ref{fig:nonrank-plot}, indicate that Algorithm \ref{alg:nonrank_ci} yields narrower intervals than both the independent and Bonferroni approaches. This improvement is visible at low $r$ and becomes more pronounced as $r$ grows. While the average range of ranks widens as $K$ increases, this effect is dampened by the spread of the estimates. When $\hat{\theta}$ values are more dispersed, the intervals are narrower; however, as they get closer to each other, ranks tend to interchange more resulting in wider ranges. This aligns with the intuition that intervals are most precise when the estimates being ranked have greater separation.
+Results for $T_1$ and $T_2$ tightness measures, shown in rows 1 and 2 of Figure \ref{fig:nonrank-plot}, indicate that Algorithm \ref{alg:nonrank_ci} yields narrower intervals than both the independent and Bonferroni approaches. This improvement is very minimal at low $\rho$ and becomes more pronounced as $\rho$ increases. Moreover, while intervals get wider in general with larger $K$, this effect is dampened by the variance of the estimates. When $\hat{\theta}$ values are more dispersed, the intervals are narrower; however, as they get closer to each other, ranks tend to interchange more resulting in wider ranges. This aligns with the intuition that intervals are most precise when the estimates being ranked have greater separation.
 
-Similarly, $T_3$ in row 3 of Figure \ref{fig:nonrank-plot} produces higher values at low $r$ and increases with higher $r$, making the proposed algorithm a better option in the presence of correlation. 
+Similarly, $T_3$ in row 3 of Figure \ref{fig:nonrank-plot} produces higher values at low $\rho$ and increases with higher $\rho$, making the proposed algorithm a better option in the presence of correlation.
+
+
 
 ```{r nonrank-plot, fig.cap = "Simulation Result for Tightness Measure of Unordered Parameters", fig.height=7}
 create_plot_for_t(prepare_t_facet_plot_data(
@@ -56,6 +86,9 @@ create_plot_for_t(prepare_t_facet_plot_data(
     bl_data = bl_res,
     unordered = TRUE), unordered = TRUE)
 ```
+
+
+The actual values corresponding to $T_1$, $T_2$ and $T_2$ in Figure \ref{fig:nonrank-plot} are provided in Tables \ref{tab:nonrank-eq-t1},  \ref{tab:nonrank-eq-t2}, and \ref{tab:nonrank-eq-t3} of the Appendix.
 
 
 ## Joint confidence region for the ordered parameters {#sec:ordered-results}
