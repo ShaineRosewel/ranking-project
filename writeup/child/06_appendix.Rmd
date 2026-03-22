@@ -35,17 +35,55 @@ source("/home/realiseshewon/PDev/kde-ranking/R/preprocess_data.R")
 source("/home/realiseshewon/PDev/kde-ranking/R/create_table.R")
 
 
-equicorr <- TRUE
+# equicorr <- TRUE
+# eq_res <- combine_summaries(
+#   "/home/realiseshewon/PDev/kde-ranking/simulation_results/summaries/summary_k",
+#   TRUE
+# ) %>%  mutate(across(5:9, round, 3))
+# 
+# 
+# bl_res <- combine_summaries(
+#   "/home/realiseshewon/PDev/kde-ranking/simulation_results/summaries/summary_block",
+#   FALSE
+# ) %>%  mutate(across(5:9, round, 3))
+
+
 eq_res <- combine_summaries(
   "/home/realiseshewon/PDev/kde-ranking/simulation_results/summaries/summary_k",
   TRUE
-) %>%  mutate(across(5:9, round, 3))
+) %>% mutate(Variance = factor(ifelse(sd == 2, 'Low', 
+                                      ifelse(sd == 3.6, "Moderate", "High")),
+                               levels = c("Low", "Moderate", "High"), 
+                               ordered = TRUE)) %>% 
+  mutate(`Correlation structure` = "Equicorrelated")  %>%
+  mutate(across(c(nonrankbased,rankbased_asymptotic, rankbased_level2bs, independent, bonferroni), round, 3)) 
+  #mutate(across(5:8, round, 3))
 
 
 bl_res <- combine_summaries(
   "/home/realiseshewon/PDev/kde-ranking/simulation_results/summaries/summary_block",
   FALSE
-) %>%  mutate(across(5:9, round, 3))
+) %>% 
+mutate(
+  Variance = factor(ifelse(sd == 2, 'Low', 
+                    ifelse(sd == 3.6, "Moderate", "High")),
+                    levels = c("Low", "Moderate", "High"), 
+                    ordered = TRUE),
+  
+  r = factor(
+    case_when(
+      r == "balanced-block" & blocks == 2 ~ "B2",
+      r == "unbalanced-block" & blocks == 2 ~ "U2",
+      r == "unbalanced-block" & blocks == 3 ~ "UL3",
+      r == "unbalanced-block-high" & blocks == 3 ~ "UH3",
+      TRUE ~ r
+    ),
+    levels = c("B2", "U2", "UL3", "UH3"),
+    ordered = TRUE
+  )
+) %>% 
+    mutate(`Correlation structure` = "Block Diagonal") %>%
+  mutate(across(c(nonrankbased,rankbased_asymptotic, rankbased_level2bs, independent, bonferroni), round, 3)) 
 ```
 
 
