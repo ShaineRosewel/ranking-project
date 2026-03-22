@@ -39,9 +39,9 @@ generate_true_theta <- function()
   
   bplot <- data_list %>% 
     bind_rows() %>% 
-    mutate(data_spread = factor(ifelse(sd == 2, "low", 
-                                       ifelse(sd == 3.6, "med", "high")),
-                                levels =c("low", 'med', 'high'),
+    mutate(data_spread = factor(ifelse(sd == 2, "Low", 
+                                       ifelse(sd == 3.6, "Moderate", "High")),
+                                levels =c("Low", 'Moderate', 'High'),
                                 ordered =TRUE
     ))
   return(bplot)
