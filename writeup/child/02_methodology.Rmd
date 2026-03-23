@@ -262,7 +262,7 @@ dataset %>%
   select(K, data_spread, true_theta) %>%
   group_by(K, data_spread) %>%
   summarise(true_theta = paste(round(true_theta, 1), collapse = ", "), .groups = "drop") %>%
-  mutate(R = "$\\mathbf{R}_{eq, \\rho} = 0.1, 0.5, 0.9$ $\\mathbf{R}_{block} - 2, 3$ blocks"),
+  mutate(R = "$\\mathbf{R}_{eq}; \ \\rho = 0.1, 0.5, 0.9$ $\\mathbf{R}_{block} - 2, 3$ blocks"),
 column_names = c("K", "Variance",'$\\boldsymbol{\\theta}$', "$\\mathbf{R}$"),
 main = TRUE
 )
