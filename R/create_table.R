@@ -80,7 +80,7 @@ create_side_by_side_table_within_main <- function(eq_data,
 ){
   
   padded_eq <- eq_data %>%
-    mutate(r = paste("$\\rho =", r, "$")) %>%
+    #mutate(r = paste("$\\rho =", r, "$")) %>%
     group_by(K) %>%
     group_modify(~ add_row(.x, .after = dim(eq_data %>% filter(K==10))[1])) %>% 
     ungroup() %>% arrange(K, r)
@@ -107,7 +107,7 @@ create_side_by_side_table_within_main <- function(eq_data,
       c(EQUICORRELATED$NAME, BLOCK_DIAGONAL$NAME)
     )
   
-  r1 <- " "#EQUICORRELATED$MATHNAME
+  r1 <- CORR_COEFF$MATHNAME
   r2 <- " "#BLOCK_DIAGONAL$MATHNAME
   
   return(
@@ -125,8 +125,7 @@ create_side_by_side_table_within_main <- function(eq_data,
                             parameter, 
                             "Parameters"),
             na.character = "") %>%
-      column_spec(1, width = "2cm") %>%
-      column_spec(2:(num_variance*num*2 + 1) , width = colwidth) %>%
+      column_spec(1:(num_variance*num*2 + 1) , width = colwidth) %>%
       add_header_above(corrstruc_headers, 
                        escape = FALSE) %>%
       pack_rows("K = 10", 1, 4, latex_gap_space = "0.5em") %>% 
@@ -167,8 +166,8 @@ create_table_for_tightness_measure <- function(summary, metric_type,
     
   num <- length(selected_columns)
   
-  vector_1 <- c("K", EQUICORRELATED$MATHNAME)
-  vector_2 <- BLOCK_DIAGONAL$MATHNAME
+  vector_1 <- c("K", CORR_COEFF$MATHNAME)
+  vector_2 <- " " #BLOCK_DIAGONAL$MATHNAME
   striped <- rep(c(0, 8, 16), each = 4) + 1:4
   
   var_headers <- setNames(
