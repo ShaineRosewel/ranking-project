@@ -167,8 +167,10 @@ create_plot_for_t <- function(prepared_data, unordered = TRUE){
     guides(color = guide_legend(title = TeX(CORR_MATRIX$MATHNAME), ncol = 7)) + 
     scale_shape_manual(
       name = TeX(CORR_MATRIX$MATHNAME),
-      values = c(15, 16, 17, 15, 16, 17, 18)
+      values = c(15, 16, 17, 21, 22, 23, 24)
     ) + 
+    # scale_fill_manual(values = c("B2" = "blue", "U2" =
+    # "blue", "UL3" = "blue", "UH3" = "blue")) +
     COMMON_THEME
   
   if (unordered) {
