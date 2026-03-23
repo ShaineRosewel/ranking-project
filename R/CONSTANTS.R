@@ -17,7 +17,7 @@ BLOCK_DIAGONAL <- list(CHAR = "Coverage", NAME = "Block Diagonal", MATHNAME = "$
 EQUICORRELATED <- list(CHAR = "Coverage", NAME = "Equicorrelated", MATHNAME = "$\\mathbf{R}_{{eq}}$", GGNAME = "$\\textbf{R}_{eq}$")
 
 
-NONRANK <- list(RAWCHAR = "nonrankbased", SHORTNAME = 'NR', MATHNAME = "$\\mathfrak{R}_1$", GGNAME = "$\u211c_1$")
+NONRANK <- list(RAWCHAR = "nonrankbased", SHORTNAME = 'Nonrank', MATHNAME = "$\\mathfrak{R}_1$", GGNAME = "$\u211c_1$")
 BONF <- list(RAWCHAR = "bonferroni", SHORTNAME = 'Bonf', MATHNAME = "$\\mathfrak{R}_{Bonf}$", GGNAME = "$\u211c_{Bonf}$")
 IND <- list(RAWCHAR = "independent", SHORTNAME = 'Ind', MATHNAME = "$\\mathfrak{R}_{Ind}$", GGNAME = "$\u211c_{Ind}$")
 ASYMP <- list(RAWCHAR = "rankbased_asymptotic", SHORTNAME = 'Asymp', MATHNAME = "$\\mathfrak{R}_{2,Asymp}$", GGNAME = "$\u211c_{Asymp}$")
