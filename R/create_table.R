@@ -3,15 +3,36 @@ source("/home/realiseshewon/PDev/kde-ranking/R/CONSTANTS.R")
 
 FONT_SIZE <- 12
 
-create_basic_results_table <- function(dataset, caption){
+firstup <- function(x) {
+  substr(x, 1, 1) <- toupper(substr(x, 1, 1))
+  x
+}
 
-  dataset %>% kable("latex",
-                     booktabs = TRUE,
-                     escape = FALSE,
-                     linesep = "",
-                     longtable = TRUE,
-                     align = "c",
-                     caption = caption) %>%
+create_basic_results_table <- function(dataset, caption){
+  
+  columnnames <- c(CORR_COEFF$MATHNAME,
+                         "Approach", 
+                         T1$MATHNAME, 
+                         T2$MATHNAME,
+                         T3$MATHNAME)
+  
+  dataset %>% 
+    mutate(Approach = ifelse(Approach == NONRANK$SHORTNAME, 
+                             NONRANK$SHORTNAME, 
+                             ifelse(Approach == firstup(IND$RAWCHAR), 
+                                    IND$SHORTNAME, 
+                                    ifelse(Approach == firstup(BONF$RAWCHAR), 
+                                           BONF$SHORTNAME, 
+                                           "")
+    ))) %>% 
+    kable("latex",
+          col.names = columnnames,
+          booktabs = TRUE,
+          escape = FALSE,
+          linesep = "",
+          longtable = TRUE,
+          align = "llcc",
+          caption = caption) %>%
     collapse_rows(columns = c(1,2),
                   valign = "middle", 
                   latex_hline = "major")%>%
