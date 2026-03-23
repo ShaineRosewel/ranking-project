@@ -8,14 +8,11 @@ T1 <- list(CHAR = "t1", MATHNAME = "$T_1$")
 T2 <- list(CHAR = "t2", MATHNAME = "$T_2$")
 T3 <- list(CHAR = "t3", MATHNAME = "$T_3$")
 
-
 ORDERED <- list(CHAR = "Coverage", NAME = "Ordered")
 UNORDERED <- list(CHAR = "Coverage", NAME = "Unordered")
 
-
 BLOCK_DIAGONAL <- list(CHAR = "Coverage", NAME = "Block Diagonal", MATHNAME = "$\\mathbf{R}_{{block}}$", GGNAME = "$\\textbf{R}_{block}$")
 EQUICORRELATED <- list(CHAR = "Coverage", NAME = "Equicorrelated", MATHNAME = "$\\mathbf{R}_{{eq}}$", GGNAME = "$\\textbf{R}_{eq}$")
-
 
 NONRANK <- list(RAWCHAR = "nonrankbased", SHORTNAME = 'Nonrank', MATHNAME = "$\\mathfrak{R}_1$", GGNAME = "$\u211c_1$")
 BONF <- list(RAWCHAR = "bonferroni", SHORTNAME = 'Bonf', MATHNAME = "$\\mathfrak{R}_{Bonf}$", GGNAME = "$\u211c_{Bonf}$")
