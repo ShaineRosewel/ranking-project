@@ -135,6 +135,7 @@ create_plot_for_t <- function(prepared_data, unordered = TRUE){
                                                  BLOCK_DIAGONAL$NAME),
                                        labels = c(TeX(EQUICORRELATED$GGNAME), 
                                                   TeX(BLOCK_DIAGONAL$GGNAME))),
+      r = ifelse(r == 0.1, "$\\rho = 0.1$", ifelse(r == 0.5, "$\\rho = 0.5", ifelse(r == 0.9, "$\\rho = 0.9", r))),
       Approach = factor(Approach,
                         levels = app_levels, 
                         labels = app_labels,
@@ -154,7 +155,7 @@ create_plot_for_t <- function(prepared_data, unordered = TRUE){
                shape = factor(r), 
                size = Variance,
                group = interaction(Variance,r))) +
-    geom_point(alpha = 0.3) + 
+    geom_point(alpha = 0.25) + 
     scale_size_ordinal(range = c(1, 2)) +
     scale_x_discrete(labels = label_parsedx) +
   facet_grid(as.formula(facet_str),
@@ -169,8 +170,12 @@ create_plot_for_t <- function(prepared_data, unordered = TRUE){
     guides(color = guide_legend(title = TeX(CORR_MATRIX$MATHNAME), ncol = 7)) + 
     scale_shape_manual(
       name = TeX(CORR_MATRIX$MATHNAME),
-      values = c(15, 16, 17, 21, 22, 23, 24)
-    ) + 
+      values = c(15, 16, 17, 21, 22, 23, 24), 
+      labels = c(TeX("$\\rho = 0.1$"), 
+                 TeX("$\\rho = 0.5$"), 
+                 TeX("$\\rho = 0.9$"),
+                 "B2", "U2", "UL3", "UH3")
+    ) +
     # scale_fill_manual(values = c("B2" = "blue", "U2" = "blue", "UL3" = "blue", "UH3" = "blue")) +
     COMMON_THEME
   
