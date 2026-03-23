@@ -89,7 +89,8 @@ create_plot_for_app_data <- function(dat_to_plot,
     geom_point(data = subset(data_to_plot, highlight0 == "no"), 
                size = 1, 
                aes(shape = highlight1), 
-               stroke = 0.2) + 
+               stroke = 0.2,
+               color = "gray33") + 
     scale_shape_manual(values = shape_map, 
                        name = shape_legend_title, 
                        labels = shape_labels) +
