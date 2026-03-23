@@ -58,10 +58,12 @@ create_plot_for_app_data <- function(dat_to_plot,
   }
   
   data_to_plot <- dat_to_plot %>% filter(Approach != 'pulse')
+  
+  all_potential_levels <- c(IND$RAWCHAR, BONF$RAWCHAR, NONRANK$RAWCHAR)
+  existing_levels <- all_potential_levels[
+    all_potential_levels %in% data_to_plot$Approach]
   data_to_plot$Approach <- factor(data_to_plot$Approach, 
-                                  levels = c(IND$RAWCHAR, 
-                                             BONF$RAWCHAR,
-                                             NONRANK$RAWCHAR))
+                                  levels = existing_levels)
   
   if (length(shape_labels)==1){
     shape_labels = sort(unique(data_to_plot$highlight1))
@@ -169,8 +171,7 @@ create_plot_for_t <- function(prepared_data, unordered = TRUE){
       name = TeX(CORR_MATRIX$MATHNAME),
       values = c(15, 16, 17, 21, 22, 23, 24)
     ) + 
-    # scale_fill_manual(values = c("B2" = "blue", "U2" =
-    # "blue", "UL3" = "blue", "UH3" = "blue")) +
+    # scale_fill_manual(values = c("B2" = "blue", "U2" = "blue", "UL3" = "blue", "UH3" = "blue")) +
     COMMON_THEME
   
   if (unordered) {
