@@ -156,6 +156,7 @@ knitr::opts_chunk$set(
 \clearpage
 \vspace*{1cm}
 \phantomsection
+
 # Bibliography {-}
 
 \vspace*{0.8cm}
@@ -171,6 +172,8 @@ knitr::opts_chunk$set(
 
 
 # Appendix {-}
+
+\vspace*{0.8cm}
 
 \setcounter{table}{0}
 \setcounter{figure}{0}
