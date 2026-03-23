@@ -4,13 +4,9 @@ For the Pulse Asia results, correlations are assumed to be induced by alliances 
 
 
 ```{r}
-
 library(kableExtra)
 library(tidyr)
 library(dplyr)
-
-
-
 ```
 
 
