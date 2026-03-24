@@ -129,6 +129,8 @@ create_plot_for_t <- function(prepared_data, unordered = TRUE){
     rot <- 0
   }
   
+  var_levels = c(LOW$NAME, MED$NAME, HIGH$NAME)
+  
   p <- prepared_data %>%
     mutate(
       `Correlation structure` = factor(`Correlation structure`,
@@ -136,10 +138,16 @@ create_plot_for_t <- function(prepared_data, unordered = TRUE){
                                                  BLOCK_DIAGONAL$NAME),
                                        labels = c(TeX(EQUICORRELATED$GGNAME), 
                                                   TeX(BLOCK_DIAGONAL$GGNAME))),
-      r = ifelse(r == 0.1, "$\\rho = 0.1$", ifelse(r == 0.5, "$\\rho = 0.5", ifelse(r == 0.9, "$\\rho = 0.9", r))),
+      r = ifelse(r == 0.1, "$\\rho = 0.1$", 
+                 ifelse(r == 0.5, "$\\rho = 0.5", 
+                        ifelse(r == 0.9,"$\\rho = 0.9", r))),
       Approach = factor(Approach,
                         levels = app_levels, 
                         labels = app_labels,
+                        ordered = TRUE),
+      Variance = factor(Variance, 
+                        levels = var_levels,
+                        labels = var_levels,
                         ordered = TRUE),
       K = factor(K,
                  levels = c('10','20','30','40',"50"),
