@@ -8,13 +8,13 @@ COMMON_THEME <- theme(axis.line = element_line(colour = "gray"),
                           panel.grid.minor = element_blank(),
                           panel.grid.major.x = element_blank(),
                           text = element_text(family = "serif"),
-                          legend.position = "right",
-                          legend.spacing.y = unit(0.05, "cm"), 
+                          legend.position = "top",
+                          legend.spacing.y = unit(0.5, "cm"), 
                           legend.box.just = "left",
                           legend.margin = margin(t = 0, r = 0, b = 0, 
                                                  l = 0, unit = "mm"),
                           legend.key.width = unit(0.5, "cm"),
-                          legend.spacing.x = unit(0.1, "cm"),
+                          legend.spacing.x = unit(0.5, "cm"),
                           legend.background = element_blank()
 )
 
@@ -165,7 +165,7 @@ create_plot_for_t <- function(prepared_data, unordered = TRUE){
                size = Variance,
                group = interaction(Variance,r))) +
     geom_point(alpha = 0.25) + 
-    scale_size_ordinal(range = c(1, 2)) +
+    scale_size_ordinal(range = c(1, 2.25)) +
     scale_x_discrete(labels = label_parsedx) +
   facet_grid(as.formula(facet_str),
              scales = "free",
