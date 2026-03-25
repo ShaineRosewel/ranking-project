@@ -221,7 +221,7 @@ Algorithm \ref{alg:evaluation} estimates the coverage probabilities associated w
   T_1 = \frac{1}{K} \sum^K_{k=1} \Big | \Lambda_{Ok} \Big|
   \label{eq:t1}
 \end{equation} \begin{equation}
-  T_2 = \prod^K_{k=1} \Big | \Lambda_{Ok} \Big|
+  T_2 = \left[ \prod^K_{k=1} \Big | \Lambda_{Ok} \Big| \right]^{1/K}
   \label{eq:t2}
 \end{equation}
 
