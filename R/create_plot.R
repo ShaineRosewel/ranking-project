@@ -58,15 +58,6 @@ create_plot_for_app_data <- function(dat_to_plot,
   }
   
   data_to_plot <- dat_to_plot %>% filter(Approach != 'pulse')
-  
-  # all_potential_levels <- c(IND$RAWCHAR, BONF$RAWCHAR, NONRANK$RAWCHAR)
-  # all_potental_labels <- c(IND$SHORTNAME,BONF$SHORTNAME,NONRANK$SHORTNAME)
-  # 
-  # 
-  # existing_levels <- all_potential_levels[
-  #   all_potential_levels %in% data_to_plot$Approach]
-  # existing_labels <- all_potental_labels[
-  #   all_potential_levels %in% data_to_plot$Approach]
 
   all_levels <- c(IND$RAWCHAR, BONF$RAWCHAR, NONRANK$RAWCHAR)
   all_labels <- c(IND$SHORTNAME, BONF$SHORTNAME, NONRANK$SHORTNAME)
@@ -106,18 +97,20 @@ create_plot_for_app_data <- function(dat_to_plot,
                aes(shape = highlight1), 
                stroke = 0.2,
                color = "gray44") + 
-    scale_shape_manual(values = shape_map, 
-                       name = shape_legend_title, 
-                       labels = shape_labels) +
+    # scale_shape_manual(values = shape_map, 
+    #                    name = shape_legend_title, 
+    #                    labels = shape_labels) +
     scale_y_continuous(breaks = seq(1, length(dat_to_plot %>% 
                                                 pull({{ elements }}) %>% 
                                                 unique()), by = 4)) +
+
+    guides(shape = guide_legend(override.aes = list(size = 1.25))) +
+    
     labs(title=title) + xlab(xlab) + ylab(ylab) +
     theme_bw() +
     theme(axis.text.x = element_text(hjust = 1, size = 8),
           axis.text.y = element_text(size=size)
     ) +
-    guides(shape = guide_legend(override.aes = list(size = 1.25))) +
     COMMON_THEME + 
     theme(legend.position = legendloc) +
     facet_wrap(~Approach,
@@ -146,9 +139,14 @@ create_plot_for_t <- function(prepared_data, unordered = TRUE){
     rot <- 0
   }
   
-  var_levels = c(LOW$NAME, MED$NAME, HIGH$NAME)
+  var_levels <- c(LOW$NAME, MED$NAME, HIGH$NAME)
+  legend_labs <- c(TeX("$\\rho = 0.1$"),
+                  TeX("$\\rho = 0.5$"),
+                  TeX("$\\rho = 0.9$"),
+                  "B2", "U2", "UL3", "UH3")
   
-  p <- prepared_data %>%
+  
+  dat <- prepared_data %>%
     mutate(
       `Correlation structure` = factor(`Correlation structure`,
                                        levels =c(EQUICORRELATED$NAME, 
@@ -156,8 +154,8 @@ create_plot_for_t <- function(prepared_data, unordered = TRUE){
                                        labels = c(TeX(EQUICORRELATED$GGNAME), 
                                                   TeX(BLOCK_DIAGONAL$GGNAME))),
       r = ifelse(r == 0.1, "$\\rho = 0.1$", 
-                 ifelse(r == 0.5, "$\\rho = 0.5", 
-                        ifelse(r == 0.9,"$\\rho = 0.9", r))),
+                 ifelse(r == 0.5, "$\\rho = 0.5$", 
+                        ifelse(r == 0.9,"$\\rho = 0.9$", r))),
       Approach = factor(Approach,
                         levels = app_levels, 
                         labels = app_labels,
@@ -176,12 +174,33 @@ create_plot_for_t <- function(prepared_data, unordered = TRUE){
                                  TeX(T2$MATHNAME), 
                                  TeX(T3$MATHNAME)),
                       ordered = TRUE)) %>%
+    unite(col = "Correlation", 
+          `Correlation structure`, 
+          `r`, 
+          sep = "_", 
+          remove = FALSE)
+    
+  corr_levels <- c(
+    paste0(TeX(EQUICORRELATED$GGNAME), "_$\\rho = 0.1$"),
+    paste0(TeX(EQUICORRELATED$GGNAME), "_$\\rho = 0.5$"),
+    paste0(TeX(EQUICORRELATED$GGNAME), "_$\\rho = 0.9$"),
+    paste0(TeX(BLOCK_DIAGONAL$GGNAME), "_B2"),
+    paste0(TeX(BLOCK_DIAGONAL$GGNAME), "_U2"),
+    paste0(TeX(BLOCK_DIAGONAL$GGNAME), "_UL3"),
+    paste0(TeX(BLOCK_DIAGONAL$GGNAME), "_UH3")
+  )
+  
+  dat$Correlation <- factor(dat$Correlation, levels = corr_levels)
+    #===========================================================================
+  p <- dat %>%
     ggplot(aes(x = .data[[x]], 
                y = Values, 
-               shape = factor(r), 
+               shape = Correlation,#,factor(r), 
                size = Variance,
+               # color = `Correlation structure`,
+               fill = Correlation,#`Correlation structure`,
                group = interaction(Variance,r))) +
-    geom_point(alpha = 0.25) + 
+    geom_point(alpha = 0.3) + 
     scale_size_ordinal(range = c(1, 2.25)) +
     scale_x_discrete(labels = label_parsedx) +
   facet_grid(as.formula(facet_str),
@@ -193,20 +212,18 @@ create_plot_for_t <- function(prepared_data, unordered = TRUE){
     theme(axis.text.x = element_text(hjust = 1, size = 9, angle = rot),
           axis.text.y = element_text(size=7)
     ) +
-    guides(color = guide_legend(title = TeX(CORR_MATRIX$MATHNAME), ncol = 7)) + 
-    scale_shape_manual(
-      name = TeX(CORR_MATRIX$MATHNAME),
-      values = c(15, 16, 17, 21, 22, 23, 24), 
-      labels = c(TeX("$\\rho = 0.1$"), 
-                 TeX("$\\rho = 0.5$"), 
-                 TeX("$\\rho = 0.9$"),
-                 "B2", "U2", "UL3", "UH3")
-    ) +
-    # scale_fill_manual(values = c("B2" = "blue", "U2" = "blue", "UL3" = "blue", "UH3" = "blue")) +
+
+    scale_shape_manual(values =  c(21, 22, 23, 21, 22, 24, 25),
+                       name = TeX(CORR_MATRIX$MATHNAME),
+                       labels = legend_labs) +
+    scale_fill_manual(name = TeX(CORR_MATRIX$MATHNAME),
+                      labels = legend_labs,
+                      values = c(rep("#B47846", 3),
+                                 rep("#4682B4", 4))) +
     COMMON_THEME
   
   if (unordered) {
-    p <-p + geom_line(color = 'gray33', lwd = 0.1)
+    p <-p + geom_line(color = 'gray33', linewidth = 0.01)
   }
   return(p)
 }
