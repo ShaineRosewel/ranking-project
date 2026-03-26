@@ -17,11 +17,11 @@ create_basic_results_table <- function(dataset, caption){
                          T3$MATHNAME)
   
   dataset %>% 
-    mutate(Approach = ifelse(Approach == NONRANK$SHORTNAME, 
+    mutate(Approach = ifelse(Approach == NONRANK$RAWCHAR, 
                              NONRANK$SHORTNAME, 
-                             ifelse(Approach == firstup(IND$RAWCHAR), 
+                             ifelse(Approach == IND$RAWCHAR, 
                                     IND$SHORTNAME, 
-                                    ifelse(Approach == firstup(BONF$RAWCHAR), 
+                                    ifelse(Approach == BONF$RAWCHAR, 
                                            BONF$SHORTNAME, 
                                            "")
     ))) %>% 
