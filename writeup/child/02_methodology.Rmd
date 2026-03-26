@@ -23,7 +23,7 @@ We want the joint confidence region in (\ref{eq:rev1}) to satisfy the following 
 Equivalently, we require
 
 \begin{equation}
- P\left( \max_{k=1,2,\ldots,K} \left| \dfrac{\hat{\theta}_k-\theta_k}{\sigma_k} \right| \le t \right)  =1-\alpha. 
+ P\left( \max_{k=1,2,\ldots,K} \left| \dfrac{\hat{\theta}_k-\theta_k}{\sigma_k} \right| \le t \right)  =1-\alpha.  \label{eq:prb}
 \end{equation}
 
 
