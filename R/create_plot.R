@@ -59,11 +59,26 @@ create_plot_for_app_data <- function(dat_to_plot,
   
   data_to_plot <- dat_to_plot %>% filter(Approach != 'pulse')
   
-  all_potential_levels <- c(IND$RAWCHAR, BONF$RAWCHAR, NONRANK$RAWCHAR)
-  existing_levels <- all_potential_levels[
-    all_potential_levels %in% data_to_plot$Approach]
+  # all_potential_levels <- c(IND$RAWCHAR, BONF$RAWCHAR, NONRANK$RAWCHAR)
+  # all_potental_labels <- c(IND$SHORTNAME,BONF$SHORTNAME,NONRANK$SHORTNAME)
+  # 
+  # 
+  # existing_levels <- all_potential_levels[
+  #   all_potential_levels %in% data_to_plot$Approach]
+  # existing_labels <- all_potental_labels[
+  #   all_potential_levels %in% data_to_plot$Approach]
+
+  all_levels <- c(IND$RAWCHAR, BONF$RAWCHAR, NONRANK$RAWCHAR)
+  all_labels <- c(IND$SHORTNAME, BONF$SHORTNAME, NONRANK$SHORTNAME)
+
+  present_mask <- all_levels %in% data_to_plot$Approach
+
+  existing_levels <- all_levels[present_mask]
+  existing_labels <- all_labels[present_mask]
+  
   data_to_plot$Approach <- factor(data_to_plot$Approach, 
-                                  levels = existing_levels)
+                                  levels = existing_levels,
+                                  labels = existing_labels)
   
   if (length(shape_labels)==1){
     shape_labels = sort(unique(data_to_plot$highlight1))
@@ -105,8 +120,10 @@ create_plot_for_app_data <- function(dat_to_plot,
     guides(shape = guide_legend(override.aes = list(size = 1.25))) +
     COMMON_THEME + 
     theme(legend.position = legendloc) +
-    facet_wrap(~Approach, ncol=length(unique(data_to_plot$Approach)), 
-               labeller = as_labeller(cap_first)) + coord_flip()
+    facet_wrap(~Approach,
+               ncol=length(unique(data_to_plot$Approach))
+               )+ 
+    coord_flip()
   return(p)
 }
 
