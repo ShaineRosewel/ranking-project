@@ -200,7 +200,7 @@ create_plot_for_t <- function(prepared_data, unordered = TRUE){
                # color = `Correlation structure`,
                fill = Correlation,#`Correlation structure`,
                group = interaction(Variance,r))) +
-    geom_point(alpha = 0.3) + 
+    geom_point(alpha = 0.3, stroke = 0.1) + 
     scale_size_ordinal(range = c(1, 2.25)) +
     scale_x_discrete(labels = label_parsedx) +
   facet_grid(as.formula(facet_str),
