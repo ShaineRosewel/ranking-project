@@ -4,13 +4,13 @@ The outcomes of the simulation studies are organized into Sections \ref{sec:unor
 
 The resulting joint confidence regions for the unordered parameters obtained through Algorithm \ref{alg:nonrank_ci} are compared to those from Klein's independent assumption and Bonferroni approaches. This is to show the advantage of using the said algorithm in the presence of correlation among ranked estimates. 
 
-The left portion of Table \ref{tab:nonrank-eq-cov} illustrates that coverage values for both independent and Bonferroni joint confidence regions increase with higher $\rho$ in an equicorrelated structure, irrespective of $K$, reflecting the conservative nature of these regions. Meanwhile, Algorithm \ref{alg:nonrank_ci} consistently produces coverages that are close to the nominal level, 0.95. The advantage in using the approach is evident at moderate to high $\rho$.
+The left portion of Table \ref{tab:nonrank-eq-cov} illustrates that coverage values for both `r IND$SHORTNAME` and `r BONF$SHORTNAME` joint confidence regions increase with higher $\rho$ in an equicorrelated structure, irrespective of $K$, reflecting the conservative nature of these regions. Meanwhile, Algorithm \ref{alg:nonrank_ci} consistently produces coverages that are close to the nominal level, 0.95. The advantage in using the approach is evident at moderate to high $\rho$.
 
 In the case of block diagonal correlation structures presented in the right-hand side of Table \ref{tab:nonrank-eq-cov}, the improvement from using Algorithm \ref{alg:nonrank_ci} becomes distinguishable when larger block sizes have higher $\rho$. This is particularly evident for B2 and UH3 where 50% of the estimates are set to be highly correlated. In U2, 30% of the estimates are highly correlated, while in UL3, 20% are highly correlated. In both cases, the proposed algorithm has little to no advantage over independent and Bonferroni. With $K=50$, however, the improvement is noticeable across all case of block correlation structures considered. This can be attributed to the growing number of correlated estimates itself.
 
-It can be stated that for the same $\rho$, the improvement in using Algorithm \ref{alg:nonrank_ci} is diminished for block diagonal correlation structure compared to that of equicorrelation structure. This is because in general, the correlation among estimates is weaker because the off-diagonal blocks are set to zero for block diagonal correlation structure.
+It can be stated that for the same $\rho$, the improvement in using Algorithm \ref{alg:nonrank_ci} is diminished for block diagonal correlation structure compared to that of equicorrelation structure. This is because the correlation among estimates is weaker in the block diagonal structure, where off-diagonal blocks are zero.  
 
-The same coverage values are observed for difference variances of $\hat{\theta}$.
+The same coverage values are observed for different spreads of the true parameter vector $\boldsymbol{\theta}$. This results from assuming the same known $\Sigma$ across cases. In Equation (\ref{eq:prb}), it follows that the distribution of $t$ only depends on $\Sigma$ and $K$. This is more intuitive in the bootstrap world as demonstrated in Algorithm \ref{alg:nonrank_ci}. In step 2, we generate $\hat {\boldsymbol \theta}^*_b \sim N_K (\hat{\boldsymbol \theta}, \Sigma)$ and compute $\underset{k}{\max} \left| \frac{\hat{\theta}_{bk}^* - \hat{\theta}_k}{\sigma_k} \right|$ where $\hat{\boldsymbol \theta}_{b}^* - \hat{\boldsymbol \theta} \sim N_K(0, \Sigma)$. From Equation (\ref{eq:sigma_matrix}), this also implies that the correlation matrix $\mathbf{R}$ influences the coverage.
 
 ```{r}
 library(ggplot2)
@@ -73,9 +73,15 @@ create_side_by_side_table_within_main(eq_data = eq_coverage_unordered,
                                       )
 ```
 
+
 Results for $T_1$ and $T_2$ tightness measures for $\mathbf{R}_{\text{eq}}$, shown in rows 1 and 2 of Figure \ref{fig:nonrank-plot}, indicate that Algorithm \ref{alg:nonrank_ci} yields narrower intervals than both the independent and Bonferroni approaches. The improvement is negligible at low $\rho$ and becomes more pronounced as $\rho$ increases; in each facet of Figure \ref{fig:nonrank-plot}, this is captured by the bend as each line connecting the points goes from `r IND$SHORTNAME`, `r BONF$SHORTNAME`, to `r NONRANK$SHORTNAME`. The angle of the bend in each facet also shows that the improvement in `r T1$MATHNAME` and `r T2$MATHNAME` is larger with lower variance in the estimates. Moreover, while intervals become wider with larger $K$, as shown by the groupwise movement of the points from the left to the right facet for each row of Figure \ref{fig:nonrank-plot}, this effect is dampened by the variance of the estimates. That is, the general increase in `r T1$MATHNAME` and `r T2$MATHNAME` as $K$ increases is larger for estimates that vary less. This is demonstrated by the corresponding jumps of each group of same-size points across facets for every row. When $\hat{\theta}$ values are more dispersed, the intervals are narrower; however, as they vary less or become closer to each other, ranks tend to interchange more, resulting in wider ranges. This aligns with the intuition that intervals are most precise when the estimates being ranked have greater separation. The same observations can be made for `r T3$MATHNAME` noting that higher values are more desirable. Altogether, these trends show that the proposed approach is most advantageous in the presence of moderate to high correlation, especially when ranking a larger number of estimates with close values.
 
+The last three rows of Figure \ref{fig:nonrank-plot} show the results for a block diagonal correlation structure. Similar to the coverage results, the overall benefit of using the `r NONRANK$SHORTNAME` is reduced compared to when an equicorrelated structure is enforced. In each facet, this is illustrated through the muted bend of the line connecting the points corresponding to `r BONF$SHORTNAME` and the `r NONRANK$SHORTNAME`. Otherwise, the patterns observed for the equicorrelated structure remain consistent.
+
 The actual values corresponding to $T_1$, $T_2$ and $T_2$ in Figure \ref{fig:nonrank-plot} are provided in Tables \ref{tab:nonrank-eq-t1},  \ref{tab:nonrank-eq-t2}, and \ref{tab:nonrank-eq-t3} of the Appendix.
+
+
+
 
 ```{r nonrank-plot, fig.cap = "Simulation Result for Tightness Measure of Unordered Parameters", fig.height=9.5}
 create_plot_for_t(prepare_t_facet_plot_data(
@@ -87,8 +93,12 @@ create_plot_for_t(prepare_t_facet_plot_data(
 
 ## Joint confidence region for the ordered parameters {#sec:ordered-results}
 
+Table \ref{tab:rank-eq-cov} illustrates results for joint confidence region for the ordered parameters. With confidence regions for ranks, we are not able to map the intervals to the estimates, unlike those in the previous section. 
 
-```{r}
+With the two proposed approaches, `r ASYMP$SHORTNAME` is seen to have coverage less than the nominal level while `r BOOT$SHORTNAME` produced values close to 0.95 except for $K = 50$. For this case, it `r BOOT$SHORTNAME` tends to be conservative. 
+
+
+```{r rank-eq-cov}
 options(knitr.kable.NA = '')
 eq_coverage_ordered <- preprocess_coverage(eq_res, sd_value = 2, equicorrelation = TRUE, unordered = FALSE)
 bl_coverage_ordered <- preprocess_coverage(bl_res, sd_value = 2, equicorrelation = FALSE, unordered = FALSE)
@@ -98,6 +108,32 @@ create_side_by_side_table_within_main(eq_data = eq_coverage_ordered,
                           num_variance=1,
                           unordered = FALSE
                                       )
+```
+
+
+```{r}
+# options(knitr.kable.NA = '')
+# eq_coverage_ordered <- preprocess_coverage(eq_res, sd_value = 3.6, equicorrelation = TRUE, unordered = FALSE)
+# bl_coverage_ordered <- preprocess_coverage(bl_res, sd_value = 3.6, equicorrelation = FALSE, unordered = FALSE)
+# 
+# create_side_by_side_table_within_main(eq_data = eq_coverage_ordered,
+#                            bl_data = bl_coverage_ordered,
+#                           num_variance=1,
+#                           unordered = FALSE
+#                                       )
+```
+
+
+```{r}
+# options(knitr.kable.NA = '')
+# eq_coverage_ordered <- preprocess_coverage(eq_res, sd_value = 6, equicorrelation = TRUE, unordered = FALSE)
+# bl_coverage_ordered <- preprocess_coverage(bl_res, sd_value = 6, equicorrelation = FALSE, unordered = FALSE)
+# 
+# create_side_by_side_table_within_main(eq_data = eq_coverage_ordered,
+#                            bl_data = bl_coverage_ordered,
+#                           num_variance=1,
+#                           unordered = FALSE
+#                                       )
 ```
 
 
