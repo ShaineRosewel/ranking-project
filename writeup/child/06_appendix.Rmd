@@ -18,7 +18,6 @@ dataset %>%
 ```
 
 
-
 ```{r true-theta-boxplot, fig.cap="True $\\theta$ values used in the simulation have different levels of variability.", message = FALSE, warning=FALSE, fig.pos='H'}
 source("/home/realiseshewon/PDev/kde-ranking/R/create_plot.R")
 
@@ -32,8 +31,10 @@ library(ggplot2)
 library(dplyr)
 library(tidyr)
 source("/home/realiseshewon/PDev/kde-ranking/R/preprocess_data.R")
+source("/home/realiseshewon/PDev/kde-ranking/R/preprocess_data.R")
 source("/home/realiseshewon/PDev/kde-ranking/R/create_table.R")
-
+source("/home/realiseshewon/PDev/kde-ranking/R/create_plot.R")
+source("/home/realiseshewon/PDev/kde-ranking/R/CONSTANTS.R")
 
 # equicorr <- TRUE
 # eq_res <- combine_summaries(
@@ -86,6 +87,22 @@ mutate(
   mutate(across(c(nonrankbased,rankbased_asymptotic, rankbased_level2bs, independent, bonferroni), round, 3)) 
 ```
 
+\newpage
+\vspace*{1cm}
+
+
+```{r nonrank-eq-cov}
+options(knitr.kable.NA = '')
+eq_coverage_unordered <- preprocess_coverage(eq_res, sd_value = 2, equicorrelation = TRUE, unordered = TRUE)
+bl_coverage_unordered <- preprocess_coverage(bl_res, sd_value = 2, equicorrelation = FALSE, unordered = TRUE)
+
+create_side_by_side_table_within_main(eq_data = eq_coverage_unordered,
+                           bl_data = bl_coverage_unordered, 
+                          num_variance=1,
+                          unordered = TRUE
+                                      )
+```
+
 
 \blandscape
 
@@ -121,6 +138,56 @@ create_table_for_tightness_measure(prepare_appendix_t_measure_table(eq_res, bl_r
                                    "t3", unordered = TRUE)
 
 ```
+
+\elandscape
+
+\newpage
+\vspace*{1cm}
+
+```{r rank-eq-cov}
+options(knitr.kable.NA = '')
+eq_coverage_ordered <- preprocess_coverage(eq_res, sd_value = 2, equicorrelation = TRUE, unordered = FALSE)
+bl_coverage_ordered <- preprocess_coverage(bl_res, sd_value = 2, equicorrelation = FALSE, unordered = FALSE)
+
+create_side_by_side_table_within_main(eq_data = eq_coverage_ordered,
+                           bl_data = bl_coverage_ordered,
+                          num_variance=1,
+                          unordered = FALSE
+                                      )
+```
+
+
+\newpage
+\vspace*{1cm}
+
+```{r}
+options(knitr.kable.NA = '')
+eq_coverage_ordered <- preprocess_coverage(eq_res, sd_value = 3.6, equicorrelation = TRUE, unordered = FALSE)
+bl_coverage_ordered <- preprocess_coverage(bl_res, sd_value = 3.6, equicorrelation = FALSE, unordered = FALSE)
+
+create_side_by_side_table_within_main(eq_data = eq_coverage_ordered,
+                           bl_data = bl_coverage_ordered,
+                          num_variance=1,
+                          unordered = FALSE
+                                      )
+```
+
+\newpage
+\vspace*{1cm}
+
+```{r}
+options(knitr.kable.NA = '')
+eq_coverage_ordered <- preprocess_coverage(eq_res, sd_value = 6, equicorrelation = TRUE, unordered = FALSE)
+bl_coverage_ordered <- preprocess_coverage(bl_res, sd_value = 6, equicorrelation = FALSE, unordered = FALSE)
+
+create_side_by_side_table_within_main(eq_data = eq_coverage_ordered,
+                           bl_data = bl_coverage_ordered,
+                          num_variance=1,
+                          unordered = FALSE
+                                      )
+```
+
+\blandscape
 
 \newpage
 \vspace*{1cm}
