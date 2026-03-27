@@ -63,33 +63,8 @@ mutate(
 ```
 
 
-
 ```{r}
-
-```
-
-
-
-```{r}
-
 forplot <- prepare_coverage_data_plot(eq_res, bl_res, unordered = TRUE)
-# eq_coverage_ordered <- preprocess_coverage(eq_res, sd_value = 2, equicorrelation = TRUE, unordered = TRUE)
-# bl_coverage_ordered <- preprocess_coverage(bl_res, sd_value = 2, equicorrelation = FALSE, unordered = TRUE)
-# 
-# eq_coverage_orderedm <- preprocess_coverage(eq_res, sd_value = 3.6, equicorrelation = TRUE, unordered = TRUE)
-# bl_coverage_orderedm <- preprocess_coverage(bl_res, sd_value = 3.6, equicorrelation = FALSE, unordered = TRUE)
-# 
-# eq_coverage_orderedh <- preprocess_coverage(eq_res, sd_value = 6, equicorrelation = TRUE, unordered = TRUE)
-# bl_coverage_orderedh <- preprocess_coverage(bl_res, sd_value = 6, equicorrelation = FALSE, unordered = TRUE)
-
-
-
-
-
-
-
-
-
 create_plot_for_coverage(forplot, unordered=TRUE)
 ```
 
@@ -117,57 +92,8 @@ With the two proposed approaches, `r ASYMP$SHORTNAME` is seen to have coverage l
 
 
 ```{r fig.height = 7}
-# eq_coverage_ordered <- preprocess_coverage(eq_res, sd_value = 2, equicorrelation = TRUE, unordered = FALSE)
-# bl_coverage_ordered <- preprocess_coverage(bl_res, sd_value = 2, equicorrelation = FALSE, unordered = FALSE)
-# 
-# eq_coverage_orderedm <- preprocess_coverage(eq_res, sd_value = 3.6, equicorrelation = TRUE, unordered = FALSE)
-# bl_coverage_orderedm <- preprocess_coverage(bl_res, sd_value = 3.6, equicorrelation = FALSE, unordered = FALSE)
-# 
-# eq_coverage_orderedh <- preprocess_coverage(eq_res, sd_value = 6, equicorrelation = TRUE, unordered = FALSE)
-# bl_coverage_orderedh <- preprocess_coverage(bl_res, sd_value = 6, equicorrelation = FALSE, unordered = FALSE)
-
-
-# forplot <- rbind(rbind(eq_coverage_ordered, bl_coverage_ordered) %>% mutate(sd = 'Low'),
-#       rbind(eq_coverage_orderedm, bl_coverage_orderedm) %>% mutate(sd = 'Moderate'),
-#       rbind(eq_coverage_orderedh, bl_coverage_orderedh) %>% mutate(sd = 'High')) %>%
-#   pivot_longer(cols = c(rankbased_asymptotic, rankbased_level2bs), names_to = 'Approach') %>%
-#   mutate(diff = 0.95 - value,
-#          `Correlation structure` = factor(`Correlation structure`, levels = c('Equicorrelated','Block Diagonal'), ordered = TRUE),
-#          r = factor(r, levels = c("0.1","0.5", "0.9", "B2", "UL3", "U2", "UH3"), ordered =TRUE),
-#          sd = factor(sd, levels = c("Low", "Moderate", "High"), ordered = TRUE))
 forplot <- prepare_coverage_data_plot(eq_res, bl_res, unordered = FALSE)
 create_plot_for_coverage(forplot, unordered=FALSE)
-
-# forplot %>%
-#   ggplot(aes(x = factor(K), y = diff, fill = factor(r))) +
-#   geom_bar(stat="identity",
-#            position=position_dodge(width=0.5,preserve = "single"), width = 0.5, alpha = 0.3) +
-#   #overlay data points
-#   geom_point(aes(group = factor(r), shape = factor(r)), position=position_dodge(width=0.5,preserve = "single"), size = 1.25, stroke = 0.3, alpha = 0.4) +
-#   scale_shape_manual(values =  c(21, 22, 23, 21, 22, 24, 25),
-#                        name = TeX(CORR_MATRIX$MATHNAME),
-#                        labels = legend_labs)+
-#   scale_fill_manual(name = TeX(CORR_MATRIX$MATHNAME),
-#                       labels = legend_labs,
-#                       values = c(rep("#B47846", 3),
-#                                  rep("#4682B4", 4))) +
-#   facet_grid("sd+`Correlation structure`~ Approach") +
-#   geom_hline(yintercept=0, alpha = 0.3, color = "gray") +
-#   coord_flip() +
-#   theme_bw() +
-#   theme(axis.line = element_line(colour = "gray"),
-#                           panel.grid.minor = element_blank(),
-#                           panel.grid.major.x = element_blank(),
-#                           text = element_text(family = "serif"),
-#                           legend.position = "top",
-#                           legend.spacing.y = unit(0.5, "cm"), 
-#                           legend.box.just = "left",
-#                           legend.margin = margin(t = 0, r = 0, b = 0, 
-#                                                  l = 0, unit = "mm"),
-#                           legend.key.width = unit(0.5, "cm"),
-#                           legend.spacing.x = unit(0.5, "cm"),
-#                           legend.background = element_blank()
-# )
 ```
 
 
