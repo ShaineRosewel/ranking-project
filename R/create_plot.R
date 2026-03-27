@@ -34,7 +34,44 @@ create_boxplot_for_true_theta <- function(dataset){
   )
 }
 
-
+create_plot_for_coverage <- function(dataset, unordered){
+  
+  if (unordered) {
+    grid_formula <- "`Correlation structure`~ Approach"
+  } else {
+    grid_formula <- "sd+`Correlation structure`~ Approach"
+  }
+  
+  legend_labs <- c(TeX("$\\rho = 0.1$"),
+                   TeX("$\\rho = 0.5$"),
+                   TeX("$\\rho = 0.9$"),
+                   "B2", "UL3","U2", "UH3")
+  
+  
+  return(forplot %>%
+           ggplot(aes(x = factor(K), y = diff, fill = factor(r))) +
+           geom_bar(stat="identity",
+                    position=position_dodge(width=0.5,
+                                            preserve = "single"), width = 0.5, 
+                    alpha = 0.3) +
+           geom_point(aes(group = factor(r), shape = factor(r)), 
+                      position=position_dodge(width=0.5,preserve = "single"), 
+                      size = 1.25, stroke = 0.3, alpha = 0.4) +
+           scale_shape_manual(values =  c(21, 22, 23, 21, 22, 24, 25),
+                              name = TeX(CORR_MATRIX$MATHNAME),
+                              labels = legend_labs)+
+           scale_fill_manual(name = TeX(CORR_MATRIX$MATHNAME),
+                             labels = legend_labs,
+                             values = c(rep("#B47846", 3),
+                                        rep("#4682B4", 4))) +
+           facet_grid(grid_formula) +
+           geom_hline(yintercept=0, alpha = 0.7, color = "black", linewidth = 0.1) +
+           coord_flip() +
+           theme_bw() +
+           xlab("K") +
+           ylab("Coverage - 0.95") +
+           COMMON_THEME)
+}
 
 create_plot_for_app_data <- function(dat_to_plot,
                                      elements, 
