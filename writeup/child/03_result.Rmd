@@ -25,12 +25,14 @@ source("/home/realiseshewon/PDev/kde-ranking/R/CONSTANTS.R")
 eq_res <- combine_summaries(
   "/home/realiseshewon/PDev/kde-ranking/simulation_results/summaries/summary_k",
   TRUE
-) %>% mutate(Variance = factor(ifelse(sd == 2, 'Low', 
-                                      ifelse(sd == 3.6, "Moderate", "High")),
-                               levels = c("Low", "Moderate", "High"), 
-                               ordered = TRUE)) %>% 
-  mutate(`Correlation structure` = "Equicorrelated") %>%
-  mutate(across(c(nonrankbased,rankbased_asymptotic, rankbased_level2bs, independent, bonferroni), round, 3)) 
+) %>% mutate(
+  Variance = factor(ifelse(sd == 2, LOW$NAME,
+                           ifelse(sd == 3.6, MED$NAME, HIGH$NAME)),
+                    levels = c(LOW$NAME, MED$NAME, HIGH$NAME), 
+                    ordered = TRUE)) %>% 
+  mutate(`Correlation structure` = EQUICORRELATED$NAME) %>%
+  mutate(across(c(nonrankbased, rankbased_asymptotic, rankbased_level2bs, 
+                  independent, bonferroni), round, 3)) 
   #mutate(across(5:8, round, 3))
 
 
@@ -61,17 +63,55 @@ mutate(
 ```
 
 
-```{r nonrank-eq-cov, include = FALSE}
-options(knitr.kable.NA = '')
-eq_coverage_unordered <- preprocess_coverage(eq_res, sd_value = 2, equicorrelation = TRUE, unordered = TRUE)
-bl_coverage_unordered <- preprocess_coverage(bl_res, sd_value = 2, equicorrelation = FALSE, unordered = TRUE)
-
-create_side_by_side_table_within_main(eq_data = eq_coverage_unordered,
-                           bl_data = bl_coverage_unordered, 
-                          num_variance=1,
-                          unordered = TRUE
-                                      )
+```{r}
+eq_coverage_ordered <- preprocess_coverage(eq_res, sd_value = 2, equicorrelation = TRUE, unordered = TRUE)
+eq_coverage_ordered 
 ```
+
+
+```{r}
+prepare_coverage_data_plot <- function(unordered = TRUE){
+  
+  eq_coverage_ordered <- preprocess_coverage(eq_res, sd_value = 2, equicorrelation = TRUE, unordered = unordered)
+  bl_coverage_ordered <- preprocess_coverage(bl_res, sd_value = 2, equicorrelation = FALSE, unordered = unordered)
+  
+  eq_coverage_orderedm <- preprocess_coverage(eq_res, sd_value = 3.6, equicorrelation = TRUE, unordered = unordered)
+  bl_coverage_orderedm <- preprocess_coverage(bl_res, sd_value = 3.6, equicorrelation = FALSE, unordered = unordered)
+  
+  eq_coverage_orderedh <- preprocess_coverage(eq_res, sd_value = 6, equicorrelation = TRUE, unordered = unordered)
+  bl_coverage_orderedh <- preprocess_coverage(bl_res, sd_value = 6, equicorrelation = FALSE, unordered = unordered)
+  
+  if (unordered) {
+    pivot_longer_cols <- c('bonferroni','nonrankbased', 'independent')
+  } else {
+    pivot_longer_cols <- c('rankbased_asymptotic', 'rankbased_level2bs')
+  }
+  
+  return(rbind(
+    rbind(eq_coverage_ordered, bl_coverage_ordered) %>% mutate(sd = LOW$NAME),
+    rbind(eq_coverage_orderedm, bl_coverage_orderedm) %>% mutate(sd = MED$NAME),
+    rbind(eq_coverage_orderedh, bl_coverage_orderedh) %>% mutate(sd = HIGH$NAME)) %>%
+    pivot_longer(cols = pivot_longer_cols, 
+                 names_to = 'Approach') %>%
+    mutate(diff = value - .95,
+           sd = factor(sd, 
+                       levels = c(LOW$NAME, MED$NAME, HIGH$NAME), 
+                       ordered = TRUE),
+           `Correlation structure` = factor(`Correlation structure`,
+                                            levels = c(EQUICORRELATED$NAME,
+                                                       BLOCK_DIAGONAL$NAME), 
+                                            ordered = TRUE),
+           r = factor(r, levels = c("0.1","0.5", "0.9", 
+                                    "B2", "UL3", "U2", "UH3"), ordered =TRUE),
+           Approach = factor(ifelse(Approach == IND$RAWCHAR, IND$SHORTNAME, 
+                             ifelse(Approach == BONF$RAWCHAR, BONF$SHORTNAME, 
+                                    NONRANK$SHORTNAME)),
+                             levels = c(IND$SHORTNAME, BONF$SHORTNAME, NONRANK$SHORTNAME),
+                             ordered = TRUE))
+  )
+}
+```
+
 
 
 ```{r}
@@ -90,34 +130,50 @@ legend_labs <- c(TeX("$\\rho = 0.1$"),
                   TeX("$\\rho = 0.9$"),
                   "B2", "UL3","U2", "UH3")
 
-forplot <- rbind(rbind(eq_coverage_ordered, bl_coverage_ordered) %>% mutate(sd = 'Low'),
-      rbind(eq_coverage_orderedm, bl_coverage_orderedm) %>% mutate(sd = 'Moderate'),
-      rbind(eq_coverage_orderedh, bl_coverage_orderedh) %>% mutate(sd = 'High')) %>%
-  pivot_longer(cols = c(bonferroni,nonrankbased, independent), names_to = 'Approach') %>%
+forplot <- rbind(
+  rbind(eq_coverage_ordered, bl_coverage_ordered) %>% mutate(sd = LOW$NAME),
+  rbind(eq_coverage_orderedm, bl_coverage_orderedm) %>% mutate(sd = MED$NAME),
+  rbind(eq_coverage_orderedh, bl_coverage_orderedh) %>% mutate(sd = HIGH$NAME)) %>%
+  pivot_longer(cols = c(bonferroni,nonrankbased, independent), 
+               names_to = 'Approach') %>%
   mutate(diff = value - .95,
-         sd = factor(sd, levels = c("Low", "Moderate", "High"), ordered = TRUE),
-         `Correlation structure` = factor(`Correlation structure`, levels = c('Equicorrelated','Block Diagonal'), ordered = TRUE),
-         r = factor(r, levels = c("0.1","0.5", "0.9", "B2", "UL3", "U2", "UH3"), ordered =TRUE))
-
-
+         sd = factor(sd, 
+                     levels = c(LOW$NAME, MED$NAME, HIGH$NAME), 
+                     ordered = TRUE),
+         `Correlation structure` = factor(`Correlation structure`,
+                                          levels = c(EQUICORRELATED$NAME,
+                                                     BLOCK_DIAGONAL$NAME), 
+                                          ordered = TRUE),
+         r = factor(r, levels = c("0.1","0.5", "0.9", 
+                                  "B2", "UL3", "U2", "UH3"), ordered =TRUE),
+         Approach = factor(ifelse(Approach == IND$RAWCHAR, IND$SHORTNAME, 
+                           ifelse(Approach == BONF$RAWCHAR, BONF$SHORTNAME, 
+                                  NONRANK$SHORTNAME)),
+                           levels = c(IND$SHORTNAME, BONF$SHORTNAME, NONRANK$SHORTNAME),
+                           ordered = TRUE))
 
 forplot %>%
   ggplot(aes(x = factor(K), y = diff, fill = factor(r))) +
   geom_bar(stat="identity",
-           position=position_dodge(width=0.5,preserve = "single"), width = 0.5, alpha = 0.1) +
-  #overlay data points
-  geom_point(aes(group = factor(r), shape = factor(r)), position=position_dodge(width=0.5,preserve = "single"), size = 1.25, stroke = 0.3, alpha = 0.4) +
+           position=position_dodge(width=0.5,
+                                   preserve = "single"), width = 0.5, 
+           alpha = 0.1) +
+  geom_point(aes(group = factor(r), shape = factor(r)), 
+             position=position_dodge(width=0.5,preserve = "single"), 
+             size = 1.25, stroke = 0.3, alpha = 0.4) +
   scale_shape_manual(values =  c(21, 22, 23, 21, 22, 24, 25),
-                       name = TeX(CORR_MATRIX$MATHNAME),
-                       labels = legend_labs)+
+                     name = TeX(CORR_MATRIX$MATHNAME),
+                     labels = legend_labs)+
   scale_fill_manual(name = TeX(CORR_MATRIX$MATHNAME),
-                      labels = legend_labs,
-                      values = c(rep("#B47846", 3),
-                                 rep("#4682B4", 4))) +
+                    labels = legend_labs,
+                    values = c(rep("#B47846", 3),
+                               rep("#4682B4", 4))) +
   facet_grid(`Correlation structure`~ Approach) +
-  geom_hline(yintercept=0, alpha = 0.3, color = "gray") +
+  geom_hline(yintercept=0, alpha = 0.7, color = "black", linewidth = 0.1) +
   coord_flip() +
   theme_bw() +
+  xlab("K") +
+  ylab("Coverage - 0.95") +
   theme(axis.line = element_line(colour = "gray"),
                           panel.grid.minor = element_blank(),
                           panel.grid.major.x = element_blank(),
@@ -191,7 +247,7 @@ forplot %>%
                       labels = legend_labs,
                       values = c(rep("#B47846", 3),
                                  rep("#4682B4", 4))) +
-  facet_grid(sd+`Correlation structure`~ Approach) +
+  facet_grid("sd+`Correlation structure`~ Approach") +
   geom_hline(yintercept=0, alpha = 0.3, color = "gray") +
   coord_flip() +
   theme_bw() +
@@ -221,45 +277,6 @@ forplot %>%
 
 
 
-
-
-```{r rank-eq-cov}
-options(knitr.kable.NA = '')
-eq_coverage_ordered <- preprocess_coverage(eq_res, sd_value = 2, equicorrelation = TRUE, unordered = FALSE)
-bl_coverage_ordered <- preprocess_coverage(bl_res, sd_value = 2, equicorrelation = FALSE, unordered = FALSE)
-
-create_side_by_side_table_within_main(eq_data = eq_coverage_ordered,
-                           bl_data = bl_coverage_ordered,
-                          num_variance=1,
-                          unordered = FALSE
-                                      )
-```
-
-
-```{r}
-# options(knitr.kable.NA = '')
-# eq_coverage_ordered <- preprocess_coverage(eq_res, sd_value = 3.6, equicorrelation = TRUE, unordered = FALSE)
-# bl_coverage_ordered <- preprocess_coverage(bl_res, sd_value = 3.6, equicorrelation = FALSE, unordered = FALSE)
-# 
-# create_side_by_side_table_within_main(eq_data = eq_coverage_ordered,
-#                            bl_data = bl_coverage_ordered,
-#                           num_variance=1,
-#                           unordered = FALSE
-#                                       )
-```
-
-
-```{r}
-# options(knitr.kable.NA = '')
-# eq_coverage_ordered <- preprocess_coverage(eq_res, sd_value = 6, equicorrelation = TRUE, unordered = FALSE)
-# bl_coverage_ordered <- preprocess_coverage(bl_res, sd_value = 6, equicorrelation = FALSE, unordered = FALSE)
-# 
-# create_side_by_side_table_within_main(eq_data = eq_coverage_ordered,
-#                            bl_data = bl_coverage_ordered,
-#                           num_variance=1,
-#                           unordered = FALSE
-#                                       )
-```
 
 
 ```{r rank-plot, fig.cap = "Simulation Result for Tightness Measure of Ordered Parameters", fig.height=9.5}
