@@ -34,6 +34,8 @@ create_boxplot_for_true_theta <- function(dataset){
   )
 }
 
+
+
 create_plot_for_app_data <- function(dat_to_plot,
                                      elements, 
                                      title,
@@ -212,7 +214,6 @@ create_plot_for_t <- function(prepared_data, unordered = TRUE){
     theme(axis.text.x = element_text(hjust = 1, size = 9, angle = rot),
           axis.text.y = element_text(size=7)
     ) +
-
     scale_shape_manual(values =  c(21, 22, 23, 21, 22, 24, 25),
                        name = TeX(CORR_MATRIX$MATHNAME),
                        labels = legend_labs) +
