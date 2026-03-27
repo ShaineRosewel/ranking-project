@@ -62,6 +62,56 @@ preprocess_coverage <- function(dataset,
 } 
 
 
+prepare_coverage_data_plot <- function(eq_res, bl_res, unordered = TRUE){
+  
+  eq_coverage_ordered <- preprocess_coverage(eq_res, sd_value = 2, equicorrelation = TRUE, unordered = unordered)
+  bl_coverage_ordered <- preprocess_coverage(bl_res, sd_value = 2, equicorrelation = FALSE, unordered = unordered)
+  
+  eq_coverage_orderedm <- preprocess_coverage(eq_res, sd_value = 3.6, equicorrelation = TRUE, unordered = unordered)
+  bl_coverage_orderedm <- preprocess_coverage(bl_res, sd_value = 3.6, equicorrelation = FALSE, unordered = unordered)
+  
+  eq_coverage_orderedh <- preprocess_coverage(eq_res, sd_value = 6, equicorrelation = TRUE, unordered = unordered)
+  bl_coverage_orderedh <- preprocess_coverage(bl_res, sd_value = 6, equicorrelation = FALSE, unordered = unordered)
+  
+  if (unordered) {
+    pivot_longer_cols <- c('bonferroni','nonrankbased', 'independent')
+    all_rows <- rbind(eq_coverage_ordered, bl_coverage_ordered) %>% mutate(sd = LOW$NAME)
+    app_levels <- c(IND$SHORTNAME, BONF$SHORTNAME, NONRANK$SHORTNAME)
+  } else {
+    pivot_longer_cols <- c('rankbased_asymptotic', 'rankbased_level2bs')
+    all_rows <- rbind(rbind(eq_coverage_ordered, bl_coverage_ordered) %>% mutate(sd = LOW$NAME),
+                      rbind(eq_coverage_orderedm, bl_coverage_orderedm) %>% mutate(sd = MED$NAME),
+                      rbind(eq_coverage_orderedh, bl_coverage_orderedh) %>% mutate(sd = HIGH$NAME))
+    app_levels <- c(ASYMP$SHORTNAME, BOOT$SHORTNAME)
+  }
+  
+  return(
+    all_rows %>%
+      pivot_longer(cols = pivot_longer_cols, 
+                   names_to = 'Approach') %>%
+      mutate(diff = value - .95,
+             sd = factor(sd, 
+                         levels = c(LOW$NAME, MED$NAME, HIGH$NAME), 
+                         ordered = TRUE),
+             `Correlation structure` = factor(`Correlation structure`,
+                                              levels = c(EQUICORRELATED$NAME,
+                                                         BLOCK_DIAGONAL$NAME), 
+                                              ordered = TRUE),
+             r = factor(r, levels = c("0.1","0.5", "0.9", 
+                                      "B2", "UL3", "U2", "UH3"), ordered =TRUE),
+             Approach = case_when(
+               Approach == IND$RAWCHAR   ~ IND$SHORTNAME,
+               Approach == BONF$RAWCHAR  ~ BONF$SHORTNAME,
+               Approach == NONRANK$RAWCHAR ~ NONRANK$SHORTNAME,
+               Approach == ASYMP$RAWCHAR ~ ASYMP$SHORTNAME,
+               Approach == BOOT$RAWCHAR  ~ BOOT$SHORTNAME,
+               TRUE                      ~ Approach # Fallback
+             ),
+             Approach = factor(Approach, levels = app_levels, ordered = TRUE))
+  )
+}
+
+
 prepare_t_facet_plot_data <- function(
     eq_data = eq_res,
     bl_data = bl_res,
