@@ -92,13 +92,16 @@ The first column of Figure \ref{fig:rank-cov-plot} illustrates how coverage for 
 
 The second column of Figure \ref{fig:rank-cov-plot} presents coverage for `r BOOT$SHORTNAME`. It produces values that do not deviate systematically from 0.95 but relatively closer when compared to `r ASYMP$SHORTNAME`. Except from the similar conservative joint confidence regions for $K=50$ across different levels of variances in the estimates for the block diagonal correlation structure, no other patterns are observed.
 
-With the two proposed approaches, it is clear that `r BOOT$SHORTNAME` is superior to `r ASYMP$SHORTNAME` in terms of coverage. The former yields coverage closer to nominal irrespective of how correlated the estimates are. 
+With the two proposed approaches, it is clear that `r BOOT$SHORTNAME` is superior to `r ASYMP$SHORTNAME` in terms of coverage. The former yields coverage closer to nominal irrespective of how correlated the estimates are.
 
 ```{r rank-cov-plot, fig.cap = "Simulation Result for Coverage of Ordered Parameters", fig.height = 7}
 forplot <- prepare_coverage_data_plot(eq_res, bl_res, unordered = FALSE)
 create_plot_for_coverage(forplot, unordered=FALSE)
 ```
 
+Figure \ref{fig:rank-plot} shows the resulting tightness measures for the joint confidence regions of ordered parameters. Its first three rows are for `r ASYMP$SHORTNAME` while the last three rows are for `r BOOT$SHORTNAME`.
+
+Regions become wider with larger $K$ as shown by the upward, groupwise movement of points from left to right in the first, second, fourth, and fifth rows of Figure \ref{fig:rank-plot}. For each facet, the widest regions correspond to estimates with low variance. 
 
 ```{r rank-plot, fig.cap = "Simulation Result for Tightness Measure of Ordered Parameters", fig.height=8.75}
 create_plot_for_t(prepare_t_facet_plot_data(
@@ -106,4 +109,14 @@ create_plot_for_t(prepare_t_facet_plot_data(
     bl_data = bl_res,
     unordered = FALSE), unordered = FALSE)
 ```
+
+Across different levels of $\rho$ in the equicorrelated structure, the difference in tightness measures become more pronounced with larger $K$ and lower variance. These differences are less noticeable for the block correlation structure where correlation is generally weaker. 
+
+These findings are all consistent with the outcomes for the unordered parameters.
+
+Despite its low coverage, `r ASYMP$SHORTNAME` still produces regions that are wider than those of `r BOOT$SHORTNAME`. This can be observed by comparing the range of y-axis values in the first and third rows for $T_1$ and also the second and fourth rows for $T_2$. Also, for equicorrelated structures, `r ASYMP$SHORTNAME` always logs wider regions for higher $\rho$.
+
+The Appendix provides the coverage values for Figure \ref{fig:rank-cov-plot} (Tables \ref{tab:rank-eq-cov1}–\ref{tab:rank-eq-cov3}) and the values of $T_1$, $T_2$, and $T_3$ in Figure \ref{fig:rank-plot} (Tables \ref{tab:rank-eq-t1}–\ref{tab:rank-eq-t3}).
+
+
 
