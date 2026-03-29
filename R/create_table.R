@@ -183,6 +183,8 @@ create_table_for_tightness_measure <- function(summary, metric_type,
     metric_title = T2$MATHNAME 
   } else if (metric_type == T3$CHAR) {
     metric_title = T3$MATHNAME 
+  } else if (metric_type == COVERAGE$CHAR) {
+    metric_title = COVERAGE$NAME
   }
     
   num <- length(selected_columns)

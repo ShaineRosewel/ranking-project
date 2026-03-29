@@ -171,6 +171,23 @@ prepare_t_facet_plot_data <- function(
   return(rbind(t_eq, t_bl))
 }
 
+prepare_appendix_cov_measure_table <- function(partial){
+  
+  eq_padded_ordered<-partial %>% 
+    filter(`Correlation structure` == EQUICORRELATED$NAME) %>% 
+    select(-c(`Correlation structure`)) %>%
+    group_by(K) %>%
+    group_modify(~ add_row(.x)) %>% 
+    ungroup() %>% 
+    mutate(K = as.character(K)) %>%
+    mutate(K = ifelse(duplicated(K), "", K))
+  
+  bl_test <- partial %>% 
+    filter(`Correlation structure` == BLOCK_DIAGONAL$NAME) %>% 
+    select(-c(`Correlation structure`, K))
+  
+  return(cbind(eq_padded_ordered, bl_test))
+}
 
 prepare_appendix_t_measure_table <- function(eq_data, bl_data, 
                                              unordered, tmeasure = "t1"){
