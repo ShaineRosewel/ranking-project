@@ -9,9 +9,9 @@ indent: true
 header-includes:
 - \PassOptionsToPackage{colorlinks=true,linkcolor=blue,citecolor=black,urlcolor=black}{hyperref}
 - \usepackage{amsmath}
-- \numberwithin{equation}{subsection}
-- \numberwithin{figure}{subsection}
-- \numberwithin{table}{subsection}
+- \numberwithin{equation}{section}
+- \numberwithin{figure}{section}
+- \numberwithin{table}{section}
 - \usepackage{setspace}\onehalfspacing
 - \usepackage{pdflscape}
 - \newcommand{\blandscape}{\begin{landscape}}
