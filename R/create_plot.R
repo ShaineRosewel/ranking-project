@@ -41,7 +41,7 @@ create_plot_for_coverage <- function(dataset, unordered){
     legend_loc <- "top"
   } else {
     grid_formula <- "sd+`Correlation structure`~ Approach"
-    legend_loc <- "right"
+    legend_loc <- "top"
   }
   
   legend_labs <- c(TeX("$\\rho = 0.1$"),
