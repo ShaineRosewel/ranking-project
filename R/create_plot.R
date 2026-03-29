@@ -38,8 +38,10 @@ create_plot_for_coverage <- function(dataset, unordered){
   
   if (unordered) {
     grid_formula <- "`Correlation structure`~ Approach"
+    legend_loc <- "top"
   } else {
     grid_formula <- "sd+`Correlation structure`~ Approach"
+    legend_loc <- "right"
   }
   
   legend_labs <- c(TeX("$\\rho = 0.1$"),
@@ -70,7 +72,8 @@ create_plot_for_coverage <- function(dataset, unordered){
            theme_bw() +
            xlab("K") +
            ylab("Coverage - 0.95") +
-           COMMON_THEME)
+           COMMON_THEME+
+           theme(legend.position = legend_loc))
 }
 
 create_plot_for_app_data <- function(dat_to_plot,
