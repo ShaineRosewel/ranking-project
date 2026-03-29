@@ -86,7 +86,7 @@ V(\hat{\theta}_{(k)})= \text{kth ordered value among} \ \left\{ \theta^{2}_{1} +
 \end{equation}
 Consequently, we get an estimate of the asymptotic variance of $\hat{\theta}_{(k)}$, given by:
 \begin{equation}
-\widehat{V(\hat{\theta}_{(k)})}= \text{kth ordered value among} \ \left\{ \hat{\theta}^{2}_{1} + \sigma_1^2, \hat{\theta}^{2}_{2} + \sigma_2^2, \dots, \hat{\theta}^{2}_{K} + \sigma_K^2 \right\} - \hat {\theta}^{2}_{b(k)}.
+\widehat{V(\hat{\theta}_{(k)})}= \text{kth ordered value among} \ \left\{ \hat{\theta}^{2}_{1} + \sigma_1^2, \hat{\theta}^{2}_{2} + \sigma_2^2, \dots, \hat{\theta}^{2}_{K} + \sigma_K^2 \right\} - \hat {\theta}^{2}_{(k)}.
 \label{eq:rev6}
 \end{equation}
 
@@ -104,7 +104,7 @@ Algorithm \ref{alg:rank_asymp} describes the procedure to compute the joint conf
             Compute 
                 \Statex \begin{minipage}{\linewidth}
                 \centering
-                $\hat\sigma^*_{b(k)} = \sqrt{\left[\text{kth ordered value among} \ \left\{ \hat{\theta}^{*2}_{b1} + \sigma_1^2, \hat{\theta}^{*2}_{b2} + \sigma_2^2, \dots, \hat{\theta}^{*2}_{bK} + \sigma_K^2 \right\}\right] - \hat {\theta}^{*2}_{(k)}}$
+                $\hat\sigma^*_{b(k)} = \sqrt{\left[\text{kth ordered value among} \ \left\{ \hat{\theta}^{*2}_{b1} + \sigma_1^2, \hat{\theta}^{*2}_{b2} + \sigma_2^2, \dots, \hat{\theta}^{*2}_{bK} + \sigma_K^2 \right\}\right] - \hat {\theta}^{*2}_{b(k)}}$
                 \end{minipage}
         \end{minipage}
         \State Compute 
