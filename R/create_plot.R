@@ -175,7 +175,7 @@ create_plot_for_t <- function(prepared_data, unordered = TRUE){
   } else {
     app_levels = c(ASYMP$RAWCHAR,BOOT$RAWCHAR)
     app_labels = c(ASYMP$SHORTNAME, BOOT$SHORTNAME)
-    x = "Correlation structure"
+    x =  "Correlation structure"
     facet_str <- "Approach + Metric ~ K"
     label_parsedx <- function(x) parse(text = as.character(x))
     rot <- 0
