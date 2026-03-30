@@ -178,11 +178,8 @@ create_table_for_tightness_measure(prepare_appendix_t_measure_table(eq_res, bl_r
 #                                       )
 ```
 
-
 \newpage
 \vspace*{1cm}
-
-
 
 ```{r rank-eq-cov}
 options(knitr.kable.NA = "")
