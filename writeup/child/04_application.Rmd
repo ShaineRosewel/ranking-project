@@ -1,6 +1,17 @@
+We demonstrate the application of our proposed approaches to actual data using estimates from the Pulso ng Bayan Pre-electoral Survey (May 6–9, 2025). We also incorporate mean travel time to work, following a use case previously analyzed by Klein. In this research, we do not estimate correlation but instead assume potential sources and values. This aims to show that using an additional source of information can improve joint confidence regions by reducing overall uncertainty.
+
 ## Pulse Asia Results
 
 For the Pulse Asia results, correlations are assumed to be induced by alliances or political slates formed for the purpose of elections. Slates campaigned by the incumbent president (Alyansa) and his former allies, the vice-president and former president (DuterTen), are considered. Imee Marcos and Villar are both endorsed by these rival factions and are given a separate block. Makabayan is also given its own block as it has a relatively large set of 11 candidates. Another popular alliance that emerged is that of Pangilinan and Aquino (KiBam). The remaining candidates are collapsed into a single block.
+
+```{r}
+# application_data$Makabayan <- ifelse(application_data$Party == 'MKBYN', 1, 0)
+# application_data %>% 
+#   mutate(summed = DuterTen + Alyansa + KiBam + Makabayan) %>%
+#   filter(summed == 0) %>%
+#   arrange(Party) %>% pull(Candidate)
+```
+
 
 
 ```{r}
@@ -23,7 +34,7 @@ cand <- generate_true_theta_rd(persist_df = FALSE)
 
 cand$Makabayan <- ifelse(cand$Party == 'MKBYN', 1, 0)
 
-corr_matrix <-generate_corr_mat(0.9, "pulse")
+corr_matrix <-generate_corr_mat(0.8, "pulse")
 
 dataset_all <- cand %>%
   mutate(Voting_for_dec = `Voting For`/100) %>%
@@ -43,6 +54,7 @@ ci_results <- get_ci_for_app_data(
     corr_matrix=corr_matrix 
     )
 ```
+
 
 
 ```{r pulse-table}
@@ -83,9 +95,6 @@ create_basic_results_table(to_table, "Joint Confidence Region Tightness Measures
 ```
 
 Table \@ref(tab:pulse-table) shows that higher within-block correlation leads to better T1, T2, and T3. This means that overall, the intervals in the joint confidence region are generally narrower. Figure \@ref(fig:pulse-result) assumes high correlations within blocks of alliances and political slates. The joint confidence regions for Independent, Bonferroni, and Nonrank are shown respectively. For this use case, lower rank corresponds to highly preferred candidates.
-
-
-
 
 ```{r pulse-result,fig.cap = "95% Joint Confidence Region for Candidate Votes", fig.height = 7}
 prepared_data <-  prepare_plotting_data_for_pulse(ci_results,dataset_all) %>%
@@ -204,5 +213,5 @@ create_plot_for_app_data(prepared_data %>%
                          title = "95% Joint Confidence Region for 2011 Mean Travel Times in the US",
                          shape_legend_title ="Density\n(in people\nper sq mile)",
                          shape_labels = c("0-20", "20-50", "50-100", "100-200","200+"),
-                         shape_map = c("1" = 1, "2" = 2, "3" = 3, "4" = 4,"5" = 5))
+                         shape_map = c("1" = 21, "2" = 1, "3" = 2, "4" = 3,"5" = 4))
 ```
