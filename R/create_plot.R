@@ -85,11 +85,7 @@ create_plot_for_app_data <- function(dat_to_plot,
                                      ylab = 'Sample rank',
                                      shape_legend_title = 'Alliance',
                                      shape_labels = "",
-                                     shape_map = c("DuterTen" = 1, 
-                                                   "Alyansa" = 2, 
-                                                   "KiBam" = 3, 
-                                                   "Makabayan" = 4,
-                                                   "DuterTen-Alyansa" = 5)){
+                                     shape_map){
   
   if ('pulse' %in% dat_to_plot$Approach) {
     size <- 7
@@ -139,9 +135,9 @@ create_plot_for_app_data <- function(dat_to_plot,
                aes(shape = highlight1), 
                stroke = 0.2,
                color = "gray44") + 
-    # scale_shape_manual(values = shape_map, 
-    #                    name = shape_legend_title, 
-    #                    labels = shape_labels) +
+    scale_shape_manual(values = shape_map,
+                       name = shape_legend_title,
+                       labels = shape_labels) +
     scale_y_continuous(breaks = seq(1, length(dat_to_plot %>% 
                                                 pull({{ elements }}) %>% 
                                                 unique()), by = 4)) +
