@@ -4,13 +4,7 @@ We demonstrate the application of our proposed approaches to actual data using e
 
 For the Pulse Asia results, correlations are assumed to be induced by alliances or political slates formed for the purpose of elections. Slates campaigned by the incumbent president (Alyansa) and his former allies, the vice-president and former president (DuterTen), are considered. Imee Marcos and Villar are both endorsed by these rival factions and are given a separate block. Makabayan is also given its own block as it has a relatively large set of 11 candidates. Another popular alliance that emerged is that of Pangilinan and Aquino (KiBam). The remaining candidates are collapsed into a single block.
 
-```{r}
-# application_data$Makabayan <- ifelse(application_data$Party == 'MKBYN', 1, 0)
-# application_data %>% 
-#   mutate(summed = DuterTen + Alyansa + KiBam + Makabayan) %>%
-#   filter(summed == 0) %>%
-#   arrange(Party) %>% pull(Candidate)
-```
+Table \@ref(tab:pulse-table) shows that higher within-block correlation leads to better `r T1$MATHNAME`, `r T2$MATHNAME`, and `r T3$MATHNAME`.This means that, overall, the intervals in the joint confidence region are generally narrower, and therefore less uncertain. Figure \@ref(fig:pulse-result) assumes high correlation ($\rho = 0.9$) within blocks of alliances and political slates. The joint confidence regions for Independent, Bonferroni, and Nonrank are shown respectively. For this use case, lower rank corresponds to highly preferred candidates.
 
 
 
@@ -34,15 +28,49 @@ cand <- generate_true_theta_rd(persist_df = FALSE)
 
 cand$Makabayan <- ifelse(cand$Party == 'MKBYN', 1, 0)
 
-corr_matrix <-generate_corr_mat(0.8, "pulse")
+corr_matrix <-  block_corr(block_sizes=c(2, 12, 10, 2, 11, 2, 3, 3, 19), rho_within=c(rep(0.9,2), rep(0.9, 7)), rho_between=0.0)
+#generate_corr_mat(0.9, "pulse")
+
+
+
+# dataset_all <- cand %>%
+#   mutate(Voting_for_dec = `Voting For`/100) %>%
+#   #filter(Voting_for_dec >= 0.01) %>%
+#   mutate(se = sqrt((Voting_for_dec*(1-Voting_for_dec))/1200) ) %>%
+#   select(-Voting_for_dec) %>% 
+#   arrange(desc(`Voting For`)) %>%  
+#   arrange(desc(DuterTen), desc(Alyansa),desc(KiBam), desc(Makabayan))  %>%
+#   rename(`Rank UB_pulse` = `Rank UB`, `Rank LB_pulse` = `Rank LB`)
 
 dataset_all <- cand %>%
+  # arrange(Party) %>%
+  mutate(
+    ind_name_recall = ifelse(Candidate %in% c(
+      'Tulfo.B, Ben Bitag',
+      'Revillame, Willie Wil'), 1, 0),
+    ind_name_trad = ifelse(Candidate %in% c(
+      'Bosita, Colonel',
+      'Mendoza, Heidi',
+      'Gonzales, Norberto'), 1, 0),
+    labor = ifelse(Candidate %in% c(
+      'Matula, Atty. Sonny',
+      'Espiritu, Luke',
+      'De Guzman, Ka Leody'
+    ),1,0),
+    sectoral = ifelse(Candidate %in% c(
+      "D'Angelo, David", "Cabonegro, Roy", "Amad, Wilson", "Marquez, Norman", "Martinez, Eric",          
+      "De Alban, Atty. Angelo", "Ballon, Roberto",  "Gamboa, Mark Louie", "Sahidulla, Nur-Ana", "Montemayor, Joey",
+      "Valbuena, Mar Manibela", "Olivar, Jose Jessie", "Verceles, Leandro", "Jose, Relly Jr.", "Arellano, Ernesto",  
+      "Escobal, Arnel", "Tapado, Michael BongBong", "Capuyan, Allen", "Mustapha, Subair"
+    ),1, 0),
+    )%>% 
+  mutate(summed = DuterTen + Alyansa + KiBam + Makabayan + ind_name_recall + ind_name_trad + labor + sectoral) %>%
   mutate(Voting_for_dec = `Voting For`/100) %>%
   #filter(Voting_for_dec >= 0.01) %>%
   mutate(se = sqrt((Voting_for_dec*(1-Voting_for_dec))/1200) ) %>%
   select(-Voting_for_dec) %>% 
   arrange(desc(`Voting For`)) %>%  
-  arrange(desc(DuterTen), desc(Alyansa),desc(KiBam), desc(Makabayan))  %>%
+  arrange(desc(DuterTen), desc(Alyansa),desc(KiBam), desc(Makabayan), desc(ind_name_recall), desc(ind_name_trad), desc(labor), desc(sectoral))  %>%
   rename(`Rank UB_pulse` = `Rank UB`, `Rank LB_pulse` = `Rank LB`)
 
 ci_results <- get_ci_for_app_data(
@@ -94,9 +122,24 @@ to_table <- allcases %>%
 create_basic_results_table(to_table, "Joint Confidence Region Tightness Measures")
 ```
 
-Table \@ref(tab:pulse-table) shows that higher within-block correlation leads to better T1, T2, and T3. This means that overall, the intervals in the joint confidence region are generally narrower. Figure \@ref(fig:pulse-result) assumes high correlations within blocks of alliances and political slates. The joint confidence regions for Independent, Bonferroni, and Nonrank are shown respectively. For this use case, lower rank corresponds to highly preferred candidates.
 
-```{r pulse-result,fig.cap = "95% Joint Confidence Region for Candidate Votes", fig.height = 7}
+
+```{r}
+
+p <- function(v) {
+  Reduce(f=paste, x = v)
+}
+
+
+
+# diffs %>% arrange(desc(diff))
+```
+
+```{r}
+cand
+```
+
+```{r}
 prepared_data <-  prepare_plotting_data_for_pulse(ci_results,dataset_all) %>%
   mutate(Approach = ifelse(Approach == 'nonrank', 'nonrankbased', Approach)) %>%
   separate(
@@ -107,9 +150,39 @@ prepared_data <-  prepare_plotting_data_for_pulse(ci_results,dataset_all) %>%
   ) %>% filter(Approach != "bonferroni")# %>% filter(Approach != "pulse")
 
 
-create_plot_for_app_data(prepared_data, Candidate, k, reverse=TRUE,
+diffs <- prepared_data %>% 
+  group_by(Approach, highlight1, Candidate,) %>% 
+  count() %>% 
+  filter(Approach != 'pulse')%>%
+  pivot_wider(names_from = Approach, values_from = n) %>% 
+  mutate(diff = independent - nonrankbased) %>% arrange(desc(diff)) %>%
+  pivot_longer(cols = c(independent, nonrankbased), names_to='Approach') %>%
+  mutate(diff = ifelse(Approach=="nonrankbased", diff, 0))
+```
+
+```{r}
+DAT <- dataset_all %>% separate(Candidate, into = c("Candidate", "f"), sep = ", ")
+diffs %>% filter(Approach == 'nonrankbased') %>% left_join(DAT[,c("Candidate", "se", "Voting For")]) %>% select(-value) #%>%View()
+```
+
+
+
+```{r pulse-result,fig.cap = "95% Joint Confidence Region for Candidate Votes", fig.height = 8}
+prepared_data <-  prepare_plotting_data_for_pulse(ci_results,dataset_all) %>%
+  mutate(Approach = ifelse(Approach == 'nonrank', 'nonrankbased', Approach)) %>%
+  separate(
+    col = Candidate,           
+    into = c("Candidate", "FirstName"),
+    sep = ",",    
+    extra = "merge"
+  ) %>% filter(Approach != "bonferroni")# %>% filter(Approach != "pulse")
+
+prepared_data1 <- prepared_data %>% left_join(diffs[,c("Approach", "Candidate", 'diff')], by = c("Approach", "Candidate"))
+
+create_plot_for_app_data(prepared_data1, Candidate, k, reverse=TRUE,
                          title ='95% Joint Confidence Region for Candidates with at least 1% Votes', 
-                        shape_map = c("DuterTen" = 1, "Alyansa" = 2, "KiBam" = 3, "Makabayan" = 4,"DuterTen-Alyansa" = 5, "None" = 22))
+                        shape_map = c("DuterTen" = 0, "Alyansa" = 1, "KiBam" = 2, "Makabayan" = 3,
+                                      "DuterTen-Alyansa" = 8, "ind_name_trad" = 5, "ind_name_recall" = 6, 'labor' = 10, 'sectoral' = 4))
 ```
 
 
@@ -118,7 +191,7 @@ create_plot_for_app_data(prepared_data, Candidate, k, reverse=TRUE,
 Block diagonal correlation structure is assumed according to 2010 population density in each corresponding state (https://www.energy.gov/cmei/vehicles/fact-661-february-7-2011-population-density). Five blocks are used wherein the first has population density from 0 to 20 people per square mile, the second has 20 to 50, the third has 50 to 100, the fourth has 100 to 200 and the fifth has more than 200. 
 
 
-```{r}
+```{r include = FALSE}
 dataset_all <- readRDS("/home/realiseshewon/PDev/kde-ranking/data/mean_travel_time_ranking_2011.rds")
 
 dataset_all$density <- c(94.4, 1.2, 56.3,
@@ -130,9 +203,9 @@ dataset_all$density <- c(94.4, 1.2, 56.3,
                       104.9,43.1,594.8,
                       839.4,174.8,66.6,
                       63.2,87.1, 6.8,
-                      23.8, 24.6, 147.0, 
+                      23.8, 24.6, 147.0,
                       1195.5,17.0, 411.2,
-                      196.1, 9.7, 282.3, 
+                      196.1, 9.7, 282.3,
                       54.7, 39.9, 283.9,
                       1018.1,153.9,10.7,
                       153.9,96.3,	33.6,
@@ -141,43 +214,43 @@ dataset_all$density <- c(94.4, 1.2, 56.3,
 
 
 dataset_all <- dataset_all %>% mutate(
-  density_group = ifelse(density > 0 & density <= 20, 1, 
-                         ifelse(density > 20 & density <= 50, 2, 
+  density_group = ifelse(density > 0 & density <= 20, 1,
+                         ifelse(density > 20 & density <= 50, 2,
                                 ifelse(density > 50 & density <= 100, 3,
                                        ifelse(density > 100 & density <= 200, 4, 5))))
 ) %>% arrange(desc(theta_k)) %>% arrange(desc(density_group))
 ```
 
 
-```{r}
+```{r include = FALSE}
 all_ci <- lapply(seq(0,0.9,0.1), function(r){
-  
+
   corr_matrix <- generate_corr_mat(r, "traveltime")
-  
+
   ci_results <- get_ci_for_app_data(
     theta_hat = dataset_all$theta_k,
     true_sds = dataset_all$S,
     K = dim(dataset_all)[1],
     alpha = 0.05,
     B <- 500,
-    corr_matrix=corr_matrix 
+    corr_matrix=corr_matrix
     )
-  
+
   out <- get_tmeasures_for_app_data(ci_results)
   out$r <- r
-  
+
   return(out %>% select(r, Measure, Independent, Bonferroni, Nonrank))
   })
 
 allcases <- do.call(rbind, all_ci)
 
-to_table <- allcases %>% 
-  pivot_longer(cols = c(Independent, Bonferroni, Nonrank), 
-                          names_to = "Approach", 
-                          values_to = "Value") %>% 
+to_table <- allcases %>%
+  pivot_longer(cols = c(Independent, Bonferroni, Nonrank),
+                          names_to = "Approach",
+                          values_to = "Value") %>%
   distinct() %>%
-  pivot_wider(names_from = 'Measure',values_from = "Value") %>% 
-  filter(!((Approach == 'Bonferroni' | Approach == 'Independent') & r != 0 )) %>%  
+  pivot_wider(names_from = 'Measure',values_from = "Value") %>%
+  filter(!((Approach == 'Bonferroni' | Approach == 'Independent') & r != 0 )) %>%
   mutate(Approach = tolower(Approach)) %>%
   mutate(Approach = ifelse(Approach == 'nonrank', 'nonrankbased', Approach)) %>%
   mutate(across(c(T1, T2, T3), round, 3))
@@ -187,7 +260,7 @@ create_basic_results_table(to_table, "Joint Confidence Region Tightness Measures
 
 
 
-```{r}
+```{r include = FALSE}
 corr_matrix <-generate_corr_mat(0.9, "traveltime")
 
 ci_results <- get_ci_for_app_data(
@@ -196,22 +269,30 @@ ci_results <- get_ci_for_app_data(
   K = dim(dataset_all)[1],
   alpha = 0.05,
   B <- 500,
-  corr_matrix=corr_matrix 
+  corr_matrix=corr_matrix
   )
 ```
-
 ```{r}
+ prepare_plotting_data_for_traveltime(ci_results,dataset_all)
+```
+
+
+
+```{r include = FALSE}
 prepared_data <- prepare_plotting_data_for_traveltime(ci_results,dataset_all) %>%
   mutate(Approach = ifelse(Approach == 'nonrank', 'nonrankbased', Approach))
+
+
+prepared_data
 ```
 
 Figure \@ref(fig:traveltime-result) assumes high correlations within blocks with different population densities. Only joint confidence regions for Bonferroni and Nonrank are since Independent result is similar to Bonferroni. For this use case, lower rank corresponds to states with lower mean travel time.
 
-```{r traveltime-result, fig.cap = "95% Joint Confidence Region for 2011 Mean Travel Times in the US"}
-create_plot_for_app_data(prepared_data %>% 
-                           filter(Approach != 'independent'), iso, theta_k, reverse=FALSE,xlab = "State",
-                         title = "95% Joint Confidence Region for 2011 Mean Travel Times in the US",
-                         shape_legend_title ="Density\n(in people\nper sq mile)",
-                         shape_labels = c("0-20", "20-50", "50-100", "100-200","200+"),
-                         shape_map = c("1" = 21, "2" = 1, "3" = 2, "4" = 3,"5" = 4))
+```{r traveltime-result, fig.cap = "95% Joint Confidence Region for 2011 Mean Travel Times in the US", include = FALSE}
+# create_plot_for_app_data(prepared_data %>% 
+#                            filter(Approach != 'independent'), iso, theta_k, reverse=FALSE,xlab = "State",
+#                          title = "95% Joint Confidence Region for 2011 Mean Travel Times in the US",
+#                          shape_legend_title ="Density\n(in people\nper sq mile)",
+#                          shape_labels = c("0-20", "20-50", "50-100", "100-200","200+"),
+#                          shape_map = c("1" = 21, "2" = 1, "3" = 2, "4" = 3,"5" = 4))
 ```
