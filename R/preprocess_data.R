@@ -355,10 +355,10 @@ prepare_plotting_data_for_pulse <- function(ci_results, df){
       Candidate %in% msen            ~ "Alyansa",
       Candidate %in% ksen            ~ "KiBam",
       Candidate %in% mksen           ~ "Makabayan",
-      Candidate %in% labor           ~ "labor",
-      Candidate %in% sectoral        ~ "sectoral",
-      Candidate %in% ind_name_trad   ~ "ind_name_trad",
-      Candidate %in% ind_name_recall ~ "ind_name_recall",
+      Candidate %in% labor           ~ "Labor",
+      Candidate %in% sectoral        ~ "Sectoral",
+      Candidate %in% ind_name_trad   ~ "Traditional",
+      Candidate %in% ind_name_recall ~ "Media",
       TRUE                           ~ "None"
     ))
   
