@@ -78,7 +78,6 @@ create_plot_for_coverage <- function(dataset, unordered){
 
 create_plot_for_app_data <- function(dat_to_plot,
                                      elements, 
-                                     title,
                                      order_identifier, 
                                      reverse = FALSE,
                                      xlab = 'Candidate',
@@ -89,9 +88,9 @@ create_plot_for_app_data <- function(dat_to_plot,
   
   if ('pulse' %in% dat_to_plot$Approach) {
     size <- 7
-    legendloc <- "top"
+    legendloc <- "right"
   } else {
-    size <- 5
+    size <- 7
     legendloc <- "right"
   }
   
@@ -121,11 +120,12 @@ create_plot_for_app_data <- function(dat_to_plot,
   
   order_mult <- if(reverse) -1 else 1
   
-  
+  # print(dat_to_plot)
   p <- ggplot(data = data_to_plot, 
               aes(x = reorder({{ elements }}, 
                               order_mult * {{ order_identifier }}),
-                  y = as.numeric(string_ranks))) + 
+                  y = as.numeric(string_ranks), 
+                  color = as.factor(diff))) + 
     geom_point(data = subset(data_to_plot, highlight0 == "yes"), 
                shape = 16, 
                size = 1.25, 
@@ -133,8 +133,21 @@ create_plot_for_app_data <- function(dat_to_plot,
     geom_point(data = subset(data_to_plot, highlight0 == "no"), 
                size = 1, 
                aes(shape = highlight1), 
-               stroke = 0.2,
-               color = "gray44") + 
+               stroke = 0.5,
+               #color = "gray44"
+               ) + 
+    # scale_color_distiller(palette = "PiYG", direction = 1) +
+    scale_color_manual(
+      values = c(
+        "0" = "gray70",    # Neutral gray
+        "1" = "#addd8e",    # Vibrant Lime-Green (Stronger than pale #bae4b3)
+        "2" = "#41ab5d",    # Solid Kelly Green
+        "3" = "#006d2c",    # Dark Forest Green
+        "4" = "#00441b",     # Deep forest green (near black)
+        "5" = "black"     # Deep forest green (near black)
+      ),
+      name = "Decrease in Rank Length",
+    ) +
     scale_shape_manual(values = shape_map,
                        name = shape_legend_title,
                        labels = shape_labels) +
@@ -142,19 +155,30 @@ create_plot_for_app_data <- function(dat_to_plot,
                                                 pull({{ elements }}) %>% 
                                                 unique()), by = 4)) +
 
-    guides(shape = guide_legend(override.aes = list(size = 1.25))) +
-    
-    labs(title=title) + xlab(xlab) + ylab(ylab) +
+    guides(shape = guide_legend(override.aes = list(size = 1.25), order = 1),
+           color = guide_legend(order= 2)) +
+    xlab(xlab) + ylab(ylab) +
     theme_bw() +
-    theme(axis.text.x = element_text(hjust = 1, size = 8),
+    theme(axis.text.x = element_text(size = 8),
           axis.text.y = element_text(size=size)
     ) +
     COMMON_THEME + 
     theme(legend.position = legendloc) +
     facet_wrap(~Approach,
                ncol=length(unique(data_to_plot$Approach))
-               )+ 
-    coord_flip()
+               )+
+    # facet_grid(highlight1~Approach, scales = "free_y", space = "free_y"
+    # )+
+    theme(
+      strip.text.y = element_blank()#,        # Removes the row labels
+      #strip.background = element_blank()     # Removes the gray background boxes
+    ) +
+    coord_flip() +
+    theme(
+      legend.position = "top",
+      legend.box = "vertical",   # Stack multiple legends on top of each other
+      legend.margin = margin()    # Tighten space to prevent further cutoff
+    )
   return(p)
 }
 
