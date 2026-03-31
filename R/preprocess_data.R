@@ -343,26 +343,44 @@ prepare_plotting_data_for_pulse <- function(ci_results, df){
     dataset_all[dataset_all$DuterTen==1 & dataset_all$Alyansa==1,]$Candidate
     )
   
+  labor <- unique(dataset_all[dataset_all$labor==1,]$Candidate)
+  sectoral <- unique(dataset_all[dataset_all$sectoral==1,]$Candidate)
+  ind_name_trad <- unique(dataset_all[dataset_all$ind_name_trad==1,]$Candidate)
+  ind_name_recall <- unique(dataset_all[dataset_all$ind_name_recall==1,]$Candidate)
   
-  dat_to_plot$highlight1 <- ifelse(
-    dat_to_plot$Candidate %in% dsen,
-    "DuterTen",
-    ifelse(
-      dat_to_plot$Candidate %in% msen,
-      "Alyansa",
-      ifelse(
-        dat_to_plot$Candidate %in% ksen,
-        "KiBam",
-        ifelse(dat_to_plot$Candidate %in% mksen,
-               "Makabayan",
-               ifelse(
-                 dat_to_plot$Candidate %in% dmsen,
-                 "DuterTen-Alyansa","None"
-                 )
-               )
-        )
-      )
-    )
+  dat_to_plot <- dat_to_plot %>%
+    mutate(highlight1 = case_when(
+      Candidate %in% dmsen           ~ "DuterTen-Alyansa",
+      Candidate %in% dsen            ~ "DuterTen",
+      Candidate %in% msen            ~ "Alyansa",
+      Candidate %in% ksen            ~ "KiBam",
+      Candidate %in% mksen           ~ "Makabayan",
+      Candidate %in% labor           ~ "labor",
+      Candidate %in% sectoral        ~ "sectoral",
+      Candidate %in% ind_name_trad   ~ "ind_name_trad",
+      Candidate %in% ind_name_recall ~ "ind_name_recall",
+      TRUE                           ~ "None"
+    ))
+  
+  # dat_to_plot$highlight1 <- ifelse(
+  #   dat_to_plot$Candidate %in% dsen,
+  #   "DuterTen",
+  #   ifelse(
+  #     dat_to_plot$Candidate %in% msen,
+  #     "Alyansa",
+  #     ifelse(
+  #       dat_to_plot$Candidate %in% ksen,
+  #       "KiBam",
+  #       ifelse(dat_to_plot$Candidate %in% mksen,
+  #              "Makabayan",
+  #              ifelse(
+  #                dat_to_plot$Candidate %in% dmsen,
+  #                "DuterTen-Alyansa","None"
+  #                )
+  #              )
+  #       )
+  #     )
+  #   )
 
   return(dat_to_plot)
 }
