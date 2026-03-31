@@ -466,7 +466,7 @@ prepare_plotting_data_for_traveltime <- function(ci_results, df){
   d4 <- unique(dataset_all[dataset_all$density_group==4,]$theta_k)
   d5 <- unique(dataset_all[dataset_all$density_group==5,]$theta_k)
   
-  dat_to_plot$highlight1 <- ifelse(dat_to_plot$theta_k %in% d1, "1", 
+  dat_to_plot$highlight1 <- ifelse(dat_to_plot$theta_k %in% d1, "1",
                                    ifelse(
                                      dat_to_plot$theta_k %in% d2, "2",
                                      ifelse(dat_to_plot$theta_k %in% d3,
@@ -478,6 +478,17 @@ prepare_plotting_data_for_traveltime <- function(ci_results, df){
                                                      "5", "None"
                                                         )))
                                      ))
+  
+  # northeast <- unique(dataset_all[dataset_all$region=='Northeast',]$theta_k)
+  # midwest   <- unique(dataset_all[dataset_all$region=='Midwest',]$theta_k)
+  # south     <- unique(dataset_all[dataset_all$region=='South',]$theta_k)
+  # west      <- unique(dataset_all[dataset_all$region=='West',]$theta_k)
+  
+  
+  # dat_to_plot$highlight1 <- factor(ifelse(dat_to_plot$theta_k %in% northeast, "Northeast",
+  #                                        ifelse(dat_to_plot$theta_k %in% midwest, "Midwest",
+  #                                               ifelse(dat_to_plot$theta_k %in% south, "South",
+  #                                                      ifelse(dat_to_plot$theta_k %in% west, "West", "None")))))
   
   return(dat_to_plot)
 }

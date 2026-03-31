@@ -4,6 +4,7 @@ generate_corr_mat <- function(r, appdata){
     cormat <-  block_corr(block_sizes=c(2, 12, 10, 2, 11, 2, 3, 3, 19), rho_within=rep(r, 9), rho_between=0.0)
   } else if (appdata == 'traveltime') {
     cormat <- block_corr(block_sizes=c(15, 11, 11, 7, 7), rho_within=rep(r, 5), rho_between=0.0)
+    # cormat <- block_corr(block_sizes=c(13, 17, 9, 12), rho_within=rep(r, 4), rho_between=0.0)
   }
   return(cormat)
 }
@@ -21,6 +22,7 @@ get_ci_for_app_data <- function(theta_hat = (dataset_all$`Voting For`)/100,
   S <- sqrt(diag(varcovar_matrix))
   
   set.seed(123974999)
+  # set.seed(982096)
   ci_methods <- list(
     nonrankbased = function() get_ci_nonrankbased(B = B,
                                                   theta_hat = theta_hat,
