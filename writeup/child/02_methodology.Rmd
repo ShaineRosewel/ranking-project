@@ -269,7 +269,8 @@ main = TRUE
 ```
 
 
-The following configurations are used for $\mathbf{R}_{block}$:
+All correlation coefficients are set to be positive ($\rho > 0$) since it aligns better with the intended use case. The following configurations are used for $\mathbf{R}_{block}$:
+
 ```{r}
 options(knitr.kable.NA = '')
 source("/home/realiseshewon/PDev/kde-ranking/R/generate_true_theta.R")
