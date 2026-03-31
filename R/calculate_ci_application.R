@@ -1,6 +1,7 @@
 generate_corr_mat <- function(r, appdata){
   if (appdata == 'pulse') {
-    cormat <- block_corr(block_sizes=c(2, 12, 10, 2, 11, 27), rho_within=rep(r, 6), rho_between=0.0)
+    # cormat <- block_corr(block_sizes=c(2, 12, 10, 2, 11, 27), rho_within=rep(r, 6), rho_between=0.0)
+    cormat <-  block_corr(block_sizes=c(2, 12, 10, 2, 11, 2, 3, 3, 19), rho_within=rep(r, 9), rho_between=0.0)
   } else if (appdata == 'traveltime') {
     cormat <- block_corr(block_sizes=c(15, 11, 11, 7, 7), rho_within=rep(r, 5), rho_between=0.0)
   }
