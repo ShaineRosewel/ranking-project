@@ -2,13 +2,18 @@ We demonstrate the application of our proposed approaches to actual data using e
 
 ## Pulse Asia Results
 
-For the Pulse Asia results, correlations are assumed to be induced by alliances or political slates formed for the purpose of elections. Slates campaigned by the incumbent president (Alyansa) and his former allies, the vice-president and former president (DuterTen), are considered. Imee Marcos and Villar are both endorsed by these rival factions and are given a separate block. Makabayan is also given its own block as it has a relatively large set of 11 candidates. Another popular alliance that emerged is that of Pangilinan and Aquino (KiBam). The remaining candidates are collapsed into a single block.
+For the Pulse Asia results, correlations are assumed to be driven by political slates and alliances formed for the elections.
 
-Table \@ref(tab:pulse-table) shows that higher within-block correlation leads to better `r T1$MATHNAME`, `r T2$MATHNAME`, and `r T3$MATHNAME`.This means that, overall, the intervals in the joint confidence region are generally narrower, and therefore less uncertain. Figure \@ref(fig:pulse-result) assumes high correlation ($\rho = 0.9$) within blocks of alliances and political slates. The joint confidence regions for Independent, Bonferroni, and Nonrank are shown respectively. For this use case, lower rank corresponds to highly preferred candidates.
+The analysis considers several key blocks: Alyansa, representing candidates campaigned for by the incumbent president, and DuterTen, composed of the vice-president and former president’s allies. Imee Marcos and Camille Villar are placed in a separate block, as both are endorsed by these rival factions. 
+
+The Makabayan coalition is given its own category due to its large 11-candidate lineup, while the KiBam alliance highlights the partnership between Kiko Pangilinan and Bam Aquino. Other blocks include candidates focused on labor advocacies, independent popular senatoriables, and traditional politicians with experience in various executive departments. Finally, the remaining less prominent candidates are grouped into a single sectoral block.
+
+Table \@ref(tab:pulse-table) shows that higher within-block correlation leads to better `r T1$MATHNAME`, `r T2$MATHNAME`, and `r T3$MATHNAME`.This means that, overall, the intervals in the joint confidence region are narrower, and therefore less uncertain. Figure \@ref(fig:pulse-result) assumes high correlation ($\rho = 0.9$) within blocks of alliances and political slates. The joint confidence regions for `r IND$SHORTNAME`, `r BONF$SHORTNAME`, and `r NONRANK$SHORTNAME` are shown respectively. For this use case, lower rank corresponds to highly preferred candidates.
 
 
 
 ```{r}
+source("/home/realiseshewon/PDev/kde-ranking/R/CONSTANTS.R")
 library(kableExtra)
 library(tidyr)
 library(dplyr)
