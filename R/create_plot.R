@@ -146,7 +146,7 @@ create_plot_for_app_data <- function(dat_to_plot,
         "4" = "#00441b",     # Deep forest green (near black)
         "5" = "black"     # Deep forest green (near black)
       ),
-      name = "Decrease in Rank Length",
+      name = "Decrease in Occupied Rank Position",
     ) +
     scale_shape_manual(values = shape_map,
                        name = shape_legend_title,
