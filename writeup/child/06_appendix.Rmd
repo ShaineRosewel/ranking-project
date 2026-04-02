@@ -266,27 +266,11 @@ create_table_for_tightness_measure(prepare_appendix_t_measure_table(eq_res, bl_r
 ```{r travel-time-tab-nonrank}
 allcases <- readRDS("filtered-to-one-pulse-CI.rds")
 to_table <- prepare_data_for_application(allcases$t_values, unordered =TRUE)
-create_basic_results_table(to_table, "Joint Confidence Region Tightness Measures")
+create_basic_results_table(to_table, "Tightness Measures for Unordered Parameters")
 ```
 
 
 ```{r travel-time-tab-rank}
-# to_table <- allcases$t_values %>%
-#   select(-c(Independent, Bonferroni, Nonrank)) %>%
-#   pivot_longer(cols = c(Asymptotic, Level2bs),
-#                           names_to = "Approach",
-#                           values_to = "Value") %>%
-#   distinct() %>%
-#   pivot_wider(names_from = 'Measure',values_from = "Value") %>%
-#   # filter(!((Approach == 'Bonferroni' | Approach == 'Independent') & r != 0 )) %>%
-#   mutate(Approach = tolower(Approach)) %>%
-#   mutate(Approach = ifelse(Approach == 'nonrank', 'nonrankbased', Approach)) %>%
-#   mutate(across(c(T1, T2, T3), round, 3))
-# 
-# totab1 <- to_table %>% pivot_wider(names_from = Approach, values_from = c(T1, T2, T3))
-# # create_basic_results_table(to_table, "Joint Confidence Region Tightness Measures")
-
-
 totab1 <- prepare_data_for_application(allcases$t_values, unordered =FALSE)
 
 headers <- setNames(
@@ -302,7 +286,7 @@ totab1 %>%
           linesep = "",
           longtable = TRUE,
           align = "llcc",
-          caption = "CAPTIIIIIOOOON") %>%
+          caption = "Tightness Measures for Ordered Parameters") %>%
       # column_spec(1:(num_variance*num*2 + 1) , width = colwidth) %>%
       add_header_above(headers, 
                        escape = FALSE) %>%
@@ -320,37 +304,12 @@ totab1 %>%
 
 ```{r travel-time-tab-nonrank2}
 allcases <- readRDS("all-travel-time-CI.rds")
-# to_table <- allcases$t_values %>%
-#   select(-c(Asymptotic, Level2bs)) %>%
-#   pivot_longer(cols = c(Independent, Bonferroni, Nonrank),
-#                           names_to = "Approach",
-#                           values_to = "Value") %>%
-#   distinct() %>%
-#   pivot_wider(names_from = 'Measure',values_from = "Value") %>%
-#   filter(!((Approach == 'Bonferroni' | Approach == 'Independent') & r != 0 )) %>%
-#   mutate(Approach = tolower(Approach)) %>%
-#   mutate(Approach = ifelse(Approach == 'nonrank', 'nonrankbased', Approach)) %>%
-#   mutate(across(c(T1, T2, T3), round, 3))
 to_table <- prepare_data_for_application(allcases$t_values, unordered =TRUE)
-create_basic_results_table(to_table, "Joint Confidence Region Tightness Measures")
+create_basic_results_table(to_table, "Tightness Measures for Unordered Parameters")
 ```
 
 ```{r travel-time-tab-rank2}
 allcases <- readRDS("all-travel-time-CI.rds")
-# to_table <- allcases$t_values %>%
-#   select(-c(Independent, Bonferroni, Nonrank)) %>%
-#   pivot_longer(cols = c(Asymptotic, Level2bs),
-#                           names_to = "Approach",
-#                           values_to = "Value") %>%
-#   distinct() %>%
-#   pivot_wider(names_from = 'Measure',values_from = "Value") %>%
-#   # filter(!((Approach == 'Bonferroni' | Approach == 'Independent') & r != 0 )) %>%
-#   mutate(Approach = tolower(Approach)) %>%
-#   mutate(Approach = ifelse(Approach == 'nonrank', 'nonrankbased', Approach)) %>%
-#   mutate(across(c(T1, T2, T3), round, 3))
-# 
-# totab1 <- to_table %>% pivot_wider(names_from = Approach, values_from = c(T1, T2, T3))
-# # create_basic_results_table(to_table, "Joint Confidence Region Tightness Measures")
 totab1 <- prepare_data_for_application(allcases$t_values, unordered =FALSE)
 
 headers <- setNames(
@@ -366,7 +325,7 @@ totab1 %>%
           linesep = "",
           longtable = TRUE,
           align = "llcc",
-          caption = "CAPTIIIIIOOOON") %>%
+          caption = "Tightness Measures for Ordered Parameters") %>%
       # column_spec(1:(num_variance*num*2 + 1) , width = colwidth) %>%
       add_header_above(headers, 
                        escape = FALSE) %>%
