@@ -3,7 +3,7 @@ source("/home/realiseshewon/PDev/kde-ranking/R/create_plot.R")
 dataset<-readRDS("/home/realiseshewon/PDev/kde-ranking/data/true_theta.rds")
 ```
 
-## Simulation true $\theta$s
+## Simulation True $\boldsymbol \theta$s
 
 Figure \@ref(fig:true-theta-boxplot) shows how the spread of the $\theta$ varies in the cases considered in Table \@ref(tab:true-theta-table)
 
@@ -95,7 +95,7 @@ mutate(
 
 \vspace*{1cm}
 
-## Tables for joint confidence region for the unordered parameters
+## Tables: Joint Confidence Region for the Unordered Parameters
 
 ```{r nonrank-eq-cov}
 options(knitr.kable.NA = '')
@@ -191,7 +191,7 @@ create_table_for_tightness_measure(prepare_appendix_t_measure_table(eq_res, bl_r
 
 \vspace*{1cm}
 
-## Tables for joint confidence region for the ordered parameters
+## Tables: Joint Confidence Region for the Ordered Parameters
 
 ```{r rank-eq-cov}
 options(knitr.kable.NA = "")
@@ -261,7 +261,7 @@ create_table_for_tightness_measure(prepare_appendix_t_measure_table(eq_res, bl_r
 
 \vspace*{1cm}
 
-## Tables for Pulse Asia tightness measures
+## Tables: Pulse Asia Tightness Measures
 
 ```{r travel-time-tab-nonrank}
 allcases <- readRDS("filtered-to-one-pulse-CI.rds")
@@ -300,7 +300,7 @@ totab1 %>%
 
 \vspace*{1cm}
 
-## Tables for mean travel time to work tightness measures
+## Tables: 2011 Mean Travel Time to Work in the US Tightness Measures
 
 ```{r travel-time-tab-nonrank2}
 allcases <- readRDS("all-travel-time-CI.rds")
