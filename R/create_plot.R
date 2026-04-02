@@ -347,10 +347,10 @@ create_plot_for_t_app_plot <- function(allcases_dataset){
     theme(
       legend.position = "top",
       legend.box = "horizontal",
-      legend.direction = "horizontal", # Force items to flow horizontally
-      plot.margin = margin(t = 15, r = 10, b = 10, l = 0) # 2. CRITICAL: Increase top margin to prevent cutoff
+      legend.direction = "horizontal",
+      # increase top margin to prevent cutoff
+      plot.margin = margin(t = 15, r = 10, b = 10, l = 0) 
     ) +
-    # 3. MUST be at the end and must include ALL mapped aesthetics
     guides(
       color = guide_legend(nrow = 2, byrow = TRUE),
       shape = guide_legend(nrow = 2, byrow = TRUE),
