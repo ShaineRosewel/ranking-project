@@ -86,7 +86,7 @@ ci_results <- get_ci_for_app_data(
     )
 ```
 
-To show how the improvement gets reflected into the joint confidence region, we assume a high correlation ($\rho = 0.8$) within each previously enumerated block and visually compare the joint confidence regions. For this use case, lower rank corresponds to highly preferred candidates. The first facet of Figure \@ref(fig:pulse-result) illustrates the `r IND$SHORTNAME` joint confidence region while the second one shows the improved `r NONRANK$SHORTNAME` joint confidence region. The green-shaded shapes are the intervals that got shorter after accounting for the correlation. The darker the shade is, the higher the reduction in length. There is no distinguishable pattern as to which among each block members get an improved interval length, but the highest improvement is seen to occur in the middle part of the ranked estimates. `r BONF$SHORTNAME` is not included as it is hugely similar to `r IND$SHORTNAME`.
+To show how the improvement gets reflected into the joint confidence region, we assume a high correlation ($\rho = 0.9$) within each previously enumerated block and visually compare the joint confidence regions. Note that lower rank corresponds to highly preferred candidates. The first facet of Figure \@ref(fig:pulse-result) illustrates the `r IND$SHORTNAME` joint confidence region while the second one shows the improved `r NONRANK$SHORTNAME` joint confidence region. The green-shaded shapes are the intervals that got lesser occupied positions after accounting for the correlation. The darker the shade is, the higher the reduction in length. There is no distinguishable pattern as to which among each block members get an improved interval length, but the highest improvement is seen to occur in the middle part of the ranked estimates. `r BONF$SHORTNAME` is not included as it is hugely similar to `r IND$SHORTNAME`.
 
 ```{r pulse-table}
 all_ci <- lapply(seq(0,0.9,0.1), function(r){
@@ -313,13 +313,13 @@ create_basic_results_table(to_table, "Joint Confidence Region Tightness Measures
 ```
 
 
-Figure @ref(fig:travel-time-fig-nonrank) illustrates how `r T1$MATHNAME`, `r T2$MATHNAME`, and r `T3$MATHNAME` affect the resulting joint confidence region for `r BONF$SHORTNAME` and `r NONRANK$SHORTNAME` when $\rho = `r coeffcons`$. Only joint confidence regions for `r BONF$SHORTNAME` and `r NONRANK$SHORTNAME` are shown since the `r IND$SHORTNAME` result is similar to that of r BONF$SHORTNAME. Lower rank corresponds to states with lower mean travel time. It can be observed that those with no decrease in occupied rank positions originally occupy fewer rank positions (two to seven) than those whose occupied positions (five to 20) decrease by 2 to 3.
+Figure \@ref(fig:travel-time-fig-nonrank) illustrates how `r T1$MATHNAME`, `r T2$MATHNAME`, and `r T3$MATHNAME` affect the resulting joint confidence region for `r BONF$SHORTNAME` and `r NONRANK$SHORTNAME` when $\rho = `r coeffcons`$. Only joint confidence regions for `r BONF$SHORTNAME` and `r NONRANK$SHORTNAME` are shown since the `r IND$SHORTNAME` result is similar to that of `r BONF$SHORTNAME`. Lower rank corresponds to states with lower mean travel time. It can be observed that those with no decrease in occupied rank positions originally occupy fewer rank positions (two to seven) than those whose occupied positions (five to 20) decrease by 2 to 3.
 
 ```{r}
 # dataset_all %>% left_join(prepared_data1 %>% filter(Approach == 'nonrankbased') %>% select(iso, diff)  %>% distinct(),
-  #                         by = 'iso') %>% 
-  # mutate(range_l = bonf_rank_upper - bonf_rank_lower + 1) %>%
-  # arrange(desc(diff)) %>% View()
+#                         by = 'iso') %>%
+# mutate(range_l = bonf_rank_upper - bonf_rank_lower + 1) %>%
+# arrange(desc(diff)) %>% group_by(density_group) %>% mutate(meansd = median(S)) %>% arrange(density_group) %>% pull(theta_k) %>%sd
 ```
 
 
