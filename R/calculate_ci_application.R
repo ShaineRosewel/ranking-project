@@ -1,7 +1,8 @@
 generate_corr_mat <- function(r, appdata){
   if (appdata == 'pulse') {
     # cormat <- block_corr(block_sizes=c(2, 12, 10, 2, 11, 27), rho_within=rep(r, 6), rho_between=0.0)
-    cormat <-  block_corr(block_sizes=c(2, 12, 10, 2, 11, 2, 3, 3, 19), rho_within=rep(r, 9), rho_between=0.0)
+    # cormat <-  block_corr(block_sizes=c(2, 12, 10, 2, 11, 2, 3, 3, 19), rho_within=rep(r, 9), rho_between=0.0)
+    cormat <-  block_corr(block_sizes=c(2, 12, 10, 2, 11, 2, 3, 3, 6), rho_within=rep(r, 9), rho_between=0.0)
   } else if (appdata == 'traveltime') {
     cormat <- block_corr(block_sizes=c(15, 11, 11, 7, 7), rho_within=rep(r, 5), rho_between=0.0)
     # cormat <- block_corr(block_sizes=c(13, 17, 9, 12), rho_within=rep(r, 4), rho_between=0.0)
@@ -28,15 +29,15 @@ get_ci_for_app_data <- function(theta_hat = (dataset_all$`Voting For`)/100,
                                                   theta_hat = theta_hat,
                                                   alpha = alpha,
                                                   varcovar_matrix = varcovar_matrix),
-    # rankbased_asymptotic = function() get_ci_rankbased_asymptotic(B = B,
-    #                                                               theta_hat = theta_hat,
-    #                                                               varcovar_matrix = varcovar_matrix,
-    #                                                               alpha = alpha),
-    # rankbased_level2bs = function() get_ci_rankbased_level2bs(B = B,
-    #                                                           C = 300,
-    #                                                           theta_hat = theta_hat,
-    #                                                           varcovar_matrix = varcovar_matrix,
-    #                                                           alpha = alpha),
+    rankbased_asymptotic = function() get_ci_rankbased_asymptotic(B = B,
+                                                                  theta_hat = theta_hat,
+                                                                  varcovar_matrix = varcovar_matrix,
+                                                                  alpha = alpha),
+    rankbased_level2bs = function() get_ci_rankbased_level2bs(B = B,
+                                                              C = 300,
+                                                              theta_hat = theta_hat,
+                                                              varcovar_matrix = varcovar_matrix,
+                                                              alpha = alpha),
     independent  = function() get_ci_independent(theta_hat = theta_hat, S = S, alpha = alpha),
     bonferroni   = function() get_ci_bonferroni(theta_hat = theta_hat, S = S, alpha = alpha)
   )
@@ -73,13 +74,13 @@ get_tmeasures_for_app_data <- function(ci_results){
     T2_Nonrank = processed$nonrankbased$t2,
     T3_Nonrank = processed$nonrankbased$t3,
     #coverage_nonrankbased = coverages$nonrankbased,
-    # t1_rankbased_asymptotic = processed$rankbased_asymptotic$t1,
-    # t2_rankbased_asymptotic = processed$rankbased_asymptotic$t2,
-    # t3_rankbased_asymptotic = processed$rankbased_asymptotic$t3,
+    T1_Asymptotic = processed$rankbased_asymptotic$t1,
+    T2_Asymptotic = processed$rankbased_asymptotic$t2,
+    T3_Asymptotic = processed$rankbased_asymptotic$t3,
     # coverage_rankbased_asymptotic = coverages$rankbased_asymptotic,
-    # t1_rankbased_level2bs = processed$rankbased_level2bs$t1,
-    # t2_rankbased_level2bs = processed$rankbased_level2bs$t2,
-    # t3_rankbased_level2bs = processed$rankbased_level2bs$t3,
+    T1_Level2bs = processed$rankbased_level2bs$t1,
+    T2_Level2bs = processed$rankbased_level2bs$t2,
+    T3_Level2bs = processed$rankbased_level2bs$t3,
     #coverage_rankbased_level2bs = coverages$rankbased_level2bs,
     T1_Independent = processed$independent$t1,
     T2_Independent = processed$independent$t2,
@@ -102,7 +103,7 @@ get_tmeasures_for_app_data <- function(ci_results){
              extra = "merge"
            ) %>% arrange(Measure, Value) %>%
            pivot_wider(names_from = Approach, values_from = Value) %>% 
-           select(c(Measure, Independent, Bonferroni, Nonrank))
+           select(c(Measure, Independent, Bonferroni, Nonrank, Asymptotic, Level2bs))
   )
   
 }
