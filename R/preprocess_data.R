@@ -3,9 +3,42 @@ source("/home/realiseshewon/PDev/kde-ranking/R/CONSTANTS.R")
 UNORD <- c(IND$RAWCHAR, BONF$RAWCHAR, NONRANK$RAWCHAR)
 ORD <- c(ASYMP$RAWCHAR, BOOT$RAWCHAR)
 
-
-
 library(dplyr)
+
+prepare_data_for_application <- function(allcases_tvalues, unordered){
+  
+  unord <- c('Independent', 'Bonferroni', 'Nonrank')
+  ord <- c('Asymptotic', 'Level2bs')
+  
+  if (unordered) {
+    to_select <- unord #c('Independent', 'Bonferroni', 'Nonrank')
+    to_deselect <- ord #c('Asymptotic', 'Level2bs')
+  } else {
+    to_select <- ord
+    to_deselect <- unord
+  }
+  
+  to_table <- allcases_tvalues %>%
+    select(-to_deselect) %>%
+    pivot_longer(cols = to_select,
+                 names_to = "Approach",
+                 values_to = "Value") %>%
+    distinct() %>%
+    pivot_wider(names_from = 'Measure',values_from = "Value") %>%
+    mutate(Approach = tolower(Approach)) %>%
+    mutate(Approach = ifelse(Approach == 'nonrank', 'nonrankbased', Approach)) %>%
+    mutate(across(c(T1, T2, T3), round, 3))
+  
+  if (unordered) {
+    to_table <- to_table %>% 
+      filter(!((Approach == 'bonferroni' | Approach == 'independent') & r != 0 ))
+  } else {
+    to_table <- to_table %>% 
+      pivot_wider(names_from = Approach, values_from = c(T1, T2, T3))
+  }
+  
+  return(to_table)
+}
 
 combine_summaries <- function(
     directory_prefix="/home/realiseshewon/PDev/kde-ranking/simulation_results/summaries/summary_k",
