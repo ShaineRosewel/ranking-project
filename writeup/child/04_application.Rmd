@@ -31,7 +31,7 @@ cand <- generate_true_theta_rd(persist_df = FALSE)
 
 cand$Makabayan <- ifelse(cand$Party == 'MKBYN', 1, 0)
 
-corr_matrix <-  block_corr(block_sizes=c(2, 12, 10, 2, 11, 2, 3, 3, 19), rho_within=c(rep(0.8,2), rep(0.8, 7)), rho_between=0.0)
+corr_matrix <-  block_corr(block_sizes=c(2, 12, 10, 2, 11, 2, 3, 3, 19), rho_within=c(rep(0.9,2), rep(0.9, 7)), rho_between=0.0)
 #generate_corr_mat(0.9, "pulse")
 
 
@@ -183,8 +183,7 @@ create_plot_for_app_data(prepared_data1, Candidate, k, reverse=TRUE,
 
 ## 2011 Mean Travel Time to Work in the US
 
-We employ a similar assumption of a block diagonal correlation structure induced by population density levels across states. As @klein observed in their analysis of this data, states with higher population densities tend to report longer travel times to work. Five blocks are used, wherein the first has population density from 0 to 20 people per square mile, the second has 20 to 50, the third has 50 to 100, the fourth has 100 to 200, and the fifth has more than 200.
-
+We employ a similar assumption of a block diagonal correlation structure induced by population density levels across states. As @klein observed in their analysis of this data, states with higher population densities tend to report longer travel times to work. Five blocks are used, wherein the first has population density from 0 to 20 people per square mile, the second has 20 to 50, the third has 50 to 100, the fourth has 100 to 200, and the fifth has more than 200. We construct the joint confidence region when $\rho$ is varied from $0.0$ up to $0.9$. For simplicity, we assume the same $\rho$ across all blocks. 
 
 ```{r}
 dataset_all <- readRDS("/home/realiseshewon/PDev/kde-ranking/data/mean_travel_time_ranking_2011.rds")
@@ -261,14 +260,12 @@ to_table <- allcases %>%
   mutate(Approach = tolower(Approach)) %>%
   mutate(Approach = ifelse(Approach == 'nonrank', 'nonrankbased', Approach)) %>%
   mutate(across(c(T1, T2, T3), round, 3))
-
-create_basic_results_table(to_table, "Joint Confidence Region Tightness Measures")
 ```
 
 
-
 ```{r}
-corr_matrix <-generate_corr_mat(0.8, "traveltime")
+coeffcons <- 0.9
+corr_matrix <-generate_corr_mat(coeffcons, "traveltime")
 
 ci_results <- get_ci_for_app_data(
   theta_hat = dataset_all$theta_k,
@@ -296,9 +293,38 @@ diffs <- prepared_data %>%
   mutate(diff = ifelse(Approach=="nonrankbased", diff, 0))
 ```
 
-Figure \@ref(fig:traveltime-result) assumes high correlations within blocks with different population densities. Only joint confidence regions for Bonferroni and Nonrank are since Independent result is similar to Bonferroni. For this use case, lower rank corresponds to states with lower mean travel time.
 
-```{r traveltime-result, fig.cap = "95% Joint Confidence Region for 2011 Mean Travel Time To Work in the US", fig.height = 7}
+```{r}
+t1_after <- to_table[[which(to_table$r == coeffcons & to_table$T1 & to_table$Approach == NONRANK$RAWCHAR), "T1"]]
+t1_before <- to_table[[which(to_table$r == 0.0 & to_table$T1 & to_table$Approach == BONF$RAWCHAR), "T1"]]
+t2_after <- to_table[[which(to_table$r == coeffcons & to_table$T2 & to_table$Approach == NONRANK$RAWCHAR), "T2"]]
+t2_before <- to_table[[which(to_table$r == 0.0 & to_table$T2 & to_table$Approach == BONF$RAWCHAR), "T2"]]
+t3_after <- to_table[[which(to_table$r == coeffcons & to_table$T3 & to_table$Approach == NONRANK$RAWCHAR), "T3"]]
+t3_before <- to_table[[which(to_table$r == 0.0 & to_table$T3 & to_table$Approach == BONF$RAWCHAR), "T3"]]
+t2_improvement <- round(((t2_before-t2_after)/t2_before)*100, 2)
+t1_improvement <- round(((t1_before-t1_after)/t1_before)*100, 2)
+t3_improvement <- round(((t3_after-t3_before)/t3_before)*100, 2)
+```
+
+Table \@ref(tab:travel-time-tab-nonrank) shows how `r T1$MATHNAME`, `r T2$MATHNAME`, and `r T3$MATHNAME` start continuously improving from $\rho = 0.3$ up to $0.9$, aligning with the simulation findings in Section \ref{sec:ordered-results}. We see that the largest improvement is attained with higher $\rho$. In the presence of $\rho = `r coeffcons`$, Table \@ref(tab:travel-time-tab-nonrank) shows that `r T1$MATHNAME` reduces by `r t1_improvement`% to `r t1_after` when using `r NONRANK$SHORTNAME` from `r t1_before` when using `r BONF$SHORTNAME` to construct the joint confidence region. `r T2$MATHNAME` also improves by `r t2_improvement`% from `r t2_before` to `r t2_after` while  `r T3$MATHNAME` by `r t3_improvement`% from `r t3_before` to `r t3_after`.
+
+```{r travel-time-tab-nonrank}
+create_basic_results_table(to_table, "Joint Confidence Region Tightness Measures")
+```
+
+
+Figure @ref(fig:travel-time-fig-nonrank) illustrates how `r T1$MATHNAME`, `r T2$MATHNAME`, and r `T3$MATHNAME` affect the resulting joint confidence region for `r BONF$SHORTNAME` and `r NONRANK$SHORTNAME` when $\rho = `r coeffcons`$. Only joint confidence regions for `r BONF$SHORTNAME` and `r NONRANK$SHORTNAME` are shown since the `r IND$SHORTNAME` result is similar to that of r BONF$SHORTNAME. Lower rank corresponds to states with lower mean travel time. It can be observed that those with no decrease in occupied rank positions originally occupy fewer rank positions (two to seven) than those whose occupied positions (five to 20) decrease by 2 to 3.
+
+```{r}
+# dataset_all %>% left_join(prepared_data1 %>% filter(Approach == 'nonrankbased') %>% select(iso, diff)  %>% distinct(),
+  #                         by = 'iso') %>% 
+  # mutate(range_l = bonf_rank_upper - bonf_rank_lower + 1) %>%
+  # arrange(desc(diff)) %>% View()
+```
+
+
+
+```{r travel-time-fig-nonrank, fig.cap = "95% Joint Confidence Region for 2011 Mean Travel Time To Work in the US", fig.height = 7}
 prepared_data1 <- prepared_data %>% left_join(diffs[,c("Approach", "iso", 'diff')], by = c("Approach", "iso"))
 create_plot_for_app_data(prepared_data1 %>%
                            filter(Approach != 'independent'), iso, theta_k, reverse=FALSE,xlab = "State",
