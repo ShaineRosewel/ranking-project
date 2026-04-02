@@ -144,7 +144,7 @@ create_plot_for_app_data <- function(dat_to_plot,
         "2" = "#41ab5d",    # Solid Kelly Green
         "3" = "#006d2c",    # Dark Forest Green
         "4" = "#00441b",     # Deep forest green (near black)
-        "5" = "black"     # Deep forest green (near black)
+        "5" = "black" 
       ),
       name = "Decrease in Occupied Rank Position",
     ) +
@@ -271,7 +271,8 @@ create_plot_for_t <- function(prepared_data, unordered = TRUE){
                                  `Correlation structure` = label_parsed)) +
 
   theme_bw() +
-    theme(axis.text.x = element_text(hjust = 1, size = 9, angle = rot),
+    theme(axis.text.x = element_text(#hjust = 1, 
+                                     size = 9, angle = rot),
           axis.text.y = element_text(size=7)
     ) +
     scale_shape_manual(values =  c(21, 22, 23, 21, 22, 24, 25),
@@ -287,5 +288,73 @@ create_plot_for_t <- function(prepared_data, unordered = TRUE){
     p <-p + geom_line(color = 'gray33', linewidth = 0.01)
   }
   return(p)
+}
+
+create_plot_for_t_app_plot <- function(allcases_dataset){
+  
+  unordered_approaches <- c("Bonferroni", "Independent", "Nonrank",
+                            "Asymptotic", "Level2bs")
+  
+  selected <- unordered_approaches
+  color_map <- setNames(
+    c("black", "black", "black", "black", "black"),
+    c(BONF$SHORTNAME, IND$SHORTNAME, NONRANK$SHORTNAME, 
+      ASYMP$SHORTNAME, BOOT$SHORTNAME)
+  )
+  
+  alpha_map <- setNames(
+    c(0.30, 0.30, 0.3, 0.3, 0.3),
+    c(BONF$SHORTNAME, IND$SHORTNAME, NONRANK$SHORTNAME, 
+      ASYMP$SHORTNAME, BOOT$SHORTNAME)
+  )
+  
+  shape_map <- setNames(
+    c(15, 16, 17, 4, 18),#3
+    c(BONF$SHORTNAME, IND$SHORTNAME, NONRANK$SHORTNAME, 
+      ASYMP$SHORTNAME, BOOT$SHORTNAME)
+  )
+  
+  data <- allcases_dataset %>%
+    pivot_longer(cols = selected,
+                 names_to = "Approach",
+                 values_to = "Value") 
+  allcases_dataset <- data %>% mutate(
+    Approach = factor(case_when(
+      Approach == "Independent"   ~ IND$SHORTNAME,
+      Approach == "Bonferroni"  ~ BONF$SHORTNAME,
+      Approach == "Nonrank" ~ NONRANK$SHORTNAME,
+      Approach == "Asymptotic" ~ ASYMP$SHORTNAME,
+      Approach == "Level2bs"  ~ BOOT$SHORTNAME,
+      TRUE                      ~ Approach # Fallback
+    ),
+    levels = c(BONF$SHORTNAME, IND$SHORTNAME, NONRANK$SHORTNAME, 
+               ASYMP$SHORTNAME, BOOT$SHORTNAME)),
+  )
+  allcases_dataset %>% ggplot(aes(x = factor(r), y = Value, 
+                                  color = Approach, 
+                                  shape = Approach, 
+                                  alpha = Approach)) +
+    geom_point(size = 2) + 
+    facet_wrap(~Measure, scales = "free_y") +
+    scale_color_manual(values = color_map) +
+    scale_shape_manual(values = shape_map) +
+    scale_alpha_manual(values = alpha_map) + 
+    scale_x_discrete(
+      breaks = seq(0, 0.9, 0.2)) +
+    theme_bw() +
+    xlab(TeX(CORR_COEFF$MATHNAME))+
+    COMMON_THEME +
+    theme(
+      legend.position = "top",
+      legend.box = "horizontal",
+      legend.direction = "horizontal", # Force items to flow horizontally
+      plot.margin = margin(t = 15, r = 10, b = 10, l = 0) # 2. CRITICAL: Increase top margin to prevent cutoff
+    ) +
+    # 3. MUST be at the end and must include ALL mapped aesthetics
+    guides(
+      color = guide_legend(nrow = 2, byrow = TRUE),
+      shape = guide_legend(nrow = 2, byrow = TRUE),
+      alpha = guide_legend(nrow = 2, byrow = TRUE)
+    )
 }
 
