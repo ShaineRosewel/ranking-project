@@ -183,12 +183,11 @@ create_plot_for_app_data(prepared_data1, Candidate, k, reverse=TRUE,
 
 ## 2011 Mean Travel Time to Work in the US
 
-We employ a similar assumption of block diagonal correlation structure induced by population density levels according to 2010 population density in each corresponding state (https://www.energy.gov/cmei/vehicles/fact-661-february-7-2011-population-density). Five blocks are used wherein the first has population density from 0 to 20 people per square mile, the second has 20 to 50, the third has 50 to 100, the fourth has 100 to 200 and the fifth has more than 200. 
+We employ a similar assumption of a block diagonal correlation structure induced by population density levels across states. As @klein observed in their analysis of this data, states with higher population densities tend to report longer travel times to work. Five blocks are used, wherein the first has population density from 0 to 20 people per square mile, the second has 20 to 50, the third has 50 to 100, the fourth has 100 to 200, and the fifth has more than 200.
 
 
 ```{r}
 dataset_all <- readRDS("/home/realiseshewon/PDev/kde-ranking/data/mean_travel_time_ranking_2011.rds")
-
 ```
 
 
@@ -315,3 +314,4 @@ create_plot_for_app_data(prepared_data1 %>%
 
 
 
+https://www.energy.gov/cmei/vehicles/fact-661-february-7-2011-population-density
