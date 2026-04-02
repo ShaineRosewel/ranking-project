@@ -175,10 +175,14 @@ knitr::opts_chunk$set(
 
 \vspace*{0.8cm}
 
-\setcounter{table}{0}
-\setcounter{figure}{0}
-\renewcommand{\thetable}{A.\arabic{table}}
-\renewcommand{\thefigure}{A.\arabic{figure}}
+\setcounter{section}{0}
+\renewcommand{\thesection}{A}
+
+\setcounter{subsection}{0}
+\renewcommand{\thesubsection}{A.\arabic{subsection}}
+
+\numberwithin{table}{subsection}
+\numberwithin{figure}{subsection}
 
 ```{r, child = "child/06_appendix.Rmd"}
 ```
