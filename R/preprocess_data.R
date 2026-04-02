@@ -386,44 +386,69 @@ prepare_plotting_data_for_pulse <- function(ci_results, df){
 }
 
 
-prepare_plotting_data_for_traveltime <- function(ci_results, df){
+prepare_plotting_data_for_traveltime <- function(ci_results, df, unordered){
   
   dataset_all <- df
   
   K <- dim(dataset_all)[1]
-  dataset_all$`Rank LB_nonrank` <- sapply(
-    get_ci_result(result = ci_results$nonrankbased, 
-                  K=K, 
-                  reverse_ranks = FALSE), 
-    min)
-  dataset_all$`Rank UB_nonrank` <- sapply(
-    get_ci_result(result = ci_results$nonrankbased, 
-                  K=K, 
-                  reverse_ranks = FALSE),
-    max)
   
-  dataset_all$`Rank LB_independent` <- sapply(
-    get_ci_result(result = ci_results$independent, 
-                  K=K, 
-                  reverse_ranks = FALSE), 
-    min)
-  dataset_all$`Rank UB_independent` <- sapply(
-    get_ci_result(result = ci_results$independent, 
-                  K=K, 
-                  reverse_ranks = FALSE), 
-    max)
-  
-  dataset_all$`Rank LB_bonferroni` <- sapply(
-    get_ci_result(result = ci_results$bonferroni, 
-                  K=K, 
-                  reverse_ranks = FALSE), 
-    min)
-  dataset_all$`Rank UB_bonferroni` <- sapply(
-    get_ci_result(result = ci_results$bonferroni, 
-                  K=K, 
-                  reverse_ranks = FALSE), 
-    max)
-  
+  if (unordered) {
+    dataset_all$`Rank LB_nonrank` <- sapply(
+      get_ci_result(result = ci_results$nonrankbased, 
+                    K=K, 
+                    reverse_ranks = FALSE), 
+      min)
+    dataset_all$`Rank UB_nonrank` <- sapply(
+      get_ci_result(result = ci_results$nonrankbased, 
+                    K=K, 
+                    reverse_ranks = FALSE),
+      max)
+    
+    dataset_all$`Rank LB_independent` <- sapply(
+      get_ci_result(result = ci_results$independent, 
+                    K=K, 
+                    reverse_ranks = FALSE), 
+      min)
+    dataset_all$`Rank UB_independent` <- sapply(
+      get_ci_result(result = ci_results$independent, 
+                    K=K, 
+                    reverse_ranks = FALSE), 
+      max)
+    
+    dataset_all$`Rank LB_bonferroni` <- sapply(
+      get_ci_result(result = ci_results$bonferroni, 
+                    K=K, 
+                    reverse_ranks = FALSE), 
+      min)
+    dataset_all$`Rank UB_bonferroni` <- sapply(
+      get_ci_result(result = ci_results$bonferroni, 
+                    K=K, 
+                    reverse_ranks = FALSE), 
+      max)
+    
+  } else {
+    dataset_all$`Rank LB_asymptotic` <- sapply(
+      get_ci_result(result = ci_results$rankbased_asymptotic, 
+                    K=K, 
+                    reverse_ranks = FALSE), 
+      min)
+    dataset_all$`Rank UB_asymptotic` <- sapply(
+      get_ci_result(result = ci_results$rankbased_asymptotic, 
+                    K=K, 
+                    reverse_ranks = FALSE), 
+      max)
+    
+    dataset_all$`Rank LB_level2bs` <- sapply(
+      get_ci_result(result = ci_results$rankbased_level2bs, 
+                    K=K, 
+                    reverse_ranks = FALSE), 
+      min)
+    dataset_all$`Rank UB_level2bs` <- sapply(
+      get_ci_result(result = ci_results$rankbased_level2bs, 
+                    K=K, 
+                    reverse_ranks = FALSE), 
+      max)
+  }
   dataset_all <- dataset_all %>% arrange(desc(theta_k))
   
   # df <- readRDS("../data/mean_travel_time_ranking_2011.rds")
