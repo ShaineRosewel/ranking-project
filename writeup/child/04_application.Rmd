@@ -12,13 +12,6 @@ Table \@ref(tab:pulse-table) shows that higher within-block correlation leads to
 
 ```{r}
 source("/home/realiseshewon/PDev/kde-ranking/R/CONSTANTS.R")
-library(kableExtra)
-library(tidyr)
-library(dplyr)
-```
-
-
-```{r}
 source("/home/realiseshewon/PDev/kde-ranking/R/generate_true_theta.R")
 source("/home/realiseshewon/PDev/kde-ranking/R/simulate/compute_ci.R")
 source("/home/realiseshewon/PDev/kde-ranking/R/simulate/compute_metrics.R")
@@ -26,12 +19,21 @@ source("/home/realiseshewon/PDev/kde-ranking/R/calculate_ci_application.R")
 source("/home/realiseshewon/PDev/kde-ranking/R/preprocess_data.R")
 source("/home/realiseshewon/PDev/kde-ranking/R/create_plot.R")
 source("/home/realiseshewon/PDev/kde-ranking/R/create_table.R")
-  
-cand <- generate_true_theta_rd(persist_df = FALSE)
+library(kableExtra)
+library(tidyr)
+library(dplyr)
+```
+
+
+
+
+```{r}
+cand <- generate_true_theta_rd(persist_df = FALSE) %>% filter(`Voting For` >= 1)
 
 cand$Makabayan <- ifelse(cand$Party == 'MKBYN', 1, 0)
 
-corr_matrix <-  block_corr(block_sizes=c(2, 12, 10, 2, 11, 2, 3, 3, 19), rho_within=c(rep(0.9,2), rep(0.9, 7)), rho_between=0.0)
+# corr_matrix <-  block_corr(block_sizes=c(2, 12, 10, 2, 11, 2, 3, 3, 19), rho_within=c(rep(0.9,2), rep(0.9, 7)), rho_between=0.0)
+corr_matrix <-  block_corr(block_sizes=c(2, 12, 10, 2, 11, 2, 3, 3, 6), rho_within=c(rep(0.9,2), rep(0.9, 7)), rho_between=0.0)
 #generate_corr_mat(0.9, "pulse")
 
 
@@ -75,55 +77,111 @@ dataset_all <- cand %>%
   arrange(desc(`Voting For`)) %>%  
   arrange(desc(DuterTen), desc(Alyansa),desc(KiBam), desc(Makabayan), desc(ind_name_recall), desc(ind_name_trad), desc(labor), desc(sectoral))  %>%
   rename(`Rank UB_pulse` = `Rank UB`, `Rank LB_pulse` = `Rank LB`)
-
-ci_results <- get_ci_for_app_data(
-    theta_hat = (dataset_all$`Voting For`)/100,
-    true_sds = dataset_all$se,
-    K = dim(dataset_all)[1],
-    alpha = 0.05,
-    B <- 500,
-    corr_matrix=corr_matrix 
-    )
 ```
 
-To show how the improvement gets reflected into the joint confidence region, we assume a high correlation ($\rho = 0.9$) within each previously enumerated block and visually compare the joint confidence regions. Note that lower rank corresponds to highly preferred candidates. The first facet of Figure \@ref(fig:pulse-result) illustrates the `r IND$SHORTNAME` joint confidence region while the second one shows the improved `r NONRANK$SHORTNAME` joint confidence region. The green-shaded shapes are the intervals that got lesser occupied positions after accounting for the correlation. The darker the shade is, the higher the reduction in length. There is no distinguishable pattern as to which among each block members get an improved interval length, but the highest improvement is seen to occur in the middle part of the ranked estimates. `r BONF$SHORTNAME` is not included as it is hugely similar to `r IND$SHORTNAME`.
+
+
+```{r}
+
+  
+
+
+# ci_results <- get_ci_for_app_data(
+#     theta_hat = (dataset_all$`Voting For`)/100,
+#     true_sds = dataset_all$se,
+#     K = dim(dataset_all)[1],
+#     alpha = 0.05,
+#     B <- 500,
+#     corr_matrix=corr_matrix 
+#     )
+```
+
+
 
 ```{r pulse-table}
-all_ci <- lapply(seq(0,0.9,0.1), function(r){
-  
-  corr_matrix <- generate_corr_mat(r, "pulse")
-  
-  ci_results <- get_ci_for_app_data(
-    theta_hat = (dataset_all$`Voting For`)/100,
-    true_sds = dataset_all$se,
-    K = dim(dataset_all)[1],
-    alpha = 0.05,
-    B <- 500,
-    corr_matrix=corr_matrix 
-    )
-  
-  out <- get_tmeasures_for_app_data(ci_results)
-  out$r <- r
-  
-  return(out %>% select(r, Measure, Independent, Bonferroni, Nonrank))
-  })
+# all_ci <- lapply(seq(0,0.9,0.1), function(r){
+#   
+#   corr_matrix <- generate_corr_mat(r, "pulse")
+#   
+#   ci_results <- get_ci_for_app_data(
+#     theta_hat = (dataset_all$`Voting For`)/100,
+#     true_sds = dataset_all$se,
+#     K = dim(dataset_all)[1],
+#     alpha = 0.05,
+#     B <- 500,
+#     corr_matrix=corr_matrix 
+#     )
+#   
+#   out <- get_tmeasures_for_app_data(ci_results)
+#   out$r <- r
+#   
+#   return(out %>% select(r, Measure, Independent, Bonferroni, Nonrank, Asymptotic, Level2bs))
+#   })
+# 
+# allcases <- do.call(rbind, all_ci)
 
-allcases <- do.call(rbind, all_ci)
-
-to_table <- allcases %>% 
-  pivot_longer(cols = c(Independent, Bonferroni, Nonrank), 
-                          names_to = "Approach", 
-                          values_to = "Value") %>% 
-  distinct() %>%
-  pivot_wider(names_from = 'Measure',values_from = "Value") %>% 
-  filter(!((Approach == 'Bonferroni' | Approach == 'Independent') & r != 0 )) %>% 
-  mutate(Approach = tolower(Approach)) %>%
-  mutate(Approach = ifelse(Approach == 'nonrank', 'nonrankbased', Approach)) %>%
-  mutate(across(c(T1, T2, T3), round, 3)) #%>%#%>% 
-  #distinct(Approach, T1, T2, T3, .keep_all = TRUE)
-
-create_basic_results_table(to_table, "Joint Confidence Region Tightness Measures")
+# to_table <- allcases %>% 
+#   pivot_longer(cols = c(Independent, Bonferroni, Nonrank), 
+#                           names_to = "Approach", 
+#                           values_to = "Value") %>% 
+#   distinct() %>%
+#   pivot_wider(names_from = 'Measure',values_from = "Value") %>% 
+#   filter(!((Approach == 'Bonferroni' | Approach == 'Independent') & r != 0 )) %>% 
+#   mutate(Approach = tolower(Approach)) %>%
+#   mutate(Approach = ifelse(Approach == 'nonrank', 'nonrankbased', Approach)) %>%
+#   mutate(across(c(T1, T2, T3), round, 3)) #%>%#%>% 
+#   #distinct(Approach, T1, T2, T3, .keep_all = TRUE)
+# 
+# create_basic_results_table(to_table, "Joint Confidence Region Tightness Measures")
 ```
+
+
+
+
+
+```{r}
+# my_list <- list(t_values = allcases, all_ci = ci_results)
+# saveRDS(my_list, file = "filtered-to-one-pulse-CI.rds")
+pulse_ci <- readRDS("filtered-to-one-pulse-CI.rds")
+```
+
+```{r}
+# all_ci <- lapply(seq(0,0.9,0.1), function(r){
+#   
+#   corr_matrix <- generate_corr_mat(r, "pulse")
+#   
+#   ci_results <- get_ci_for_app_data(
+#     theta_hat = (dataset_all$`Voting For`)/100,
+#     true_sds = dataset_all$se,
+#     K = dim(dataset_all)[1],
+#     alpha = 0.05,
+#     B <- 500,
+#     corr_matrix=corr_matrix 
+#     )
+#   
+#   out <- get_tmeasures_for_app_data(ci_results)
+#   out$r <- r
+#   
+#   return(out %>% select(r, Measure, Independent, Bonferroni, Nonrank))
+#   })
+# 
+# allcases <- do.call(rbind, all_ci)
+# 
+# to_table <- allcases %>% 
+#   pivot_longer(cols = c(Independent, Bonferroni, Nonrank), 
+#                           names_to = "Approach", 
+#                           values_to = "Value") %>% 
+#   distinct() %>%
+#   pivot_wider(names_from = 'Measure',values_from = "Value") %>% 
+#   filter(!((Approach == 'Bonferroni' | Approach == 'Independent') & r != 0 )) %>% 
+#   mutate(Approach = tolower(Approach)) %>%
+#   mutate(Approach = ifelse(Approach == 'nonrank', 'nonrankbased', Approach)) %>%
+#   mutate(across(c(T1, T2, T3), round, 3)) #%>%#%>% 
+#   #distinct(Approach, T1, T2, T3, .keep_all = TRUE)
+# 
+# create_basic_results_table(to_table, "Joint Confidence Region Tightness Measures")
+```
+
 
 
 
@@ -135,7 +193,7 @@ p <- function(v) {
 
 
 ```{r}
-prepared_data <-  prepare_plotting_data_for_pulse(ci_results,dataset_all) %>%
+prepared_data <-  prepare_plotting_data_for_pulse(pulse_ci$all_ci,dataset_all) %>%
   mutate(Approach = ifelse(Approach == 'nonrank', 'nonrankbased', Approach)) %>%
   separate(
     col = Candidate,           
@@ -161,9 +219,16 @@ diffs <- prepared_data %>%
 ```
 
 
+```{r pulse-asia-fig,fig.cap = "Tightness Measures for Pulse Asia Results Across $\\rho$", fig.height = 3.5}
+create_plot_for_t_app_plot(pulse_ci$t_values)
+```
 
-```{r pulse-result,fig.cap = "95% Joint Confidence Region for Senatoriable Preferences", fig.height = 8}
-prepared_data <-  prepare_plotting_data_for_pulse(ci_results,dataset_all) %>%
+
+To show how the improvement gets reflected into the joint confidence region, we assume a high correlation ($\rho = 0.9$) within each previously enumerated block and visually compare the joint confidence regions. Note that lower rank corresponds to highly preferred candidates. The first facet of Figure \@ref(fig:pulse-result) illustrates the `r IND$SHORTNAME` joint confidence region while the second one shows the improved `r NONRANK$SHORTNAME` joint confidence region. The green-shaded shapes are the intervals that got lesser occupied positions after accounting for the correlation. The darker the shade is, the higher the reduction in length. There is no distinguishable pattern as to which among each block members get an improved interval length, but the highest improvement is seen to occur in the middle part of the ranked estimates. `r BONF$SHORTNAME` is not included as it is hugely similar to `r IND$SHORTNAME`.
+
+
+```{r pulse-result,fig.cap = "95% Joint Confidence Region for Senatoriable Preferences", fig.height = 7}
+prepared_data <-  prepare_plotting_data_for_pulse(pulse_ci$all_ci,dataset_all) %>%
   mutate(Approach = ifelse(Approach == 'nonrank', 'nonrankbased', Approach)) %>%
   separate(
     col = Candidate,           
@@ -227,30 +292,38 @@ dataset_all <- dataset_all %>% mutate(
 
 
 
+```{r}
+# all_ci <- lapply(seq(0,0.9,0.1), function(r){
+# 
+#   corr_matrix <- generate_corr_mat(r, "traveltime")
+# 
+#   ci_results <- get_ci_for_app_data(
+#     theta_hat = dataset_all$theta_k,
+#     true_sds = dataset_all$S,
+#     K = dim(dataset_all)[1],
+#     alpha = 0.05,
+#     B <- 500,
+#     corr_matrix=corr_matrix
+#     )
+# 
+#   out <- get_tmeasures_for_app_data(ci_results)
+#   out$r <- r
+# 
+#   return(out %>% select(r, Measure, Independent, Bonferroni, Nonrank, Asymptotic, Level2bs))
+#   })
+
+# allcases <- do.call(rbind, all_ci)
+```
 
 ```{r}
-all_ci <- lapply(seq(0,0.9,0.1), function(r){
+allcases <- readRDS("all-travel-time-CI.rds")
+```
 
-  corr_matrix <- generate_corr_mat(r, "traveltime")
 
-  ci_results <- get_ci_for_app_data(
-    theta_hat = dataset_all$theta_k,
-    true_sds = dataset_all$S,
-    K = dim(dataset_all)[1],
-    alpha = 0.05,
-    B <- 500,
-    corr_matrix=corr_matrix
-    )
 
-  out <- get_tmeasures_for_app_data(ci_results)
-  out$r <- r
 
-  return(out %>% select(r, Measure, Independent, Bonferroni, Nonrank))
-  })
-
-allcases <- do.call(rbind, all_ci)
-
-to_table <- allcases %>%
+```{r}
+to_table <- allcases$t_values %>%
   pivot_longer(cols = c(Independent, Bonferroni, Nonrank),
                           names_to = "Approach",
                           values_to = "Value") %>%
@@ -259,27 +332,41 @@ to_table <- allcases %>%
   filter(!((Approach == 'Bonferroni' | Approach == 'Independent') & r != 0 )) %>%
   mutate(Approach = tolower(Approach)) %>%
   mutate(Approach = ifelse(Approach == 'nonrank', 'nonrankbased', Approach)) %>%
-  mutate(across(c(T1, T2, T3), round, 3))
+  mutate(across(c(T1, T2, T3), round, 3)) %>%
+  select(-c(Asymptotic, Level2bs))
 ```
 
 
 ```{r}
 coeffcons <- 0.9
-corr_matrix <-generate_corr_mat(coeffcons, "traveltime")
-
-ci_results <- get_ci_for_app_data(
-  theta_hat = dataset_all$theta_k,
-  true_sds = dataset_all$S,
-  K = dim(dataset_all)[1],
-  alpha = 0.05,
-  B <- 500,
-  corr_matrix=corr_matrix
-  )
+# corr_matrix <-generate_corr_mat(coeffcons, "traveltime")
+# 
+# ci_results <- get_ci_for_app_data(
+#   theta_hat = dataset_all$theta_k,
+#   true_sds = dataset_all$S,
+#   K = dim(dataset_all)[1],
+#   alpha = 0.05,
+#   B <- 500,
+#   corr_matrix=corr_matrix
+#   )
+# 
+# my_list <- list(t_values = allcases, all_ci = ci_results)
+# saveRDS(my_list, file = "my_objects.rds")
 ```
 
 
 ```{r}
-prepared_data <- prepare_plotting_data_for_traveltime(ci_results,dataset_all) %>%
+# my_list <- list(t_values = allcases, all_ci = ci_results)
+# saveRDS(my_list, file = "all-travel-time-CI.rds")
+```
+
+
+
+
+
+```{r}
+prepared_data <- prepare_plotting_data_for_traveltime(allcases$all_ci,
+                                                      dataset_all, unordered = TRUE) %>%
   mutate(Approach = ifelse(Approach == 'nonrank', 'nonrankbased', Approach))
 
 
@@ -288,9 +375,12 @@ diffs <- prepared_data %>%
   count() %>% 
   filter(Approach != 'pulse')%>%
   pivot_wider(names_from = Approach, values_from = n) %>% 
-  mutate(diff = independent - nonrankbased) %>% arrange(desc(diff)) %>%
+  mutate(diff = independent - nonrankbased) %>%
+  arrange(desc(diff)) %>%
+  #pivot_longer(cols = c(asymptotic, level2bs), names_to='Approach') %>%
   pivot_longer(cols = c(bonferroni, nonrankbased), names_to='Approach') %>%
   mutate(diff = ifelse(Approach=="nonrankbased", diff, 0))
+
 ```
 
 
@@ -306,12 +396,11 @@ t1_improvement <- round(((t1_before-t1_after)/t1_before)*100, 2)
 t3_improvement <- round(((t3_after-t3_before)/t3_before)*100, 2)
 ```
 
-Table \@ref(tab:travel-time-tab-nonrank) shows how `r T1$MATHNAME`, `r T2$MATHNAME`, and `r T3$MATHNAME` start continuously improving from $\rho = 0.3$ up to $0.9$, aligning with the simulation findings in Section \ref{sec:ordered-results}. We see that the largest improvement is attained with higher $\rho$. In the presence of $\rho = `r coeffcons`$, Table \@ref(tab:travel-time-tab-nonrank) shows that `r T1$MATHNAME` reduces by `r t1_improvement`% to `r t1_after` when using `r NONRANK$SHORTNAME` from `r t1_before` when using `r BONF$SHORTNAME` to construct the joint confidence region. `r T2$MATHNAME` also improves by `r t2_improvement`% from `r t2_before` to `r t2_after` while  `r T3$MATHNAME` by `r t3_improvement`% from `r t3_before` to `r t3_after`.
+Figure \@ref(fig:travel-time-fig) shows how `r T1$MATHNAME`, `r T2$MATHNAME`, and `r T3$MATHNAME` for `r NONRANK$SHORTNAME` start continuously improving from $\rho = 0.4$ up to $0.9$, when compared to those of `r BONF$SHORTNAME` and `r IND$SHORTNAME`. This is consistent to the simulation findings in Section \ref{sec:ordered-results}. We see that the largest improvement is attained with higher $\rho$. In the presence of $\rho = `r coeffcons`$, `r T1$MATHNAME` reduces by `r t1_improvement`% to `r t1_after` when using `r NONRANK$SHORTNAME` from `r t1_before` when using `r BONF$SHORTNAME` to construct the joint confidence region. `r T2$MATHNAME` also improves by `r t2_improvement`% from `r t2_before` to `r t2_after` while  `r T3$MATHNAME` by `r t3_improvement`% from `r t3_before` to `r t3_after`. The actual values are provided in Table \@ref(tab:travel-time-tab-nonrank) in the Appendix.
 
-```{r travel-time-tab-nonrank}
-create_basic_results_table(to_table, "Joint Confidence Region Tightness Measures")
+```{r travel-time-fig,fig.cap = "Tightness Measures for Mean Travel Time to Work Across $\\rho$", fig.height = 3.5}
+create_plot_for_t_app_plot(allcases$t_values)
 ```
-
 
 Figure \@ref(fig:travel-time-fig-nonrank) illustrates how `r T1$MATHNAME`, `r T2$MATHNAME`, and `r T3$MATHNAME` affect the resulting joint confidence region for `r BONF$SHORTNAME` and `r NONRANK$SHORTNAME` when $\rho = `r coeffcons`$. Only joint confidence regions for `r BONF$SHORTNAME` and `r NONRANK$SHORTNAME` are shown since the `r IND$SHORTNAME` result is similar to that of `r BONF$SHORTNAME`. Lower rank corresponds to states with lower mean travel time. It can be observed that those with no decrease in occupied rank positions originally occupy fewer rank positions (two to seven) than those whose occupied positions (five to 20) decrease by 2 to 3.
 
@@ -336,6 +425,8 @@ create_plot_for_app_data(prepared_data1 %>%
                          shape_map = c("1" = 0, "2" = 1, "3" = 2, "4" = 6,"5" = 3)
                          )
 ```
+
+
 
 
 
