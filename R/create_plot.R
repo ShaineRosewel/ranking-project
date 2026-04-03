@@ -36,6 +36,24 @@ create_boxplot_for_true_theta <- function(dataset){
 
 create_plot_for_coverage <- function(dataset, unordered){
   
+  dataset <- dataset %>%
+    mutate(
+      sd = factor(sd,
+                  levels = c(LOW$NAME, 
+                            MED$NAME,
+                            HIGH$NAME),
+                  labels = c(TeX(LOW$GGNAME),
+                             TeX(MED$GGNAME),
+                             TeX(HIGH$GGNAME))
+                  ),
+      `Correlation structure` = factor(`Correlation structure`,
+                                       levels =c(EQUICORRELATED$NAME, 
+                                                 BLOCK_DIAGONAL$NAME),
+                                       labels = c(TeX(EQUICORRELATED$GGNAME), 
+                                                  TeX(BLOCK_DIAGONAL$GGNAME))
+                                       )
+    )
+  
   if (unordered) {
     grid_formula <- "`Correlation structure`~ Approach"
     legend_loc <- "top"
@@ -51,7 +69,7 @@ create_plot_for_coverage <- function(dataset, unordered){
                    "UL3", "U2", "B2", "UH3")
   
   
-  return(forplot %>%
+  return(dataset %>%
            ggplot(aes(x = factor(K), y = diff, fill = factor(r))) +
            geom_bar(stat="identity",
                     position=position_dodge(width=0.5,
@@ -67,10 +85,13 @@ create_plot_for_coverage <- function(dataset, unordered){
                              labels = legend_labs,
                              values = c(rep("#B47846", 3),
                                         rep("#4682B4", 4))) +
-           facet_grid(grid_formula) +
+           facet_grid(grid_formula,
+                      labeller = labeller(
+                        sd = label_parsed,
+                        `Correlation structure` = label_parsed)) +
            geom_hline(yintercept=0, alpha = 0.7, 
                       color = "black", linewidth = 0.1) +
-           geom_hline(yintercept=0.01, alpha = 0.7, 
+           geom_hline(yintercept=c(0.01,-0.01), alpha = 0.7, 
                       color = "gray", linewidth = 0.25, linetype = 'longdash') +
            coord_flip() +
            theme_bw() +
@@ -199,10 +220,13 @@ create_plot_for_t <- function(prepared_data, unordered = TRUE){
   } else {
     app_levels = c(ASYMP$RAWCHAR,BOOT$RAWCHAR)
     app_labels = c(ASYMP$SHORTNAME, BOOT$SHORTNAME)
-    x =  "Correlation structure"
-    facet_str <- "Approach + Metric ~ K"
-    label_parsedx <- function(x) parse(text = as.character(x))
-    rot <- 0
+    #x =  "Correlation structure"
+    x = "Approach"
+    #facet_str <- "Approach + Metric ~ K"
+    facet_str <- "`Correlation structure` + Metric ~ K"
+    # label_parsedx <- function(x) parse(text = as.character(x))
+    label_parsedx <- function(x) x
+    rot <- 90
   }
   
   var_levels <- c(LOW$NAME, MED$NAME, HIGH$NAME)
@@ -211,6 +235,8 @@ create_plot_for_t <- function(prepared_data, unordered = TRUE){
                   TeX("$\\rho = 0.9$"),
                   #"B2", "U2", "UL3", "UH3")
                   "UL3", "U2", "B2", "UH3")
+  
+  
   
   dat <- prepared_data %>%
     mutate(
@@ -233,18 +259,21 @@ create_plot_for_t <- function(prepared_data, unordered = TRUE){
       K = factor(K,
                  levels = c('10','20','30','40',"50"),
                  labels = paste("K =",c('10','20','30','40',"50")),
-                 ordered = TRUE),
+                 #ordered = TRUE
+                 ),
       Metric = factor(Metric,
                       levels = c(T1$CHAR, T2$CHAR, T3$CHAR),
                       labels = c(TeX(T1$MATHNAME), 
                                  TeX(T2$MATHNAME), 
                                  TeX(T3$MATHNAME)),
-                      ordered = TRUE)) %>%
+                      #ordered = TRUE
+                      )) %>%
     unite(col = "Correlation", 
           `Correlation structure`, 
           `r`, 
           sep = "_", 
           remove = FALSE)
+
     
   corr_levels <- c(
     paste0(TeX(EQUICORRELATED$GGNAME), "_$\\rho = 0.1$"),
@@ -256,6 +285,15 @@ create_plot_for_t <- function(prepared_data, unordered = TRUE){
     paste0(TeX(BLOCK_DIAGONAL$GGNAME), "_UH3")
   )
   dat$Correlation <- factor(dat$Correlation, levels = corr_levels)
+  
+  
+  t3_label <- labels(dat$Metric)[which(levels(dat$Metric) == TeX(T3$MATHNAME))]
+  
+  maxt3 <- dat %>% 
+    filter(Metric == levels(dat$Metric)[3]) %>% # Use index or exact label
+    mutate(K_val = as.numeric(gsub("K = ", "", as.character(K))),
+           max_t3 = (K_val - 1) / K_val) %>%
+    distinct(Metric, K, max_t3)
     #===========================================================================
   p <- dat %>%
     ggplot(aes(x = .data[[x]], 
@@ -272,13 +310,18 @@ create_plot_for_t <- function(prepared_data, unordered = TRUE){
              scales = "free",
              labeller = labeller(Metric = label_parsed,
                                  `Correlation structure` = label_parsed)) +
+    geom_hline(data = maxt3, 
+               aes(yintercept = max_t3),
+               color = "red",
+               linewidth = 0.25, 
+               linetype = 'longdash')+
 
   theme_bw() +
-    theme(axis.text.x = element_text(#hjust = 1, 
+    theme(axis.text.x = element_text(hjust = 1, 
                                      size = 9, angle = rot),
           axis.text.y = element_text(size=7)
     ) +
-    scale_shape_manual(values =  c(21, 22, 23, 21, 22, 24, 25),
+    scale_shape_manual(values =  c(21, 22, 23, 21, 22, 25, 24),
                        name = TeX(CORR_MATRIX$MATHNAME),
                        labels = legend_labs) +
     scale_fill_manual(name = TeX(CORR_MATRIX$MATHNAME),
