@@ -12,7 +12,7 @@ Its first two facets illustrate that the difference between the coverage and 0.9
 
 For the block diagonal correlation structures shown in the second row of Figure \ref{fig:nonrank-cov-plot}, the improvement from Algorithm \ref{alg:nonrank_ci} becomes distinguishable when larger block sizes have higher $\rho$. This is particularly evident for B2 and UH3 where 50% of the estimates are highly correlated. In U2, 30% of the estimates are highly correlated, while in UL3, only 20% are highly correlated. Under milder correlation setups such as U2 and UL3, `r NONRANK$SHORTNAME` has little to no advantage over  `r IND$SHORTNAME` and `r BONF$SHORTNAME`.
 
-The improvement from Algorithm \ref{alg:nonrank_ci} is diminished for block diagonal correlation structure compared to that of equicorrelation structure. This is because the correlation among estimates is weaker in the block diagonal structure, where off-diagonal blocks are zero. Moreover, since `r IND$SHORTNAME` and `r BONF$SHORTNAME` become increasingly conservative as $K$ increases under moderate to high correlation, the proposed algorithm is expected to provide greater benefit in such settings.
+The improvement from Algorithm \ref{alg:nonrank_ci} is diminished for the block diagonal correlation structure compared to that of the equicorrelation structure. This is because the correlation among estimates is weaker in the block diagonal structure, where off-diagonal blocks are zero. Moreover, since `r IND$SHORTNAME` and `r BONF$SHORTNAME` become increasingly conservative as $K$ increases and as more estimates become moderately to highly correlated, the proposed algorithm is expected to provide closer to nominal coverage in such settings.
 
 ```{r}
 library(ggplot2)
@@ -70,11 +70,13 @@ forplot <- prepare_coverage_data_plot(eq_res, bl_res, unordered = TRUE)
 create_plot_for_coverage(forplot, unordered=TRUE)
 ```
 
-The same coverage values are observed for different spreads of the true parameter vector $\boldsymbol{\theta}$. This results from assuming the same known $\Sigma$ across cases. In Equation (\ref{eq:prb}), it follows that the distribution of $t$ only depends on $\Sigma$ and $K$. This is more intuitive in the bootstrap world as demonstrated in Algorithm \ref{alg:nonrank_ci}. In step 2, we generate $\hat {\boldsymbol \theta}^*_b \sim N_K (\hat{\boldsymbol \theta}, \Sigma)$ and compute $\underset{k}{\max} \left| \frac{\hat{\theta}_{bk}^* - \hat{\theta}_k}{\sigma_k} \right|$ where $\hat{\boldsymbol \theta}_{b}^* - \hat{\boldsymbol \theta} \sim N_K(0, \Sigma)$. From Equation (\ref{eq:sigma_matrix}), this also implies that the correlation matrix $\mathbf{R}$ influences the coverage. 
+The same coverage values are observed for different variance levels of the true parameters, $V(\theta_k)$. This results from assuming the same known $\Sigma$ across cases. In Equation (\ref{eq:prb}), it follows that the distribution of $t$ depends only on $\Sigma$ and $K$. This is more intuitive in the bootstrap setting as demonstrated in Algorithm \ref{alg:nonrank_ci}. In step 2, we generate $\hat {\boldsymbol \theta}^*_b \sim N_K (\hat{\boldsymbol \theta}, \Sigma)$ and compute $\underset{k}{\max} \left| \frac{\hat{\theta}_{bk}^* - \hat{\theta}_k}{\sigma_k} \right|$ where $\hat{\boldsymbol \theta}_{b}^* - \hat{\boldsymbol \theta} \sim N_K(0, \Sigma)$. From Equation (\ref{eq:sigma_matrix}), this also implies that the correlation matrix $\mathbf{R}$ influences the coverage. 
 
-Results for $T_1$ and $T_2$ tightness measures for $\mathbf{R}_{\text{eq}}$, shown in rows 1 and 2 of Figure \ref{fig:nonrank-plot}, indicate that Algorithm \ref{alg:nonrank_ci} yields narrower intervals than both the independent and Bonferroni approaches. The improvement is negligible at low $\rho$ and becomes more pronounced as $\rho$ increases; in each facet of Figure \ref{fig:nonrank-plot}, this is captured by the bend as each line connecting the points goes from `r IND$SHORTNAME`, `r BONF$SHORTNAME`, to `r NONRANK$SHORTNAME`. The angle of the bend in each facet also shows that the improvement in `r T1$MATHNAME` and `r T2$MATHNAME` is larger with lower variance in the estimates. Moreover, while intervals become wider with larger $K$, as shown by the groupwise movement of the points from the left to the right facet for each row of Figure \ref{fig:nonrank-plot}, this effect is dampened by the variance of the estimates. That is, the general increase in `r T1$MATHNAME` and `r T2$MATHNAME` as $K$ increases is larger for estimates that vary less. This is demonstrated by the corresponding jumps of each group of same-size points across facets for every row. When $\hat{\theta}$ values are more dispersed, the intervals are narrower; however, as they vary less or become closer to each other, ranks tend to interchange more, resulting in wider ranges. This aligns with the intuition that intervals are most precise when the estimates being ranked have greater separation. The same observations can be made for `r T3$MATHNAME` noting that higher values are more desirable. Altogether, these trends show that the proposed approach is most advantageous in the presence of moderate to high correlation, especially when ranking a larger number of estimates with close values.
+Results for $T_1$, $T_2$, and $T_3$ tightness measures are shown in Figure \ref{fig:nonrank-plot}. The maximum possible value of  `r T3$MATHNAME` for each $K$ is denoted with the red dashed line. We want to observe lower values for both $T_1$ and $T_2$ and higher ones for $T_3$. Altogether, these indicate that a method yields a tighter confidence region which implies less overall uncertainty.
 
-The last three rows of Figure \ref{fig:nonrank-plot} show the results for a block diagonal correlation structure. Similar to the coverage results, the overall benefit of using the `r NONRANK$SHORTNAME` is reduced compared to when an equicorrelated structure is enforced. In each facet, this is illustrated through the muted bend of the line connecting the points corresponding to `r BONF$SHORTNAME` and the `r NONRANK$SHORTNAME`. Otherwise, the patterns observed for the equicorrelated structure remain consistent.
+For $\mathbf{R}_{\text{eq}}$, shown in rows 1 to 3 of Figure \ref{fig:nonrank-plot}, `r T1$MATHNAME`, `r T2$MATHNAME`, and `r T3$MATHNAME` values indicate that Algorithm \ref{alg:nonrank_ci} produces tighter confidence region than both `r IND$SHORTNAME` and `r BONF$SHORTNAME` when $\rho$ is moderate to high. In each facet, this is captured by the steepness of the line segments connecting the points, particularly  from `r BONF$SHORTNAME` to `r NONRANK$SHORTNAME`. It tends to be steeper when $\rho$ is higher. Given the same $K$ and correlation structure, the steepness of the slope also shows that the improvement in `r T1$MATHNAME`, `r T2$MATHNAME`, and `r T3$MATHNAME` is larger with lower variance in the parameters; this is easier to observe when $\rho = 0.9$ and $K=50$. When $\hat{\theta}$ values are more dispersed, the confidence region is narrower; however, as they vary less or become closer to each other, ranks tend to interchange more, resulting in a wider region. Hence, more room for improvement. 
+
+Moreover, while regions become less tight with higher $K$, as shown by the groupwise upward movement of the points from the left to the right facet for rows 1 and 2 of Figure \ref{fig:nonrank-plot}, the increase in `r T1$MATHNAME` and `r T2$MATHNAME` is larger for parameters that vary less. This is demonstrated by the corresponding jumps of each group of same-size points across facets. As we rank more estimates, our uncertainty increases at a higher rate when the corresponding parameters are close to each other than when they are widely separated. Meanwhile, `r T3$MATHNAME` is less sensitive to $K$ than `r T1$MATHNAME` and `r T2$MATHNAME` since it divides $OP$ by $K^2$ as defined in Equation \ref{eq:t3}. 
 
 ```{r nonrank-plot,fig.pos = "!htbp", fig.cap = "Simulation Result for Tightness Measure of Unordered Parameters", fig.height=8.75}
 create_plot_for_t(prepare_t_facet_plot_data(
@@ -83,42 +85,191 @@ create_plot_for_t(prepare_t_facet_plot_data(
     unordered = TRUE), unordered = TRUE)
 ```
 
+The last three rows of Figure \ref{fig:nonrank-plot} show the results for a block diagonal correlation structure. Similar to the coverage results, the overall benefit of using the `r NONRANK$SHORTNAME` is reduced compared to when an equicorrelated structure is enforced. In each facet, this is illustrated through flatter slopes of line segments connecting the points corresponding to `r BONF$SHORTNAME` and the `r NONRANK$SHORTNAME`. Otherwise, the patterns observed for the equicorrelated structure remain consistent.
+
+Overall, these trends show that the proposed approach is most advantageous in the presence of moderate to high correlation, especially when ranking a larger number of estimates whose underlying parameters have low variance.
+
 The coverage values corresponding to Figure \ref{fig:nonrank-cov-plot} and the values for $T_1$, $T_2$ and $T_3$ in Figure \ref{fig:nonrank-plot} are provided in Tables \ref{tab:nonrank-eq-cov} and \ref{tab:nonrank-eq-t1}–\ref{tab:nonrank-eq-t3}, respectively, in the Appendix.
 
 ## Joint Confidence Region for the Ordered Parameters {#sec:ordered-results}
 
-
 Figures \ref{fig:rank-cov-plot} and \ref{fig:rank-plot} are similar to plots introduced in the previous section but show joint confidence regions for the ordered parameters namely, `r ASYMP$SHORTNAME` and `r BOOT$SHORTNAME`. With confidence regions for ranks, we are not able to map the intervals to the estimates.
 
-The first column of Figure \ref{fig:rank-cov-plot} illustrates how coverage for `r ASYMP$SHORTNAME` deviates from the nominal level. The deviation is almost always negative, indicating that `r ASYMP$SHORTNAME` is mostly anti-conservative. Undercoverage is largest when the estimates being ranked are widely spread, but the deviation is somewhat smaller for large K (e.g., K=50), though it rarely reaches nominal coverage. For a block diagonal correlation structure (rows 2, 4, 6 of column 1), this slight reduction in deviation for K=50 can also be seen for low and moderate estimate variances. Otherwise, results do not vary systematically across correlation structures. Some cases with intermediate K (e.g., K=20 in row 4) show smaller deviation from nominal for B2, UL3, and UH3 compared to U2, illustrating that coverage can vary non-uniformly across different ranks and correlation settings.
+The first column of Figure \ref{fig:rank-cov-plot} illustrates how coverage for `r ASYMP$SHORTNAME` deviates from the nominal level. The deviation is almost always negative, indicating that `r ASYMP$SHORTNAME` is mostly anti-conservative. Undercoverage is largest when the parameters are widely spread, but the deviation is somewhat smaller for $K=50$. Under high $V(\theta)$, we can also observe that lower $K$ is associated with lower coverage for a given correlation. 
 
-The second column of Figure \ref{fig:rank-cov-plot} presents coverage for `r BOOT$SHORTNAME`. It produces values that do not deviate systematically from 0.95 but relatively closer when compared to `r ASYMP$SHORTNAME`. Except from the similar conservative joint confidence regions for $K=50$ across different levels of variances in the estimates for the block diagonal correlation structure, no other patterns are observed.
+Some cases with intermediate $K$ (e.g., $K=20$ in row 4) show smaller deviation from nominal for B2, UL3, and UH3 compared to U2. To sum up, coverage can vary with no discernible pattern across correlations and $K$ except when $V(\theta)$ is high.
 
-With the two proposed approaches, it is clear that `r BOOT$SHORTNAME` is superior to `r ASYMP$SHORTNAME` in terms of coverage. The former yields coverage closer to nominal irrespective of how correlated the estimates are.
+The second column of Figure \ref{fig:rank-cov-plot} presents coverage for `r BOOT$SHORTNAME`. It produces values that do not deviate systematically from and relatively closer to nominal when compared to `r ASYMP$SHORTNAME`.
+
+With the two proposed approaches, it is clear that `r BOOT$SHORTNAME` is superior to `r ASYMP$SHORTNAME` in terms of coverage.
 
 ```{r rank-cov-plot, fig.cap = "Simulation Result for Coverage of Ordered Parameters", fig.height = 7}
 forplot <- prepare_coverage_data_plot(eq_res, bl_res, unordered = FALSE)
 create_plot_for_coverage(forplot, unordered=FALSE)
 ```
 
-Figure \ref{fig:rank-plot} shows the resulting tightness measures for the joint confidence regions of ordered parameters. Its first three rows are for `r ASYMP$SHORTNAME` while the last three rows are for `r BOOT$SHORTNAME`.
+Figure \ref{fig:rank-plot} shows the resulting tightness measures for the joint confidence regions of ordered parameters. The first two columns in each facet is for `r ASYMP$SHORTNAME` while the last two is for `r BOOT$SHORTNAME`.
 
-Regions become wider with larger $K$ as shown by the upward, groupwise movement of points from left to right in the first, second, fourth, and fifth rows of Figure \ref{fig:rank-plot}. For each facet, the widest regions correspond to estimates with low variance. 
+Regions become wider with larger $K$ as shown by the upward, groupwise movement of points from left to right for `r T1$MATHNAME` and `r T2$MATHNAME` in the first and second rows of Figure \ref{fig:rank-plot}. For each facet, the widest regions correspond to estimates with low variance. Across different levels of $\rho$ in the equicorrelated structure, the difference in tightness measures become more pronounced with larger $K$ and lower parameter variance. For the block correlation structure where correlation is generally weaker, these differences are less noticeable. These findings are all consistent with the outcomes for the unordered parameters.
 
-```{r rank-plot, fig.cap = "Simulation Result for Tightness Measure of Ordered Parameters", fig.height=8.75}
-create_plot_for_t(prepare_t_facet_plot_data(
+
+```{r rank-plot, fig.cap = "Simulation Result for Tightness Measure of Ordered Parameters", fig.height=6.5}
+
+prepared_data <- prepare_t_facet_plot_data(
     eq_data = eq_res,
     bl_data = bl_res,
-    unordered = FALSE), unordered = FALSE)
+    unordered = FALSE)
+unordered <- FALSE
+
+if (unordered) {
+  app_levels = c(IND$RAWCHAR, BONF$RAWCHAR, NONRANK$RAWCHAR) 
+  app_labels = c(IND$SHORTNAME, BONF$SHORTNAME, NONRANK$SHORTNAME)
+  x = "Approach"
+  label_parsedx <- function(x) x
+  rot <- 90
+  facet_str <- "`Correlation structure` + Metric ~ K"
+} else {
+  app_levels = c(ASYMP$RAWCHAR,BOOT$RAWCHAR)
+  app_labels = c(ASYMP$SHORTNAME, BOOT$SHORTNAME)
+  #x =  "Correlation structure"
+  x = "Approach"
+  #facet_str <- "Approach + Metric ~ K"
+  facet_str <- "Metric ~ K"
+  # label_parsedx <- function(x) parse(text = as.character(x))
+  label_parsedx <- function(x) x
+  rot <- 90
+}
+
+var_levels <- c(LOW$NAME, MED$NAME, HIGH$NAME)
+legend_labs <- c(TeX("$\\rho = 0.1$"),
+                TeX("$\\rho = 0.5$"),
+                TeX("$\\rho = 0.9$"),
+                #"B2", "U2", "UL3", "UH3")
+                "UL3", "U2", "B2", "UH3")
+
+
+
+
+dat <- prepared_data %>%
+  mutate(
+    `Correlation structure` = factor(`Correlation structure`,
+                                     levels =c(EQUICORRELATED$NAME, 
+                                               BLOCK_DIAGONAL$NAME),
+                                     labels = c(TeX(EQUICORRELATED$GGNAME), 
+                                                TeX(BLOCK_DIAGONAL$GGNAME))),
+    r = ifelse(r == 0.1, "$\\rho = 0.1$", 
+               ifelse(r == 0.5, "$\\rho = 0.5$", 
+                      ifelse(r == 0.9,"$\\rho = 0.9$", r))),
+    Approach = factor(Approach,
+                      levels = app_levels, 
+                      labels = app_labels,
+                      ordered = TRUE),
+    Variance = factor(Variance, 
+                      levels = var_levels,
+                      labels = var_levels,
+                      ordered = TRUE),
+    K = factor(K,
+               levels = c('10','20','30','40',"50"),
+               labels = paste("K =",c('10','20','30','40',"50")),
+               #ordered = TRUE
+               ),
+    Metric = factor(Metric,
+                    levels = c(T1$CHAR, T2$CHAR, T3$CHAR),
+                    labels = c(TeX(T1$MATHNAME), 
+                               TeX(T2$MATHNAME), 
+                               TeX(T3$MATHNAME)),
+                    #ordered = TRUE
+                    )) %>%
+  unite(col = "Correlation", 
+        `Correlation structure`, 
+        `r`, 
+        sep = "_", 
+        remove = FALSE)
+
+  
+corr_levels <- c(
+  paste0(TeX(EQUICORRELATED$GGNAME), "_$\\rho = 0.1$"),
+  paste0(TeX(EQUICORRELATED$GGNAME), "_$\\rho = 0.5$"),
+  paste0(TeX(EQUICORRELATED$GGNAME), "_$\\rho = 0.9$"),
+  paste0(TeX(BLOCK_DIAGONAL$GGNAME), "_UL3"),
+  paste0(TeX(BLOCK_DIAGONAL$GGNAME), "_U2"),
+  paste0(TeX(BLOCK_DIAGONAL$GGNAME), "_B2"),
+  paste0(TeX(BLOCK_DIAGONAL$GGNAME), "_UH3")
+)
+dat$Correlation <- factor(dat$Correlation, levels = corr_levels)
+
+
+t3_label <- labels(dat$Metric)[which(levels(dat$Metric) == TeX(T3$MATHNAME))]
+
+maxt3 <- dat %>% 
+  filter(Metric == levels(dat$Metric)[3]) %>% # Use index or exact label
+  mutate(K_val = as.numeric(gsub("K = ", "", as.character(K))),
+         max_t3 = (K_val - 1) / K_val) %>%
+  distinct(Metric, K, max_t3)
+  #===========================================================================
+
+
+p <- dat %>%
+  ggplot(aes(x = interaction(`Correlation structure`, Approach), # Combines both
+             y = Values, 
+             shape = Correlation, 
+             size = Variance,
+             fill = Correlation,
+             group = interaction(`Correlation structure`,Approach) # Keeps groups distinct
+             )) +
+  geom_point(alpha = 0.3, stroke = 0.1) + 
+  
+  scale_size_ordinal(range = c(1, 2.25)) +
+  scale_x_discrete(labels = label_parsedx) +
+facet_grid(as.formula(facet_str),
+           scales = "free",
+           labeller = labeller(Metric = label_parsed,
+                               `Correlation structure` = label_parsed)) +
+  geom_hline(data = maxt3, 
+             aes(yintercept = max_t3),
+             color = "red",
+             linewidth = 0.25, 
+             linetype = 'longdash')+
+
+theme_bw() +
+  theme(axis.text.x = element_text(#hjust = 1, 
+                                   size = 9, angle = rot),
+        axis.text.y = element_text(size=7)
+  ) +
+  scale_shape_manual(values =  c(21, 22, 23, 21, 22, 25, 24),
+                     name = TeX(CORR_MATRIX$MATHNAME),
+                     labels = legend_labs) +
+  scale_fill_manual(name = TeX(CORR_MATRIX$MATHNAME),
+                    labels = legend_labs,
+                    values = c(rep("#B47846", 3),
+                               rep("#4682B4", 4))) +
+  scale_x_discrete(labels= c(TeX(paste(EQUICORRELATED$GGNAME, "Asymp")),
+                             TeX(paste(BLOCK_DIAGONAL$GGNAME, "Asymp")), 
+                             TeX(paste(EQUICORRELATED$GGNAME, "Boot")),
+                             TeX(paste(BLOCK_DIAGONAL$GGNAME, "Boot")))) +
+  COMMON_THEME +
+  theme(axis.text.x = element_text(vjust = 0.5, hjust = 1, angle = 90)) +
+  xlab("Correlation structure / Approach
+       ")
+
+if (unordered) {
+  p <-p + geom_line(color = 'gray33', linewidth = 0.01)
+}
+p
 ```
 
-Across different levels of $\rho$ in the equicorrelated structure, the difference in tightness measures become more pronounced with larger $K$ and lower variance. These differences are less noticeable for the block correlation structure where correlation is generally weaker. 
 
-These findings are all consistent with the outcomes for the unordered parameters.
-
-Despite its low coverage, `r ASYMP$SHORTNAME` still produces regions that are wider than those of `r BOOT$SHORTNAME`. This can be observed by comparing the range of y-axis values in the first and third rows for $T_1$ and also the second and fourth rows for $T_2$. Also, for equicorrelated structures, `r ASYMP$SHORTNAME` always logs wider regions for higher $\rho$.
+With its low coverage, `r ASYMP$SHORTNAME` still produces regions that are wider than those of `r BOOT$SHORTNAME`. Also, for equicorrelated structures, `r ASYMP$SHORTNAME` always logs wider regions for higher $\rho$ indicating that accounting for correlation tends to widen the joint confidence region for the ordered parameters. Though the same is true for higher $K$ values in `r BOOT$SHORTNAME`, the differences in `r T1$MATHNAME`, `r T2$MATHNAME`, and `r T3$MATHNAME` are smaller across different $\rho$. With block correlations, this same pattern is only easily observable for `r ASYMP$SHORTNAME` when $K$ is large. These show that `r BOOT$SHORTNAME` is still more preferable than `r ASYMP$SHORTNAME` in terms of tightness measures.
 
 The Appendix provides the coverage values for Figure \ref{fig:rank-cov-plot} (Table \ref{tab:rank-eq-cov}) and the values of $T_1$, $T_2$, and $T_3$ in Figure \ref{fig:rank-plot} (Tables \ref{tab:rank-eq-t1}–\ref{tab:rank-eq-t3}).
+
+
+```{r rank-plot1, fig.cap = "Simulation Result for Tightness Measure of Ordered Parameters1", fig.height=8.75}
+# create_plot_for_t(prepare_t_facet_plot_data(
+#     eq_data = eq_res,
+#     bl_data = bl_res,
+#     unordered = FALSE), unordered = FALSE)
+```
 
 
 
