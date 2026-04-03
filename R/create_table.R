@@ -219,7 +219,7 @@ create_table_for_tightness_measure <- function(summary, metric_type,
   
   var_headers <- setNames(
     c(2, num, num, num, 1, num, num, num),
-    rep(c(" ", LOW$NAME, MED$NAME, HIGH$NAME),2)
+    rep(c(" ", LOW$TABNAME, MED$TABNAME, HIGH$TABNAME), 2)
   )
   
   corrstruc_headers <- setNames(
