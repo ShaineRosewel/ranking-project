@@ -1,13 +1,16 @@
 # Sys.setenv(PATH = paste(Sys.getenv("PATH"), "/usr/bin", "/bin", sep = ":"))
 LOW <- list(CHAR = "Coverage", 
             NAME = "Low",  
-            TABNAME = "$\\\\text{Low } V(\\\\theta_k)$")
+            TABNAME = "$\\\\text{Low } V(\\\\theta_k)$",
+            GGNAME = "Low $V(\\theta_k)$")
 MED <- list(CHAR = "Coverage", 
             NAME = "Moderate",  
-            TABNAME = "$\\\\text{Moderate } V(\\\\theta_k)$")
+            TABNAME = "$\\\\text{Moderate } V(\\\\theta_k)$",
+            GGNAME = "Moderate $V(\\theta_k)$")
 HIGH <- list(CHAR = "Coverage", 
              NAME = "High",  
-             TABNAME = "$\\\\text{High } V(\\\\theta_k)$")
+             TABNAME = "$\\\\text{High } V(\\\\theta_k)$",
+             GGNAME = "High $V(\\theta_k)$")
 COVERAGE <- list(CHAR = "coverage", 
                  NAME = "Coverage")
 T1 <- list(CHAR = "t1", 
