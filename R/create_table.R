@@ -8,6 +8,30 @@ firstup <- function(x) {
   x
 }
 
+create_t_table_for_ordered_application <- function(ordered_t_dataset){
+  headers <- setNames(
+    c(1, 2, 2, 2), 
+    c(" ", T1$MATHNAME, T2$MATHNAME, T3$MATHNAME)
+  )
+  
+  return(ordered_t_dataset %>%
+           kable("latex",
+                 col.names = c(CORR_COEFF$MATHNAME, rep(c(ASYMP$MATHNAME, BOOT$MATHNAME), 3)), 
+                 booktabs = TRUE,
+                 escape = FALSE,
+                 linesep = "",
+                 longtable = TRUE,
+                 align = "llcc",
+                 caption = "Tightness Measures for Ordered Parameters") %>%
+           # column_spec(1:(num_variance*num*2 + 1) , width = colwidth) %>%
+           add_header_above(headers, 
+                            escape = FALSE) %>%
+           kable_styling(latex_options = c("hold_position"), 
+                         full_width = FALSE, 
+                         font_size = 12)
+  )
+}
+
 create_basic_results_table <- function(dataset, caption){
   
   columnnames <- c(CORR_COEFF$MATHNAME,
