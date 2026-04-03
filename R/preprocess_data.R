@@ -11,8 +11,8 @@ prepare_data_for_application <- function(allcases_tvalues, unordered){
   ord <- c('Asymptotic', 'Level2bs')
   
   if (unordered) {
-    to_select <- unord #c('Independent', 'Bonferroni', 'Nonrank')
-    to_deselect <- ord #c('Asymptotic', 'Level2bs')
+    to_select <- unord
+    to_deselect <- ord
   } else {
     to_select <- ord
     to_deselect <- unord
@@ -26,12 +26,13 @@ prepare_data_for_application <- function(allcases_tvalues, unordered){
     distinct() %>%
     pivot_wider(names_from = 'Measure',values_from = "Value") %>%
     mutate(Approach = tolower(Approach)) %>%
-    mutate(Approach = ifelse(Approach == 'nonrank', 'nonrankbased', Approach)) %>%
+    mutate(Approach = ifelse(Approach == 'nonrank', 
+                             NONRANK$RAWCHAR, Approach)) %>%
     mutate(across(c(T1, T2, T3), round, 3))
   
   if (unordered) {
     to_table <- to_table %>% 
-      filter(!((Approach == 'bonferroni' | Approach == 'independent') & r != 0 ))
+      filter(!((Approach == BONF$RAWCHAR | Approach == IND$RAWCHAR) & r != 0 ))
   } else {
     to_table <- to_table %>% 
       pivot_wider(names_from = Approach, values_from = c(T1, T2, T3))
@@ -97,24 +98,40 @@ preprocess_coverage <- function(dataset,
 
 prepare_coverage_data_plot <- function(eq_res, bl_res, unordered = TRUE){
   
-  eq_coverage_ordered <- preprocess_coverage(eq_res, sd_value = 2, equicorrelation = TRUE, unordered = unordered)
-  bl_coverage_ordered <- preprocess_coverage(bl_res, sd_value = 2, equicorrelation = FALSE, unordered = unordered)
+  eq_coverage_ordered <- preprocess_coverage(eq_res, sd_value = 2, 
+                                             equicorrelation = TRUE, 
+                                             unordered = unordered)
+  bl_coverage_ordered <- preprocess_coverage(bl_res, sd_value = 2, 
+                                             equicorrelation = FALSE, 
+                                             unordered = unordered)
   
-  eq_coverage_orderedm <- preprocess_coverage(eq_res, sd_value = 3.6, equicorrelation = TRUE, unordered = unordered)
-  bl_coverage_orderedm <- preprocess_coverage(bl_res, sd_value = 3.6, equicorrelation = FALSE, unordered = unordered)
+  eq_coverage_orderedm <- preprocess_coverage(eq_res, sd_value = 3.6, 
+                                              equicorrelation = TRUE, 
+                                              unordered = unordered)
+  bl_coverage_orderedm <- preprocess_coverage(bl_res, sd_value = 3.6, 
+                                              equicorrelation = FALSE,
+                                              unordered = unordered)
   
-  eq_coverage_orderedh <- preprocess_coverage(eq_res, sd_value = 6, equicorrelation = TRUE, unordered = unordered)
-  bl_coverage_orderedh <- preprocess_coverage(bl_res, sd_value = 6, equicorrelation = FALSE, unordered = unordered)
+  eq_coverage_orderedh <- preprocess_coverage(eq_res, sd_value = 6, 
+                                              equicorrelation = TRUE, 
+                                              unordered = unordered)
+  bl_coverage_orderedh <- preprocess_coverage(bl_res, sd_value = 6, 
+                                              equicorrelation = FALSE,
+                                              unordered = unordered)
   
   if (unordered) {
     pivot_longer_cols <- c('bonferroni','nonrankbased', 'independent')
-    all_rows <- rbind(eq_coverage_ordered, bl_coverage_ordered) %>% mutate(sd = LOW$NAME)
+    all_rows <- rbind(eq_coverage_ordered, bl_coverage_ordered) %>% 
+      mutate(sd = LOW$NAME)
     app_levels <- c(IND$SHORTNAME, BONF$SHORTNAME, NONRANK$SHORTNAME)
   } else {
     pivot_longer_cols <- c('rankbased_asymptotic', 'rankbased_level2bs')
-    all_rows <- rbind(rbind(eq_coverage_ordered, bl_coverage_ordered) %>% mutate(sd = LOW$NAME),
-                      rbind(eq_coverage_orderedm, bl_coverage_orderedm) %>% mutate(sd = MED$NAME),
-                      rbind(eq_coverage_orderedh, bl_coverage_orderedh) %>% mutate(sd = HIGH$NAME))
+    all_rows <- rbind(rbind(eq_coverage_ordered, bl_coverage_ordered) %>% 
+                        mutate(sd = LOW$NAME),
+                      rbind(eq_coverage_orderedm, bl_coverage_orderedm) %>% 
+                        mutate(sd = MED$NAME),
+                      rbind(eq_coverage_orderedh, bl_coverage_orderedh) %>%
+                        mutate(sd = HIGH$NAME))
     app_levels <- c(ASYMP$SHORTNAME, BOOT$SHORTNAME)
   }
   
@@ -379,7 +396,8 @@ prepare_plotting_data_for_pulse <- function(ci_results, df){
   labor <- unique(dataset_all[dataset_all$labor==1,]$Candidate)
   sectoral <- unique(dataset_all[dataset_all$sectoral==1,]$Candidate)
   ind_name_trad <- unique(dataset_all[dataset_all$ind_name_trad==1,]$Candidate)
-  ind_name_recall <- unique(dataset_all[dataset_all$ind_name_recall==1,]$Candidate)
+  ind_name_recall <- unique(
+    dataset_all[dataset_all$ind_name_recall==1,]$Candidate)
   
   dat_to_plot <- dat_to_plot %>%
     mutate(highlight1 = case_when(
@@ -394,27 +412,6 @@ prepare_plotting_data_for_pulse <- function(ci_results, df){
       Candidate %in% ind_name_recall ~ "Media",
       TRUE                           ~ "None"
     ))
-  
-  # dat_to_plot$highlight1 <- ifelse(
-  #   dat_to_plot$Candidate %in% dsen,
-  #   "DuterTen",
-  #   ifelse(
-  #     dat_to_plot$Candidate %in% msen,
-  #     "Alyansa",
-  #     ifelse(
-  #       dat_to_plot$Candidate %in% ksen,
-  #       "KiBam",
-  #       ifelse(dat_to_plot$Candidate %in% mksen,
-  #              "Makabayan",
-  #              ifelse(
-  #                dat_to_plot$Candidate %in% dmsen,
-  #                "DuterTen-Alyansa","None"
-  #                )
-  #              )
-  #       )
-  #     )
-  #   )
-
   return(dat_to_plot)
 }
 
