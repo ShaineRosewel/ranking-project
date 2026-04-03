@@ -67,7 +67,8 @@ create_plot_for_coverage <- function(dataset, unordered){
                              values = c(rep("#B47846", 3),
                                         rep("#4682B4", 4))) +
            facet_grid(grid_formula) +
-           geom_hline(yintercept=0, alpha = 0.7, color = "black", linewidth = 0.1) +
+           geom_hline(yintercept=0, alpha = 0.7, 
+                      color = "black", linewidth = 0.1) +
            coord_flip() +
            theme_bw() +
            xlab("K") +
@@ -111,7 +112,7 @@ create_plot_for_app_data <- function(dat_to_plot,
   if (length(shape_labels)==1){
     shape_labels = sort(unique(data_to_plot$highlight1))
   } else {
-    shape_labels = shape_labels#c("Label A", "Label B", "Label C")
+    shape_labels = shape_labels
   }
   
   cap_first <- function(x) {
@@ -139,11 +140,11 @@ create_plot_for_app_data <- function(dat_to_plot,
     # scale_color_distiller(palette = "PiYG", direction = 1) +
     scale_color_manual(
       values = c(
-        "0" = "gray70",    # Neutral gray
-        "1" = "#addd8e",    # Vibrant Lime-Green (Stronger than pale #bae4b3)
-        "2" = "#41ab5d",    # Solid Kelly Green
-        "3" = "#006d2c",    # Dark Forest Green
-        "4" = "#00441b",     # Deep forest green (near black)
+        "0" = "gray70",
+        "1" = "#addd8e",
+        "2" = "#41ab5d",
+        "3" = "#006d2c",
+        "4" = "#00441b",
         "5" = "black" 
       ),
       name = "Decrease in Occupied Rank Position",
@@ -170,14 +171,14 @@ create_plot_for_app_data <- function(dat_to_plot,
     # facet_grid(highlight1~Approach, scales = "free_y", space = "free_y"
     # )+
     theme(
-      strip.text.y = element_blank()#,        # Removes the row labels
-      #strip.background = element_blank()     # Removes the gray background boxes
+      strip.text.y = element_blank()
+      #strip.background = element_blank()
     ) +
     coord_flip() +
     theme(
       legend.position = "top",
-      legend.box = "vertical",   # Stack multiple legends on top of each other
-      legend.margin = margin()    # Tighten space to prevent further cutoff
+      legend.box = "vertical", # Stack multiple legends on top of each other
+      legend.margin = margin() # Tighten space to prevent further cutoff
     )
   return(p)
 }
@@ -292,26 +293,26 @@ create_plot_for_t <- function(prepared_data, unordered = TRUE){
 
 create_plot_for_t_app_plot <- function(allcases_dataset){
   
+  methods <- c(BONF$SHORTNAME, IND$SHORTNAME, NONRANK$SHORTNAME, 
+               ASYMP$SHORTNAME, BOOT$SHORTNAME)
+  
   unordered_approaches <- c("Bonferroni", "Independent", "Nonrank",
                             "Asymptotic", "Level2bs")
   
   selected <- unordered_approaches
   color_map <- setNames(
-    c("black", "black", "black", "black", "black"),
-    c(BONF$SHORTNAME, IND$SHORTNAME, NONRANK$SHORTNAME, 
-      ASYMP$SHORTNAME, BOOT$SHORTNAME)
+    rep("black", 5),
+    methods
   )
   
   alpha_map <- setNames(
     c(0.30, 0.30, 0.3, 0.3, 0.3),
-    c(BONF$SHORTNAME, IND$SHORTNAME, NONRANK$SHORTNAME, 
-      ASYMP$SHORTNAME, BOOT$SHORTNAME)
+    methods
   )
   
   shape_map <- setNames(
     c(15, 16, 17, 4, 18),#3
-    c(BONF$SHORTNAME, IND$SHORTNAME, NONRANK$SHORTNAME, 
-      ASYMP$SHORTNAME, BOOT$SHORTNAME)
+    methods
   )
   
   data <- allcases_dataset %>%
@@ -320,15 +321,14 @@ create_plot_for_t_app_plot <- function(allcases_dataset){
                  values_to = "Value") 
   allcases_dataset <- data %>% mutate(
     Approach = factor(case_when(
-      Approach == "Independent"   ~ IND$SHORTNAME,
-      Approach == "Bonferroni"  ~ BONF$SHORTNAME,
+      Approach == "Independent" ~ IND$SHORTNAME,
+      Approach == "Bonferroni" ~ BONF$SHORTNAME,
       Approach == "Nonrank" ~ NONRANK$SHORTNAME,
       Approach == "Asymptotic" ~ ASYMP$SHORTNAME,
-      Approach == "Level2bs"  ~ BOOT$SHORTNAME,
-      TRUE                      ~ Approach # Fallback
+      Approach == "Level2bs" ~ BOOT$SHORTNAME,
+      TRUE ~ Approach
     ),
-    levels = c(BONF$SHORTNAME, IND$SHORTNAME, NONRANK$SHORTNAME, 
-               ASYMP$SHORTNAME, BOOT$SHORTNAME)),
+    levels = methods),
   )
   allcases_dataset %>% ggplot(aes(x = factor(r), y = Value, 
                                   color = Approach, 
