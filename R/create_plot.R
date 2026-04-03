@@ -47,7 +47,8 @@ create_plot_for_coverage <- function(dataset, unordered){
   legend_labs <- c(TeX("$\\rho = 0.1$"),
                    TeX("$\\rho = 0.5$"),
                    TeX("$\\rho = 0.9$"),
-                   "B2", "UL3","U2", "UH3")
+                   #"B2", "UL3","U2", "UH3")
+                   "UL3", "U2", "B2", "UH3")
   
   
   return(forplot %>%
@@ -59,7 +60,7 @@ create_plot_for_coverage <- function(dataset, unordered){
            geom_point(aes(group = factor(r), shape = factor(r)), 
                       position=position_dodge(width=0.5,preserve = "single"), 
                       size = 1.25, stroke = 0.3, alpha = 0.4) +
-           scale_shape_manual(values =  c(21, 22, 23, 21, 22, 24, 25),
+           scale_shape_manual(values =  c(21, 22, 23, 21, 22, 25, 24),
                               name = TeX(CORR_MATRIX$MATHNAME),
                               labels = legend_labs)+
            scale_fill_manual(name = TeX(CORR_MATRIX$MATHNAME),
@@ -69,6 +70,8 @@ create_plot_for_coverage <- function(dataset, unordered){
            facet_grid(grid_formula) +
            geom_hline(yintercept=0, alpha = 0.7, 
                       color = "black", linewidth = 0.1) +
+           geom_hline(yintercept=0.01, alpha = 0.7, 
+                      color = "gray", linewidth = 0.25, linetype = 'longdash') +
            coord_flip() +
            theme_bw() +
            xlab("K") +
@@ -206,8 +209,8 @@ create_plot_for_t <- function(prepared_data, unordered = TRUE){
   legend_labs <- c(TeX("$\\rho = 0.1$"),
                   TeX("$\\rho = 0.5$"),
                   TeX("$\\rho = 0.9$"),
-                  "B2", "U2", "UL3", "UH3")
-  
+                  #"B2", "U2", "UL3", "UH3")
+                  "UL3", "U2", "B2", "UH3")
   
   dat <- prepared_data %>%
     mutate(
@@ -247,12 +250,11 @@ create_plot_for_t <- function(prepared_data, unordered = TRUE){
     paste0(TeX(EQUICORRELATED$GGNAME), "_$\\rho = 0.1$"),
     paste0(TeX(EQUICORRELATED$GGNAME), "_$\\rho = 0.5$"),
     paste0(TeX(EQUICORRELATED$GGNAME), "_$\\rho = 0.9$"),
-    paste0(TeX(BLOCK_DIAGONAL$GGNAME), "_B2"),
-    paste0(TeX(BLOCK_DIAGONAL$GGNAME), "_U2"),
     paste0(TeX(BLOCK_DIAGONAL$GGNAME), "_UL3"),
+    paste0(TeX(BLOCK_DIAGONAL$GGNAME), "_U2"),
+    paste0(TeX(BLOCK_DIAGONAL$GGNAME), "_B2"),
     paste0(TeX(BLOCK_DIAGONAL$GGNAME), "_UH3")
   )
-  
   dat$Correlation <- factor(dat$Correlation, levels = corr_levels)
     #===========================================================================
   p <- dat %>%
