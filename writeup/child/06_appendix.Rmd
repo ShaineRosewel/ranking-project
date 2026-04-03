@@ -5,8 +5,6 @@ dataset<-readRDS("/home/realiseshewon/PDev/kde-ranking/data/true_theta.rds")
 
 ## Simulation True $\boldsymbol \theta$s
 
-Figure \@ref(fig:true-theta-boxplot) shows how the spread of the $\theta$ varies in the cases considered in Table \@ref(tab:true-theta-table)
-
 ```{r tab.cap="True $\\theta$ values used in the simulation have different levels of variability.", include = FALSE}
 
 source("/home/realiseshewon/PDev/kde-ranking/R/create_table.R")
@@ -61,7 +59,8 @@ eq_res <- combine_summaries(
                                levels = c("Low", "Moderate", "High"), 
                                ordered = TRUE)) %>% 
   mutate(`Correlation structure` = "Equicorrelated")  %>%
-  mutate(across(c(nonrankbased,rankbased_asymptotic, rankbased_level2bs, independent, bonferroni), round, 3)) 
+  mutate(across(c(nonrankbased,rankbased_asymptotic, rankbased_level2bs, 
+                  independent, bonferroni), round, 3)) 
   #mutate(across(5:8, round, 3))
 
 
@@ -88,7 +87,8 @@ mutate(
   )
 ) %>% 
     mutate(`Correlation structure` = "Block Diagonal") %>%
-  mutate(across(c(nonrankbased,rankbased_asymptotic, rankbased_level2bs, independent, bonferroni), round, 3)) 
+  mutate(across(c(nonrankbased,rankbased_asymptotic, rankbased_level2bs, 
+                  independent, bonferroni), round, 3)) 
 ```
 
 \newpage
@@ -99,9 +99,12 @@ mutate(
 
 ```{r nonrank-eq-cov}
 options(knitr.kable.NA = '')
-eq_coverage_unordered <- preprocess_coverage(eq_res, sd_value = 2, equicorrelation = TRUE, unordered = TRUE)
-bl_coverage_unordered <- preprocess_coverage(bl_res, sd_value = 2, equicorrelation = FALSE, unordered = TRUE)
-
+eq_coverage_unordered <- preprocess_coverage(eq_res, sd_value = 2, 
+                                             equicorrelation = TRUE,
+                                             unordered = TRUE)
+bl_coverage_unordered <- preprocess_coverage(bl_res, sd_value = 2, 
+                                             equicorrelation = FALSE, 
+                                             unordered = TRUE)
 create_side_by_side_table_within_main(eq_data = eq_coverage_unordered,
                            bl_data = bl_coverage_unordered, 
                           num_variance=1,
@@ -119,8 +122,9 @@ create_side_by_side_table_within_main(eq_data = eq_coverage_unordered,
 ```{r nonrank-eq-t1}
 options(knitr.kable.NA = "")
 
-create_table_for_tightness_measure(prepare_appendix_t_measure_table(eq_res, bl_res, unordered=TRUE, tmeasure = "t1"), 
-                                   "t1", unordered = TRUE)
+create_table_for_tightness_measure(prepare_appendix_t_measure_table(
+  eq_res, bl_res, unordered=TRUE, tmeasure = "t1"),
+  "t1", unordered = TRUE)
 
 ```
 
@@ -130,8 +134,9 @@ create_table_for_tightness_measure(prepare_appendix_t_measure_table(eq_res, bl_r
 ```{r nonrank-eq-t2}
 options(knitr.kable.NA = "")
 
-create_table_for_tightness_measure(prepare_appendix_t_measure_table(eq_res, bl_res, unordered=TRUE, tmeasure = "t2"), 
-                                   "t2", unordered = TRUE)
+create_table_for_tightness_measure(prepare_appendix_t_measure_table(
+  eq_res, bl_res, unordered=TRUE, tmeasure = "t2"),
+  "t2", unordered = TRUE)
 
 ```
 
@@ -140,52 +145,10 @@ create_table_for_tightness_measure(prepare_appendix_t_measure_table(eq_res, bl_r
 
 ```{r nonrank-eq-t3}
 options(knitr.kable.NA = "")
-create_table_for_tightness_measure(prepare_appendix_t_measure_table(eq_res, bl_res, unordered=TRUE, tmeasure = "t3"), 
-                                   "t3", unordered = TRUE)
-
+create_table_for_tightness_measure(prepare_appendix_t_measure_table(
+  eq_res, bl_res, unordered=TRUE, tmeasure = "t3"),
+  "t3", unordered = TRUE)
 ```
-
-
-```{r rank-eq-cov1}
-# options(knitr.kable.NA = '')
-# eq_coverage_ordered1 <- preprocess_coverage(eq_res, sd_value = 2, equicorrelation = TRUE, unordered = FALSE)
-# bl_coverage_ordered1 <- preprocess_coverage(bl_res, sd_value = 2, equicorrelation = FALSE, unordered = FALSE)
-# 
-# create_side_by_side_table_within_main(eq_data = eq_coverage_ordered1,
-#                            bl_data = bl_coverage_ordered1,
-#                           num_variance=1,
-#                           unordered = FALSE
-#                                       )
-```
-
-
-```{r rank-eq-cov2}
-# options(knitr.kable.NA = '')
-# eq_coverage_ordered2 <- preprocess_coverage(eq_res, sd_value = 3.6, equicorrelation = TRUE, unordered = FALSE)
-# bl_coverage_ordered2 <- preprocess_coverage(bl_res, sd_value = 3.6, equicorrelation = FALSE, unordered = FALSE)
-# 
-# create_side_by_side_table_within_main(eq_data = eq_coverage_ordered2,
-#                            bl_data = bl_coverage_ordered2,
-#                           num_variance=1,
-#                           unordered = FALSE
-#                                       )
-```
-
-
-```{r rank-eq-cov3}
-# options(knitr.kable.NA = '')
-# eq_coverage_ordered3 <- preprocess_coverage(eq_res, sd_value = 6, equicorrelation = TRUE, unordered = FALSE)
-# bl_coverage_ordered3 <- preprocess_coverage(bl_res, sd_value = 6, equicorrelation = FALSE, unordered = FALSE)
-# 
-# create_side_by_side_table_within_main(eq_data = eq_coverage_ordered3,
-#                            bl_data = bl_coverage_ordered3,
-#                           num_variance=1,
-#                           unordered = FALSE
-#                                       )
-```
-
-
-
 
 \newpage
 
@@ -196,20 +159,31 @@ create_table_for_tightness_measure(prepare_appendix_t_measure_table(eq_res, bl_r
 ```{r rank-eq-cov}
 options(knitr.kable.NA = "")
 
-eq_coverage_ordered1 <- preprocess_coverage(eq_res, sd_value = 2, equicorrelation = TRUE, unordered = FALSE)
-bl_coverage_ordered1 <- preprocess_coverage(bl_res, sd_value = 2, equicorrelation = FALSE, unordered = FALSE)
-
-eq_coverage_ordered2 <- preprocess_coverage(eq_res, sd_value = 3.6, equicorrelation = TRUE, unordered = FALSE)
-bl_coverage_ordered2 <- preprocess_coverage(bl_res, sd_value = 3.6, equicorrelation = FALSE, unordered = FALSE)
-
-eq_coverage_ordered3 <- preprocess_coverage(eq_res, sd_value = 6, equicorrelation = TRUE, unordered = FALSE)
-bl_coverage_ordered3 <- preprocess_coverage(bl_res, sd_value = 6, equicorrelation = FALSE, unordered = FALSE)
-
-
+eq_coverage_ordered1 <- preprocess_coverage(eq_res, sd_value = 2, 
+                                            equicorrelation = TRUE, 
+                                            unordered = FALSE)
+bl_coverage_ordered1 <- preprocess_coverage(bl_res, sd_value = 2,
+                                            equicorrelation = FALSE, 
+                                            unordered = FALSE)
+eq_coverage_ordered2 <- preprocess_coverage(eq_res, sd_value = 3.6, 
+                                            equicorrelation = TRUE, 
+                                            unordered = FALSE)
+bl_coverage_ordered2 <- preprocess_coverage(bl_res, sd_value = 3.6, 
+                                            equicorrelation = FALSE, 
+                                            unordered = FALSE)
+eq_coverage_ordered3 <- preprocess_coverage(eq_res, sd_value = 6, 
+                                            equicorrelation = TRUE, 
+                                            unordered = FALSE)
+bl_coverage_ordered3 <- preprocess_coverage(bl_res, sd_value = 6, 
+                                            equicorrelation = FALSE, 
+                                            unordered = FALSE)
 main <- rbind(
-  rbind(eq_coverage_ordered1, bl_coverage_ordered1) %>% mutate(sd = "Low"),
-  rbind(eq_coverage_ordered2, bl_coverage_ordered2) %>% mutate(sd = "Moderate"),
-  rbind(eq_coverage_ordered3, bl_coverage_ordered3) %>% mutate(sd = "High")
+  rbind(eq_coverage_ordered1, bl_coverage_ordered1) %>% 
+    mutate(sd = "Low"),
+  rbind(eq_coverage_ordered2, bl_coverage_ordered2) %>% 
+    mutate(sd = "Moderate"),
+  rbind(eq_coverage_ordered3, bl_coverage_ordered3) %>%
+    mutate(sd = "High")
 )  %>% 
   pivot_longer(cols = c(rankbased_asymptotic, rankbased_level2bs),
                names_to = "app") %>%
@@ -228,10 +202,9 @@ create_table_for_tightness_measure(prepare_appendix_cov_measure_table(main),
 
 ```{r rank-eq-t1}
 options(knitr.kable.NA = "")
-
-create_table_for_tightness_measure(prepare_appendix_t_measure_table(eq_res, bl_res, unordered=FALSE, tmeasure = "t1"), 
-                                   "t1", unordered = FALSE)
-
+create_table_for_tightness_measure(prepare_appendix_t_measure_table(
+  eq_res, bl_res, unordered=FALSE, tmeasure = "t1"), 
+  "t1", unordered = FALSE)
 ```
 
 \newpage
@@ -240,9 +213,9 @@ create_table_for_tightness_measure(prepare_appendix_t_measure_table(eq_res, bl_r
 ```{r rank-eq-t2}
 options(knitr.kable.NA = "")
 
-create_table_for_tightness_measure(prepare_appendix_t_measure_table(eq_res, bl_res, unordered=FALSE, tmeasure = "t2"), 
-                                   "t2", unordered = FALSE)
-
+create_table_for_tightness_measure(prepare_appendix_t_measure_table(
+  eq_res, bl_res, unordered=FALSE, tmeasure = "t2"), 
+  "t2", unordered = FALSE)
 ```
 
 
@@ -251,9 +224,9 @@ create_table_for_tightness_measure(prepare_appendix_t_measure_table(eq_res, bl_r
 
 ```{r rank-eq-t3}
 options(knitr.kable.NA = "")
-create_table_for_tightness_measure(prepare_appendix_t_measure_table(eq_res, bl_res, unordered=FALSE, tmeasure = "t3"), 
-                                   "t3", unordered = FALSE)
-
+create_table_for_tightness_measure(prepare_appendix_t_measure_table(
+  eq_res, bl_res, unordered=FALSE, tmeasure = "t3"),
+  "t3", unordered = FALSE)
 ```
 
 \elandscape
@@ -266,33 +239,14 @@ create_table_for_tightness_measure(prepare_appendix_t_measure_table(eq_res, bl_r
 ```{r travel-time-tab-nonrank}
 allcases <- readRDS("filtered-to-one-pulse-CI.rds")
 to_table <- prepare_data_for_application(allcases$t_values, unordered =TRUE)
-create_basic_results_table(to_table, "Tightness Measures for Unordered Parameters")
+create_basic_results_table(to_table, 
+                           "Tightness Measures for Unordered Parameters")
 ```
 
 
 ```{r travel-time-tab-rank}
 totab1 <- prepare_data_for_application(allcases$t_values, unordered =FALSE)
-
-headers <- setNames(
-      c(1, 2, 2, 2), 
-      c(" ", T1$MATHNAME, T2$MATHNAME, T3$MATHNAME)
-    )
-
-totab1 %>%
-      kable("latex",
-          col.names = c("r", rep(c(ASYMP$MATHNAME, BOOT$MATHNAME), 3)), 
-          booktabs = TRUE,
-          escape = FALSE,
-          linesep = "",
-          longtable = TRUE,
-          align = "llcc",
-          caption = "Tightness Measures for Ordered Parameters") %>%
-      # column_spec(1:(num_variance*num*2 + 1) , width = colwidth) %>%
-      add_header_above(headers, 
-                       escape = FALSE) %>%
-  kable_styling(latex_options = c("hold_position"), 
-                full_width = FALSE, 
-                font_size = 12)
+create_t_table_for_ordered_application(totab1)
 ```
 
 
@@ -305,31 +259,12 @@ totab1 %>%
 ```{r travel-time-tab-nonrank2}
 allcases <- readRDS("all-travel-time-CI.rds")
 to_table <- prepare_data_for_application(allcases$t_values, unordered =TRUE)
-create_basic_results_table(to_table, "Tightness Measures for Unordered Parameters")
+create_basic_results_table(to_table, 
+                           "Tightness Measures for Unordered Parameters")
 ```
 
 ```{r travel-time-tab-rank2}
 allcases <- readRDS("all-travel-time-CI.rds")
 totab1 <- prepare_data_for_application(allcases$t_values, unordered =FALSE)
-
-headers <- setNames(
-      c(1, 2, 2, 2), 
-      c(" ", T1$MATHNAME, T2$MATHNAME, T3$MATHNAME)
-    )
-
-totab1 %>%
-      kable("latex",
-          col.names = c("r", rep(c(ASYMP$MATHNAME, BOOT$MATHNAME), 3)), 
-          booktabs = TRUE,
-          escape = FALSE,
-          linesep = "",
-          longtable = TRUE,
-          align = "llcc",
-          caption = "Tightness Measures for Ordered Parameters") %>%
-      # column_spec(1:(num_variance*num*2 + 1) , width = colwidth) %>%
-      add_header_above(headers, 
-                       escape = FALSE) %>%
-  kable_styling(latex_options = c("hold_position"), 
-                full_width = FALSE, 
-                font_size = 12)
+create_t_table_for_ordered_application(totab1)
 ```
