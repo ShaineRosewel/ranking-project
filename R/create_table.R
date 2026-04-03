@@ -16,7 +16,8 @@ create_t_table_for_ordered_application <- function(ordered_t_dataset){
   
   return(ordered_t_dataset %>%
            kable("latex",
-                 col.names = c(CORR_COEFF$MATHNAME, rep(c(ASYMP$MATHNAME, BOOT$MATHNAME), 3)), 
+                 col.names = c(CORR_COEFF$MATHNAME, 
+                               rep(c(ASYMP$MATHNAME, BOOT$MATHNAME), 3)), 
                  booktabs = TRUE,
                  escape = FALSE,
                  linesep = "",
