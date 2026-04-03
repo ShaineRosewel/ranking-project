@@ -148,7 +148,7 @@ prepare_coverage_data_plot <- function(eq_res, bl_res, unordered = TRUE){
                                                          BLOCK_DIAGONAL$NAME), 
                                               ordered = TRUE),
              r = factor(r, levels = c("0.1","0.5", "0.9", 
-                                      "B2", "UL3", "U2", "UH3"), ordered =TRUE),
+                                      "UL3", "U2", "B2", "UH3"), ordered =TRUE),
              Approach = case_when(
                Approach == IND$RAWCHAR   ~ IND$SHORTNAME,
                Approach == BONF$RAWCHAR  ~ BONF$SHORTNAME,
