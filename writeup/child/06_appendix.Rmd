@@ -82,7 +82,7 @@ mutate(
       r == "unbalanced-block-high" & blocks == 3 ~ "UH3",
       TRUE ~ r
     ),
-    levels = c("B2", "U2", "UL3", "UH3"),
+    levels = c("UL3", "U2", "B2", "UH3"),
     ordered = TRUE
   )
 ) %>% 
