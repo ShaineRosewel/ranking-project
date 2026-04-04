@@ -298,6 +298,8 @@ get_ci_rankbased_level2bs <- function(B,
                            function(x) compute_sigma_hat(x, C) 
                            )
   print("ci_rankbased_level2bs 2===================================")
+  min_sigma <- min(unlist(sigma_hat_star))
+  print(min_sigma)
   # # print(length(sigma_hat_star)) # = B
   # print(length(sorted_thetahat_star[5, ])) # = K
   # print(length(sorted_theta_hat)) # = K
