@@ -309,7 +309,8 @@ create_plot_for_t <- function(prepared_data, unordered = TRUE){
   facet_grid(as.formula(facet_str),
              scales = "free",
              labeller = labeller(Metric = label_parsed,
-                                 `Correlation structure` = label_parsed)) +
+                                 `Correlation structure` = label_parsed,
+                                 Metric = label_parsed)) +
     geom_hline(data = maxt3, 
                aes(yintercept = max_t3),
                color = "red",
@@ -337,33 +338,33 @@ create_plot_for_t <- function(prepared_data, unordered = TRUE){
 }
 
 create_plot_for_t_app_plot <- function(allcases_dataset){
-  
-  methods <- c(BONF$SHORTNAME, IND$SHORTNAME, NONRANK$SHORTNAME, 
+
+  methods <- c(BONF$SHORTNAME, IND$SHORTNAME, NONRANK$SHORTNAME,
                ASYMP$SHORTNAME, BOOT$SHORTNAME)
-  
+
   unordered_approaches <- c("Bonferroni", "Independent", "Nonrank",
                             "Asymptotic", "Level2bs")
-  
+
   selected <- unordered_approaches
   color_map <- setNames(
     rep("black", 5),
     methods
   )
-  
+
   alpha_map <- setNames(
     c(0.30, 0.30, 0.3, 0.3, 0.3),
     methods
   )
-  
+
   shape_map <- setNames(
     c(15, 16, 17, 4, 18),#3
     methods
   )
-  
+
   data <- allcases_dataset %>%
     pivot_longer(cols = selected,
                  names_to = "Approach",
-                 values_to = "Value") 
+                 values_to = "Value")
   allcases_dataset <- data %>% mutate(
     Approach = factor(case_when(
       Approach == "Independent" ~ IND$SHORTNAME,
@@ -375,15 +376,15 @@ create_plot_for_t_app_plot <- function(allcases_dataset){
     ),
     levels = methods),
   )
-  allcases_dataset %>% ggplot(aes(x = factor(r), y = Value, 
-                                  color = Approach, 
-                                  shape = Approach, 
+  allcases_dataset %>% ggplot(aes(x = factor(r), y = Value,
+                                  color = Approach,
+                                  shape = Approach,
                                   alpha = Approach)) +
-    geom_point(size = 2) + 
+    geom_point(size = 2) +
     facet_wrap(~Measure, scales = "free_y") +
     scale_color_manual(values = color_map) +
     scale_shape_manual(values = shape_map) +
-    scale_alpha_manual(values = alpha_map) + 
+    scale_alpha_manual(values = alpha_map) +
     scale_x_discrete(
       breaks = seq(0, 0.9, 0.2)) +
     theme_bw() +
@@ -394,7 +395,7 @@ create_plot_for_t_app_plot <- function(allcases_dataset){
       legend.box = "horizontal",
       legend.direction = "horizontal",
       # increase top margin to prevent cutoff
-      plot.margin = margin(t = 15, r = 10, b = 10, l = 0) 
+      plot.margin = margin(t = 15, r = 10, b = 10, l = 0)
     ) +
     guides(
       color = guide_legend(nrow = 2, byrow = TRUE),
@@ -403,3 +404,72 @@ create_plot_for_t_app_plot <- function(allcases_dataset){
     )
 }
 
+# create_plot_for_t_app_plot <- function(allcases_dataset){
+#   
+#   # Define methods
+#   methods <- c(BONF$SHORTNAME, IND$SHORTNAME, NONRANK$SHORTNAME, 
+#                ASYMP$SHORTNAME, BOOT$SHORTNAME)
+#   
+#   unordered_approaches <- c("Bonferroni", "Independent", "Nonrank",
+#                             "Asymptotic", "Level2bs")
+#   selected <- unordered_approaches
+#   
+#   # Define aesthetics
+#   color_map <- setNames(rep("black", 5), methods)
+#   alpha_map <- setNames(rep(0.3, 5), methods)
+#   shape_map <- setNames(c(15, 16, 17, 4, 18), methods)
+#   
+#   # Pivot data to long format
+#   data <- allcases_dataset %>%
+#     pivot_longer(cols = selected,
+#                  names_to = "Approach",
+#                  values_to = "Value") %>%
+#     mutate(
+#       Approach = factor(case_when(
+#         Approach == "Independent" ~ IND$SHORTNAME,
+#         Approach == "Bonferroni" ~ BONF$SHORTNAME,
+#         Approach == "Nonrank" ~ NONRANK$SHORTNAME,
+#         Approach == "Asymptotic" ~ ASYMP$SHORTNAME,
+#         Approach == "Level2bs" ~ BOOT$SHORTNAME,
+#         TRUE ~ Approach
+#       ),
+#       levels = methods)
+#     )
+#   
+#   # Compute y-range for T1 and T2
+#   y_range_T1_T2 <- data %>%
+#     filter(Measure %in% c("T1", "T2")) %>%
+#     summarise(min_val = min(Value, na.rm = TRUE),
+#               max_val = max(Value, na.rm = TRUE))
+#   
+#   # Plot
+#   ggplot(data, aes(x = factor(r), y = Value, 
+#                    color = Approach, shape = Approach, alpha = Approach)) +
+#     geom_point(size = 2) +
+#     # Add invisible points to force shared y-axis for T1 & T2
+#     geom_blank(data = data.frame(
+#       Measure = c("T1", "T2"),
+#       Value = c(y_range_T1_T2$min_val, y_range_T1_T2$max_val),
+#       r = 0,  # dummy x value
+#       Approach = methods[1]
+#     )) +
+#     facet_wrap(~Measure, scales = "free_y") +
+#     scale_color_manual(values = color_map) +
+#     scale_shape_manual(values = shape_map) +
+#     scale_alpha_manual(values = alpha_map) +
+#     scale_x_discrete(breaks = seq(0, 0.9, 0.2)) +
+#     theme_bw() +
+#     xlab(TeX(CORR_COEFF$MATHNAME)) +
+#     COMMON_THEME +
+#     theme(
+#       legend.position = "top",
+#       legend.box = "horizontal",
+#       legend.direction = "horizontal",
+#       plot.margin = margin(t = 15, r = 10, b = 10, l = 0)
+#     ) +
+#     guides(
+#       color = guide_legend(nrow = 2, byrow = TRUE),
+#       shape = guide_legend(nrow = 2, byrow = TRUE),
+#       alpha = guide_legend(nrow = 2, byrow = TRUE)
+#     )
+# }
