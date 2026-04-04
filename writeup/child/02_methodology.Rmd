@@ -258,7 +258,9 @@ source("/home/realiseshewon/PDev/kde-ranking/R/create_table.R")
 source("/home/realiseshewon/PDev/kde-ranking/R/preprocess_data.R")
 create_table_for_true_theta(
 dataset %>% 
-  mutate(data_spread = ifelse(data_spread == 'low', 'Low', ifelse(data_spread == 'med', 'Moderate', "High"))) %>%
+  mutate(data_spread = factor(ifelse(data_spread == 'low', 'Low', ifelse(data_spread == 'med', 'Moderate', "High")),
+                              levels = c("Low", "Moderate", "High"))
+         ) %>%
   select(K, data_spread, true_theta) %>%
   group_by(K, data_spread) %>%
   summarise(true_theta = paste(round(true_theta, 1), collapse = ", "), .groups = "drop") %>%
