@@ -205,14 +205,6 @@ Thus, the full block correlation matrix can be expressed as in (\ref{eq:blockcor
 \end{equation}
 In the context of pre-election surveys, each block may represent correlations induced by party or ticket membership, reflecting stronger associations within parties and weaker associations between them.
 
-Correlation structures that account for spatial proximity can be borrowed from geostatistics. This is particularly relevant in light of Klein’s observation that states located within certain regions exhibit similar travel time characteristics. In such cases, spatial dependence can be modeled using a stationary (i.e., no directional dependence) Matérn correlation function, which for two locations $\mathbf{s}_i$ and $\mathbf{s}_j$ is expressed as in (\ref{eq:matern}).
-
-\begin{equation}
-\rho_{\text{matern}} = \frac{2^{1-\nu}}{\Gamma(\nu)} (\kappa \;\Vert \;\mathbf{s}_i - \mathbf{s}_j \; \Vert)^\nu K_\nu  (\kappa \;\Vert \;\mathbf{s}_i - \mathbf{s}_j \; \Vert)
-  \label{eq:matern}
-\end{equation}
-where $\Vert \cdot \Vert$ denotes the Euclidean distance and $K_\nu$ is the second kind of the modified Bessel function. It has a scale parameter $\kappa > 0$ and a smoothness parameter $\nu > 0$. $\rho_{\text{matern}}$ reduces to the exponential correlation when $\nu = 0.5$ and to Gaussian correlation function when $\nu = \infty$. In this paper, the R package "BayesNGSP" (@BayesNGSP), is used to construct the $\mathbf{R}_{\text{matern}}$.
-
 ## Evaluation {#sec:evaluation}
 
 Algorithm \ref{alg:evaluation} estimates the coverage probabilities associated with the proposed methodologies. The coverage probabilities correspond to the proportion of replications in which the true parameter values are contained within the confidence intervals for all $K$ simultaneously. Moreover, the tightness of the joint confidence region that results from Algorithm \ref{alg:nonrank_ci} is assessed using three summary measures: the arithmetic mean (\(T_1\)), geometric mean (\(T_2\)), and the metric \(T_3\) introduced by Wright (2025), as presented in Equations \ref{eq:t1}--\ref{eq:t3}.
