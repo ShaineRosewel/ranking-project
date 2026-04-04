@@ -66,7 +66,7 @@ get_ci_result <- function(result, K, reverse_ranks = FALSE) {
 }
 
 
-get_tmeasures_for_app_data <- function(ci_results){
+get_tmeasures_for_app_data <- function(ci_results, K){
   processed <- lapply(ci_results, process_ci_result, K = K)
   # print("REACHED 4 ===================================")
   res <- data.frame(
