@@ -99,26 +99,21 @@ The first column of Figure \ref{fig:rank-cov-plot} illustrates how coverage for 
 
 Some cases with intermediate $K$ (e.g., $K=20$ in row 4) show smaller deviation from nominal for B2, UL3, and UH3 compared to U2. To sum up, coverage can vary with no discernible pattern across correlations and $K$ except when $V(\theta)$ is high.
 
-The second column of Figure \ref{fig:rank-cov-plot} presents coverage for `r BOOT$SHORTNAME`. It produces values that do not deviate systematically from and relatively closer to nominal when compared to `r ASYMP$SHORTNAME`.
-
-With the two proposed approaches, it is clear that `r BOOT$SHORTNAME` is superior to `r ASYMP$SHORTNAME` in terms of coverage.
+The second column of Figure \ref{fig:rank-cov-plot} presents coverage for `r BOOT$SHORTNAME`. It produces coverage values that do not deviate systematically from and are relatively closer to nominal when compared to `r ASYMP$SHORTNAME`. With the two proposed approaches, it is clear that `r BOOT$SHORTNAME` is superior to `r ASYMP$SHORTNAME` in terms of coverage.
 
 ```{r rank-cov-plot, fig.cap = "Simulation Result for Coverage of Ordered Parameters", fig.height = 7}
 forplot <- prepare_coverage_data_plot(eq_res, bl_res, unordered = FALSE)
 create_plot_for_coverage(forplot, unordered=FALSE)
 ```
 
-Figure \ref{fig:rank-plot} shows the resulting tightness measures for the joint confidence regions of ordered parameters. The first two columns in each facet is for `r ASYMP$SHORTNAME` while the last two is for `r BOOT$SHORTNAME`.
+Figure \ref{fig:rank-plot} shows the resulting `r T1$MATHNAME` for the joint confidence regions of ordered parameters. The first two columns in each facet is for `r ASYMP$SHORTNAME` while the last two is for `r BOOT$SHORTNAME`.  `r T2$MATHNAME` and `r T3$MATHNAME` are not included in the plot since they behave similarly to `r T1$MATHNAME`, except that the effect of $K$ is less on `r T3$MATHNAME`.
 
-Regions become wider with larger $K$ as shown by the upward, groupwise movement of points from left to right for `r T1$MATHNAME` and `r T2$MATHNAME` in the first and second rows of Figure \ref{fig:rank-plot}. For each facet, the widest regions correspond to estimates with low variance. Across different levels of $\rho$ in the equicorrelated structure, the difference in tightness measures become more pronounced with larger $K$ and lower parameter variance. For the block correlation structure where correlation is generally weaker, these differences are less noticeable. These findings are all consistent with the outcomes for the unordered parameters.
-
-
-```{r rank-plot, fig.cap = "Simulation Result for Tightness Measure of Ordered Parameters", fig.height=6.5}
+```{r rank-plot, fig.cap = "Simulation Result for Tightness Measure of Ordered Parameters", fig.height = 7}
 
 prepared_data <- prepare_t_facet_plot_data(
     eq_data = eq_res,
     bl_data = bl_res,
-    unordered = FALSE)
+    unordered = FALSE) %>% filter(Metric == "t1") #%>% filter(Variance == "High")
 unordered <- FALSE
 
 if (unordered) {
@@ -134,13 +129,16 @@ if (unordered) {
   #x =  "Correlation structure"
   x = "Approach"
   #facet_str <- "Approach + Metric ~ K"
-  facet_str <- "Metric ~ K"
+  facet_str <- "Variance ~ K"
   # label_parsedx <- function(x) parse(text = as.character(x))
   label_parsedx <- function(x) x
   rot <- 90
 }
 
 var_levels <- c(LOW$NAME, MED$NAME, HIGH$NAME)
+var_labels <- c(TeX(LOW$GGNAME),
+                TeX(MED$GGNAME),
+                TeX(HIGH$GGNAME))
 legend_labs <- c(TeX("$\\rho = 0.1$"),
                 TeX("$\\rho = 0.5$"),
                 TeX("$\\rho = 0.9$"),
@@ -166,7 +164,7 @@ dat <- prepared_data %>%
                       ordered = TRUE),
     Variance = factor(Variance, 
                       levels = var_levels,
-                      labels = var_levels,
+                      labels = var_labels,
                       ordered = TRUE),
     K = factor(K,
                levels = c('10','20','30','40',"50"),
@@ -213,7 +211,7 @@ p <- dat %>%
   ggplot(aes(x = interaction(`Correlation structure`, Approach), # Combines both
              y = Values, 
              shape = Correlation, 
-             size = Variance,
+          #   size = Variance,
              fill = Correlation,
              group = interaction(`Correlation structure`,Approach) # Keeps groups distinct
              )) +
@@ -224,7 +222,8 @@ p <- dat %>%
 facet_grid(as.formula(facet_str),
            scales = "free",
            labeller = labeller(Metric = label_parsed,
-                               `Correlation structure` = label_parsed)) +
+                               `Correlation structure` = label_parsed,
+                               Variance = label_parsed)) +
   geom_hline(data = maxt3, 
              aes(yintercept = max_t3),
              color = "red",
@@ -258,11 +257,11 @@ if (unordered) {
 p
 ```
 
+Regions become wider with larger $K$ as shown by the upward, groupwise movement of points from left to right for `r T1$MATHNAME` in each row of Figure \ref{fig:rank-plot}. `r T1$MATHNAME` values are larger with lower $V(\theta)$. This is shown through the y-axis ranges for each row that corresponds to different a level of $V(\theta)$. Across different levels of $\rho$ in the equicorrelated structure, the difference in `r T1$MATHNAME` becomes more pronounced with larger $K$ and lower parameter variance. For the block correlation structure where correlation is generally weaker, these differences are less noticeable. These findings are all consistent with the outcomes for the unordered parameters.
 
-With its low coverage, `r ASYMP$SHORTNAME` still produces regions that are wider than those of `r BOOT$SHORTNAME`. Also, for equicorrelated structures, `r ASYMP$SHORTNAME` always logs wider regions for higher $\rho$ indicating that accounting for correlation tends to widen the joint confidence region for the ordered parameters. Though the same is true for higher $K$ values in `r BOOT$SHORTNAME`, the differences in `r T1$MATHNAME`, `r T2$MATHNAME`, and `r T3$MATHNAME` are smaller across different $\rho$. With block correlations, this same pattern is only easily observable for `r ASYMP$SHORTNAME` when $K$ is large. These show that `r BOOT$SHORTNAME` is still more preferable than `r ASYMP$SHORTNAME` in terms of tightness measures.
+Figure \ref{fig:rank-plot} shows that accounting for high correlation for `r BOOT$SHORTNAME` only helps tighten the joint confidence region when the parameters $\theta_1, \theta_2, \dots, \theta_K$ are well separated. This is easier to observe when considering the equicorrelated structure. When the parameters have a high $V(\theta)$, as shown in the third row of Figure \ref{fig:rank-plot}, it is evident that the `r BOOT$SHORTNAME` joint confidence region is lowest when $\rho = 0.9$. This remains true regardless of $K$. However, as $V(\theta)$ increases, higher $\rho$ tends to yield a wider region. This is the default behavior for `r ASYMP$SHORTNAME`. Furthermore, `r ASYMP$SHORTNAME` still produces regions that are wider than those of `r BOOT$SHORTNAME` even with its low coverage. These show that `r BOOT$SHORTNAME` is still more preferable than `r ASYMP$SHORTNAME` in terms of tightness measures.
 
-The Appendix provides the coverage values for Figure \ref{fig:rank-cov-plot} (Table \ref{tab:rank-eq-cov}) and the values of $T_1$, $T_2$, and $T_3$ in Figure \ref{fig:rank-plot} (Tables \ref{tab:rank-eq-t1}–\ref{tab:rank-eq-t3}).
-
+The Appendix provides the coverage values for Figure \ref{fig:rank-cov-plot} (Table \ref{tab:rank-eq-cov}) and the values of `r T1$MATHNAME`, `r T2$MATHNAME`, and `r T3$MATHNAME` in Figure \ref{fig:rank-plot} (Tables \ref{tab:rank-eq-t1}–\ref{tab:rank-eq-t3}).
 
 ```{r rank-plot1, fig.cap = "Simulation Result for Tightness Measure of Ordered Parameters1", fig.height=8.75}
 # create_plot_for_t(prepare_t_facet_plot_data(
