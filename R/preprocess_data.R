@@ -348,7 +348,7 @@ prepare_plotting_data_for_pulse <- function(ci_results, df){
   
   # df <- readRDS("../data/mean_travel_time_ranking_2011.rds")
   dataset_all$k <- seq(1,K, 1)
-  dataset_all$sample_rank <- seq(1,K, 1)
+  # dataset_all$sample_rank <- seq(1,K, 1)
   dataset_all$order_index <- seq(1,K, 1)
   
   dataset_all <- dataset_all %>% pivot_longer(
@@ -439,6 +439,7 @@ prepare_plotting_data_for_traveltime <- function(ci_results, df, unordered){
                     K=K, 
                     reverse_ranks = FALSE), 
       min)
+    
     dataset_all$`Rank UB_independent` <- sapply(
       get_ci_result(result = ci_results$independent, 
                     K=K, 
