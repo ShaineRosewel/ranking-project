@@ -236,7 +236,7 @@ create_table_for_tightness_measure(prepare_appendix_t_measure_table(
 
 ## Tables: Pulse Asia Tightness Measures
 
-```{r travel-time-tab-nonrank}
+```{r pulse-asia-tab-nonrank}
 allcases <- readRDS("filtered-to-one-pulse-CI.rds")
 to_table <- prepare_data_for_application(allcases$t_values, unordered =TRUE)
 create_basic_results_table(to_table, 
@@ -244,7 +244,7 @@ create_basic_results_table(to_table,
 ```
 
 
-```{r travel-time-tab-rank}
+```{r pulse-asia-tab-rank}
 totab1 <- prepare_data_for_application(allcases$t_values, unordered =FALSE)
 create_t_table_for_ordered_application(totab1)
 ```
@@ -256,14 +256,14 @@ create_t_table_for_ordered_application(totab1)
 
 ## Tables: 2011 Mean Travel Time to Work in the US Tightness Measures
 
-```{r travel-time-tab-nonrank2}
+```{r travel-time-tab-nonrank}
 allcases <- readRDS("all-travel-time-CI.rds")
 to_table <- prepare_data_for_application(allcases$t_values, unordered =TRUE)
 create_basic_results_table(to_table, 
                            "Tightness Measures for Unordered Parameters")
 ```
 
-```{r travel-time-tab-rank2}
+```{r travel-time-tab-rank}
 allcases <- readRDS("all-travel-time-CI.rds")
 totab1 <- prepare_data_for_application(allcases$t_values, unordered =FALSE)
 create_t_table_for_ordered_application(totab1)

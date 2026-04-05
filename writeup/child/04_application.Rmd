@@ -2,13 +2,25 @@ We demonstrate the application of our proposed approaches to actual data using e
 
 ## Pulse Asia Results
 
-For the Pulse Asia results, correlations are assumed to be driven by political slates and alliances formed for the elections. To show how overall uncertainty can be reduced when accounting for these correlations, we assume a block diagonal correlation structure and let $\rho$ vary from 0 to 0.9. This means that candidates within the same block move together, as their support levels are influenced by shared political slates and alliances. For the standard error, we use $\widehat {se} = \sqrt{\frac{\hat{p}_k(1-\hat{p}_k)}{n}}$ where $\hat{p}_k$ is the proportion of voters favoring candidate $k$ and $n=1,200$ is the sample size used by Pulse Asia for their survey. These are all that we need to construct the joint confidence region.
+For the Pulse Asia results, correlations are assumed to be driven by political slates and alliances formed for the elections. To show how overall uncertainty can be reduced when accounting for these correlations, we assume a block diagonal correlation structure and let $\rho$ vary from 0 to 0.9. This means that candidates within the same block move together, as their support levels are influenced by shared political slates and alliances. For simplicity, we assume the same $\rho$ within all blocks. For the standard error, we use $\widehat {se} = \sqrt{\frac{\hat{p}_k(1-\hat{p}_k)}{n}}$ where $\hat{p}_k$ is the proportion of voters favoring candidate $k$ and $n=1,200$ is the sample size used by Pulse Asia for their survey. These are all that we need to construct the 95% joint confidence region.
 
-The analysis considers several key blocks: Alyansa, representing candidates campaigned for by the incumbent president, and DuterTen, composed of the vice-president and former president’s allies. Imee Marcos and Camille Villar are placed in a separate block, as both are endorsed by these rival factions. 
+The analysis considers several key blocks: Alyansa, representing candidates campaigned for by the incumbent president, and DuterTen, composed of the vice-president and former president’s allies. Imee Marcos and Camille Villar are placed in a separate block, as both are endorsed by these rival factions. The Makabayan coalition is given its own category due to its large 11-candidate lineup, while the KiBam alliance highlights the partnership between Kiko Pangilinan and Bam Aquino. Other blocks include candidates focused on labor advocacies, independent popular senatoriables, and traditional politicians with experience in various executive departments. Finally, the remaining less prominent candidates are grouped into a single sectoral block. These make up a total of nine blocks. We construct the 95% joint confidence region and observe how `r T1$MATHNAME`, `r T2$MATHNAME`, and `r T3$MATHNAME` change. 
 
-The Makabayan coalition is given its own category due to its large 11-candidate lineup, while the KiBam alliance highlights the partnership between Kiko Pangilinan and Bam Aquino. Other blocks include candidates focused on labor advocacies, independent popular senatoriables, and traditional politicians with experience in various executive departments. Finally, the remaining less prominent candidates are grouped into a single sectoral block.
+Figure \@ref(fig:pulse-asia-fig) shows that higher within-block correlation leads to better `r T1$MATHNAME`, `r T2$MATHNAME`, and `r T3$MATHNAME` for the `r NONRANK$SHORTNAME` joint confidence region when compared to `r IND$SHORTNAME` and `r BONF$SHORTNAME`. This implies narrower intervals for the `r NONRANK$SHORTNAME` region, and therefore less uncertainty.
 
-Table \@ref(tab:pulse-table) shows that higher within-block correlation leads to better `r T1$MATHNAME`, `r T2$MATHNAME`, and `r T3$MATHNAME`. This means that, overall, the intervals in the joint confidence region are narrower, and therefore less uncertain. This is aligned to the results of the simulation as discussed in Section \ref{sec:unordered-results}.
+Tightness measures for `r ASYMP$SHORTNAME` and `r BOOT$SHORTNAME` are overlaid to show how they differ when constructing joint confidence regions for ranks (`r ASYMP$SHORTNAME`, `r BOOT$SHORTNAME`) and ranked parameters (`r NONRANK$SHORTNAME`).  `r ASYMP$SHORTNAME` yields less tight regions for ranks than `r BOOT$SHORTNAME` but both of them exhibit increasing (decreasing) measures for `r T1$MATHNAME` and `r T2$MATHNAME` (`r T3$MATHNAME`) with higher $\rho$. This means we get more uncertain about the overall ranks when $\rho$ is high.
+
+```{r}
+thetastar1 <- -0.0001323539
+thetastar2 <- -0.001639273
+sigmasq1 <- 0.0000024925
+sigmasq2 <- 0.00000497
+thetastar1sq <- thetastar1^2
+thetastar2sq <- thetastar2^2
+min1 <-thetastar1sq +sigmasq1
+min2 <-thetastar2sq +sigmasq2
+```
+
 
 ```{r}
 source("/home/realiseshewon/PDev/kde-ranking/R/CONSTANTS.R")
@@ -23,8 +35,6 @@ library(kableExtra)
 library(tidyr)
 library(dplyr)
 ```
-
-
 
 
 ```{r}
@@ -76,6 +86,7 @@ dataset_all <- cand %>%
   mutate(se = sqrt((Voting_for_dec*(1-Voting_for_dec))/1200) ) %>%
   select(-Voting_for_dec) %>% 
   arrange(desc(`Voting For`)) %>%  
+  mutate(sample_rank = rank(desc(`Voting For`), ties.method = "max")) %>%
   arrange(desc(DuterTen), desc(Alyansa),desc(KiBam), desc(Makabayan), desc(ind_name_recall), desc(ind_name_trad), desc(labor), desc(sectoral))  %>%
   rename(`Rank UB_pulse` = `Rank UB`, `Rank LB_pulse` = `Rank LB`)
 ```
@@ -83,10 +94,6 @@ dataset_all <- cand %>%
 
 
 ```{r}
-
-  
-
-
 # ci_results <- get_ci_for_app_data(
 #     theta_hat = (dataset_all$`Voting For`)/100,
 #     true_sds = dataset_all$se,
@@ -146,8 +153,10 @@ pulse_ci <- readRDS("filtered-to-one-pulse-CI.rds")
 
 
 ```{r}
-# pulse_ci <- list(t_values = allcases, all_ci = ci_results)
-#saveRDS(pulse_ci, file = "filtered-to-one-pulse-CI.rds")
+# pulse_ci <- list(#t_values = allcases, 
+#                  all_ci = ci_results
+#                  )
+# #saveRDS(pulse_ci, file = "filtered-to-one-pulse-CI.rds")
 # pulse_ci <- readRDS("filtered-to-one-pulse-CI.rds")
 ```
 
@@ -219,18 +228,77 @@ diffs <- prepared_data %>%
   mutate(diff = ifelse(Approach=="nonrankbased", diff, 0))
 ```
 
-```{r}
-# DAT <- dataset_all %>% separate(Candidate, into = c("Candidate", "f"), sep = ", ")
-# diffs %>% filter(Approach == 'nonrankbased') %>% left_join(DAT[,c("Candidate", "se", "Voting For")]) %>% select(-value) %>% arrange(highlight1, se) %>%View()
-```
-
 
 ```{r pulse-asia-fig,fig.cap = "Tightness Measures for Pulse Asia Results Across $\\rho$", fig.height = 3.5}
 create_plot_for_t_app_plot(pulse_ci$t_values)
 ```
 
 
-To show how the improvement gets reflected into the joint confidence region, we assume a high correlation ($\rho = 0.9$) within each previously enumerated block and visually compare the joint confidence regions. Note that lower rank corresponds to highly preferred candidates. The first facet of Figure \@ref(fig:pulse-result) illustrates the `r IND$SHORTNAME` joint confidence region while the second one shows the improved `r NONRANK$SHORTNAME` joint confidence region. The green-shaded shapes are the intervals that got lesser occupied positions after accounting for the correlation. The darker the shade is, the higher the reduction in length. There is no distinguishable pattern as to which among each block members get an improved interval length, but the highest improvement is seen to occur in the middle part of the ranked estimates. `r BONF$SHORTNAME` is not included as it is hugely similar to `r IND$SHORTNAME`.
+```{r}
+# rank_length <- prepared_data1 %>% 
+#   filter(Approach == 'independent') %>% 
+#   group_by(Candidate) %>%
+#   summarise(bonf = n()) %>% arrange(Candidate) %>% left_join(prepared_data1 %>% filter(Approach == 'nonrankbased') %>% select(Candidate, diff)  %>% distinct(),
+#                         by = 'Candidate') %>% 
+#   group_by(diff) %>%
+#   summarise(central_len = median(bonf)) 
+# 
+# rank_length
+```
+
+
+
+
+```{r}
+# dataset_all %>%
+#   separate(Candidate, into = c("Candidate", "First"), sep = ',') %>%
+#   select(Candidate, `Voting For`, se) %>%
+#   left_join(diffs %>% select(Candidate, diff, highlight1), by = 'Candidate') %>% distinct()# %>%
+
+
+
+
+  # group_by(Candidate, `Voting For`, se, highlight1) %>% summarise(diff = max(diff)) %>%
+  # arrange(diff) %>%
+  # group_by(diff) %>%
+  # summarise(mean_len = median(bonf))
+
+
+#%>% View()
+```
+
+```{r}
+# DAT <- dataset_all %>% separate(Candidate, into = c("Candidate", "f"), sep = ", ")
+# diffs %>% filter(Approach == 'nonrankbased') %>% left_join(DAT[,c("Candidate", "se", "Voting For")]) %>% select(-value) %>% arrange(highlight1, se) %>%View()
+```
+
+```{r}
+coeffcons <- 0.9
+to_table <- pulse_ci$t_values %>%
+  pivot_longer(cols = c(Independent, Bonferroni, Nonrank),
+                          names_to = "Approach",
+                          values_to = "Value") %>%
+  distinct() %>%
+  pivot_wider(names_from = 'Measure',values_from = "Value") %>%
+  filter(!((Approach == 'Bonferroni' | Approach == 'Independent') & r != 0 )) %>%
+  mutate(Approach = tolower(Approach)) %>%
+  mutate(Approach = ifelse(Approach == 'nonrank', 'nonrankbased', Approach)) %>%
+  mutate(across(c(T1, T2, T3), round, 3)) %>%
+  select(-c(Asymptotic, Level2bs))
+
+coeffcons <- 0.9
+t1_after <- to_table[[which(to_table$r == coeffcons & to_table$T1 & to_table$Approach == NONRANK$RAWCHAR), "T1"]]
+t1_before <- to_table[[which(to_table$r == 0.0 & to_table$T1 & to_table$Approach == BONF$RAWCHAR), "T1"]]
+t2_after <- to_table[[which(to_table$r == coeffcons & to_table$T2 & to_table$Approach == NONRANK$RAWCHAR), "T2"]]
+t2_before <- to_table[[which(to_table$r == 0.0 & to_table$T2 & to_table$Approach == BONF$RAWCHAR), "T2"]]
+t3_after <- to_table[[which(to_table$r == coeffcons & to_table$T3 & to_table$Approach == NONRANK$RAWCHAR), "T3"]]
+t3_before <- to_table[[which(to_table$r == 0.0 & to_table$T3 & to_table$Approach == BONF$RAWCHAR), "T3"]]
+t2_improvement <- round(((t2_before-t2_after)/t2_before)*100, 2)
+t1_improvement <- round(((t1_before-t1_after)/t1_before)*100, 2)
+t3_improvement <- round(((t3_after-t3_before)/t3_before)*100, 2)
+```
+
+When accounting for $\rho = `r coeffcons`$, the use of `r NONRANK$SHORTNAME` region to report uncertainty leads to a `r t1_improvement`% reduction in `r T1$MATHNAME`, from `r t1_before` to `r t1_after`, compared to `r BONF$SHORTNAME`. Similar improvements are observed for `r T2$MATHNAME` and `r T3$MATHNAME`, with changes of `r t2_improvement`% (from `r t2_before` to `r t2_after`) and `r t3_improvement`% (from `r t3_before` to `r t3_after`), respectively. The values from Figure \@ref(fig:pulse-asia-fig) are provided in Tables \@ref(tab:pulse-asia-tab-nonrank) and \@ref(tab:pulse-asia-tab-rank) in the Appendix.
 
 
 ```{r pulse-result,fig.cap = "95% Joint Confidence Region for Senatoriable Preferences", fig.height = 7}
@@ -245,16 +313,21 @@ prepared_data <-  prepare_plotting_data_for_pulse(pulse_ci$all_ci,dataset_all) %
 
 prepared_data1 <- prepared_data %>% left_join(diffs[,c("Approach", "Candidate", 'diff')], by = c("Approach", "Candidate"))
 
-create_plot_for_app_data(prepared_data1, Candidate, k, reverse=TRUE,
+create_plot_for_app_data(prepared_data1, Candidate, sample_rank, reverse=TRUE,
                          # title ='95% Joint Confidence Region for Candidates with at least 1% Votes', 
                         shape_map = c("DuterTen" = 0, "Alyansa" = 1, "KiBam" = 2, "Makabayan" = 3,
                                       "DuterTen-Alyansa" = 8, "Traditional" = 5, "Media" = 6, 'Labor' = 10, 'Sectoral' = 4))
 ```
 
+To show how this improvement gets reflected into the joint confidence region for the unordered parameters, we use Figure \@ref(fig:pulse-result) to compare the resulting `r IND$SHORTNAME` 95% joint confidence region in the first facet and `r NONRANK$SHORTNAME` in the second one. Note that lower rank corresponds to highly preferred candidates. 
+
+The black solid circles in the joint confidence region show the observed estimated ranking for each candidate; each specific column of the joint confidence region shows which candidates could occupy the associated rank; each specific row of the joint confidence region shows which ranks the associated candidate could occupy. For example, in the first facet, rank 3 could be occupied by Tulfo E., Sotto, Dela Rosa, and Lapid; candidate Mendoza could occupy ranks $28, 29, 30, 31, 32, \dots, 37$. The green-shaded shapes in the second facet are the intervals that got reduced occupied positions after accounting for the correlation. The darker the shade is, the higher the reduction in occupied positions. There is no distinguishable pattern as to which among each block members get an improved interval length, but the highest improvement is seen to occur in the middle part of the estimates. `r BONF$SHORTNAME` is not included as it is hugely similar to `r IND$SHORTNAME`.
+
+Note that for this application, we filter the candidates so that we only include those that have at least 1% of preferences garnered. This is to obtain valid results across all proposed approaches. In particular, without the filter, we cannot obtain results for `r ASYMP$SHORTNAME`. This is because of step 3 in Algorithm \ref{alg:rank_asymp}. Sampling from the normal distribution centered at $\hat{\theta}$, when $\hat{\theta}$ is close to zero, may produce negative samples of $\hat{\theta}^*_{bk}$. Since the procedure ranks the quantities $\hat{\theta}_{bk}^{2} + \sigma_k^2$, negative values of $\hat{\theta}_{bk}$ can distort the ordering after squaring when coupled with a very small $\sigma^2_k$. For instance, $\hat{\theta}^{*}_{b1}=`r thetastar1`$ and $\hat{\theta}^{*}_{b2}=`r thetastar2`$ with corresponding $\sigma^2_1 = `r sigmasq1`$ and $\sigma^2_2 = `r sigmasq2`$. Note that $\hat{\theta}^{*}_{b1} > \hat{\theta}^{*}_{b2}$ but $\hat{\theta}^{*2}_{b1} = `r thetastar1sq` < \hat{\theta}^{*2}_{b2} = `r thetastar2sq`$. We compute $\hat{\theta}^{*2}_{b1} + \sigma_1^2 = `r min1`$ and $\hat{\theta}^{*2}_{b2} + \sigma_2^2 = `r min2`$. Taking the difference between $\left[ \text{kth ordered value among } \left\{ \hat{\theta}^{*2}_{b1} + \sigma_1^2, \dots, \hat{\theta}^{*2}_{bK} + \sigma_K^2 \right\} \right]$ and $\hat {\theta}^{*2}_{b(k)}$ gives us `r min1 - thetastar2sq` for $k = 1$. This negative difference prevents the construction of `r ASYMP$SHORTNAME` joint confidence region.
 
 ## 2011 Mean Travel Time to Work in the US
 
-We employ a similar assumption of a block diagonal correlation structure induced by population density levels across states. As @klein observed in their analysis of this data, states with higher population densities tend to report longer travel times to work. Five blocks are used, wherein the first has population density from 0 to 20 people per square mile, the second has 20 to 50, the third has 50 to 100, the fourth has 100 to 200, and the fifth has more than 200. We construct the joint confidence region when $\rho$ is varied from $0.0$ up to $0.9$. For simplicity, we assume the same $\rho$ across all blocks. 
+We employ a similar assumption of a block diagonal correlation structure induced by population density levels across states. As @klein observed in their analysis of this data, states with higher population densities tend to report longer travel times to work. Five blocks are used, wherein the first has population density from 0 to 20 people per square mile, the second has 20 to 50, the third has 50 to 100, the fourth has 100 to 200, and the fifth has more than 200. We adopt a similar setup as in the Pulse Asia example.
 
 ```{r}
 dataset_all <- readRDS("/home/realiseshewon/PDev/kde-ranking/data/mean_travel_time_ranking_2011.rds")
@@ -337,10 +410,6 @@ to_table <- allcases$t_values %>%
 ```
 
 
-
-
-
-
 ```{r}
 coeffcons <- 0.9
 # corr_matrix <-generate_corr_mat(coeffcons, "traveltime")
@@ -369,10 +438,8 @@ coeffcons <- 0.9
 # my_list <- list(t_values = allcases, all_ci = ci_results)
 # saveRDS(my_list, file = "all-travel-time-CI.rds")
 # my_list$t_values %>% arrange(Measure, r)
+# dataset_all
 ```
-
-
-
 
 
 ```{r}
@@ -395,6 +462,8 @@ diffs <- prepared_data %>%
 ```
 
 
+
+
 ```{r}
 t1_after <- to_table[[which(to_table$r == coeffcons & to_table$T1 & to_table$Approach == NONRANK$RAWCHAR), "T1"]]
 t1_before <- to_table[[which(to_table$r == 0.0 & to_table$T1 & to_table$Approach == BONF$RAWCHAR), "T1"]]
@@ -407,27 +476,65 @@ t1_improvement <- round(((t1_before-t1_after)/t1_before)*100, 2)
 t3_improvement <- round(((t3_after-t3_before)/t3_before)*100, 2)
 ```
 
-Figure \@ref(fig:travel-time-fig) shows how `r T1$MATHNAME`, `r T2$MATHNAME`, and `r T3$MATHNAME` for `r NONRANK$SHORTNAME` start continuously improving from $\rho = 0.4$ up to $0.9$, when compared to those of `r BONF$SHORTNAME` and `r IND$SHORTNAME`. This is consistent to the simulation findings in Section \ref{sec:ordered-results}. We see that the largest improvement is attained with higher $\rho$. In the presence of $\rho = `r coeffcons`$, `r T1$MATHNAME` reduces by `r t1_improvement`% to `r t1_after` when using `r NONRANK$SHORTNAME` from `r t1_before` when using `r BONF$SHORTNAME` to construct the joint confidence region. `r T2$MATHNAME` also improves by `r t2_improvement`% from `r t2_before` to `r t2_after` while  `r T3$MATHNAME` by `r t3_improvement`% from `r t3_before` to `r t3_after`. The actual values are provided in Table \@ref(tab:travel-time-tab-nonrank) in the Appendix.
+Figure \@ref(fig:travel-time-fig) shows how `r T1$MATHNAME`, `r T2$MATHNAME`, and `r T3$MATHNAME` for `r NONRANK$SHORTNAME` start continuously improving from $\rho = 0.4$ up to $0.9$, when compared to those of `r BONF$SHORTNAME` and `r IND$SHORTNAME`. This is consistent to the simulation findings in Section \ref{sec:ordered-results}. We see that the largest improvement is attained with higher $\rho$. In the presence of $\rho = `r coeffcons`$, `r T1$MATHNAME` reduces by `r t1_improvement`% to `r t1_after` when using `r NONRANK$SHORTNAME` from `r t1_before` when using `r BONF$SHORTNAME` to construct the joint confidence region. `r T2$MATHNAME` also improves by `r t2_improvement`% from `r t2_before` to `r t2_after` while  `r T3$MATHNAME` by `r t3_improvement`% from `r t3_before` to `r t3_after`. 
+
+
 
 ```{r travel-time-fig,fig.cap = "Tightness Measures for Mean Travel Time to Work Across $\\rho$", fig.height = 3.5}
 create_plot_for_t_app_plot(allcases$t_values)
 ```
 
-Figure \@ref(fig:travel-time-fig-nonrank) illustrates how `r T1$MATHNAME`, `r T2$MATHNAME`, and `r T3$MATHNAME` affect the resulting joint confidence region for `r BONF$SHORTNAME` and `r NONRANK$SHORTNAME` when $\rho = `r coeffcons`$. Only joint confidence regions for `r BONF$SHORTNAME` and `r NONRANK$SHORTNAME` are shown since the `r IND$SHORTNAME` result is similar to that of `r BONF$SHORTNAME`. Lower rank corresponds to states with lower mean travel time. It can be observed that those with no decrease in occupied rank positions originally occupy fewer rank positions (two to seven) than those whose occupied positions (five to 20) decrease by 2 to 3.
+For this dataset, `r ASYMP$SHORTNAME` joint confidence regions are hugely higher than those of `r BOOT$SHORTNAME` whose `r T1$MATHNAME`, `r T2$MATHNAME`, and `r T3$MATHNAME` remain relatively closer to the measures for `r BONF$SHORTNAME`, `r IND$SHORTNAME`, and `r NONRANK$SHORTNAME`. Similar to the example in the previous section, a gradual increase in `r T1$MATHNAME` and `r T2$MATHNAME` and decrease in `r T3$MATHNAME` is noticeable with higher $\rho$. 
+
+The actual values corresponding to Figure \@ref(fig:travel-time-fig) are provided in Tables \@ref(tab:travel-time-tab-nonrank) and \@ref(tab:travel-time-tab-rank) in the Appendix.
 
 ```{r}
-# dataset_all %>% left_join(prepared_data1 %>% filter(Approach == 'nonrankbased') %>% select(iso, diff)  %>% distinct(),
-#                         by = 'iso') %>%
-# mutate(range_l = bonf_rank_upper - bonf_rank_lower + 1) %>%
-# arrange(desc(diff)) %>% group_by(density_group) %>% mutate(meansd = median(S)) %>% arrange(density_group) %>% pull(theta_k) %>%sd
+# prepared_data1 %>% 
+#   filter(Approach == 'bonferroni') %>% 
+#   group_by(iso) %>%
+#   summarise(bonf = n()) %>% arrange(iso)
+# 
+# prepared_data1 %>% 
+#   filter(Approach == 'independent') %>% 
+#   group_by(iso) %>%
+#   summarise(bonf = n()) %>% arrange(iso)
 ```
 
 
 
-```{r travel-time-fig-nonrank, fig.cap = "95% Joint Confidence Region for 2011 Mean Travel Time To Work in the US", fig.height = 7}
+
+
+```{r}
+# prepared_data1 <- prepared_data %>% left_join(diffs[,c("Approach", "iso", 'diff')], by = c("Approach", "iso"))
+# dataset_all %>% left_join(prepared_data1 %>% filter(Approach == 'nonrankbased') %>% select(iso, diff)  %>% distinct(),
+#                         by = 'iso') %>%mutate(range_l = bonf_rank_upper - bonf_rank_lower + 1) %>% View()
+```
+
+```{r}
 prepared_data1 <- prepared_data %>% left_join(diffs[,c("Approach", "iso", 'diff')], by = c("Approach", "iso"))
+
+rank_length <- prepared_data1 %>% 
+  filter(Approach == 'bonferroni') %>% 
+  group_by(iso) %>%
+  summarise(bonf = n()) %>% arrange(iso) %>% left_join(prepared_data1 %>% filter(Approach == 'nonrankbased') %>% select(iso, diff)  %>% distinct(),
+                        by = 'iso') %>% 
+  group_by(diff) %>%
+  summarise(central_len = mean(bonf)) 
+# mutate(range_l = bonf_rank_upper - bonf_rank_lower + 1) %>%
+# arrange(desc(diff)) %>% group_by(density_group) %>% mutate(meansd = median(S)) %>% arrange(density_group) %>% pull(theta_k) %>%sd
+
+change0 <- rank_length %>% filter(diff == 0) %>% pull(central_len) %>% round(0)
+change2 <- rank_length %>% filter(diff == 2) %>% pull(central_len) %>% round(0)
+change3 <- rank_length %>% filter(diff == 3) %>% pull(central_len) %>% round(0)
+```
+
+
+```{r travel-time-fig-nonrank, fig.cap = "95% Joint Confidence Region for 2011 Mean Travel Time To Work in the US", fig.height = 7}
+
 create_plot_for_app_data(prepared_data1 %>%
-                           filter(Approach != 'independent'), iso, theta_k, reverse=FALSE,xlab = "State",
+                           filter(Approach != 'independent'), iso, 
+                         rhat_k,#theta_k, 
+                         reverse=FALSE,xlab = "State",
                          # title = "95% Joint Confidence Region for 2011 Mean Travel Times in the US",
                          shape_legend_title ="Region",
                          # shape_labels = c("Midwest", "Northeast", "South", "West"),
@@ -436,3 +543,7 @@ create_plot_for_app_data(prepared_data1 %>%
                          shape_map = c("1" = 0, "2" = 1, "3" = 2, "4" = 6,"5" = 3)
                          )
 ```
+
+Figure \@ref(fig:travel-time-fig-nonrank) illustrates how `r T1$MATHNAME`, `r T2$MATHNAME`, and `r T3$MATHNAME` affect the resulting joint confidence region for `r BONF$SHORTNAME` and `r NONRANK$SHORTNAME` when $\rho = `r coeffcons`$. Only joint confidence regions for `r BONF$SHORTNAME` and `r NONRANK$SHORTNAME` are shown since the `r IND$SHORTNAME` result is similar to that of `r BONF$SHORTNAME`. Lower rank corresponds to states with lower mean travel time. It can be observed that those with no decrease in occupied rank positions originally occupy fewer rank positions (average of `r change0`) than those whose occupied positions decreased by two to three (average of `r change2`).
+
+In summary, the two examples show the applicability of the proposed approaches in constructing joint confidence regions for ranks and ranked parameters. We have shown that the reduction in `r T1$MATHNAME`, `r T2$MATHNAME`, and `r T3$MATHNAME` can vary across these applications. Though a similar behavior are observed on `r NONRANK$SHORTNAME` and `r BOOT$SHORTNAME` for both the examples, `r ASYMP$SHORTNAME` is shown to yield wider regions hugely different from `r BOOT$SHORTNAME` in the second example.
