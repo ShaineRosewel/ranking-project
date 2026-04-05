@@ -92,6 +92,7 @@ knitr::opts_chunk$set(
   knitr.kable.NA = ''
 )
 # options(digits = 3)
+source("/home/realiseshewon/PDev/kde-ranking/R/CONSTANTS.R")
 ```
 
 \newpage
@@ -150,6 +151,17 @@ knitr::opts_chunk$set(
 \vspace*{0.8cm}
 
 ```{r, child = "child/04_application.Rmd"}
+
+```
+
+\newpage
+\vspace*{1cm}
+
+# Conclusion
+
+\vspace*{0.8cm}
+
+```{r, child = "child/05_conclusion.Rmd"}
 
 ```
 
