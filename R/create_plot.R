@@ -339,15 +339,16 @@ create_plot_for_t <- function(prepared_data, unordered = TRUE){
 
 create_plot_for_t_app_plot <- function(allcases_dataset) {
   
-  methods <- c(BONF$SHORTNAME, IND$SHORTNAME, NONRANK$SHORTNAME,
-               ASYMP$SHORTNAME, BOOT$SHORTNAME)
+  methods <- c(BONF$SHORTNAME, IND$SHORTNAME, NONRANK$SHORTNAME)#,
+               # ASYMP$SHORTNAME, BOOT$SHORTNAME)
   
-  unordered_approaches <- c("Bonferroni", "Independent", "Nonrank",
-                            "Asymptotic", "Level2bs")
+  unordered_approaches <- c("Bonferroni", "Independent", "Nonrank")#,
+                            #"Asymptotic", "Level2bs")
   
   color_map <- setNames(rep("black", 5), methods)
   alpha_map <- setNames(rep(0.3, 5), methods)
-  shape_map <- setNames(c(15, 16, 17, 4, 18), methods)
+  shape_map <- setNames(c(15, 16, 17)#, 4, 18)
+                        , methods)
   
   plot_data <- allcases_dataset %>%
     pivot_longer(cols = all_of(unordered_approaches),
@@ -359,8 +360,8 @@ create_plot_for_t_app_plot <- function(allcases_dataset) {
           Approach == "Independent" ~ IND$SHORTNAME,
           Approach == "Bonferroni" ~ BONF$SHORTNAME,
           Approach == "Nonrank" ~ NONRANK$SHORTNAME,
-          Approach == "Asymptotic" ~ ASYMP$SHORTNAME,
-          Approach == "Level2bs" ~ BOOT$SHORTNAME,
+          # Approach == "Asymptotic" ~ ASYMP$SHORTNAME,
+          # Approach == "Level2bs" ~ BOOT$SHORTNAME,
           TRUE ~ Approach
         ),
         levels = methods

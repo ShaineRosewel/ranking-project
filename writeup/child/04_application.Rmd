@@ -6,10 +6,6 @@ For the Pulse Asia results, correlations are assumed to be driven by political s
 
 The analysis considers several key blocks: Alyansa, representing candidates campaigned for by the incumbent president, and DuterTen, composed of the vice-president and former president’s allies. Imee Marcos and Camille Villar are placed in a separate block, as both are endorsed by these rival factions. The Makabayan coalition is given its own category due to its large 11-candidate lineup, while the KiBam alliance highlights the partnership between Kiko Pangilinan and Bam Aquino. Other blocks include candidates focused on labor advocacies, independent popular senatoriables, and traditional politicians with experience in various executive departments. Finally, the remaining less prominent candidates are grouped into a single sectoral block. These make up a total of nine blocks. We construct the 95% joint confidence region and observe how `r T1$MATHNAME`, `r T2$MATHNAME`, and `r T3$MATHNAME` change. 
 
-Figure \@ref(fig:pulse-asia-fig) shows that higher within-block correlation leads to better `r T1$MATHNAME`, `r T2$MATHNAME`, and `r T3$MATHNAME` for the `r NONRANK$SHORTNAME` joint confidence region when compared to `r IND$SHORTNAME` and `r BONF$SHORTNAME`. This implies narrower intervals for the `r NONRANK$SHORTNAME` region, and therefore less uncertainty.
-
-Tightness measures for `r ASYMP$SHORTNAME` and `r BOOT$SHORTNAME` are overlaid to show how they differ when constructing joint confidence regions for ranks (`r ASYMP$SHORTNAME`, `r BOOT$SHORTNAME`) and ranked parameters (`r NONRANK$SHORTNAME`).  `r ASYMP$SHORTNAME` yields less tight regions for ranks than `r BOOT$SHORTNAME` but both of them exhibit increasing (decreasing) measures for `r T1$MATHNAME` and `r T2$MATHNAME` (`r T3$MATHNAME`) with higher $\rho$. This means we get more uncertain about the overall ranks when $\rho$ is high.
-
 ```{r}
 thetastar1 <- -0.0001323539
 thetastar2 <- -0.001639273
@@ -229,7 +225,7 @@ diffs <- prepared_data %>%
 ```
 
 
-```{r pulse-asia-fig,fig.cap = "Tightness Measures for Pulse Asia Results Across $\\rho$", fig.height = 3.5}
+```{r pulse-asia-fig,fig.cap = "Tightness Measures for Pulse Asia Results Across $\\rho$", fig.height = 3.5, include = FALSE}
 create_plot_for_t_app_plot(pulse_ci$t_values)
 ```
 
@@ -247,7 +243,14 @@ create_plot_for_t_app_plot(pulse_ci$t_values)
 ```
 
 
+```{r pulse-asia-tab-nonrank}
+allcases <- readRDS("filtered-to-one-pulse-CI.rds")
+to_table <- prepare_data_for_application(allcases$t_values, unordered =TRUE)
+create_basic_results_table(to_table, 
+                           "Tightness Measures for Unordered Parameters")
+```
 
+Table \@ref(tab:pulse-asia-tab-nonrank) shows that higher within-block correlation leads to better `r T1$MATHNAME`, `r T2$MATHNAME`, and `r T3$MATHNAME` for the `r NONRANK$SHORTNAME` joint confidence region when compared to `r IND$SHORTNAME` and `r BONF$SHORTNAME`. This implies narrower intervals for the `r NONRANK$SHORTNAME` region, and therefore less uncertainty.
 
 ```{r}
 # dataset_all %>%
@@ -298,7 +301,15 @@ t1_improvement <- round(((t1_before-t1_after)/t1_before)*100, 2)
 t3_improvement <- round(((t3_after-t3_before)/t3_before)*100, 2)
 ```
 
-When accounting for $\rho = `r coeffcons`$, the use of `r NONRANK$SHORTNAME` region to report uncertainty leads to a `r t1_improvement`% reduction in `r T1$MATHNAME`, from `r t1_before` to `r t1_after`, compared to `r BONF$SHORTNAME`. Similar improvements are observed for `r T2$MATHNAME` and `r T3$MATHNAME`, with changes of `r t2_improvement`% (from `r t2_before` to `r t2_after`) and `r t3_improvement`% (from `r t3_before` to `r t3_after`), respectively. The values from Figure \@ref(fig:pulse-asia-fig) are provided in Tables \@ref(tab:pulse-asia-tab-nonrank) and \@ref(tab:pulse-asia-tab-rank) in the Appendix.
+
+
+
+```{r pulse-asia-tab-rank}
+totab1 <- prepare_data_for_application(allcases$t_values, unordered =FALSE)
+create_t_table_for_ordered_application(totab1)
+```
+
+For the ordered parameters, Table \@ref(tab:pulse-asia-tab-rank) illustrates how `r T1$MATHNAME` and `r T2$MATHNAME` tend to increase while as `r CORR_COEFF$MATHNAME` increases for the `r BOOT$SHORTNAME` joint confidence region. Despite this behavior, it can be observed that for `r CORR_COEFF$MATHNAME` $< 0.7$, its `r T1$MATHNAME` and `r T2$MATHNAME` values are lower than those of `r ASYMP$SHORTNAME`. Beyond that, `r BOOT$SHORTNAME` and `r ASYMP$SHORTNAME` become almost equally high. These metrics alone imply that we get more uncertain about the overall ranks when `r CORR_COEFF$MATHNAME` is high.
 
 
 ```{r pulse-result,fig.cap = "95% Joint Confidence Region for Senatoriable Preferences", fig.height = 7}
@@ -318,6 +329,8 @@ create_plot_for_app_data(prepared_data1, Candidate, sample_rank, reverse=TRUE,
                         shape_map = c("DuterTen" = 0, "Alyansa" = 1, "KiBam" = 2, "Makabayan" = 3,
                                       "DuterTen-Alyansa" = 8, "Traditional" = 5, "Media" = 6, 'Labor' = 10, 'Sectoral' = 4))
 ```
+
+When accounting for $\rho = `r coeffcons`$, the use of `r NONRANK$SHORTNAME` region to report uncertainty leads to a `r t1_improvement`% reduction in `r T1$MATHNAME`, from `r t1_before` to `r t1_after`, compared to `r BONF$SHORTNAME`. Similar improvements are observed for `r T2$MATHNAME` and `r T3$MATHNAME`, with changes of `r t2_improvement`% (from `r t2_before` to `r t2_after`) and `r t3_improvement`% (from `r t3_before` to `r t3_after`), respectively.
 
 To show how this improvement gets reflected into the joint confidence region for the unordered parameters, we use Figure \@ref(fig:pulse-result) to compare the resulting `r IND$SHORTNAME` 95% joint confidence region in the first facet and `r NONRANK$SHORTNAME` in the second one. Note that lower rank corresponds to highly preferred candidates. 
 
@@ -476,17 +489,35 @@ t1_improvement <- round(((t1_before-t1_after)/t1_before)*100, 2)
 t3_improvement <- round(((t3_after-t3_before)/t3_before)*100, 2)
 ```
 
-Figure \@ref(fig:travel-time-fig) shows how `r T1$MATHNAME`, `r T2$MATHNAME`, and `r T3$MATHNAME` for `r NONRANK$SHORTNAME` start continuously improving from $\rho = 0.4$ up to $0.9$, when compared to those of `r BONF$SHORTNAME` and `r IND$SHORTNAME`. This is consistent to the simulation findings in Section \ref{sec:ordered-results}. We see that the largest improvement is attained with higher $\rho$. In the presence of $\rho = `r coeffcons`$, `r T1$MATHNAME` reduces by `r t1_improvement`% to `r t1_after` when using `r NONRANK$SHORTNAME` from `r t1_before` when using `r BONF$SHORTNAME` to construct the joint confidence region. `r T2$MATHNAME` also improves by `r t2_improvement`% from `r t2_before` to `r t2_after` while  `r T3$MATHNAME` by `r t3_improvement`% from `r t3_before` to `r t3_after`. 
 
 
 
-```{r travel-time-fig,fig.cap = "Tightness Measures for Mean Travel Time to Work Across $\\rho$", fig.height = 3.5}
+```{r travel-time-fig,fig.cap = "Tightness Measures for Mean Travel Time to Work Across $\\rho$", fig.height = 3.5, include = FALSE}
 create_plot_for_t_app_plot(allcases$t_values)
 ```
 
-For this dataset, `r ASYMP$SHORTNAME` joint confidence regions are hugely higher than those of `r BOOT$SHORTNAME` whose `r T1$MATHNAME`, `r T2$MATHNAME`, and `r T3$MATHNAME` remain relatively closer to the measures for `r BONF$SHORTNAME`, `r IND$SHORTNAME`, and `r NONRANK$SHORTNAME`. Similar to the example in the previous section, a gradual increase in `r T1$MATHNAME` and `r T2$MATHNAME` and decrease in `r T3$MATHNAME` is noticeable with higher $\rho$. 
 
-The actual values corresponding to Figure \@ref(fig:travel-time-fig) are provided in Tables \@ref(tab:travel-time-tab-nonrank) and \@ref(tab:travel-time-tab-rank) in the Appendix.
+
+```{r travel-time-tab-nonrank}
+allcases <- readRDS("all-travel-time-CI.rds")
+to_table <- prepare_data_for_application(allcases$t_values, unordered =TRUE)
+create_basic_results_table(to_table, 
+                           "Tightness Measures for Unordered Parameters")
+```
+
+
+Table \@ref(tab:travel-time-tab-nonrank) shows how `r T1$MATHNAME`, `r T2$MATHNAME`, and `r T3$MATHNAME` for `r NONRANK$SHORTNAME` start continuously improving from `r CORR_COEFF$MATHNAME` $= 0.4$ up to $0.9$, when compared to those of `r BONF$SHORTNAME` and `r IND$SHORTNAME`. This is consistent to the simulation findings in Section \ref{sec:ordered-results}. We see that the largest improvement is attained with higher $\rho$. In the presence of `r CORR_COEFF$MATHNAME` $= `r coeffcons`$, `r T1$MATHNAME` reduces by `r t1_improvement`% to `r t1_after` when using `r NONRANK$SHORTNAME` from `r t1_before` when using `r BONF$SHORTNAME` to construct the joint confidence region. `r T2$MATHNAME` also improves by `r t2_improvement`% from `r t2_before` to `r t2_after` while  `r T3$MATHNAME` by `r t3_improvement`% from `r t3_before` to `r t3_after`. 
+
+
+```{r travel-time-tab-rank}
+allcases <- readRDS("all-travel-time-CI.rds")
+totab1 <- prepare_data_for_application(allcases$t_values, unordered =FALSE)
+create_t_table_for_ordered_application(totab1)
+```
+
+
+Similar to the example in the previous section, a gradual increase in `r T1$MATHNAME` and `r T2$MATHNAME` and decrease in `r T3$MATHNAME` is noticeable with higher $\rho$ for the  `r BOOT$SHORTNAME` region. However, for this dataset, `r ASYMP$SHORTNAME` joint confidence regions are hugely less tight than those of `r BOOT$SHORTNAME`.
+
 
 ```{r}
 # prepared_data1 %>% 
@@ -528,6 +559,7 @@ change2 <- rank_length %>% filter(diff == 2) %>% pull(central_len) %>% round(0)
 change3 <- rank_length %>% filter(diff == 3) %>% pull(central_len) %>% round(0)
 ```
 
+Figure \@ref(fig:travel-time-fig-nonrank) illustrates how `r T1$MATHNAME`, `r T2$MATHNAME`, and `r T3$MATHNAME` are captured in the resulting joint confidence region for `r BONF$SHORTNAME` and `r NONRANK$SHORTNAME` when $\rho = `r coeffcons`$. Overall, the `r NONRANK$SHORTNAME` region is tighter. Only joint confidence regions for `r BONF$SHORTNAME` and `r NONRANK$SHORTNAME` are shown since the `r IND$SHORTNAME` result is similar to that of `r BONF$SHORTNAME`. Lower rank corresponds to states with lower mean travel time. It can be observed that those with no decrease in occupied rank positions originally occupy fewer rank positions (average of `r change0`) than those whose occupied positions decreased by two to three (average of `r change2`).
 
 ```{r travel-time-fig-nonrank, fig.cap = "95% Joint Confidence Region for 2011 Mean Travel Time To Work in the US", fig.height = 7}
 
@@ -544,6 +576,6 @@ create_plot_for_app_data(prepared_data1 %>%
                          )
 ```
 
-Figure \@ref(fig:travel-time-fig-nonrank) illustrates how `r T1$MATHNAME`, `r T2$MATHNAME`, and `r T3$MATHNAME` affect the resulting joint confidence region for `r BONF$SHORTNAME` and `r NONRANK$SHORTNAME` when $\rho = `r coeffcons`$. Only joint confidence regions for `r BONF$SHORTNAME` and `r NONRANK$SHORTNAME` are shown since the `r IND$SHORTNAME` result is similar to that of `r BONF$SHORTNAME`. Lower rank corresponds to states with lower mean travel time. It can be observed that those with no decrease in occupied rank positions originally occupy fewer rank positions (average of `r change0`) than those whose occupied positions decreased by two to three (average of `r change2`).
+
 
 In summary, the two examples show the applicability of the proposed approaches in constructing joint confidence regions for ranks and ranked parameters. We have shown that the reduction in `r T1$MATHNAME`, `r T2$MATHNAME`, and `r T3$MATHNAME` can vary across these applications. Though a similar behavior are observed on `r NONRANK$SHORTNAME` and `r BOOT$SHORTNAME` for both the examples, `r ASYMP$SHORTNAME` is shown to yield wider regions hugely different from `r BOOT$SHORTNAME` in the second example.

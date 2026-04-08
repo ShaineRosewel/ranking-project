@@ -230,13 +230,13 @@ create_table_for_tightness_measure(prepare_appendix_t_measure_table(
 ```
 
 \elandscape
-\newpage
+<!-- \newpage -->
 
-\vspace*{1cm}
+<!-- \vspace*{1cm} -->
 
-## Tables: Pulse Asia Tightness Measures
+<!-- ## Tables: Pulse Asia Tightness Measures -->
 
-```{r pulse-asia-tab-nonrank}
+```{r pulse-asia-tab-nonrank0, include = FALSE}
 allcases <- readRDS("filtered-to-one-pulse-CI.rds")
 to_table <- prepare_data_for_application(allcases$t_values, unordered =TRUE)
 create_basic_results_table(to_table, 
@@ -244,26 +244,23 @@ create_basic_results_table(to_table,
 ```
 
 
-```{r pulse-asia-tab-rank}
-totab1 <- prepare_data_for_application(allcases$t_values, unordered =FALSE)
-create_t_table_for_ordered_application(totab1)
-```
 
 
-\newpage
 
-\vspace*{1cm}
+<!-- \newpage -->
 
-## Tables: 2011 Mean Travel Time to Work in the US Tightness Measures
+<!-- \vspace*{1cm} -->
 
-```{r travel-time-tab-nonrank}
+<!-- ## Tables: 2011 Mean Travel Time to Work in the US Tightness Measures -->
+
+```{r travel-time-tab-nonrank0, include = FALSE}
 allcases <- readRDS("all-travel-time-CI.rds")
 to_table <- prepare_data_for_application(allcases$t_values, unordered =TRUE)
 create_basic_results_table(to_table, 
                            "Tightness Measures for Unordered Parameters")
 ```
 
-```{r travel-time-tab-rank}
+```{r travel-time-tab-rank0, include = FALSE}
 allcases <- readRDS("all-travel-time-CI.rds")
 totab1 <- prepare_data_for_application(allcases$t_values, unordered =FALSE)
 create_t_table_for_ordered_application(totab1)
