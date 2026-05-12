@@ -2,8 +2,8 @@
 author: "Matala, Shaine Rosewel"
 date: "`r format(Sys.Date(), '%B %d, %Y')`"
 fontsize: 11pt
-bibliography: /home/realiseshewon/PDev/kde-ranking/writeup/references.bib
-csl: /home/realiseshewon/PDev/kde-ranking/writeup/harvard-educational-review.csl
+bibliography: /home/realiseshewon/PDev/kde-ranking/writeup/references/references.bib
+csl: /home/realiseshewon/PDev/kde-ranking/writeup/references/harvard-educational-review.csl
 output:
   beamer_presentation:
     keep_tex: true
@@ -11,7 +11,6 @@ output:
     colortheme: "beaver"
     fonttheme: "structurebold"
     incremental: false
-    pandoc_args: ["--lua-filter=filter.lua"]
 #classoption: "handout"
 header-includes:
   - |

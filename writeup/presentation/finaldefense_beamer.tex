@@ -5,7 +5,7 @@
 \documentclass[
   11pt,
   ignorenonframetext,
-]{beamer}
+  handout]{beamer}
 \usepackage{pgfpages}
 \setbeamertemplate{caption}[numbered]
 \setbeamertemplate{caption label separator}{: }
@@ -92,6 +92,9 @@
 \usepackage{pgfpages}
 \setbeameroption{show notes on second screen=right}
 \usepackage{comment}
+\usepackage{booktabs}
+\usepackage[table]{xcolor}
+\usepackage{float}
 \ifLuaTeX
   \usepackage{selnolig}  % disable illegal ligatures
 \fi
@@ -104,7 +107,7 @@
   pdfcreator={LaTeX via pandoc}}
 
 \author{Matala, Shaine Rosewel}
-\date{May 10, 2026}
+\date{May 12, 2026}
 
 \begin{document}
 
@@ -156,25 +159,13 @@
   r_k = \sum^K_{j=1} I(\theta_j \leq \theta_k) = 1 + \sum_{j:j \neq k} I(\theta_j \leq \theta_k), \qquad \text{for} \; k = 1, 2, \dots, K.
   \notag
   \end{equation}
-\item
-  Example
 \end{itemize}
 
-\begin{center}
-\uncover<2->{
-\begin{tabular}{ |c|c|c| }
-\hline
-$k$ & $\hat\theta_k$ & $\hat r_k$ \\
-\hline \hline
-1 & \uncover<3->{12.3} & \uncover<4->{1} \\
-2 & \uncover<3->{17.2} & \uncover<5->{2} \\  
-3 & \uncover<3->{19.1} & \uncover<7->{5} \\  
-4 & \uncover<3->{18.0} & \uncover<6->{3} \\  
-5 & \uncover<3->{19.0} & \uncover<7->{4} \\  
-\hline
-\end{tabular}
+\note{
+\begin{itemize}
+  \item the kth rank is the count of parameters, including itself, that are less than or equal to the kth parameter.
+\end{itemize}
 }
-\end{center}
 \end{frame}
 
 \begin{frame}{Klein's Approach}
@@ -221,11 +212,11 @@ the range for \(r_k\) for each \(k \in \left\{1, 2, \dots, K\right\}\) is as fol
 \hline
 $k$ & $\hat\theta_k$ & $\hat r_k$ & $(L_k, U_k)$ & $\vert \Lambda_{Lk} \vert$ & $\vert \Lambda_{Ok} \vert$ & range \\
 \hline \hline
-1 & {12.3} & {1} & \uncover<2->{(11.0, 14.3)} & \uncover<4->{0} & \uncover<7->{1} & \uncover<10->{1,2} \\
-2 & {17.2} & {2} & \uncover<3->{(14.1, 21.2)} & \uncover<5->{0} & \uncover<8->{4} & \uncover<11->{1,2,3,4,5} \\  
-3 & {19.1} & {5} & \uncover<3->{(18.2, 20.1)} & \uncover<6->{2} & \uncover<9->{2} & \uncover<12->{3,4,5} \\  
-4 & {18.0} & {3} & \uncover<3->{(17.3, 18.0)} & \uncover<6->{1} & \uncover<9->{1} & \uncover<12->{2,3} \\  
-5 & {19.0} & {4} & \uncover<3->{(18.4, 21.0)} & \uncover<6->{2} & \uncover<9->{2} & \uncover<12->{3,4,5} \\  
+1 & {12.3} & {1} & (11.0, 14.3) & 0 & 1 & 1,2 \\
+2 & {17.2} & {2} & (14.1, 21.2) & 0 & 4 & 1,2,3,4,5 \\  
+3 & {19.1} & {5} & (18.2, 20.1) & 2 & 2 & 3,4,5 \\  
+4 & {18.0} & {3} & (17.3, 18.0) & 1 & 1 & 2,3 \\  
+5 & {19.0} & {4} & (18.4, 21.0) & 2 & 2 & 3,4,5 \\  
 \hline
 \end{tabular}
 \end{center}
@@ -307,62 +298,6 @@ then, by the result of Klein et al. (2020), it also follows that
 }
 \end{frame}
 
-\begin{frame}{Other related studies}
-\phantomsection\label{other-related-studies}
-\begin{itemize}[<+->]
-\tightlist
-\item
-  Mohamad et al.~(2019) apply Tukey's Honest Significant Difference
-  (HSD) to test \(H_0: \theta_j - \theta_{k} = 0\) for all
-  \(j \neq k \in {1, ..., K}\) at level \(\alpha\).
-\item
-  Mogstad et al.~(2024) construct the rectangular confidence region from
-  the pairwise differences of the estimators
-  \(\hat{\theta}_1, \dots, \hat{\theta}_K\) and an estimator of the
-  variance of \(\hat{\theta}_{j}-\hat{\theta}_{k}\).
-\end{itemize}
-
-\note{
-\begin{itemize}
-  \item their approach tends to be overly conservative, showing coverage levels between 0.996 and 1.0 at a 0.90 nominal level in simulations, when the $\theta$s differ. They also demonstrated that as the true differences increase from 0 to 0.5, the coverage quickly increases from the nominal level to 1. As a remedy, they proposed a rescaling technique that brings the coverage closer to the nominal level, though it remains conservative (e.g., from 1.0 to 0.978, from 0.998 to 0.961---at 0.90 confidence level
-\end{itemize}
-}
-\end{frame}
-
-\begin{frame}{Other related studies}
-\phantomsection\label{other-related-studies-1}
-\begin{itemize}[<+->]
-\tightlist
-\item
-  Goldstein \& Spiegelhalter (1996) use multilevel models, in the
-  context of ranking education and health institutions (e.g., schools,
-  hospitals, medical practitioners, etc.), to address the hierarchical
-  nature of data structures associated with institutional performance.
-\item
-  Hall \& Miller (2009) suggest using an ``independent component''
-  version of the bootstrap on the sample, where m-out-of-n bootstrap (m
-  \textless{} n) is applied as though the ranked variables were
-  statistically independent.
-\item
-  Zhang et al.~(2013) analyze U.S. age-adjusted cancer incidence and
-  mortality rates across states and counties by computing individual and
-  overall simultaneous confidence intervals for age-adjusted health
-  index using the Monte Carlo method.
-\item
-  Bazylik et al.~(2025), in their recent study, tackle the ranking of
-  political candidates or parties using the estimated share of support
-  each one receives in surveys. They address the dependence attributed
-  to the success probabilities of different categories by using their
-  proposed bootstrap algorithm.
-\end{itemize}
-
-\note{
-\begin{itemize}
-  \item hall and miller: They show this to perform at its best when a reasonable level of correla
-\end{itemize}
-}
-\end{frame}
-
 \begin{frame}{Motivation}
 \phantomsection\label{motivation}
 \begin{itemize}[<+->]
@@ -387,42 +322,13 @@ then, by the result of Klein et al. (2020), it also follows that
 \tightlist
 \item
   In weak-party systems, candidates who belong to the same political
-  alliance or ticket commonly co-occur in ballots and hence perform with
-  similarity.
-\item
-  Name recall is a powerful predictor of likely victory in elections.
+  alliance or ticket commonly co-occur in ballots.
 \end{itemize}
 
 \note{
 \begin{itemize}
   \item Candidates with a name-recall advantage, such as media celebrities, incumbents, and members of dynastic families
-  \item In the Philippine setting, candidates running under the same alliance often share campaign machinery and voter bases, which induces correlation in their vote totals across districts. Dependence may also arise from factors such as name recall, which can affect multiple candidates simultaneously, even across different alliances.
-\end{itemize}
-}
-\end{block}
-\end{frame}
-
-\begin{frame}{Motivation}
-\phantomsection\label{motivation-2}
-\begin{block}{Measurement across geographies --- Klein et al.~(2020)}
-\phantomsection\label{measurement-across-geographies-klein-et-al.-2020}
-\begin{table}[h]
-\centering
-\begin{tabular}{p{1cm} p{4.5cm} p{4.5cm}}
-\textbf{Travel Time} & \textbf{Population Density} & \textbf{Common Locations} \\ \hline
-\uncover<2->{Shorter mean} &
-\uncover<3->{Large unpopulated land areas; fewer high-density population centers} &
-\uncover<5->{Mountain region and Central region states} \\[3pt] %3pt is the gap%
-\uncover<2->{Longer mean} &
-\uncover<4->{Highly urbanized areas with large populations and dense population centers} &
-\uncover<6->{East Coast states} \\
-\end{tabular}
-\end{table}
-
-\note{
-\begin{itemize}
-  \item Klein et al. (2020) also noted that states with large unpopulated land areas and relatively few high-density population centers tend to report shorter travel times while longer travel times are typically observed in highly urbanized states with large populations and high population densities.
-  \item 2019---Many states with shorter travel times are located in the Mountain and Central regions, whereas majority of those with longer travel times are concentrated along the East Coast.
+  \item In the Philippine setting, candidates running under the same alliance often share campaign machinery and voter bases, which induces correlation in their vote totals across districts.
 \end{itemize}
 }
 \end{block}
@@ -441,6 +347,10 @@ This research aims to do the following:
 \item
   Evaluate the performance of the proposed approaches under various
   parameter settings.
+\item
+  Compare the results of Algorithm 1 to Klein's joint confidence regions
+  that uses Bonferroni and independence assumption, in terms of coverage
+  and tightness measures.
 \item
   Apply the proposed approaches to a real-life example.
 \end{itemize}
@@ -523,19 +433,19 @@ and suppose that \(\boldsymbol{\Sigma}\) is known
 
 \begin{algorithmic}[1]
         \For {$b = 1, 2, \dots, B$}
-\uncover<2->{                \State Generate $\hat{\boldsymbol{\theta}}^*_b \sim N_K \left( \hat{\boldsymbol{\theta}}, \boldsymbol{\Sigma}\right)$ and write $\hat{\boldsymbol{\theta}}^*_b = \left( \hat\theta^*_{b1}, \hat\theta^*_{b2}, \dots, \hat\theta^*_{bK} \right)' $}
-\uncover<3->{                \State Compute 
+                \State Generate $\hat{\boldsymbol{\theta}}^*_b \sim N_K \left( \hat{\boldsymbol{\theta}}, \boldsymbol{\Sigma}\right)$ and write $\hat{\boldsymbol{\theta}}^*_b = \left( \hat\theta^*_{b1}, \hat\theta^*_{b2}, \dots, \hat\theta^*_{bK} \right)' $
+                \State Compute 
                 \Statex \begin{minipage}{\linewidth}
                 \centering
                 $t^*_b = \underset{1 \leq k \leq K}{\max} \Bigg| \frac{\hat\theta^*_{bk} - \hat\theta_{k}}{\sigma_k} \Bigg|$
-                \end{minipage}}
+                \end{minipage}
         \EndFor
-\uncover<4->{        \State Compute the $\left(1-\alpha\right)$-sample quantile of $t^*_1, t^*_2, \dots, t^*_B$, call this $\hat{t}$.}
-\uncover<5->{         \State The joint confidence region for $\boldsymbol{\theta} = (\theta_1, \theta_2, \dots, \theta_K)'$ is given by 
+        \State Compute the $\left(1-\alpha\right)$-sample quantile of $t^*_1, t^*_2, \dots, t^*_B$, call this $\hat{t}$.
+         \State The joint confidence region for $\boldsymbol{\theta} = (\theta_1, \theta_2, \dots, \theta_K)'$ is given by 
         \Statex \begin{minipage}{\linewidth}
     \centering
 $\mathfrak{R}_1 = \left[ \hat\theta_1 \pm \hat t \times \sigma_1  \right] \times \left[ \hat\theta_2 \pm \hat t \times \sigma_2  \right] \times \dots \times \left[ \hat\theta_K \pm \hat t \times \sigma_K  \right]$.
-    \end{minipage}}
+    \end{minipage}
     \end{algorithmic}
 
 \note{
@@ -550,52 +460,31 @@ Remarks about bootstrap (Hesterberg,2021):
 }
 \end{frame}
 
-\begin{frame}{Algorithm 1:}
-\phantomsection\label{algorithm-1}
-We want our joint confidence region to satisfy the probability
-condition:
-
-\begin{align}
-P\left( \hat{\theta}_k-t \cdot \sigma_k \leq  \theta_k \leq  \hat{\theta}_k + t \cdot \sigma_k, \,\, \forall\; k=1,2,\ldots,K \right)  =1-\alpha \notag \\
-\uncover<2->{P\left( -t \cdot \sigma_k \leq  \theta_k - \hat{\theta}_k \leq t \cdot \sigma_k, \,\, \forall\; k=1,2,\ldots,K \right)  =1-\alpha} \notag \\
-\uncover<3->{P\left( t \geq  \frac{\hat{\theta}_k-\theta_k}{\sigma_k} \geq -t, \,\, \forall\; k=1,2,\ldots,K \right)  =1-\alpha} \notag \\
-\uncover<4->{P\left( \left| \dfrac{\hat{\theta}_k-\theta_k}{\sigma_k} \right| \le t, \,\, \forall\; k=1,2,\ldots,K \right) =1-\alpha} \notag \\
-\uncover<5->{\Longleftrightarrow P\left( \max_{k=1,2,\ldots,K} \left| \dfrac{\hat{\theta}_k-\theta_k}{\sigma_k} \right| \le t \right) =1-\alpha
-} \notag
-\end{align}
-
-\note{
-\begin{itemize}
-  \item Bootstrap principle: Sample acts as a new population; bootstrap sample take the place of the sample 
-\end{itemize}
-}
-\end{frame}
-
 \begin{frame}{Proposed methodology to compute a joint confidence region
 for the ordered parameters}
 \phantomsection\label{sec:nonrank}
 \begin{minipage}{1.0\textwidth}
 \begin{algorithmic}[1]
     \For {$b = 1, 2, \dots, B$}
-\uncover<2->{        \State
-            Generate $\hat{\boldsymbol{\theta}}^*_b = \left( \hat{\theta}^*_{b1}, \hat{\theta}^*_{b2}, \dots, \hat{\theta}^*_{bK} \right)' \sim N_K \left( \boldsymbol{\hat \theta}, \boldsymbol {\Sigma} \right)$ and let $\hat{\theta}^*_{b(1)}, \hat{\theta}^*_{b(2)}, \dots, \hat{\theta}^*_{b(K)}$ be the corresponding ordered values}
-\uncover<3->{        \State
+        \State
+            Generate $\hat{\boldsymbol{\theta}}^*_b = \left( \hat{\theta}^*_{b1}, \hat{\theta}^*_{b2}, \dots, \hat{\theta}^*_{bK} \right)' \sim N_K \left( \boldsymbol{\hat \theta}, \boldsymbol {\Sigma} \right)$ and let $\hat{\theta}^*_{b(1)}, \hat{\theta}^*_{b(2)}, \dots, \hat{\theta}^*_{b(K)}$ be the corresponding ordered values
+        \State
         Compute $\hat\sigma^*_{b(k)}$ using:
-        \Statex \qquad • asymptotic variance definition
-        \Statex \qquad • second-level bootstrap}
-\uncover<4->{        \State
+        \Statex \qquad • asymptotic variance definition \uncover<2->{(Algorithm 2)}
+        \Statex \qquad • second-level bootstrap \uncover<3->{(Algorithm 3)}
+        \State
             Compute
 \Statex
 \begin{center}
 $t^*_b = \underset{1 \leq k \leq K}{\max} \Bigg| \frac{\hat\theta^*_{b(k)} - \hat\theta_{(k)}}{\hat\sigma^*_{b(k)}} \Bigg|$
-\end{center}}
+\end{center}
     \EndFor
-\uncover<5->{    \State Compute the $\left(1-\alpha\right)$-sample quantile of $t^*_1, \dots, t^*_B$, call this $\hat{t}$.}
-\uncover<6->{    \State The joint confidence region of $\theta_{(1)}, \theta_{(2)}, \dots, \theta_{(K)}$ is given by
+    \State Compute the $\left(1-\alpha\right)$-sample quantile of $t^*_1, \dots, t^*_B$, call this $\hat{t}$.
+    \State The joint confidence region of $\theta_{(1)}, \theta_{(2)}, \dots, \theta_{(K)}$ is given by
 \Statex
 \begin{center}
     $\mathfrak{R}_2 = \left[ \hat\theta_{(1)} \pm \hat t \times \hat\sigma_{(1)}  \right] \times \left[ \hat\theta_{(2)} \pm \hat t \times \hat\sigma_{(2)}  \right] \times \dots \times \left[ \hat\theta_{(K)} \pm \hat t \times \hat\sigma_{(K)}  \right]$
-\end{center}}
+\end{center}
     \end{algorithmic}
 \end{minipage}
 
@@ -635,14 +524,16 @@ $t^*_b = \underset{1 \leq k \leq K}{\max} \Bigg| \frac{\hat\theta^*_{b(k)} - \ha
 
 \begin{algorithmic}[1]
             \For {$c = 1, 2, \dots, C$}
-\uncover<2->{                \State \begin{minipage}[t]{\dimexpr\linewidth-\algorithmicindent} Generate $\hat{\boldsymbol{\theta}}^{**}_{bc} = \left( \hat{\theta}^{**}_{bc1}, \hat{\theta}^{**}_{bc2}, \dots, \hat{\theta}^{**}_{bcK} \right) \sim N_K \left( \hat{\boldsymbol{\theta}}_b^*, \boldsymbol {\Sigma} \right)$ and let $\hat{\theta}^{**}_{bc(1)}, \hat{\theta}^{**}_{bc(2)}, \dots, \hat{\theta}^{**}_{bc(K)}$ be the corresponding ordered values of $\hat{\theta}^{**}_{bc1}, \hat{\theta}^{**}_{bc2}, \dots, \hat{\theta}^{**}_{bcK}$
-                \end{minipage}}
-\uncover<3->{                \State \begin{minipage}[t]{\dimexpr\linewidth-\algorithmicindent} Compute
+                \State \begin{minipage}[t]{\dimexpr\linewidth-\algorithmicindent} Generate $\hat{\boldsymbol{\theta}}^{**}_{bc} = \left( \hat{\theta}^{**}_{bc1}, \hat{\theta}^{**}_{bc2}, \dots, \hat{\theta}^{**}_{bcK} \right) \sim N_K \left( \hat{\boldsymbol{\theta}}_b^*, \boldsymbol {\Sigma} \right)$ and let $\hat{\theta}^{**}_{bc(1)}, \hat{\theta}^{**}_{bc(2)}, \dots, \hat{\theta}^{**}_{bc(K)}$ be the corresponding ordered values of $\hat{\theta}^{**}_{bc1}, \hat{\theta}^{**}_{bc2}, \dots, \hat{\theta}^{**}_{bcK}$
+                \end{minipage}
+                \State \begin{minipage}[t]{\dimexpr\linewidth-\algorithmicindent} Compute
                 $\displaystyle \hat{\sigma}^*_{b(k)} = \sqrt{\frac{\sum^C_{c=1} \left( \hat \theta^{**}_{bc(k)} - \bar {\hat\theta}^{**}_{b \cdot (k)} \right)^2}{C-1}}, \quad \bar {\hat\theta}^{**}_{b\cdot(k)} = \frac{1}{C} \sum^C_{c=1} {\hat\theta}^{**}_{bc(k)}$
-                \end{minipage}}
+                \end{minipage}
                 \EndFor
-    \end{algorithmic} 
-\uncover<4->{ In $\mathfrak{R}_2$, $\displaystyle \hat \sigma_{(k)} = \sqrt{ \frac{\sum^B_{b=1} \left( \hat \theta^*_{b(k)} - \bar {\hat\theta}^*_{\cdot (k)} \right)^2}{B-1}}, \quad \bar {\hat\theta}^*_{\cdot(k)} = \frac{1}{B} \sum^B_{b=1} {\hat\theta}^*_{b(k)}$}
+    \end{algorithmic}
+
+In \(\mathfrak{R}_2\),
+\(\displaystyle \hat \sigma_{(k)} = \sqrt{ \frac{\sum^B_{b=1} \left( \hat \theta^*_{b(k)} - \bar {\hat\theta}^*_{\cdot (k)} \right)^2}{B-1}}, \quad \bar {\hat\theta}^*_{\cdot(k)} = \frac{1}{B} \sum^B_{b=1} {\hat\theta}^*_{b(k)}\)
 
 \note{
 \begin{itemize}
@@ -662,11 +553,11 @@ parameters)
 
 \begin{algorithmic}[1] % Start algorithmic block
             \For {$\text{replications} = 1, 2, \dots, 5000$}
-\uncover<2->{            \State Generate $\hat{\boldsymbol{\theta}} \sim N_K(\boldsymbol{\theta}, \boldsymbol{\Sigma})$}
-\uncover<3->{            \State Compute the confidence region $\mathfrak{R}_1$ for the unordered parameters using Algorithm 1 and the confidence region for the ordered parameters $\mathfrak{R}_2$ using Algorithms 2 and 3.}
-\uncover<4->{            \State For the unordered parameters, check if $\left( \theta_1, \theta_2, \dots, \theta_K\right) \in \mathfrak{R}_1$ and compute $T_1, T_2$, and $T_3$. For the ordered parameters, check if $\left( \theta_{(1)}, \theta_{(2)}, \dots, \theta_{(K)}\right) \in \mathfrak{R}_2$}
+            \State Generate $\hat{\boldsymbol{\theta}} \sim N_K(\boldsymbol{\theta}, \boldsymbol{\Sigma})$
+            \State Compute the confidence region $\mathfrak{R}_1$ for the unordered parameters using Algorithm 1 and the confidence region for the ordered parameters $\mathfrak{R}_2$ using Algorithms 2 and 3.
+            \State For the unordered parameters, check if $\left( \theta_1, \theta_2, \dots, \theta_K\right) \in \mathfrak{R}_1$ and compute $T_1, T_2$, and $T_3$. For the ordered parameters, check if $\left( \theta_{(1)}, \theta_{(2)}, \dots, \theta_{(K)}\right) \in \mathfrak{R}_2$
         \EndFor
-\uncover<3->{    \State Compute the proportion of times that the condition in line 4 is satisfied and the average of $T_1, T_2$, and $T_3$.}
+    \State Compute the proportion of times that the condition in line 4 is satisfied and the average of $T_1, T_2$, and $T_3$.
     \end{algorithmic}
 \end{frame}
 
@@ -706,9 +597,9 @@ of \(1-\alpha=0.95\) will be used.
 \hline
 $\boldsymbol{\theta}$ & Correlation matrix \\
 \hline \hline
-low variability & $\mathbf{R}_{\text{eq}},\, \mathbf{R}_{\text{block}}$ \\
-medium variability & $\mathbf{R}_{\text{eq}},\, \mathbf{R}_{\text{block}}$ \\  
-high variability & $\mathbf{R}_{\text{eq}},\, \mathbf{R}_{\text{block}}$ \\
+low variability & $\mathbf{R}_{\text{eq}},\, \mathbf{R}_{\text{bl,2}},\, \mathbf{R}_{\text{bl,3}}$ \\
+medium variability & $\mathbf{R}_{\text{eq}},\, \mathbf{R}_{\text{bl,2}},\, \mathbf{R}_{\text{bl,3}}$ \\  
+high variability & $\mathbf{R}_{\text{eq}},\, \mathbf{R}_{\text{bl,2}},\, \mathbf{R}_{\text{bl,3}}$ \\
 \hline
 \end{tabular}
 \end{center}
@@ -721,20 +612,37 @@ high variability & $\mathbf{R}_{\text{eq}},\, \mathbf{R}_{\text{block}}$ \\
 }
 \end{frame}
 
-\begin{frame}{Correlation Structures: Equicorrelation}
-\phantomsection\label{correlation-structures-equicorrelation}
+\begin{frame}{Correlation Structures}
+\phantomsection\label{correlation-structures}
 \begin{itemize}[<+->]
 \tightlist
 \item
   This assumes that the \(k\) variables are equally correlated, i.e.,
   that \(\rho_{jk}=\rho\) where \(\rho \in [-1,1]\) for
-  \(j \neq k \in \{1, \dots, K\}\). \begin{equation}
+  \(j \neq k \in \{1, \dots, K\}\). For the simulation we let
+  \(\rho \in \{0.1, 0.5, 0.9\}\). \begin{equation}
   \mathbf{R}_{\text{eq}} = \left( 1-\rho \right) \mathbf{I}_K + \rho \boldsymbol{1}_K \boldsymbol{1}'_K = 
   \begin{bmatrix}
   1 & \rho & \cdots & \rho \\
   \rho & 1 & \cdots & \rho \\
   \vdots & \vdots & \ddots & \vdots \\
   \rho & \rho & \cdots & 1
+  \end{bmatrix}_{K \times K}
+  \notag
+  \end{equation}
+\end{itemize}
+
+\begin{itemize}[<+->]
+\tightlist
+\item
+  The block diagonal correlation matrix can be expressed as\\
+  \begin{equation}
+  \mathbf{R}_{\text{bl,G}} = 
+  \begin{bmatrix}
+  \mathbf{R}_{eq,1} & \mathbf{0} & \cdots & \mathbf{0} \\
+  \mathbf{0} & \mathbf{R}_{eq,2} & \cdots & \mathbf{0} \\
+  \vdots & \vdots & \ddots & \vdots \\
+  \mathbf{0} & \mathbf{0} & \cdots & \mathbf{R}_{eq,G}
   \end{bmatrix}_{K \times K}
   \notag
   \end{equation}
@@ -748,26 +656,29 @@ high variability & $\mathbf{R}_{\text{eq}},\, \mathbf{R}_{\text{block}}$ \\
 }
 \end{frame}
 
-\begin{frame}{Correlation Structures: Block correlation}
-\phantomsection\label{correlation-structures-block-correlation}
-\begin{itemize}[<+->]
-\tightlist
-\item
-  The full block correlation matrix can be expressed as\\
-  \begin{equation}
-  \mathbf{R}_{\text{block}} = 
-  \begin{bmatrix}
-  \mathbf{R}_{eq,1} & \mathbf{C}_{12} & \cdots & \mathbf{C}_{1G} \\
-  \mathbf{C}_{21} & \mathbf{R}_{eq,2} & \cdots & \mathbf{C}_{2G} \\
-  \vdots & \vdots & \ddots & \vdots \\
-  \mathbf{C}_{G1} & \mathbf{C}_{G2} & \cdots & \mathbf{R}_{eq,G}
-  \end{bmatrix}_{K \times K}
-  \notag
-  \end{equation}
-\item
-  \(\mathbf{C}_{g'g} = \mathbf{C}_{gg'} = \rho_{gg'}\boldsymbol{1}_{n_g} \boldsymbol{1}'_{n_g}\)
-  where \(g\neq g' \in \{1, \dots, G\}\)
-\end{itemize}
+\begin{frame}{Correlation Structures}
+\phantomsection\label{correlation-structures-1}
+\begin{table}[H]
+\centering
+\caption{\label{tab:unnamed-chunk-16}Configuration for $\mathbf{R}_\text{{bl,G}}$}
+\centering
+\fontsize{12}{14}\selectfont
+\begin{tabular}[t]{lclllcll}
+\toprule
+\multicolumn{4}{c}{G = 2} & \multicolumn{4}{c}{G = 3} \\
+\cmidrule(l{3pt}r{3pt}){1-4} \cmidrule(l{3pt}r{3pt}){5-8}
+$\mathbf{R}$ & g & Size & $\rho_g$ & $\mathbf{R}$ & g & Size & $\rho_g$\\
+\midrule
+\cellcolor{gray!15}{$\textbf{R}_\text{bl,2B}$} & \cellcolor{gray!15}{1} & \cellcolor{gray!15}{0.5K x 0.5K} & \cellcolor{gray!15}{0.9} & \cellcolor{gray!15}{$\textbf{R}_\text{bl,3L}$} & \cellcolor{gray!15}{1} & \cellcolor{gray!15}{0.2K x 0.2K} & \cellcolor{gray!15}{0.9}\\
+\cellcolor{gray!15}{} & \cellcolor{gray!15}{2} & \cellcolor{gray!15}{0.5K x 0.5K} & \cellcolor{gray!15}{0.1} & \cellcolor{gray!15}{} & \cellcolor{gray!15}{2} & \cellcolor{gray!15}{0.3K x 0.3K} & \cellcolor{gray!15}{0.5}\\
+\cellcolor{gray!15}{} & \cellcolor{gray!15}{} & \cellcolor{gray!15}{} & \cellcolor{gray!15}{} & \cellcolor{gray!15}{} & \cellcolor{gray!15}{3} & \cellcolor{gray!15}{0.5K x 0.5K} & \cellcolor{gray!15}{0.1}\\
+\addlinespace[0.6em]
+$\textbf{R}_\text{bl,2U}$ & 1 & 0.3K x 0.3K & 0.9 & $\textbf{R}_\text{bl,3H}$ & 1 & 0.2K x 0.2K & 0.1\\
+ & 2 & 0.7K x 0.7K & 0.1 &  & 2 & 0.3K x 0.3K & 0.5\\
+ &  &  &  &  & 3 & 0.5K x 0.5K & 0.9\\
+\bottomrule
+\end{tabular}
+\end{table}
 
 \note{
 \begin{itemize}
@@ -782,48 +693,65 @@ where $\rho_{g}$ is the within-block correlation and $n_g$ is the number of vari
 }
 \end{frame}
 
-\begin{frame}{Correlation Structures: Distance-based correlation}
-\phantomsection\label{correlation-structures-distance-based-correlation}
-\begin{itemize}[<+->]
-\tightlist
-\item
-  Spatial dependence can be modeled using a stationary Matérn
-  correlation function, which for two locations \(\mathbf{s}_i\) and
-  \(\mathbf{s}_j\) is expressed as \begin{equation}
-  \rho_{\text{matern}} = \frac{2^{1-\nu}}{\Gamma(\nu)} (\kappa \;\Vert \;\mathbf{s}_i - \mathbf{s}_j \; \Vert)^\nu K_\nu  (\kappa \;\Vert \;\mathbf{s}_i - \mathbf{s}_j \; \Vert)
-  \notag
-  \end{equation} where \(\Vert \cdot \Vert\) denotes the Euclidean
-  distance and \(K_\nu\) is the second kind of the modified Bessel
-  function. It has a scale parameter \(\kappa > 0\) and a smoothness
-  parameter \(\nu > 0\).
-\end{itemize}
-
-\note{
-\begin{itemize}
-  \item  Useful in the mean travel time from the study of Klein et al. (2020).
-\end{itemize}
-}
+\begin{frame}{Coverage of Unordered Parameters}
+\phantomsection\label{coverage-of-unordered-parameters}
+\begin{table}[H]
+\centering
+\caption{\label{tab:nonrank-eq-cov-tab}Simulation Results for Coverage of Unordered Parameters}
+\centering
+\resizebox{\ifdim\width>\linewidth\linewidth\else\width\fi}{!}{
+\fontsize{10}{12}\selectfont
+\begin{tabular}[t]{cccccccc}
+\toprule
+\multicolumn{4}{c}{Equicorrelated} & \multicolumn{4}{c}{Block Diagonal} \\
+\cmidrule(l{3pt}r{3pt}){1-4} \cmidrule(l{3pt}r{3pt}){5-8}
+  & $\mathfrak{R}_{Ind}$ & $\mathfrak{R}_{Bonf}$ & $\mathfrak{R}_1$ &   & $\mathfrak{R}_{Ind}$ & $\mathfrak{R}_{Bonf}$ & $\mathfrak{R}_1$\\
+\midrule
+\addlinespace[0.5em]
+\multicolumn{8}{l}{\textbf{K = 10}}\\
+\hspace{1em}$\textbf{R}_\text{eq,0.1}$ & 0.947 & 0.948 & 0.946 & $\textbf{R}_\text{bl,3L}$ & 0.955 & 0.957 & 0.950\\
+\hspace{1em}$\textbf{R}_\text{eq,0.5}$ & 0.961 & 0.962 & 0.950 & $\textbf{R}_\text{bl,2U}$ & 0.957 & 0.958 & 0.951\\
+\hspace{1em}$\textbf{R}_\text{eq,0.9}$ & 0.984 & 0.984 & 0.948 & $\textbf{R}_\text{bl,2B}$ & 0.962 & 0.963 & 0.949\\
+\hspace{1em} &  &  &  & $\textbf{R}_\text{bl,3H}$ & 0.963 & 0.964 & 0.949\\
+\addlinespace[0.5em]
+\multicolumn{8}{l}{\textbf{K = 20}}\\
+\hspace{1em}$\textbf{R}_\text{eq,0.1}$ & 0.945 & 0.947 & 0.944 & $\textbf{R}_\text{bl,3L}$ & 0.954 & 0.955 & 0.948\\
+\hspace{1em}$\textbf{R}_\text{eq,0.5}$ & 0.961 & 0.961 & 0.946 & $\textbf{R}_\text{bl,2U}$ & 0.955 & 0.957 & 0.944\\
+\hspace{1em}$\textbf{R}_\text{eq,0.9}$ & 0.986 & 0.986 & 0.952 & $\textbf{R}_\text{bl,2B}$ & 0.966 & 0.967 & 0.946\\
+\hspace{1em} &  &  &  & $\textbf{R}_\text{bl,3H}$ & 0.966 & 0.967 & 0.949\\
+\bottomrule
+\end{tabular}}
+\end{table}
 \end{frame}
 
-\begin{frame}{Summary and Next steps}
-\phantomsection\label{summary-and-next-steps}
-\begin{itemize}[<+->]
-\tightlist
-\item
-  Proposed contribution: Develop a procedure to construct joint
-  confidence intervals for the ranks and the ranked parameters when the
-  estimates to be ranked may be correlated.
-\item
-  Next steps:
+\begin{frame}{Coverage of Unordered Parameters}
+\phantomsection\label{coverage-of-unordered-parameters-1}
+\begin{center}\includegraphics[width=0.95\linewidth]{../proposal_files/figure-latex/nonrank-cov-plot-1} \end{center}
+\end{frame}
 
-  \begin{itemize}[<+->]
-  \tightlist
-  \item
-    Complete simulation studies
-  \item
-    Apply the proposed approach to a real-life example
-  \end{itemize}
-\end{itemize}
+\begin{frame}{Tightness Measure of Unordered Parameters}
+\phantomsection\label{tightness-measure-of-unordered-parameters}
+\begin{center}\includegraphics[width=1\linewidth]{../proposal_files/figure-latex/unnamed-chunk-24-1} \end{center}
+\end{frame}
+
+\begin{frame}{Coverage of Ordered Parameters}
+\phantomsection\label{coverage-of-ordered-parameters}
+\begin{center}\includegraphics[width=1\linewidth]{../proposal_files/figure-latex/extra-1} \end{center}
+\end{frame}
+
+\begin{frame}{Tightness Measure of Ordered Parameters}
+\phantomsection\label{tightness-measure-of-ordered-parameters}
+\begin{center}\includegraphics[width=1\linewidth]{../proposal_files/figure-latex/extra-ordered-t-1} \end{center}
+\end{frame}
+
+\begin{frame}{Application}
+\phantomsection\label{application}
+\begin{center}\includegraphics[width=0.635\linewidth]{../proposal_files/figure-latex/pulse-result-1} \end{center}
+\end{frame}
+
+\begin{frame}{Application}
+\phantomsection\label{application-1}
+\begin{center}\includegraphics[width=0.635\linewidth]{../proposal_files/figure-latex/travel-time-fig-nonrank-1} \end{center}
 
 \vspace{1cm}
 
